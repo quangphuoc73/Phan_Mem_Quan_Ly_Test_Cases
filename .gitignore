@@ -1,0 +1,9 @@
+node_modules/
+.env
+app/data/
+app/e2e-report/
+app/e2e-results/
+automation/test-results/
+automation/playwright-report/
+automation/specs/generated/*.spec.js
+.DS_Store

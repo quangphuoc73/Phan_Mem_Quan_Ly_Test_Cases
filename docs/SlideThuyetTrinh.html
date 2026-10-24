@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slide bảo vệ SE104</title>
+<style>
+  :root {
+    --bg: #0b1220; --panel: #ffffff; --text: #1c2333; --muted: #5d6781; --primary: #2563eb; --violet: #6d28d9;
+    --soft: #eef3ff; --green: #15803d; --red: #c2262e; --amber: #b45309; --border: #e2e7f1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; color: var(--text); }
+  .deck { height: 100%; display: grid; place-items: center; }
+  .slide { display: none; width: min(96vw, calc(96vh * 16 / 9)); aspect-ratio: 16 / 9; background: var(--panel); border-radius: 14px; padding: 4.2% 5%; position: relative; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+  .slide.active { display: flex; flex-direction: column; }
+  .slide { font-size: clamp(11px, 1.45vw, 22px); }
+  h1 { font-size: 2.3em; margin: 0 0 .3em; line-height: 1.2; }
+  h2 { font-size: 1.75em; margin: 0 0 .7em; color: var(--primary); }
+  h3 { font-size: 1.1em; margin: 0 0 .4em; }
+  p, li { line-height: 1.5; }
+  ul { margin: .2em 0; padding-left: 1.2em; }
+  li { margin-bottom: .3em; }
+  .muted { color: var(--muted); }
+  .tag { display: inline-block; background: var(--soft); color: var(--primary); border-radius: 99px; padding: .15em .7em; font-size: .8em; font-weight: 600; margin: 0 .3em .3em 0; }
+  .grid { display: grid; gap: 1.1em; }
+  .g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); } .g4 { grid-template-columns: repeat(4, 1fr); }
+  .card { border: 1px solid var(--border); border-radius: 10px; padding: .9em 1em; background: #fbfcff; }
+  .big { font-size: 2.2em; font-weight: 800; color: var(--primary); line-height: 1.1; }
+  .flow { display: flex; align-items: stretch; gap: .5em; flex-wrap: nowrap; margin: .6em 0; }
+  .flow .step { flex: 1; border-radius: 10px; padding: .8em .6em; text-align: center; font-weight: 600; font-size: .9em; background: var(--soft); color: #1e3a8a; display: grid; place-items: center; }
+  .flow .step.ai { background: #efe7fd; color: var(--violet); }
+  .flow .arrow { display: grid; place-items: center; color: var(--muted); font-size: 1.3em; }
+  .shot { width: 100%; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(16,24,40,.12); }
+  .two { display: grid; grid-template-columns: 1fr 1.55fr; gap: 1.4em; align-items: center; flex: 1; min-height: 0; }
+  .two img { max-height: 100%; object-fit: contain; }
+  table { border-collapse: collapse; width: 100%; font-size: .85em; }
+  th, td { border: 1px solid var(--border); padding: .35em .6em; text-align: left; }
+  th { background: var(--soft); }
+  .footer { position: absolute; bottom: 2.4%; left: 5%; right: 5%; display: flex; justify-content: space-between; font-size: .7em; color: var(--muted); }
+  .title-slide { background: linear-gradient(140deg, #0b1220 0%, #1e3a8a 60%, #6d28d9 100%); color: #fff; justify-content: center; }
+  .title-slide h1 { font-size: 2.8em; }
+  .title-slide .muted { color: #c7d2fe; }
+  .title-slide .footer { color: #c7d2fe; }
+  .pyramid { display: grid; gap: .35em; justify-items: center; }
+  .pyramid div { border-radius: 8px; color: #fff; font-weight: 700; text-align: center; padding: .55em; }
+  .ok { color: var(--green); font-weight: 700; }
+  .controls { position: fixed; bottom: 14px; right: 18px; color: #94a3b8; font: 13px system-ui; display: flex; gap: 8px; align-items: center; }
+  .controls button { background: #1e293b; color: #e2e8f0; border: 0; border-radius: 6px; padding: 6px 12px; cursor: pointer; font: inherit; }
+  pre.mermaid { margin: 0; flex: 1; display: grid; place-items: center; min-height: 0; }
+  pre.mermaid svg { width: 100% !important; max-width: none !important; height: auto; max-height: 100%; }
+  @media print {
+    @page { size: 1280px 720px; margin: 0; }
+    html, body { background: #fff; height: auto; }
+    .deck { display: block; }
+    .slide { display: flex !important; flex-direction: column; width: 1280px; height: 720px; border-radius: 0; box-shadow: none; page-break-after: always; font-size: 20px; }
+    .controls { display: none; }
+    .slide:last-child { page-break-after: auto; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- 1 -->
+  <section class="slide title-slide">
+    <div class="muted">SE104 – Nhập môn Công nghệ phần mềm · Trường ĐH Công nghệ Thông tin – ĐHQG-HCM</div>
+    <h1 style="margin-top:.6em">Hệ thống quản lý test case<br>có hỗ trợ trí tuệ nhân tạo</h1>
+    <p style="font-size:1.2em">AI TestCase Manager</p>
+    <p class="muted" style="margin-top:2em">Sinh viên: [Họ và tên] – [MSSV]<br>Giảng viên hướng dẫn: [Tên giảng viên]</p>
+    <div class="footer"><span>Đồ án môn học</span><span>Tháng 10/2026</span></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide">
+    <h2>1. Khảo sát hiện trạng: đội QA đang gặp vấn đề gì?</h2>
+    <div class="grid g2" style="flex:1">
+      <div>
+        <ul>
+          <li>Viết test case thủ công trên Excel: <b>30–60 phút / user story</b></li>
+          <li>Dễ sót case lỗi (negative) và case biên (edge)</li>
+          <li>Duyệt qua chat/email, <b>không lưu vết</b> ai duyệt, góp ý gì</li>
+          <li>Nhiều phiên bản file, chạy nhầm test case cũ</li>
+          <li>Không biết user story nào chưa có test case</li>
+          <li>Tổng hợp báo cáo bằng tay mất 1–2 giờ</li>
+          <li>Viết lại test case thành script tự động: <b>làm 2 lần</b></li>
+          <li>Dán dữ liệu khách hàng vào ChatGPT: <b style="color:var(--red)">nguy cơ lộ dữ liệu</b></li>
+        </ul>
+      </div>
+      <div class="card" style="align-self:center">
+        <h3>Mục tiêu</h3>
+        <p>Một hệ thống tập trung quản lý <b>toàn bộ vòng đời test case</b>, trong đó AI tăng tốc khâu viết nháp và tự động hóa, còn <b>con người giữ quyền quyết định</b>.</p>
+        <span class="tag">Quy trình CNPM đầy đủ</span><span class="tag">AI có kiểm soát</span><span class="tag">Bảo mật dữ liệu</span><span class="tag">Kiểm thử tự động</span>
+      </div>
+    </div>
+    <div class="footer"><span>Chương 1 – Khảo sát hiện trạng</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide">
+    <h2>2. Giải pháp: quy trình khép kín, con người kiểm soát AI</h2>
+    <div class="flow">
+      <div class="step">📝 User story<br><span class="muted" style="font-weight:400">BM1 · QĐ1</span></div><div class="arrow">→</div>
+      <div class="step ai">🤖 AI sinh test case<br><span style="font-weight:400">Nháp</span></div><div class="arrow">→</div>
+      <div class="step">✍️ Tester sửa<br><span class="muted" style="font-weight:400">lưu phiên bản</span></div><div class="arrow">→</div>
+      <div class="step">✅ QA Lead duyệt<br><span class="muted" style="font-weight:400">trả lại + ghi chú</span></div><div class="arrow">→</div>
+      <div class="step ai">🎭 AI sinh script<br><span style="font-weight:400">Playwright</span></div><div class="arrow">→</div>
+      <div class="step">▶️ Chạy test<br><span class="muted" style="font-weight:400">thủ công / tự động</span></div><div class="arrow">→</div>
+      <div class="step">📊 Báo cáo<br><span class="muted" style="font-weight:400">tự động</span></div>
+    </div>
+    <div class="grid g3" style="margin-top:1em">
+      <div class="card"><h3>4 vai trò</h3>Admin · QA Lead · Tester · Developer, phân quyền RBAC</div>
+      <div class="card"><h3>AI chỉ là 2/12 yêu cầu</h3>Trọng tâm là quy trình quản lý, duyệt, phiên bản, báo cáo, quy định thay đổi được</div>
+      <div class="card"><h3>Chạy được offline</h3>Chế độ AI mock cho demo; đổi sang Gemini / Claude / OpenAI bằng cấu hình</div>
+    </div>
+    <div class="footer"><span>Tổng quan giải pháp</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide">
+    <h2>3. Quy trình thực hiện: Agile – Scrum</h2>
+    <div class="grid g2" style="flex:1">
+      <div>
+        <div class="flow" style="flex-wrap:wrap">
+          <div class="step">📋 Product Backlog<br><span class="muted" style="font-weight:400">28 story, MoSCoW, SP</span></div><div class="arrow">→</div>
+          <div class="step">🗓️ Planning</div><div class="arrow">→</div>
+          <div class="step ai">🏃 Sprint 2 tuần</div><div class="arrow">→</div>
+          <div class="step">👀 Review + 🔁 Retro</div>
+        </div>
+        <ul style="margin-top:.6em">
+          <li><b>Mỗi sprint</b> đi qua đủ 7 hoạt động của môn: yêu cầu → phân tích → thiết kế → cài đặt → kiểm chứng → triển khai</li>
+          <li>Làm một mình: <b>Scrum cá nhân</b> – tự đóng PO, Scrum Master, Developer; đồng nghiệp QA và giảng viên dự Sprint Review</li>
+          <li><b>Definition of Done</b>: merge qua PR, có test tự động, CI xanh, tài liệu cập nhật, demo được</li>
+          <li>Minh chứng: biên bản Planning / Review / Retro, daily log, lịch sử commit</li>
+        </ul>
+      </div>
+      <table>
+        <tr><th>Sprint</th><th>Tuần</th><th>Sprint Goal</th><th>SP</th></tr>
+        <tr><td>0</td><td>1–2</td><td>Khảo sát, Product Backlog, kiến trúc, CI</td><td>–</td></tr>
+        <tr><td>1</td><td>3–4</td><td>Đăng nhập theo vai trò, lập user story</td><td>13</td></tr>
+        <tr><td>2</td><td>5–6</td><td><b>AI sinh test case an toàn</b> (rủi ro cao nhất, làm sớm)</td><td>14</td></tr>
+        <tr><td>3</td><td>7–8</td><td>Sửa, phiên bản, duyệt test case</td><td>15</td></tr>
+        <tr><td>4</td><td>9–10</td><td>Chạy test, báo cáo, quy định</td><td>14</td></tr>
+        <tr><td>5</td><td>11–12</td><td>Tự động hóa bằng Playwright</td><td>16</td></tr>
+        <tr><td>6</td><td>13–14</td><td>Sprint trong hệ thống, Docker, hoàn thiện</td><td>16</td></tr>
+        <tr><td>–</td><td>15</td><td>Bảo vệ = Sprint Review cuối</td><td></td></tr>
+      </table>
+    </div>
+    <div class="footer"><span>Chương 0A – Quy trình Agile</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <h2>4. Yêu cầu nghiệp vụ và quy định</h2>
+    <div class="grid g2" style="flex:1">
+      <table>
+        <tr><th>Yêu cầu</th><th>BM</th><th>QĐ</th></tr>
+        <tr><td>YC1 Lập user story</td><td>BM1</td><td>QĐ1</td></tr>
+        <tr><td><b>YC2 Sinh test case bằng AI</b></td><td>BM2</td><td>QĐ2</td></tr>
+        <tr><td>YC3 Soạn thảo, gửi duyệt</td><td>BM2</td><td>QĐ3</td></tr>
+        <tr><td>YC4 Duyệt test case</td><td>BM3</td><td>QĐ4</td></tr>
+        <tr><td>YC5 Ghi kết quả chạy test</td><td>BM4</td><td>QĐ5</td></tr>
+        <tr><td>YC6 Báo cáo kiểm thử</td><td>BM5</td><td></td></tr>
+        <tr><td>YC7 Tra cứu · YC8 Nhập/xuất</td><td>BM6–8</td><td>QĐ8</td></tr>
+        <tr><td><b>YC9 Sinh & chạy script Playwright</b></td><td>BM9</td><td>QĐ9</td></tr>
+        <tr><td>YC10 Quy định · YC11 Quản trị</td><td></td><td>QĐ10–11</td></tr>
+        <tr><td><b>YC12 Quản lý sprint (Agile)</b></td><td>BM10</td><td>QĐ12</td></tr>
+      </table>
+      <div>
+        <div class="card" style="margin-bottom:.8em"><b>QĐ2:</b> tối đa <b>20</b> test case/story; AI sai định dạng thử lại tối đa <b>2</b> lần; chờ ≤ <b>30</b> giây; ≤ <b>30</b> lần gọi AI/giờ</div>
+        <div class="card" style="margin-bottom:.8em"><b>QĐ4:</b> chỉ <b>QA Lead</b> được duyệt; trả lại <b>bắt buộc ghi chú</b></div>
+        <div class="card" style="margin-bottom:.8em"><b>QĐ5:</b> chỉ ghi kết quả test case đã duyệt; Fail/Blocked bắt buộc ghi chú</div>
+        <div class="card"><b>Tính tiến hóa:</b> mọi con số trên nằm trong bảng <code>parameters</code>, đổi trên giao diện, không sửa mã nguồn</div>
+      </div>
+    </div>
+    <div class="footer"><span>Chương 2 – Xác định yêu cầu</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide">
+    <h2>5. Kiến trúc: AI Service là module riêng</h2>
+    <pre class="mermaid">
+flowchart LR
+    UI["Frontend<br/>HTML/JS"] -- "HTTPS + JWT" --> MW["Middleware<br/>CSP · JWT · RBAC<br/>rate limit · schema"]
+    MW --> SV["Service nghiệp vụ<br/>QĐ1–QĐ11"]
+    SV --> DB[("CSDL<br/>12 bảng")]
+    SV --> AIS
+    subgraph AIS["AI Service"]
+      direction TB
+      A1["Che PII"] --> A2["Chống prompt injection<br/>+ ghép prompt"] --> A3["LLMProvider<br/>(Strategy)"] --> A4["Kiểm tra schema<br/>+ thử lại + nhật ký"]
+    end
+    A3 --> LLM[["Gemini · Claude<br/>OpenAI · Mock"]]
+    SV -- "script đã kiểm tra" --> W[["Playwright Worker<br/>tiến trình cô lập"]]
+    W --> AUT[["Web cần test"]]
+    </pre>
+    <div class="footer"><span>Chương 4 – Thiết kế</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide">
+    <h2>6. AI sinh test case trong vài giây</h2>
+    <div class="two">
+      <div>
+        <ul>
+          <li>Mỗi acceptance criterion ≥ 1 case <b>Positive</b></li>
+          <li>Tự sinh case <b>Negative</b>, <b>Edge</b> (giá trị biên)</li>
+          <li>Kết quả ép đúng <b>JSON schema</b> (Zod), sai thì tự thử lại</li>
+          <li>Trạng thái <b>Nháp</b> – bắt buộc người xem lại</li>
+          <li>Tuân thủ QĐ2: đổi tối đa 20 → 5, AI chỉ sinh 5</li>
+        </ul>
+      </div>
+      <img class="shot" src="images/04_ai_sinh_test_case.png" alt="AI sinh test case">
+    </div>
+    <div class="footer"><span>YC2 – Sinh test case bằng AI</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide">
+    <h2>7. Bảo mật khi làm việc với AI</h2>
+    <div class="two">
+      <div>
+        <ul>
+          <li><b>Che dữ liệu nhạy cảm</b> trước khi gửi: email, SĐT, CCCD, số thẻ → <code>[EMAIL]</code> <code>[PHONE]</code></li>
+          <li><b>Chống prompt injection</b>: tách prompt hệ thống / dữ liệu, bọc <code>&lt;user_story&gt;</code>, gắn cờ cảnh báo</li>
+          <li>API key chỉ ở backend (.env)</li>
+          <li>Hạn mức gọi AI / người / giờ</li>
+          <li><b>Nhật ký AI</b>: prompt đã che, model, kết quả gốc, số lần thử</li>
+        </ul>
+        <p class="muted">Cùng với: bcrypt, JWT, RBAC, CSP chống XSS, prepared statement, audit log.</p>
+      </div>
+      <img class="shot" src="images/05_nhat_ky_ai_che_pii.png" alt="Nhật ký AI che PII">
+    </div>
+    <div class="footer"><span>Yêu cầu bảo mật BM-01 → BM-14</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide">
+    <h2>8. Con người kiểm soát: phiên bản và duyệt</h2>
+    <div class="grid g2" style="flex:1; align-items:center">
+      <img class="shot" src="images/06_lich_su_phien_ban.png" alt="Lịch sử phiên bản">
+      <img class="shot" src="images/07_hang_doi_duyet.png" alt="Hàng đợi duyệt">
+    </div>
+    <p class="muted" style="margin:.6em 0 0">So sánh <b>bản AI gốc (v1)</b> với bản Tester đã sửa · QA Lead duyệt hoặc trả lại kèm ghi chú · cặp "AI sinh – người sửa" là dữ liệu đánh giá chất lượng AI</p>
+    <div class="footer"><span>YC3, YC4</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 10 -->
+  <section class="slide">
+    <h2>9. Kiểm thử tự động với Playwright</h2>
+    <div class="two">
+      <div>
+        <ul>
+          <li>Test case đã duyệt → <b>AI sinh script Playwright</b></li>
+          <li>Tester xem lại, sửa, bấm <b>Chạy</b></li>
+          <li>Chạy trên web thật (saucedemo.com): <span class="ok">4/4 Pass</span> ~2,5 giây</li>
+          <li>Fail → lưu <b>log + ảnh chụp màn hình</b></li>
+          <li>Sandbox: kiểm tra tĩnh (chặn <code>fs</code>, <code>child_process</code>, <code>process.env</code>, <code>eval</code>), tiến trình riêng, timeout, giới hạn CPU/RAM</li>
+          <li>Bộ test mẫu viết tay theo <b>Page Object Model</b>, data-driven: <span class="ok">8/8 Pass</span></li>
+        </ul>
+      </div>
+      <img class="shot" src="images/08_playwright_chay_tu_dong.png" alt="Playwright chạy tự động">
+    </div>
+    <div class="footer"><span>YC9 – Sinh và chạy script tự động</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 11 -->
+  <section class="slide">
+    <h2>10. Báo cáo tự động</h2>
+    <div class="two">
+      <div>
+        <ul>
+          <li><b>Tỷ lệ pass</b> theo lần chạy gần nhất</li>
+          <li><b>Độ bao phủ yêu cầu</b>: story có test case đã duyệt</li>
+          <li><b>Tiến độ thực thi</b></li>
+          <li>Kết quả theo module, xu hướng theo ngày</li>
+          <li>Danh sách story <b>chưa được bao phủ</b></li>
+          <li>Hiệu quả AI: số case AI sinh, tỷ lệ phải sửa, cảnh báo injection</li>
+        </ul>
+      </div>
+      <img class="shot" src="images/10_bao_cao.png" alt="Báo cáo">
+    </div>
+    <div class="footer"><span>YC6 – Báo cáo</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 11b -->
+  <section class="slide">
+    <h2>11. Hệ thống hỗ trợ đội QA làm Scrum (YC12)</h2>
+    <div class="two">
+      <div>
+        <ul>
+          <li>Sprint có <b>Sprint Goal</b>, ngày bắt đầu/kết thúc (QĐ12: ≤ 28 ngày, không trùng)</li>
+          <li><b>Product backlog</b> → Sprint Planning đưa story vào sprint</li>
+          <li>Story point Fibonacci 1–13</li>
+          <li><b>Definition of Done tự động</b>: mọi test case đã duyệt đều Pass</li>
+          <li>Bảng 4 cột, <b>burndown</b> theo ngày, <b>velocity</b> từng sprint</li>
+          <li>Lọc báo cáo, duyệt, tra cứu theo sprint</li>
+        </ul>
+      </div>
+      <img class="shot" src="images/11_sprint.png" alt="Trang Sprint">
+    </div>
+    <div class="footer"><span>YC12 – Agile trong sản phẩm</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 12 -->
+  <section class="slide">
+    <h2>12. Kiểm chứng: kiểm thử 3 tầng + CI/CD</h2>
+    <div class="grid g2" style="flex:1; align-items:center">
+      <div class="pyramid">
+        <div style="width:40%;background:#6d28d9">E2E Playwright<br>9/9 pass</div>
+        <div style="width:70%;background:#2563eb">API / tích hợp (supertest)<br>34/34 pass</div>
+        <div style="width:100%;background:#15803d">Unit test (node:test)<br>21/21 pass</div>
+      </div>
+      <div>
+        <ul>
+          <li>Kiểm tra toàn bộ quy định QĐ1–QĐ10, phân quyền, bảo mật AI</li>
+          <li>Mô phỏng AI trả sai định dạng → thử lại → báo lỗi</li>
+          <li>E2E: lập story → AI sinh → gửi duyệt → trả lại → duyệt → chạy → đổi quy định → Sprint Planning</li>
+          <li>Test viết trong từng sprint (thuộc Definition of Done), không dồn cuối kỳ</li>
+          <li>25 test case hệ thống thủ công (XSS, SQLi, RBAC…)</li>
+          <li><b>GitHub Actions</b>: Unit & API → E2E → build Docker image</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer"><span>Chương 6 – Kiểm chứng</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 13 -->
+  <section class="slide">
+    <h2>13. Kết luận và hướng phát triển</h2>
+    <div class="grid g2" style="flex:1">
+      <div class="card">
+        <h3>Đạt được</h3>
+        <ul>
+          <li>Làm theo Scrum: 6 sprint, mỗi sprint đủ 7 hoạt động, đủ tài liệu</li>
+          <li>Phần mềm chạy được: 12 YC, 14 màn hình, hỗ trợ Scrum</li>
+          <li>AI tích hợp bài bản: Strategy, PII, injection, schema, retry, sandbox</li>
+          <li>Kiểm thử tự động 3 tầng, Docker, CI</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Hướng phát triển → khóa luận</h3>
+        <ul>
+          <li>So sánh LLM trên user story tiếng Việt</li>
+          <li>RAG theo tài liệu nghiệp vụ (pgvector)</li>
+          <li>Fine-tune model nhỏ bằng LoRA</li>
+          <li>AI agent Playwright tự sửa locator (self-healing)</li>
+          <li>Hàng đợi job, tích hợp Jira</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer"><span>Chương 9</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 14 -->
+  <section class="slide title-slide" style="text-align:center;align-items:center">
+    <h1>Cảm ơn thầy cô và các bạn!</h1>
+    <p style="font-size:1.3em">Demo trực tiếp · Hỏi đáp</p>
+    <p class="muted">Mã nguồn, tài liệu và hướng dẫn chạy: thư mục <code>NhapMonCongNghePhanMem</code></p>
+  </section>
+
+</div>
+<div class="controls"><button id="prev" aria-label="Trang trước">←</button><span id="pos"></span><button id="next" aria-label="Trang sau">→</button><button id="fs">Toàn màn hình</button></div>
+<script src="assets/mermaid.min.js"></script>
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1), 10) || 1) - 1));
+  const show = () => {
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    document.getElementById('pos').textContent = `${i + 1} / ${slides.length}`;
+    history.replaceState(null, '', `#${i + 1}`);
+  };
+  const go = (d) => { i = Math.max(0, Math.min(slides.length - 1, i + d)); show(); };
+  document.addEventListener('keydown', (e) => {
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(1); }
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
+    if (e.key === 'Home') { i = 0; show(); }
+    if (e.key === 'End') { i = slides.length - 1; show(); }
+  });
+  document.getElementById('prev').onclick = () => go(-1);
+  document.getElementById('next').onclick = () => go(1);
+  document.getElementById('fs').onclick = () => document.documentElement.requestFullscreen?.();
+  slides.forEach((sl, k) => sl.querySelectorAll('.pg').forEach((el) => (el.textContent = k + 1)));
+  show();
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', flowchart: { useMaxWidth: true } });
+    // Vẽ sơ đồ khi tất cả slide đang hiển thị để mermaid đo được kích thước
+    slides.forEach((s) => s.classList.add('active'));
+    mermaid.run().finally(() => { show(); document.body.dataset.ready = '1'; });
+  }
+</script>
+</body>
+</html>

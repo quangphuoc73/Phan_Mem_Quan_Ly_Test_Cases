@@ -1,0 +1,27 @@
+# Chạy: docker compose up --build   →  mở http://localhost:3000
+services:
+  app:
+    build: .
+    image: ai-testcase-manager:latest
+    ports:
+      - "3000:3000"
+    env_file:
+      - path: app/.env
+        required: false
+    environment:
+      DB_FILE: /srv/app/data/app.db
+      JWT_SECRET: ${JWT_SECRET:-hay-doi-chuoi-nay-khi-trien-khai}
+    volumes:
+      - app-data:/srv/app/data
+    # Giới hạn tài nguyên: script do AI sinh không thể làm treo máy chủ
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2g
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+volumes:
+  app-data:

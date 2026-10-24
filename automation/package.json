@@ -1,0 +1,16 @@
+{
+  "name": "automation-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright worker: chạy script do AI sinh (YC9) và bộ test mẫu cho Sauce Demo",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:samples": "playwright test specs/samples",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.1",
+    "dotenv": "^18.0.8"
+  }
+}

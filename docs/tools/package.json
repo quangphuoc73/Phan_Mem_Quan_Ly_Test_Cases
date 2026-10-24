@@ -1,0 +1,1 @@
+{"name":"docs-build","private":true,"scripts":{"build":"node build.js"},"dependencies":{"marked":"^15.0.12","mermaid":"^11.4.1"}}
