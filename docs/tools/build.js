@@ -1,23 +1,13 @@
 // Gộp các chương Markdown thành 1 báo cáo HTML (vẽ sơ đồ Mermaid) và xuất PDF bằng Chrome.
 // Chạy: cd docs/tools && npm install && npm run build
-// Sửa thông tin trang bìa ở biến COVER bên dưới.
+// Sửa thông tin trang bìa trong cover.js.
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const { marked } = require('marked');
 
-const COVER = {
-  school: 'ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH<br>TRƯỜNG ĐẠI HỌC CÔNG NGHỆ THÔNG TIN',
-  faculty: 'KHOA CÔNG NGHỆ PHẦN MỀM',
-  course: 'ĐỒ ÁN MÔN HỌC SE104 – NHẬP MÔN CÔNG NGHỆ PHẦN MỀM',
-  title: 'HỆ THỐNG QUẢN LÝ TEST CASE<br>CÓ HỖ TRỢ TRÍ TUỆ NHÂN TẠO',
-  subtitle: 'AI TestCase Manager',
-  student: 'Nguyễn Quang Phước',
-  studentId: '26210159',
-  className: '[Lớp SE104.xxx]',
-  lecturer: '[Tên giảng viên hướng dẫn]',
-  place: 'TP. Hồ Chí Minh, tháng 10 năm 2026',
-};
+const COVER = require('./cover');
+const BLANK = '..............................';
 
 const DOCS = path.join(__dirname, '..');
 const FILES = fs.readdirSync(DOCS).filter((f) => /^\d\d[a-z]?_.*\.md$/.test(f)).sort();
@@ -82,9 +72,10 @@ const html = `<!doctype html>
     <div><div class="school">${COVER.school}</div><div class="faculty">${COVER.faculty}</div></div>
     <div><div class="logo">UIT</div><div class="course">${COVER.course}</div>
       <div class="title">${COVER.title}</div><div>${COVER.subtitle}</div>
-      <table><tr><td>Sinh viên thực hiện:</td><td><b>${COVER.student}</b></td></tr>
-        <tr><td>MSSV:</td><td>${COVER.studentId}</td></tr><tr><td>Lớp:</td><td>${COVER.className}</td></tr>
-        <tr><td>Giảng viên hướng dẫn:</td><td>${COVER.lecturer}</td></tr></table></div>
+      <table><tr><td colspan="3"><b>Nhóm sinh viên thực hiện:</b></td></tr>
+        ${COVER.members.map((m, i) => `<tr><td>${i + 1}.</td><td><b>${m.name || BLANK}</b></td><td>MSSV: ${m.id || BLANK}</td></tr>`).join('')}
+        <tr><td colspan="3">Lớp: ${COVER.className}</td></tr>
+        <tr><td colspan="3">Giảng viên hướng dẫn: ${COVER.lecturer}</td></tr></table></div>
     <div>${COVER.place}</div>
   </div>
   <div class="toc"><h1>Mục lục</h1><ol>${toc.join('')}</ol></div>
