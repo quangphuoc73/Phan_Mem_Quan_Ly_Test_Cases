@@ -249,7 +249,7 @@ erDiagram
 | ai_log_id | INTEGER | FK → ai_logs | Lần gọi AI đã sinh ra |
 | version | INTEGER | mặc định 1 | Phiên bản hiện tại |
 
-**ai_logs** – lưu mọi lần gọi AI để truy vết và làm dữ liệu cho khóa luận
+**ai_logs** – lưu mọi lần gọi AI để truy vết và đánh giá chất lượng AI
 
 | Thuộc tính | Ý nghĩa |
 |---|---|

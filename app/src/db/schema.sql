@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS user_stories (
   updated_at          TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
 );
 
--- Nhật ký gọi AI (truy vết khi AI sinh sai, dữ liệu cho khóa luận)
+-- Nhật ký gọi AI (truy vết khi AI sinh sai, dữ liệu đánh giá chất lượng AI)
 CREATE TABLE IF NOT EXISTS ai_logs (
   id             INTEGER PRIMARY KEY AUTOINCREMENT,
   story_id       INTEGER REFERENCES user_stories(id) ON DELETE SET NULL,

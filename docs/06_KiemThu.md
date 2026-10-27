@@ -25,7 +25,7 @@ flowchart TB
 
 **Tiêu chí hoàn thành:** 100% test tự động pass; không còn lỗi mức High; mỗi YC1–YC12 có ít nhất 1 test case kiểm thử.
 
-**Kiểm thử trong Agile:** kiểm thử không phải một giai đoạn cuối mà là một phần của **Definition of Done** của mỗi story: story chỉ được tính hoàn thành khi có test tự động mới và CI xanh. Vì vậy bộ test dưới đây được viết dần qua 6 sprint (cột *Sprint* trong Product Backlog), không dồn về cuối kỳ.
+**Kiểm thử trong Agile:** kiểm thử không phải một giai đoạn cuối mà là một phần của **Definition of Done** của mỗi story: story chỉ được tính hoàn thành khi có test tự động mới và CI xanh. Vì vậy bộ test dưới đây được viết dần qua 5 sprint (cột *Sprint* trong Product Backlog), không dồn về cuối kỳ.
 
 ## 6.2. Kiểm thử tự động – Unit và API
 
@@ -173,7 +173,7 @@ Chạy: `cd automation && npm run test:samples` → **8 passed (7.0s)**.
 | US-SAU-002-TC01 (cố ý sửa expect thành 2) | ❌ Fail đúng như mong đợi, có ảnh chụp lỗi | 6,8 s |
 | Script chứa `child_process`, `process.env` | ⛔ Bị chặn trước khi chạy | – |
 
-**So sánh script AI với bộ viết tay:** script AI viết "phẳng" (mỗi bước một lệnh, locator CSS `[data-test=...]`), đủ để chạy nhưng chưa tái sử dụng được. Bộ viết tay dùng POM, data-driven, dễ bảo trì hơn. Đây là lý do hệ thống bắt buộc **Tester xem lại script** trước khi chạy và là hướng nghiên cứu cho khóa luận (AI sinh script theo POM, tự sửa locator).
+**So sánh script AI với bộ viết tay:** script AI viết "phẳng" (mỗi bước một lệnh, locator CSS `[data-test=...]`), đủ để chạy nhưng chưa tái sử dụng được. Bộ viết tay dùng POM, data-driven, dễ bảo trì hơn. Đây là lý do hệ thống bắt buộc **Tester xem lại script** trước khi chạy và là hướng phát triển ở các phiên bản sau (AI sinh script theo POM, tự sửa locator).
 
 ## 6.6. Tích hợp liên tục (CI)
 

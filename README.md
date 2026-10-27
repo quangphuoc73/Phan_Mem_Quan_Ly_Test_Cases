@@ -4,7 +4,7 @@
 
 User story → **AI sinh test case** → Tester chỉnh sửa → QA Lead duyệt → **AI sinh script Playwright** và chạy tự động → Báo cáo.
 
-Đồ án được thực hiện theo **Agile/Scrum** (Sprint 0 + 6 sprint 2 tuần) và hệ thống hỗ trợ đội QA làm Scrum: sprint, story point, Product backlog, burndown, velocity, Definition of Done tự động.
+Đồ án được thực hiện theo **Agile/Scrum** (nhóm 4 người, 5 sprint × 1 tuần) và hệ thống hỗ trợ đội QA làm Scrum: sprint, story point, Product backlog, burndown, velocity, Definition of Done tự động.
 
 ![Tổng quan](docs/images/02_tong_quan.png)
 
@@ -43,7 +43,7 @@ Mặc định AI chạy chế độ **mock** (offline, không cần API key). D�
 |---|---|
 | `docs/BaoCaoDoAn.pdf` | **Báo cáo đồ án** đầy đủ (bản HTML: `docs/BaoCaoDoAn.html`) |
 | `docs/SlideThuyetTrinh.html` | **Slide bảo vệ** (mở bằng trình duyệt, phím ← → để chuyển, có bản `.pdf`) |
-| `docs/00a_QuyTrinhAgile.md` | **Quy trình Agile/Scrum**: vai trò, Product Backlog, kế hoạch 6 sprint, DoR/DoD, các sự kiện Scrum, mẫu biên bản |
+| `docs/00a_QuyTrinhAgile.md` | **Quy trình Agile/Scrum**: vai trò, Product Backlog, kế hoạch 5 sprint, phân công nhóm, DoR/DoD, các sự kiện Scrum, mẫu biên bản |
 | `docs/agile/ProductBacklog.csv` | Product Backlog để nhập vào Jira/Trello |
 | `docs/00…09_*.md` | Từng chương: kế hoạch, khảo sát, yêu cầu, phân tích, thiết kế, cài đặt, kiểm thử, triển khai, **kịch bản demo**, hướng phát triển |
 | `docs/images/` | Ảnh chụp màn hình hệ thống |
@@ -65,7 +65,7 @@ Cấu hình automation (URL cần test, tài khoản test, chạy hiện trình 
 
 ## Cập nhật báo cáo sau khi sửa tài liệu
 
-Sửa thông tin sinh viên ở biến `COVER` trong `docs/tools/build.js`, sau đó:
+Sửa tên, MSSV các thành viên trong `docs/tools/cover.js`, sau đó:
 
 ```bash
 cd docs/tools && npm install && npm run build

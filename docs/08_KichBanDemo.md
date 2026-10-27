@@ -18,7 +18,7 @@
 |---|---|---|---|---|
 | 1 | 0:00 | Mở slide, trình bày vấn đề | "Viết test case thủ công mất 30–60 phút/story, dễ sót case lỗi, duyệt qua chat không lưu vết." | Khảo sát hiện trạng |
 | 2 | 1:00 | Đăng nhập **tester** → *Tổng quan* | "Hệ thống quản lý cả vòng đời test case, báo cáo tự động." | 4 chỉ số, biểu đồ |
-| 2b | 1:15 | Chọn dự án **PETINS** → *Sprint (Agile)*: Sprint Goal, bảng 4 cột, burndown, velocity | "Em làm đồ án theo Scrum, và hệ thống cũng hỗ trợ đội QA làm Scrum: story chỉ tính Hoàn thành khi mọi test case đã duyệt đều Pass." | **Agile** |
+| 2b | 1:15 | Chọn dự án **PETINS** → *Sprint (Agile)*: Sprint Goal, bảng 4 cột, burndown, velocity | "Nhóm em làm đồ án theo Scrum, và hệ thống cũng hỗ trợ đội QA làm Scrum: story chỉ tính Hoàn thành khi mọi test case đã duyệt đều Pass." | **Agile** |
 | 3 | 1:30 | *User story* → *Lập user story* trực tiếp, ví dụ "Hủy hợp đồng bảo hiểm" với 3 acceptance criteria | "Đây là BM1, có QĐ1: mã không trùng, ít nhất 1 tiêu chí." | Biểu mẫu, quy định |
 | 4 | 2:30 | Bấm **✨ Sinh test case bằng AI** | "AI Service tách riêng: che dữ liệu nhạy cảm, ghép prompt, gọi LLM, kiểm tra JSON schema, thử lại nếu sai." | Có case Positive, Negative, Edge |
 | 5 | 3:30 | Mở **US-PET-004** (có email, SĐT) → sinh → bấm *Xem nhật ký AI* | "Prompt gửi đi đã được che thành [EMAIL], [PHONE]." | **Bảo mật AI** |
@@ -29,7 +29,7 @@
 | 10 | 7:30 | *Thay đổi quy định* → `MAX_TC_PER_STORY` = 5 → quay lại story mới → sinh lại | "Quy định nằm trong bảng tham số, đổi không cần sửa mã nguồn – tính tiến hóa." | AI tuân thủ quy định mới |
 | 11 | 8:15 | Đăng nhập **qalead** → *Sprint (Agile)* → đưa **US-PET-005** từ Product backlog vào Sprint 2; mở *Tổng quan* → bảng tiến độ theo sprint | "Đây là bước Sprint Planning. Báo cáo lọc được theo sprint, tính theo lần chạy gần nhất." | YC6, YC12 |
 | 12 | 8:45 | Terminal: `npm test` (55 pass) và `npm run test:e2e` (Playwright mở Chrome, 9 pass) | "Kiểm thử tự động 3 tầng, chạy trên GitHub Actions mỗi lần push." | Chất lượng |
-| 13 | 9:30 | Slide kết luận, hướng phát triển khóa luận | | |
+| 13 | 9:30 | Slide kết luận, hướng phát triển | | |
 
 **Dự phòng:** mạng hoặc API lỗi → chuyển `AI_PROVIDER=mock` (khởi động lại 3 giây) hoặc mở video đã quay.
 
@@ -37,8 +37,8 @@
 
 | Câu hỏi | Gợi ý trả lời |
 |---|---|
-| Môn dạy thác nước, sao em làm Agile? | Em thực hiện theo Scrum (6 sprint 2 tuần) vì yêu cầu AI khó chốt từ đầu và cần demo sớm. Các hoạt động của thác nước không mất đi mà lặp lại trong mỗi sprint; báo cáo vẫn trình bày đủ 7 chương. Minh chứng: Product Backlog, biên bản Planning/Review/Retro, lịch sử commit theo sprint, CI. |
-| Làm một mình thì Scrum thế nào? | Áp dụng Scrum cá nhân: em đóng cả Product Owner, Scrum Master, Developer nhưng tách thời điểm; đồng nghiệp QA và giảng viên là stakeholder dự Sprint Review. Daily Scrum thay bằng daily log 5 phút. |
+| Môn dạy thác nước, sao nhóm làm Agile? | Nhóm thực hiện theo Scrum (5 sprint, mỗi sprint 1 tuần) vì yêu cầu AI khó chốt từ đầu và cần demo sớm. Các hoạt động của thác nước không mất đi mà lặp lại trong mỗi sprint; báo cáo vẫn trình bày đủ 7 chương. Minh chứng: Product Backlog, biên bản Planning/Review/Retro, lịch sử commit theo sprint, CI. |
+| Nhóm 4 người chia vai trò Scrum thế nào? | 1 Product Owner, 1 Scrum Master (hai người khác nhau), cả 4 người là Developer, mỗi người phụ trách một mảng (yêu cầu – phân tích; backend – AI; giao diện; kiểm thử – CI – Docker). Daily Scrum 15 phút mỗi tối; Planning thứ Hai, Review và Retro thứ Bảy; giảng viên và bạn cùng lớp là stakeholder. |
 | Definition of Done của đồ án là gì? | Code merge qua PR, có test tự động mới, CI xanh, đủ acceptance criteria, tài liệu cập nhật, demo được. |
 | Velocity, burndown dùng để làm gì? | Velocity là số story point hoàn thành mỗi sprint, dùng để cam kết sprint sau cho thực tế. Burndown cho biết sprint có kịp không ngay trong sprint. |
 | AI sinh sai thì sao? | AI chỉ tạo **bản nháp**. Bắt buộc Tester xem lại và QA Lead duyệt; kết quả sai định dạng bị schema chặn và tự thử lại; mọi lần gọi đều có nhật ký để truy vết. |
@@ -49,5 +49,5 @@
 | Chạy mã do AI sinh có nguy hiểm không? | Có, nên có 4 lớp: kiểm tra tĩnh chặn `fs/child_process/process.env/eval`; chạy tiến trình riêng với biến môi trường tối thiểu (không có API key); timeout; trong Docker giới hạn CPU/RAM, user không phải root. |
 | Vì sao chọn Playwright? | Tự chờ phần tử (ít test chập chờn), locator theo vai trò, trace và ảnh chụp khi lỗi, chạy song song, một API cho Chrome/Firefox/WebKit, dùng được cho cả E2E hệ thống và script AI sinh. |
 | Vì sao SQLite mà không PostgreSQL? | Để demo không phụ thuộc cài đặt. Lược đồ viết SQL chuẩn, có ghi chú chuyển đổi; chỉ cần đổi lớp kết nối. |
-| Làm một mình đóng vai trò gì? | BA (khảo sát, yêu cầu), kiến trúc sư (thiết kế), lập trình viên full-stack, AI engineer (prompt, schema), QA/SDET (kiểm thử tự động), DevOps (Docker, CI). |
-| Tỷ lệ AI phải sửa dùng để làm gì? | Đo chất lượng AI; cặp "bản AI – bản người sửa" là dữ liệu đánh giá cho khóa luận. |
+| Nhóm phối hợp thế nào để không xung đột code? | Mỗi story một nhánh `feature/pb-xx-*`, Pull Request nhỏ, ít nhất 1 thành viên khác review; CI chạy test mỗi lần push; bảng Jira/Trello cho biết ai đang làm gì. |
+| Tỷ lệ AI phải sửa dùng để làm gì? | Đo chất lượng AI; cặp "bản AI – bản người sửa" là dữ liệu để chọn model, cải tiến prompt ở các phiên bản sau. |

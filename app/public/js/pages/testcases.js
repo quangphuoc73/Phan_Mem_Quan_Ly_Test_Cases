@@ -60,7 +60,7 @@ function historyView(h) {
     const rows = FIELDS.filter(([k]) => JSON.stringify(first.snapshot[k]) !== JSON.stringify(last.snapshot[k]))
       .map(([k, l]) => `<tr><td>${l}</td><td class="diff-old" style="white-space:pre-wrap">${esc(show(first.snapshot[k]))}</td><td class="diff-new" style="white-space:pre-wrap">${esc(show(last.snapshot[k]))}</td></tr>`).join('');
     diff = `<h3>So sánh bản đầu (v${first.version}) và bản hiện tại (v${last.version})</h3>
-      <p class="small muted">Cặp "AI sinh – người sửa" này là dữ liệu đánh giá chất lượng AI (dùng cho khóa luận).</p>
+      <p class="small muted">Cặp "AI sinh – người sửa" này là dữ liệu đánh giá chất lượng AI.</p>
       <div class="table-wrap mb"><table><thead><tr><th>Trường</th><th>v${first.version}</th><th>v${last.version}</th></tr></thead><tbody>${rows || '<tr><td colspan="3" class="muted">Không khác biệt nội dung</td></tr>'}</tbody></table></div>`;
   }
   return `${diff}

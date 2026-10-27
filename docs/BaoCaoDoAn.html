@@ -67,11 +67,15 @@
 </tr>
 <tr>
 <td>Hình thức</td>
-<td>Cá nhân (1 sinh viên thực hiện toàn bộ các vai trò)</td>
+<td>Nhóm 4 sinh viên (vai trò Scrum và phân công: <a href="#ch-00a">Chương 0A</a>, mục 0A.3)</td>
+</tr>
+<tr>
+<td>Thời gian</td>
+<td>5 tuần</td>
 </tr>
 <tr>
 <td>Mô hình phát triển</td>
-<td><strong>Agile – Scrum</strong> (6 sprint × 2 tuần), báo cáo trình bày theo 7 hoạt động của môn học</td>
+<td><strong>Agile – Scrum</strong> (5 sprint × 1 tuần), báo cáo trình bày theo 7 hoạt động của môn học</td>
 </tr>
 <tr>
 <td>Sản phẩm</td>
@@ -109,17 +113,17 @@
 </ul>
 <p><strong>Ngoài phạm vi (hướng phát triển):</strong> tích hợp Jira 2 chiều, RAG theo tài liệu nghiệp vụ, fine-tune model riêng, AI agent tự sửa script (self-healing) – xem <a href="#ch-09">Chương 9</a>.</p>
 <h2>0.5. Mô hình phát triển: Agile (Scrum) kết hợp 7 hoạt động của môn học</h2>
-<p>Đồ án <strong>thực hiện theo Agile/Scrum</strong> – 6 sprint 2 tuần, mỗi sprint giao một phần mềm chạy được – thay vì thác nước thuần (làm xong toàn bộ yêu cầu rồi mới thiết kế, xong thiết kế mới lập trình). Lý do: yêu cầu liên quan đến AI khó chốt từ đầu, cần demo sớm để lấy góp ý, và chức năng rủi ro (AI) phải được làm và kiểm chứng sớm. Chi tiết quy trình: <a href="#ch-00a">Chương 0A</a>.</p>
+<p>Đồ án <strong>thực hiện theo Agile/Scrum</strong> – 5 sprint, mỗi sprint 1 tuần, mỗi sprint giao một phần mềm chạy được – thay vì thác nước thuần (làm xong toàn bộ yêu cầu rồi mới thiết kế, xong thiết kế mới lập trình). Lý do: yêu cầu liên quan đến AI khó chốt từ đầu, cần demo sớm để lấy góp ý, và chức năng rủi ro (AI) phải được làm và kiểm chứng sớm. Chi tiết quy trình: <a href="#ch-00a">Chương 0A</a>.</p>
 <p>Môn SE104 yêu cầu đi qua 7 hoạt động. Trong Agile, <strong>7 hoạt động này lặp lại trong mỗi sprint</strong> cho từng nhóm chức năng nhỏ; báo cáo vẫn tổ chức theo 7 chương để giảng viên dễ chấm, nội dung mỗi chương được bổ sung dần qua các sprint.</p>
 <pre class="mermaid">flowchart TB
-    S0["Sprint 0: Khảo sát, Product Backlog, kiến trúc, CI"] --&gt; LOOP
-    subgraph LOOP["Mỗi sprint 2 tuần (Sprint 1 → 6)"]
+    S0["Đầu Sprint 1: Khảo sát, Product Backlog, kiến trúc, CI"] --&gt; LOOP
+    subgraph LOOP["Mỗi sprint 1 tuần (Sprint 1 → 5)"]
         direction LR
         A["Yêu cầu"] --&gt; B["Phân tích"] --&gt; C["Thiết kế"]
         C --&gt; D["Cài đặt"] --&gt; E["Kiểm chứng"] --&gt; F["Triển khai"]
     end
     LOOP --&gt;|"Sprint Review: góp ý → backlog"| LOOP
-    LOOP --&gt; END["Tuần 15&lt;br/&gt;Bảo vệ"]</pre><table>
+    LOOP --&gt; END["Cuối tuần 5&lt;br/&gt;Bảo vệ"]</pre><table>
 <thead>
 <tr>
 <th>Hoạt động</th>
@@ -131,19 +135,19 @@
 <tbody><tr>
 <td>Quy trình Agile</td>
 <td>Product Backlog, kế hoạch sprint, DoR/DoD, biên bản</td>
-<td>Sprint 0, cập nhật mỗi sprint</td>
+<td>Sprint 1, cập nhật mỗi sprint</td>
 <td><a href="#ch-00a">00a_QuyTrinhAgile.md</a></td>
 </tr>
 <tr>
 <td>1. Khảo sát hiện trạng</td>
 <td>Quy trình QA hiện tại, vấn đề, nhu cầu</td>
-<td>Sprint 0; bổ sung qua Sprint Review</td>
+<td>Sprint 1; bổ sung qua Sprint Review</td>
 <td><a href="#ch-01">01_KhaoSatHienTrang.md</a></td>
 </tr>
 <tr>
 <td>2. Xác định yêu cầu</td>
 <td>YC1–YC12, BM, QĐ, yêu cầu phi chức năng</td>
-<td>Tổng quát ở Sprint 0, chi tiết theo từng sprint</td>
+<td>Tổng quát ở Sprint 1, chi tiết theo từng sprint</td>
 <td><a href="#ch-02">02_DacTaYeuCau.md</a></td>
 </tr>
 <tr>
@@ -155,7 +159,7 @@
 <tr>
 <td>4. Thiết kế</td>
 <td>Kiến trúc, ERD, class, sequence, giao diện, API, bảo mật</td>
-<td>Kiến trúc ở Sprint 0, chi tiết mỗi sprint</td>
+<td>Kiến trúc ở Sprint 1, chi tiết mỗi sprint</td>
 <td><a href="#ch-04">04_ThietKe.md</a></td>
 </tr>
 <tr>
@@ -172,18 +176,18 @@
 </tr>
 <tr>
 <td>7. Triển khai</td>
-<td>Bản demo mỗi sprint; Docker ở Sprint 6</td>
+<td>Bản demo mỗi sprint; Docker ở Sprint 5</td>
 <td>Cuối mỗi sprint</td>
 <td><a href="#ch-07">07_TrienKhai_HuongDanSuDung.md</a></td>
 </tr>
 <tr>
 <td>Bảo vệ</td>
 <td>Kịch bản demo</td>
-<td>Tuần 15</td>
+<td>Cuối tuần 5</td>
 <td><a href="#ch-08">08_KichBanDemo.md</a></td>
 </tr>
 </tbody></table>
-<h2>0.6. Kế hoạch sprint (15 tuần, làm một mình)</h2>
+<h2>0.6. Kế hoạch sprint (5 tuần, nhóm 4 người)</h2>
 <table>
 <thead>
 <tr>
@@ -194,52 +198,34 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>0</td>
-<td>1–2</td>
-<td>Hiểu bài toán, lập Product Backlog, kiến trúc sơ bộ, dựng repo + CI</td>
-<td>–</td>
-</tr>
-<tr>
 <td>1</td>
-<td>3–4</td>
-<td>Người dùng đăng nhập theo vai trò và lập được user story</td>
+<td>1</td>
+<td>Hiểu bài toán, sẵn sàng phát triển (khảo sát, backlog, kiến trúc, repo + CI); người dùng đăng nhập theo vai trò và lập được user story</td>
 <td>13</td>
 </tr>
 <tr>
 <td>2</td>
-<td>5–6</td>
-<td>AI sinh được test case an toàn từ user story <em>(rủi ro cao nhất, làm sớm)</em></td>
-<td>14</td>
+<td>2</td>
+<td>AI sinh được test case an toàn từ user story <em>(rủi ro cao nhất, làm sớm)</em>; test case được sửa và lưu phiên bản</td>
+<td>22</td>
 </tr>
 <tr>
 <td>3</td>
-<td>7–8</td>
-<td>Test case được sửa, duyệt và truy vết được</td>
-<td>15</td>
+<td>3</td>
+<td>Test case được duyệt, chạy thủ công, tra cứu và xem được báo cáo</td>
+<td>18</td>
 </tr>
 <tr>
 <td>4</td>
-<td>9–10</td>
-<td>QA Lead nhìn thấy chất lượng qua báo cáo; quy định thay đổi được</td>
-<td>14</td>
+<td>4</td>
+<td>Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được</td>
+<td>19</td>
 </tr>
 <tr>
 <td>5</td>
-<td>11–12</td>
-<td>Test case đã duyệt chạy tự động được bằng Playwright</td>
+<td>5</td>
+<td>Quản lý sprint trong hệ thống, nhập/xuất, Docker; hoàn thiện tài liệu, slide; bảo vệ cuối tuần (Sprint Review cuối cùng)</td>
 <td>16</td>
-</tr>
-<tr>
-<td>6</td>
-<td>13–14</td>
-<td>Quản lý sprint ngay trong hệ thống; Docker; hoàn thiện tài liệu, slide</td>
-<td>16</td>
-</tr>
-<tr>
-<td>–</td>
-<td>15</td>
-<td>Bảo vệ: Sprint Review cuối cùng với hội đồng</td>
-<td>–</td>
 </tr>
 </tbody></table>
 <p>Danh sách story của từng sprint, ước lượng và Definition of Done: <a href="#ch-00a">Chương 0A</a>. Mỗi sprint có biên bản Planning, Review, Retrospective và Daily log làm minh chứng.</p>
@@ -261,7 +247,7 @@
 </tr>
 <tr>
 <td>Quản lý mã nguồn</td>
-<td>Git + GitHub, nhánh <code>main</code> (ổn định) và <code>feature/pb-xx-*</code> (mỗi story một nhánh), Pull Request tự review</td>
+<td>Git + GitHub, nhánh <code>main</code> (ổn định) và <code>feature/pb-xx-*</code> (mỗi story một nhánh), Pull Request, ít nhất 1 thành viên khác review trước khi merge</td>
 </tr>
 <tr>
 <td>CI/CD</td>
@@ -296,9 +282,14 @@
 <td>Kiểm tra JSON schema + thử lại; con người luôn review/duyệt; lưu nhật ký</td>
 </tr>
 <tr>
-<td>Làm một mình, khối lượng lớn</td>
+<td>Thời gian ngắn (5 tuần), khối lượng lớn</td>
+<td>Cao</td>
+<td>Backlog ưu tiên MoSCoW; làm Must trước; story Could bị trả về backlog nếu sprint trễ, không kéo dài sprint</td>
+</tr>
+<tr>
+<td>Phối hợp nhóm 4 người: chia việc không đều, xung đột code</td>
 <td>Trung bình</td>
-<td>Backlog ưu tiên MoSCoW; story Could bị trả về backlog nếu sprint trễ, không kéo dài sprint</td>
+<td>Mỗi story có 1 người phụ trách; Daily Scrum 15 phút; mỗi story một nhánh, Pull Request nhỏ, có người review, CI chạy tự động</td>
 </tr>
 <tr>
 <td>Lộ API key, dữ liệu nhạy cảm</td>
@@ -319,7 +310,7 @@
 </section>
 <section class="chapter" id="ch-00a"><h1>Chương 0A. Quy trình phát triển Agile (Scrum)</h1>
 <blockquote>
-<p>Đồ án được <strong>thực hiện theo Agile/Scrum</strong>: chia thành các sprint 2 tuần, mỗi sprint giao một phần mềm chạy được. Báo cáo vẫn trình bày theo 7 hoạt động của môn học (khảo sát → triển khai), vì các hoạt động này diễn ra <strong>lặp lại trong mỗi sprint</strong> chứ không bị bỏ đi.</p>
+<p>Đồ án được <strong>thực hiện theo Agile/Scrum</strong>: chia thành 5 sprint, mỗi sprint 1 tuần, mỗi sprint giao một phần mềm chạy được. Báo cáo vẫn trình bày theo 7 hoạt động của môn học (khảo sát → triển khai), vì các hoạt động này diễn ra <strong>lặp lại trong mỗi sprint</strong> chứ không bị bỏ đi.</p>
 </blockquote>
 <h2>0A.1. Vì sao chọn Agile thay cho thác nước thuần</h2>
 <table>
@@ -378,7 +369,7 @@
 </thead>
 <tbody><tr>
 <td>Cá nhân và tương tác hơn quy trình và công cụ</td>
-<td>Sprint Review có người dùng thật (đồng nghiệp QA) dùng thử và góp ý</td>
+<td>Nhóm họp Daily Scrum mỗi ngày; Sprint Review có người dùng (giảng viên, bạn cùng lớp đóng vai QA) dùng thử và góp ý</td>
 </tr>
 <tr>
 <td>Phần mềm chạy được hơn tài liệu đầy đủ</td>
@@ -397,43 +388,54 @@
 <pre class="mermaid">flowchart LR
     PB["📋 Product Backlog&lt;br/&gt;danh sách user story&lt;br/&gt;sắp theo ưu tiên"] --&gt; SP["🗓️ Sprint Planning&lt;br/&gt;chọn story + Sprint Goal"]
     SP --&gt; SB["📝 Sprint Backlog"]
-    SB --&gt; S["🏃 Sprint 2 tuần&lt;br/&gt;phân tích → thiết kế → code → test&lt;br/&gt;Daily Scrum mỗi ngày"]
+    SB --&gt; S["🏃 Sprint 1 tuần&lt;br/&gt;phân tích → thiết kế → code → test&lt;br/&gt;Daily Scrum mỗi ngày"]
     S --&gt; INC["📦 Increment&lt;br/&gt;phần mềm chạy được&lt;br/&gt;đạt Definition of Done"]
     INC --&gt; RV["👀 Sprint Review&lt;br/&gt;demo, lấy góp ý"]
     RV --&gt; RT["🔁 Retrospective&lt;br/&gt;cải tiến cách làm"]
-    RT --&gt;|cập nhật, sắp xếp lại| PB</pre><h2>0A.3. Vai trò khi làm một mình</h2>
-<p>Scrum được thiết kế cho nhóm 3–9 người. Vì đồ án làm cá nhân, sinh viên áp dụng <strong>Scrum cá nhân (Personal Scrum)</strong>: một người đảm nhiệm nhiều vai trò, nhưng <strong>tách rõ thời điểm</strong> đóng từng vai trò, và mời người ngoài đóng vai người dùng.</p>
+    RT --&gt;|cập nhật, sắp xếp lại| PB</pre><h2>0A.3. Vai trò và phân công trong nhóm</h2>
+<p>Nhóm có <strong>4 thành viên</strong>, đúng quy mô Scrum (3–9 người). Product Owner và Scrum Master là hai người khác nhau; cả 4 người đều là Developer. Mỗi người phụ trách chính một mảng nhưng vẫn review code và tài liệu của nhau.</p>
 <table>
 <thead>
 <tr>
+<th>Thành viên</th>
 <th>Vai trò Scrum</th>
-<th>Ai đảm nhiệm</th>
-<th>Việc cụ thể</th>
+<th>Phụ trách chính</th>
+<th>Chương báo cáo</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>Product Owner</td>
-<td>Sinh viên</td>
-<td>Viết và sắp xếp Product Backlog, chốt Sprint Goal, quyết định story nào &quot;đủ tốt&quot;</td>
+<td>[Thành viên 1]</td>
+<td>Product Owner + Developer</td>
+<td>Khảo sát, Product Backlog, yêu cầu (BM, QĐ), phân tích (use case, DFD), nhập/xuất dữ liệu</td>
+<td>Ch.0, 1, 2, 3</td>
 </tr>
 <tr>
-<td>Scrum Master</td>
-<td>Sinh viên (tự quản)</td>
-<td>Giữ nhịp sprint, ghi Daily log, tổ chức Retrospective, gỡ vướng mắc</td>
+<td>[Thành viên 2]</td>
+<td>Scrum Master + Developer</td>
+<td>Kiến trúc, backend, CSDL, AI Service (prompt, che PII, chống injection); giữ nhịp sprint, tổ chức các buổi họp</td>
+<td>Ch.0A, 4, 5</td>
 </tr>
 <tr>
-<td>Developers</td>
-<td>Sinh viên</td>
-<td>Phân tích, thiết kế, lập trình, kiểm thử, triển khai</td>
+<td>[Thành viên 3]</td>
+<td>Developer</td>
+<td>Giao diện web, các màn hình, báo cáo và biểu đồ, trang Sprint (Agile)</td>
+<td>Ch.4 (giao diện), 7</td>
 </tr>
 <tr>
+<td>[Thành viên 4]</td>
+<td>Developer</td>
+<td>Kiểm thử: unit, API, E2E Playwright; sinh và chạy script tự động; CI, Docker</td>
+<td>Ch.6, 7</td>
+</tr>
+<tr>
+<td>Giảng viên, bạn cùng lớp</td>
 <td>Stakeholder / người dùng</td>
-<td>2–3 đồng nghiệp QA, giảng viên hướng dẫn</td>
-<td>Tham gia khảo sát, dùng thử bản demo trong Sprint Review, góp ý</td>
+<td>Tham gia khảo sát (đóng vai đội QA), dùng thử bản demo trong Sprint Review, góp ý</td>
+<td>–</td>
 </tr>
 </tbody></table>
 <blockquote>
-<p>Mẹo khi đóng nhiều vai: buổi Planning và Review làm với &quot;mũ&quot; Product Owner (hỏi <em>làm gì, có giá trị không</em>); trong sprint đội &quot;mũ&quot; Developer (hỏi <em>làm thế nào</em>); Retrospective đội &quot;mũ&quot; Scrum Master (hỏi <em>làm sao để làm tốt hơn</em>).</p>
+<p>Tên thành viên được cập nhật sau; phân công có thể đổi trong buổi Sprint Planning nhưng phải ghi vào biên bản.</p>
 </blockquote>
 <h2>0A.4. Product Backlog</h2>
 <p>Product Backlog là danh sách <strong>user story của chính hệ thống AI TestCase Manager</strong>, sắp theo ưu tiên. Ưu tiên dùng <strong>MoSCoW</strong> (Must / Should / Could / Won&#39;t), độ lớn ước lượng bằng <strong>story point</strong> theo dãy Fibonacci (1, 2, 3, 5, 8, 13). Story mẫu dùng làm mốc: PB-03 &quot;tạo dự án và module&quot; = 2 điểm.</p>
@@ -537,7 +539,7 @@
 <td>Là Admin, tôi muốn đổi nhà cung cấp LLM bằng cấu hình, để chủ động chi phí và chất lượng</td>
 <td>3</td>
 <td>Should</td>
-<td>3</td>
+<td>2</td>
 <td>YC2</td>
 </tr>
 <tr>
@@ -546,7 +548,7 @@
 <td>Là Tester, tôi muốn sửa test case và lưu phiên bản, để không mất bản AI gốc</td>
 <td>5</td>
 <td>Must</td>
-<td>3</td>
+<td>2</td>
 <td>YC3</td>
 </tr>
 <tr>
@@ -573,7 +575,7 @@
 <td>Là Tester, tôi muốn tra cứu test case theo nhiều tiêu chí, để tìm nhanh</td>
 <td>3</td>
 <td>Should</td>
-<td>4</td>
+<td>3</td>
 <td>YC7</td>
 </tr>
 <tr>
@@ -582,7 +584,7 @@
 <td>Là Tester, tôi muốn ghi kết quả Pass/Fail/Blocked, để theo dõi chất lượng</td>
 <td>3</td>
 <td>Must</td>
-<td>4</td>
+<td>3</td>
 <td>YC5</td>
 </tr>
 <tr>
@@ -591,7 +593,7 @@
 <td>Là QA Lead, tôi muốn xem báo cáo tỷ lệ pass và độ bao phủ, để báo cáo tiến độ</td>
 <td>5</td>
 <td>Must</td>
-<td>4</td>
+<td>3</td>
 <td>YC6</td>
 </tr>
 <tr>
@@ -609,7 +611,7 @@
 <td>Là Tester, tôi muốn AI sinh script Playwright từ test case đã duyệt, để không phải viết lại</td>
 <td>5</td>
 <td>Should</td>
-<td>5</td>
+<td>4</td>
 <td>YC9</td>
 </tr>
 <tr>
@@ -618,7 +620,7 @@
 <td>Là Tester, tôi muốn chạy script tự động an toàn và xem ảnh lỗi, để tiết kiệm thời gian chạy lại</td>
 <td>8</td>
 <td>Should</td>
-<td>5</td>
+<td>4</td>
 <td>YC9</td>
 </tr>
 <tr>
@@ -627,7 +629,7 @@
 <td>Là QA Lead, tôi muốn so sánh bản AI gốc với bản đã sửa, để đánh giá chất lượng AI</td>
 <td>3</td>
 <td>Could</td>
-<td>5</td>
+<td>4</td>
 <td>YC3</td>
 </tr>
 <tr>
@@ -636,7 +638,7 @@
 <td>Là QA Lead, tôi muốn chia user story theo sprint và ước lượng story point, để lập kế hoạch</td>
 <td>5</td>
 <td>Should</td>
-<td>6</td>
+<td>5</td>
 <td>YC12</td>
 </tr>
 <tr>
@@ -645,7 +647,7 @@
 <td>Là QA Lead, tôi muốn xem burndown và velocity, để biết sprint có kịp không</td>
 <td>3</td>
 <td>Could</td>
-<td>6</td>
+<td>5</td>
 <td>YC12</td>
 </tr>
 <tr>
@@ -654,7 +656,7 @@
 <td>Là Tester, tôi muốn nhập user story từ file CSV, để không gõ lại từ Jira</td>
 <td>3</td>
 <td>Should</td>
-<td>6</td>
+<td>5</td>
 <td>YC8</td>
 </tr>
 <tr>
@@ -663,7 +665,7 @@
 <td>Là QA Lead, tôi muốn xuất test case ra Excel, để gửi cho khách hàng</td>
 <td>2</td>
 <td>Should</td>
-<td>6</td>
+<td>5</td>
 <td>YC8</td>
 </tr>
 <tr>
@@ -672,7 +674,7 @@
 <td>Là Admin, tôi muốn triển khai bằng Docker, để cài đặt nhanh và đồng nhất</td>
 <td>3</td>
 <td>Should</td>
-<td>6</td>
+<td>5</td>
 <td>–</td>
 </tr>
 <tr>
@@ -689,7 +691,7 @@
 <td>AI nâng cao</td>
 <td>Là Tester, tôi muốn AI dùng tài liệu nghiệp vụ (RAG), để test case sát thực tế hơn</td>
 <td>13</td>
-<td>Won&#39;t (khóa luận)</td>
+<td>Won&#39;t (bản này)</td>
 <td>–</td>
 <td>–</td>
 </tr>
@@ -698,29 +700,27 @@
 <td>AI nâng cao</td>
 <td>Là Tester, tôi muốn script tự sửa locator khi giao diện đổi (self-healing)</td>
 <td>13</td>
-<td>Won&#39;t (khóa luận)</td>
+<td>Won&#39;t (bản này)</td>
 <td>–</td>
 <td>–</td>
 </tr>
 </tbody></table>
-<p><strong>Hạng mục kỹ thuật</strong> (không phải user story, làm ở Sprint 0 và duy trì suốt dự án): dựng repo Git, cấu trúc thư mục, CI trên GitHub Actions, khung test (unit, API, E2E Playwright), dữ liệu mẫu.</p>
-<h2>0A.5. Kế hoạch sprint (15 tuần)</h2>
-<p>Sprint dài <strong>2 tuần</strong>. Velocity dự kiến khoảng <strong>13–16 story point/sprint</strong> (một người, vừa học vừa làm). Sau mỗi sprint, velocity thực tế được dùng để điều chỉnh các sprint sau.</p>
+<p><strong>Hạng mục kỹ thuật</strong> (không phải user story, làm đầu Sprint 1 và duy trì suốt dự án): dựng repo Git, cấu trúc thư mục, CI trên GitHub Actions, khung test (unit, API, E2E Playwright), dữ liệu mẫu.</p>
+<h2>0A.5. Kế hoạch sprint (5 tuần)</h2>
+<p>Sprint dài <strong>1 tuần</strong>. Velocity dự kiến khoảng <strong>13–22 story point/sprint</strong> (nhóm 4 người, vừa học vừa làm các môn khác). Sprint 1 cam kết ít vì phải dành đầu tuần cho khảo sát, lập backlog và dựng dự án. Sau mỗi sprint, velocity thực tế được dùng để điều chỉnh các sprint sau.</p>
 <pre class="mermaid">gantt
-    title Kế hoạch sprint đồ án SE104
+    title Kế hoạch sprint đồ án SE104 (5 tuần)
+    todayMarker off
     dateFormat YYYY-MM-DD
     axisFormat %d/%m
-    section Khởi động
-    Sprint 0 – Khảo sát, backlog, kiến trúc, CI   :s0, 2026-09-07, 14d
     section Phát triển
-    Sprint 1 – Nền tảng (đăng nhập, phân quyền, user story) :s1, after s0, 14d
-    Sprint 2 – AI sinh test case (rủi ro cao nhất)         :s2, after s1, 14d
-    Sprint 3 – Soạn thảo, phiên bản, duyệt                 :s3, after s2, 14d
-    Sprint 4 – Chạy test, báo cáo, quy định                :s4, after s3, 14d
-    Sprint 5 – Tự động hóa Playwright                      :s5, after s4, 14d
-    Sprint 6 – Sprint, nhập/xuất, Docker, hoàn thiện        :s6, after s5, 14d
+    Sprint 1 – Khởi động, đăng nhập, phân quyền, user story :s1, 2026-10-26, 7d
+    Sprint 2 – AI sinh test case, phiên bản (rủi ro cao nhất) :s2, after s1, 7d
+    Sprint 3 – Duyệt, chạy test, tra cứu, báo cáo            :s3, after s2, 7d
+    Sprint 4 – Tự động hóa Playwright, quy định              :s4, after s3, 7d
+    Sprint 5 – Sprint, nhập/xuất, Docker, hoàn thiện          :s5, after s4, 7d
     section Bảo vệ
-    Tuần 15 – Sprint Review cuối cùng với hội đồng          :milestone, after s6, 1d</pre><table>
+    Cuối tuần 5 – Sprint Review cuối cùng với giảng viên     :milestone, after s5, 1d</pre><table>
 <thead>
 <tr>
 <th>Sprint</th>
@@ -732,73 +732,46 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>0</td>
-<td>1–2</td>
-<td>&quot;Hiểu bài toán và sẵn sàng phát triển&quot;</td>
-<td>Khảo sát, Product Backlog, kiến trúc sơ bộ, repo + CI</td>
-<td>–</td>
-<td>Ch.1, Ch.2 (bản đầu), Ch.0A</td>
-</tr>
-<tr>
 <td>1</td>
-<td>3–4</td>
-<td>&quot;Người dùng đăng nhập theo vai trò và lập được user story&quot;</td>
-<td>PB-01 (3), PB-02 (3), PB-03 (2), PB-04 (3), PB-05 (2)</td>
+<td>1</td>
+<td>&quot;Hiểu bài toán; người dùng đăng nhập theo vai trò và lập được user story&quot;</td>
+<td>Khảo sát, Product Backlog, kiến trúc sơ bộ, repo + CI; PB-01 (3), PB-02 (3), PB-03 (2), PB-04 (3), PB-05 (2)</td>
 <td>13</td>
-<td>UC01–UC04, DFD YC1, ERD v1, MH01–MH04</td>
+<td>Ch.0A, Ch.1, Ch.2 (bản đầu); UC01–UC04, DFD YC1, ERD v1, MH01–MH04</td>
 </tr>
 <tr>
 <td>2</td>
-<td>5–6</td>
-<td>&quot;AI sinh được test case an toàn từ user story&quot;</td>
-<td>PB-06 (8), PB-07 (3), PB-08 (3)</td>
-<td>14</td>
-<td>UC06, DFD YC2, sequence sinh test case, thiết kế prompt</td>
+<td>2</td>
+<td>&quot;AI sinh được test case an toàn từ user story; test case được sửa và lưu phiên bản&quot;</td>
+<td>PB-06 (8), PB-07 (3), PB-08 (3), PB-10 (3), PB-11 (5)</td>
+<td>22</td>
+<td>UC06, UC07, DFD YC2, YC3, sequence sinh test case, thiết kế prompt, class Strategy</td>
 </tr>
 <tr>
 <td>3</td>
-<td>7–8</td>
-<td>&quot;Test case được sửa, duyệt và truy vết được&quot;</td>
-<td>PB-09 (2), PB-10 (3), PB-11 (5), PB-12 (2), PB-13 (3)</td>
-<td>15</td>
-<td>UC07–UC09, sơ đồ trạng thái, class Strategy</td>
+<td>3</td>
+<td>&quot;Test case được duyệt, chạy thủ công và QA Lead xem được báo cáo&quot;</td>
+<td>PB-09 (2), PB-12 (2), PB-13 (3), PB-14 (3), PB-15 (3), PB-16 (5)</td>
+<td>18</td>
+<td>UC08–UC10, UC13, UC15, sơ đồ trạng thái, DFD YC4–YC7</td>
 </tr>
 <tr>
 <td>4</td>
-<td>9–10</td>
-<td>&quot;QA Lead nhìn thấy chất lượng sản phẩm qua báo cáo&quot;</td>
-<td>PB-14 (3), PB-15 (3), PB-16 (5), PB-17 (3)</td>
-<td>14</td>
-<td>UC10, UC13, UC15, UC16, DFD YC5/6/10, bảng tham số</td>
+<td>4</td>
+<td>&quot;Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được&quot;</td>
+<td>PB-17 (3), PB-18 (5), PB-19 (8), PB-20 (3)</td>
+<td>19</td>
+<td>UC11, UC12, UC16, DFD YC9, YC10, sequence YC9, thiết kế sandbox, bảng tham số</td>
 </tr>
 <tr>
 <td>5</td>
-<td>11–12</td>
-<td>&quot;Test case đã duyệt chạy tự động được bằng Playwright&quot;</td>
-<td>PB-18 (5), PB-19 (8), PB-20 (3)</td>
-<td>16</td>
-<td>UC11, UC12, sequence YC9, thiết kế sandbox</td>
-</tr>
-<tr>
-<td>6</td>
-<td>13–14</td>
-<td>&quot;Đội làm Scrum lập kế hoạch sprint ngay trong hệ thống; sẵn sàng bàn giao&quot;</td>
+<td>5</td>
+<td>&quot;Đội làm Scrum lập kế hoạch sprint ngay trong hệ thống; sẵn sàng bàn giao và bảo vệ&quot;</td>
 <td>PB-21 (5), PB-22 (3), PB-23 (3), PB-24 (2), PB-25 (3)</td>
 <td>16</td>
-<td>YC12, Ch.6 tổng kết, Ch.7, slide, video demo</td>
-</tr>
-<tr>
-<td>–</td>
-<td>15</td>
-<td>Bảo vệ đồ án</td>
-<td>Demo bản cuối cùng</td>
-<td>–</td>
-<td>Kịch bản demo</td>
+<td>DFD YC8, YC11, YC12; Ch.6 tổng kết, Ch.7, slide, video demo; bảo vệ cuối tuần</td>
 </tr>
 </tbody></table>
-<blockquote>
-<p>Nếu một sprint không kịp, story có ưu tiên thấp nhất (Could) được trả về Product Backlog, <strong>không kéo dài sprint</strong>. Ví dụ PB-22 (burndown) là story đầu tiên được bỏ nếu Sprint 6 trễ.</p>
-</blockquote>
 <h2>0A.6. Definition of Ready và Definition of Done</h2>
 <p><strong>Definition of Ready (DoR)</strong> – story chỉ được đưa vào sprint khi:</p>
 <ul>
@@ -810,7 +783,7 @@
 </ul>
 <p><strong>Definition of Done (DoD)</strong> – story chỉ được tính là hoàn thành (và cộng vào velocity) khi:</p>
 <ul>
-<li><input disabled="" type="checkbox"> Code đã merge vào <code>main</code> qua Pull Request, tự review theo checklist</li>
+<li><input disabled="" type="checkbox"> Code đã merge vào <code>main</code> qua Pull Request, được ít nhất 1 thành viên khác review theo checklist</li>
 <li><input disabled="" type="checkbox"> Unit test / API test cho quy định nghiệp vụ mới; <strong>CI xanh</strong></li>
 <li><input disabled="" type="checkbox"> Có ít nhất 1 kịch bản E2E Playwright cho luồng chính (với story có giao diện)</li>
 <li><input disabled="" type="checkbox"> Mọi acceptance criteria được kiểm chứng</li>
@@ -820,69 +793,67 @@
 <blockquote>
 <p>Chính hệ thống AI TestCase Manager cũng áp dụng DoD cho dự án mà nó quản lý: một user story được tính <strong>Hoàn thành</strong> khi có ít nhất 1 test case đã duyệt và mọi test case đã duyệt đều có lần chạy gần nhất là PASS (YC12).</p>
 </blockquote>
-<h2>0A.7. Các sự kiện Scrum (điều chỉnh cho một người)</h2>
+<h2>0A.7. Các sự kiện Scrum của nhóm</h2>
 <table>
 <thead>
 <tr>
 <th>Sự kiện</th>
 <th>Khi nào</th>
 <th>Thời lượng</th>
-<th>Cách làm khi làm một mình</th>
+<th>Cách làm trong nhóm</th>
 <th>Sản phẩm</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>Sprint Planning</td>
-<td>Ngày đầu sprint</td>
+<td>Thứ Hai đầu tuần</td>
 <td>1 giờ</td>
-<td>Chọn story từ đầu backlog đến khi tổng SP ≈ velocity; chốt Sprint Goal; tách story thành task</td>
+<td>Cả nhóm chọn story từ đầu backlog đến khi tổng SP ≈ velocity; chốt Sprint Goal; tách story thành task, mỗi story có 1 người phụ trách</td>
 <td>Sprint backlog trên bảng Jira/Trello</td>
 </tr>
 <tr>
 <td>Daily Scrum</td>
-<td>Mỗi ngày làm việc</td>
-<td>5 phút</td>
-<td>Ghi nhật ký 3 câu: <em>hôm qua đã làm gì, hôm nay làm gì, đang vướng gì</em></td>
+<td>Mỗi tối (trực tiếp hoặc online qua Meet/Discord)</td>
+<td>15 phút</td>
+<td>Mỗi người trả lời 3 câu: <em>hôm qua đã làm gì, hôm nay làm gì, đang vướng gì</em>; Scrum Master ghi lại và gỡ vướng</td>
 <td>Daily log (minh chứng)</td>
 </tr>
 <tr>
 <td>Backlog Refinement</td>
-<td>Giữa sprint</td>
+<td>Thứ Tư hoặc thứ Năm</td>
 <td>30 phút</td>
-<td>Viết rõ, ước lượng, tách nhỏ story của sprint sau</td>
+<td>Product Owner cùng nhóm viết rõ, ước lượng (Planning Poker), tách nhỏ story của sprint sau</td>
 <td>Story đạt DoR</td>
 </tr>
 <tr>
 <td>Sprint Review</td>
-<td>Ngày cuối sprint</td>
+<td>Cuối tuần (thứ Bảy)</td>
 <td>30–45 phút</td>
-<td>Demo cho 1–2 đồng nghiệp QA hoặc giảng viên; ghi góp ý thành story mới</td>
+<td>Cả nhóm demo cho giảng viên hoặc bạn cùng lớp; ghi góp ý thành story mới</td>
 <td>Biên bản review, backlog cập nhật</td>
 </tr>
 <tr>
 <td>Retrospective</td>
 <td>Sau Review</td>
 <td>20 phút</td>
-<td>Mẫu <strong>Start / Stop / Continue</strong>; chọn 1 cải tiến cho sprint sau</td>
+<td>Mỗi người góp ý theo mẫu <strong>Start / Stop / Continue</strong>; cả nhóm chọn 1 cải tiến cho sprint sau</td>
 <td>Biên bản retro</td>
 </tr>
 </tbody></table>
 <p><strong>Bảng công việc (Jira/Trello):</strong></p>
 <pre class="mermaid">flowchart LR
-    A["Backlog"] --&gt; B["To do&lt;br/&gt;(sprint này)"] --&gt; C["In progress&lt;br/&gt;WIP ≤ 2"] --&gt; D["Code review&lt;br/&gt;(Pull Request)"] --&gt; E["Testing&lt;br/&gt;CI + E2E"] --&gt; F["Done&lt;br/&gt;(đạt DoD)"]</pre><p>Giới hạn <strong>WIP ≤ 2</strong>: không làm quá 2 việc cùng lúc, hoàn thành dứt điểm trước khi bắt đầu việc mới.</p>
+    A["Backlog"] --&gt; B["To do&lt;br/&gt;(sprint này)"] --&gt; C["In progress&lt;br/&gt;WIP ≤ 2"] --&gt; D["Code review&lt;br/&gt;(Pull Request)"] --&gt; E["Testing&lt;br/&gt;CI + E2E"] --&gt; F["Done&lt;br/&gt;(đạt DoD)"]</pre><p>Giới hạn <strong>WIP ≤ 2 mỗi người</strong>: mỗi thành viên không làm quá 2 việc cùng lúc, hoàn thành dứt điểm trước khi bắt đầu việc mới.</p>
 <h2>0A.8. Bảy hoạt động của SE104 diễn ra trong mỗi sprint</h2>
 <p>Agile không bỏ các hoạt động của thác nước mà <strong>làm chúng cho từng lát mỏng chức năng</strong>. Ma trận dưới cho thấy các chương của báo cáo được viết dần qua các sprint.</p>
 <table>
 <thead>
 <tr>
 <th>Hoạt động (chương)</th>
-<th>Sprint 0</th>
 <th>Sprint 1</th>
 <th>Sprint 2</th>
 <th>Sprint 3</th>
 <th>Sprint 4</th>
 <th>Sprint 5</th>
-<th>Sprint 6</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -892,44 +863,34 @@
 <td>●</td>
 <td>●</td>
 <td>●</td>
-<td>●</td>
-<td>●</td>
 </tr>
 <tr>
 <td>Yêu cầu (Ch.2)</td>
-<td>●● (YC tổng quát)</td>
-<td>● YC1, YC11</td>
-<td>● YC2</td>
-<td>● YC3, YC4</td>
-<td>● YC5, 6, 7, 10</td>
-<td>● YC9</td>
+<td>●● YC tổng quát, YC1, YC11</td>
+<td>● YC2, YC3</td>
+<td>● YC4, 5, 6, 7</td>
+<td>● YC9, YC10</td>
 <td>● YC8, YC12</td>
 </tr>
 <tr>
 <td>Phân tích (Ch.3)</td>
-<td></td>
 <td>● UC01–04</td>
-<td>● UC06</td>
-<td>● UC07–09</td>
-<td>● UC10, 13, 15, 16</td>
-<td>● UC11, 12</td>
+<td>● UC06, 07</td>
+<td>● UC08–10, 13, 15</td>
+<td>● UC11, 12, 16</td>
 <td>● UC05, 14, 19</td>
 </tr>
 <tr>
 <td>Thiết kế (Ch.4)</td>
-<td>● kiến trúc</td>
-<td>● ERD v1</td>
-<td>● AI Service</td>
-<td>● class, trạng thái</td>
-<td>● bảng tham số</td>
-<td>● sandbox</td>
+<td>● kiến trúc, ERD v1</td>
+<td>● AI Service, class</td>
+<td>● trạng thái</td>
+<td>● sandbox, bảng tham số</td>
 <td>● sprint</td>
 </tr>
 <tr>
 <td>Cài đặt (Ch.5)</td>
 <td>● khung dự án</td>
-<td>●</td>
-<td>●</td>
 <td>●</td>
 <td>●</td>
 <td>●</td>
@@ -941,15 +902,11 @@
 <td>●</td>
 <td>●</td>
 <td>●</td>
-<td>●</td>
-<td>●</td>
 <td>●● tổng kết</td>
 </tr>
 <tr>
 <td>Triển khai (Ch.7)</td>
-<td></td>
 <td>● bản demo</td>
-<td>●</td>
 <td>●</td>
 <td>●</td>
 <td>●</td>
@@ -997,7 +954,7 @@ Velocity thực tế: __ SP
 </tr>
 </tbody></table>
 <p>Cải tiến chọn cho sprint sau: ............................................</p>
-<h2>0A.11. Khó khăn khi áp dụng Agile một mình và cách xử lý</h2>
+<h2>0A.11. Khó khăn khi áp dụng Agile trong nhóm sinh viên và cách xử lý</h2>
 <table>
 <thead>
 <tr>
@@ -1006,16 +963,24 @@ Velocity thực tế: __ SP
 </tr>
 </thead>
 <tbody><tr>
-<td>Không có người phản biện như trong nhóm</td>
-<td>Mời đồng nghiệp QA dự Sprint Review; tự review PR theo checklist; CI bắt lỗi tự động</td>
+<td>Lịch học của 4 thành viên khác nhau, khó họp đủ</td>
+<td>Daily Scrum 15 phút online buổi tối; Planning, Review, Retro đặt lịch cố định (thứ Hai, thứ Bảy)</td>
 </tr>
 <tr>
-<td>Dễ bỏ qua các buổi họp</td>
-<td>Đặt lịch cố định (thứ Hai planning, thứ Sáu tuần 2 review + retro); Daily log chỉ 5 phút</td>
+<td>Chia việc không đều, khó biết ai đang làm gì</td>
+<td>Ước lượng bằng story point; mỗi story có người phụ trách trên bảng Jira/Trello công khai; xem lại trong Retrospective</td>
+</tr>
+<tr>
+<td>Xung đột code khi nhiều người sửa cùng lúc</td>
+<td>Mỗi story một nhánh <code>feature/pb-xx-*</code>; Pull Request nhỏ, có người review; pull <code>main</code> thường xuyên; CI chạy test mỗi lần push</td>
+</tr>
+<tr>
+<td>Sprint chỉ 1 tuần, dễ trễ</td>
+<td>Làm phần rủi ro (AI) từ Sprint 2; story Could trả về backlog thay vì kéo dài sprint</td>
 </tr>
 <tr>
 <td>Môn học yêu cầu tài liệu đầy đủ, Agile lại ưu tiên phần mềm</td>
-<td>DoD bắt buộc cập nhật tài liệu; tài liệu viết dần theo sprint thay vì dồn cuối kỳ</td>
+<td>DoD bắt buộc cập nhật tài liệu; mỗi người viết phần tài liệu của story mình làm, không dồn cuối kỳ</td>
 </tr>
 <tr>
 <td>Ước lượng sai khi chưa có số liệu</td>
@@ -1023,7 +988,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>Mốc nộp của môn học cố định</td>
-<td>Sprint 2 tuần khớp với các mốc nộp; mỗi mốc nộp là một bản Increment</td>
+<td>Mỗi sprint 1 tuần kết thúc bằng một bản Increment; bản Increment cuối tuần 5 là bản bảo vệ</td>
 </tr>
 </tbody></table>
 </section>
@@ -1051,7 +1016,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>Thời gian</td>
-<td>Sprint 0 (tuần 1–2) của kế hoạch</td>
+<td>Đầu Sprint 1 (tuần 1) của kế hoạch; người thực hiện: Product Owner của nhóm, cả nhóm cùng phỏng vấn</td>
 </tr>
 </tbody></table>
 <blockquote>
@@ -3911,7 +3876,7 @@ Velocity thực tế: __ SP
 <td>Phiên bản hiện tại</td>
 </tr>
 </tbody></table>
-<p><strong>ai_logs</strong> – lưu mọi lần gọi AI để truy vết và làm dữ liệu cho khóa luận</p>
+<p><strong>ai_logs</strong> – lưu mọi lần gọi AI để truy vết và đánh giá chất lượng AI</p>
 <table>
 <thead>
 <tr>
@@ -4819,7 +4784,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 </tbody></table>
 <p><strong>Tiêu chí hoàn thành:</strong> 100% test tự động pass; không còn lỗi mức High; mỗi YC1–YC12 có ít nhất 1 test case kiểm thử.</p>
-<p><strong>Kiểm thử trong Agile:</strong> kiểm thử không phải một giai đoạn cuối mà là một phần của <strong>Definition of Done</strong> của mỗi story: story chỉ được tính hoàn thành khi có test tự động mới và CI xanh. Vì vậy bộ test dưới đây được viết dần qua 6 sprint (cột <em>Sprint</em> trong Product Backlog), không dồn về cuối kỳ.</p>
+<p><strong>Kiểm thử trong Agile:</strong> kiểm thử không phải một giai đoạn cuối mà là một phần của <strong>Definition of Done</strong> của mỗi story: story chỉ được tính hoàn thành khi có test tự động mới và CI xanh. Vì vậy bộ test dưới đây được viết dần qua 5 sprint (cột <em>Sprint</em> trong Product Backlog), không dồn về cuối kỳ.</p>
 <h2>6.2. Kiểm thử tự động – Unit và API</h2>
 <p>Chạy: <code>cd app &amp;&amp; npm test</code></p>
 <table>
@@ -5451,7 +5416,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <td>–</td>
 </tr>
 </tbody></table>
-<p><strong>So sánh script AI với bộ viết tay:</strong> script AI viết &quot;phẳng&quot; (mỗi bước một lệnh, locator CSS <code>[data-test=...]</code>), đủ để chạy nhưng chưa tái sử dụng được. Bộ viết tay dùng POM, data-driven, dễ bảo trì hơn. Đây là lý do hệ thống bắt buộc <strong>Tester xem lại script</strong> trước khi chạy và là hướng nghiên cứu cho khóa luận (AI sinh script theo POM, tự sửa locator).</p>
+<p><strong>So sánh script AI với bộ viết tay:</strong> script AI viết &quot;phẳng&quot; (mỗi bước một lệnh, locator CSS <code>[data-test=...]</code>), đủ để chạy nhưng chưa tái sử dụng được. Bộ viết tay dùng POM, data-driven, dễ bảo trì hơn. Đây là lý do hệ thống bắt buộc <strong>Tester xem lại script</strong> trước khi chạy và là hướng phát triển ở các phiên bản sau (AI sinh script theo POM, tự sửa locator).</p>
 <h2>6.6. Tích hợp liên tục (CI)</h2>
 <p><code>.github/workflows/ci.yml</code> chạy tự động mỗi lần push lên <code>main</code> hoặc tạo Pull Request:</p>
 <pre class="mermaid">flowchart LR
@@ -5839,7 +5804,7 @@ npm install
 <td>2b</td>
 <td>1:15</td>
 <td>Chọn dự án <strong>PETINS</strong> → <em>Sprint (Agile)</em>: Sprint Goal, bảng 4 cột, burndown, velocity</td>
-<td>&quot;Em làm đồ án theo Scrum, và hệ thống cũng hỗ trợ đội QA làm Scrum: story chỉ tính Hoàn thành khi mọi test case đã duyệt đều Pass.&quot;</td>
+<td>&quot;Nhóm em làm đồ án theo Scrum, và hệ thống cũng hỗ trợ đội QA làm Scrum: story chỉ tính Hoàn thành khi mọi test case đã duyệt đều Pass.&quot;</td>
 <td><strong>Agile</strong></td>
 </tr>
 <tr>
@@ -5915,7 +5880,7 @@ npm install
 <tr>
 <td>13</td>
 <td>9:30</td>
-<td>Slide kết luận, hướng phát triển khóa luận</td>
+<td>Slide kết luận, hướng phát triển</td>
 <td></td>
 <td></td>
 </tr>
@@ -5930,12 +5895,12 @@ npm install
 </tr>
 </thead>
 <tbody><tr>
-<td>Môn dạy thác nước, sao em làm Agile?</td>
-<td>Em thực hiện theo Scrum (6 sprint 2 tuần) vì yêu cầu AI khó chốt từ đầu và cần demo sớm. Các hoạt động của thác nước không mất đi mà lặp lại trong mỗi sprint; báo cáo vẫn trình bày đủ 7 chương. Minh chứng: Product Backlog, biên bản Planning/Review/Retro, lịch sử commit theo sprint, CI.</td>
+<td>Môn dạy thác nước, sao nhóm làm Agile?</td>
+<td>Nhóm thực hiện theo Scrum (5 sprint, mỗi sprint 1 tuần) vì yêu cầu AI khó chốt từ đầu và cần demo sớm. Các hoạt động của thác nước không mất đi mà lặp lại trong mỗi sprint; báo cáo vẫn trình bày đủ 7 chương. Minh chứng: Product Backlog, biên bản Planning/Review/Retro, lịch sử commit theo sprint, CI.</td>
 </tr>
 <tr>
-<td>Làm một mình thì Scrum thế nào?</td>
-<td>Áp dụng Scrum cá nhân: em đóng cả Product Owner, Scrum Master, Developer nhưng tách thời điểm; đồng nghiệp QA và giảng viên là stakeholder dự Sprint Review. Daily Scrum thay bằng daily log 5 phút.</td>
+<td>Nhóm 4 người chia vai trò Scrum thế nào?</td>
+<td>1 Product Owner, 1 Scrum Master (hai người khác nhau), cả 4 người là Developer, mỗi người phụ trách một mảng (yêu cầu – phân tích; backend – AI; giao diện; kiểm thử – CI – Docker). Daily Scrum 15 phút mỗi tối; Planning thứ Hai, Review và Retro thứ Bảy; giảng viên và bạn cùng lớp là stakeholder.</td>
 </tr>
 <tr>
 <td>Definition of Done của đồ án là gì?</td>
@@ -5978,12 +5943,12 @@ npm install
 <td>Để demo không phụ thuộc cài đặt. Lược đồ viết SQL chuẩn, có ghi chú chuyển đổi; chỉ cần đổi lớp kết nối.</td>
 </tr>
 <tr>
-<td>Làm một mình đóng vai trò gì?</td>
-<td>BA (khảo sát, yêu cầu), kiến trúc sư (thiết kế), lập trình viên full-stack, AI engineer (prompt, schema), QA/SDET (kiểm thử tự động), DevOps (Docker, CI).</td>
+<td>Nhóm phối hợp thế nào để không xung đột code?</td>
+<td>Mỗi story một nhánh <code>feature/pb-xx-*</code>, Pull Request nhỏ, ít nhất 1 thành viên khác review; CI chạy test mỗi lần push; bảng Jira/Trello cho biết ai đang làm gì.</td>
 </tr>
 <tr>
 <td>Tỷ lệ AI phải sửa dùng để làm gì?</td>
-<td>Đo chất lượng AI; cặp &quot;bản AI – bản người sửa&quot; là dữ liệu đánh giá cho khóa luận.</td>
+<td>Đo chất lượng AI; cặp &quot;bản AI – bản người sửa&quot; là dữ liệu để chọn model, cải tiến prompt ở các phiên bản sau.</td>
 </tr>
 </tbody></table>
 </section>
@@ -5998,7 +5963,7 @@ npm install
 </thead>
 <tbody><tr>
 <td>Quy trình CNPM</td>
-<td>Agile/Scrum: Sprint 0 + 6 sprint 2 tuần, Product Backlog 28 story, DoR/DoD, biên bản các sự kiện; mỗi sprint đi qua đủ 7 hoạt động của môn học</td>
+<td>Agile/Scrum, nhóm 4 người: 5 sprint × 1 tuần, Product Backlog 28 story, DoR/DoD, biên bản các sự kiện; mỗi sprint đi qua đủ 7 hoạt động của môn học</td>
 </tr>
 <tr>
 <td>Phần mềm chạy được</td>
@@ -6034,40 +5999,39 @@ npm install
 <li>Quan sát LLM (Langfuse): theo dõi chi phí, độ trễ, chất lượng từng prompt.</li>
 <li>Chuyển sang PostgreSQL, thêm đăng nhập SSO.</li>
 </ol>
-<h2>9.4. Hướng phát triển lên khóa luận tốt nghiệp (ngành AI)</h2>
-<p>Đồ án SE104 trả lời: <em>&quot;Hệ thống làm được gì, thiết kế ra sao?&quot;</em>. Khóa luận cần trả lời: <em>&quot;Phương pháp AI nào tốt hơn, tốt hơn bao nhiêu, vì sao?&quot;</em>. Hệ thống này trở thành <strong>công cụ thực nghiệm và demo</strong>.</p>
+<h2>9.4. Hướng phát triển chung – nâng cao chất lượng AI</h2>
+<p>Hệ thống đã lưu sẵn dữ liệu để đo chất lượng AI: bảng <code>ai_logs</code> (prompt, model, kết quả gốc) và <code>test_case_versions</code> (bản AI sinh ra v1 và bản người dùng sửa cuối cùng). Dựa vào đó, các phiên bản sau có thể cải tiến phần AI theo hướng có số liệu:</p>
 <table>
 <thead>
 <tr>
 <th>Hướng</th>
-<th>Câu hỏi nghiên cứu ví dụ</th>
+<th>Nội dung</th>
 <th>Đo bằng</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>So sánh LLM</td>
-<td>Model nào sinh test case tốt nhất từ user story tiếng Việt?</td>
-<td>Độ bao phủ acceptance criteria, tỷ lệ test case hợp lệ, tỷ lệ phải sửa, đánh giá chuyên gia QA</td>
+<td>Chọn model phù hợp</td>
+<td>Chạy cùng bộ user story tiếng Việt với nhiều LLM, chọn model cho kết quả tốt nhất với chi phí hợp lý</td>
+<td>Độ bao phủ acceptance criteria, tỷ lệ test case hợp lệ, tỷ lệ phải sửa</td>
 </tr>
 <tr>
-<td>RAG theo domain</td>
-<td>RAG với tài liệu nghiệp vụ cải thiện độ bao phủ bao nhiêu?</td>
-<td>So sánh có/không RAG trên cùng bộ dữ liệu</td>
+<td>Dùng tài liệu nghiệp vụ (RAG)</td>
+<td>Đưa tài liệu nghiệp vụ của dự án vào prompt để test case sát thực tế hơn</td>
+<td>So sánh có / không dùng tài liệu trên cùng bộ dữ liệu</td>
 </tr>
 <tr>
-<td>Fine-tune model nhỏ</td>
-<td>Qwen/Llama 7B fine-tune bằng LoRA có tiệm cận model lớn không?</td>
-<td>Cùng các chỉ số + chi phí, độ trễ</td>
+<td>Model nhỏ chạy nội bộ</td>
+<td>Dùng model mã nguồn mở chạy trên máy chủ công ty để không gửi dữ liệu ra ngoài</td>
+<td>Chất lượng so với model lớn, chi phí, độ trễ</td>
 </tr>
 <tr>
-<td>AI agent tự sửa script</td>
-<td>Agent dùng Playwright (qua MCP) tự chạy, đọc lỗi, sửa locator (self-healing) đạt tỷ lệ pass bao nhiêu?</td>
-<td>Tỷ lệ script chạy được ở lần 1, sau n vòng tự sửa</td>
+<td>Script tự sửa khi giao diện đổi</td>
+<td>Khi script fail vì không tìm thấy phần tử, AI đọc lại trang và đề xuất locator mới (self-healing)</td>
+<td>Tỷ lệ script chạy được sau khi giao diện thay đổi</td>
 </tr>
 </tbody></table>
-<p><strong>Dữ liệu đã chuẩn bị sẵn từ SE104:</strong> bảng <code>ai_logs</code> (prompt, model, kết quả gốc) và <code>test_case_versions</code> (bản AI gốc v1 – bản người sửa cuối cùng). Cặp này chính là dữ liệu đánh giá quý nhất.</p>
 <blockquote>
-<p>Lưu ý: khóa luận phải có đóng góp mới so với đồ án môn và cần giảng viên hướng dẫn đồng ý. Không dùng dữ liệu nội bộ công ty khi chưa được phép bằng văn bản; dùng dữ liệu công khai hoặc dữ liệu tự xây dựng (như dự án hư cấu &quot;App bảo hiểm thú cưng&quot;).</p>
+<p>Lưu ý: không dùng dữ liệu nội bộ công ty khi chưa được phép bằng văn bản; dùng dữ liệu công khai hoặc dữ liệu tự xây dựng (như dự án hư cấu &quot;App bảo hiểm thú cưng&quot;).</p>
 </blockquote>
 </section>
 </div>

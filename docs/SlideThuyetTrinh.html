@@ -67,7 +67,7 @@
     <div class="muted">SE104 – Nhập môn Công nghệ phần mềm · Trường ĐH Công nghệ Thông tin – ĐHQG-HCM</div>
     <h1 style="margin-top:.6em">Hệ thống quản lý test case<br>có hỗ trợ trí tuệ nhân tạo</h1>
     <p style="font-size:1.2em">AI TestCase Manager</p>
-    <p class="muted" style="margin-top:2em">Sinh viên: [Họ và tên] – [MSSV]<br>Giảng viên hướng dẫn: [Tên giảng viên]</p>
+    <p class="muted" style="margin-top:2em">Nhóm thực hiện: [Thành viên 1] · [Thành viên 2] · [Thành viên 3] · [Thành viên 4]<br>Giảng viên hướng dẫn: [Tên giảng viên]</p>
     <div class="footer"><span>Đồ án môn học</span><span>Tháng 10/2026</span></div>
   </section>
 
@@ -124,26 +124,24 @@
         <div class="flow" style="flex-wrap:wrap">
           <div class="step">📋 Product Backlog<br><span class="muted" style="font-weight:400">28 story, MoSCoW, SP</span></div><div class="arrow">→</div>
           <div class="step">🗓️ Planning</div><div class="arrow">→</div>
-          <div class="step ai">🏃 Sprint 2 tuần</div><div class="arrow">→</div>
+          <div class="step ai">🏃 Sprint 1 tuần</div><div class="arrow">→</div>
           <div class="step">👀 Review + 🔁 Retro</div>
         </div>
         <ul style="margin-top:.6em">
           <li><b>Mỗi sprint</b> đi qua đủ 7 hoạt động của môn: yêu cầu → phân tích → thiết kế → cài đặt → kiểm chứng → triển khai</li>
-          <li>Làm một mình: <b>Scrum cá nhân</b> – tự đóng PO, Scrum Master, Developer; đồng nghiệp QA và giảng viên dự Sprint Review</li>
+          <li>Nhóm 4 người: <b>1 Product Owner, 1 Scrum Master, 4 Developer</b>; Daily Scrum 15 phút mỗi tối; giảng viên dự Sprint Review</li>
           <li><b>Definition of Done</b>: merge qua PR, có test tự động, CI xanh, tài liệu cập nhật, demo được</li>
           <li>Minh chứng: biên bản Planning / Review / Retro, daily log, lịch sử commit</li>
         </ul>
       </div>
       <table>
         <tr><th>Sprint</th><th>Tuần</th><th>Sprint Goal</th><th>SP</th></tr>
-        <tr><td>0</td><td>1–2</td><td>Khảo sát, Product Backlog, kiến trúc, CI</td><td>–</td></tr>
-        <tr><td>1</td><td>3–4</td><td>Đăng nhập theo vai trò, lập user story</td><td>13</td></tr>
-        <tr><td>2</td><td>5–6</td><td><b>AI sinh test case an toàn</b> (rủi ro cao nhất, làm sớm)</td><td>14</td></tr>
-        <tr><td>3</td><td>7–8</td><td>Sửa, phiên bản, duyệt test case</td><td>15</td></tr>
-        <tr><td>4</td><td>9–10</td><td>Chạy test, báo cáo, quy định</td><td>14</td></tr>
-        <tr><td>5</td><td>11–12</td><td>Tự động hóa bằng Playwright</td><td>16</td></tr>
-        <tr><td>6</td><td>13–14</td><td>Sprint trong hệ thống, Docker, hoàn thiện</td><td>16</td></tr>
-        <tr><td>–</td><td>15</td><td>Bảo vệ = Sprint Review cuối</td><td></td></tr>
+        <tr><td>1</td><td>1</td><td>Khảo sát, backlog, kiến trúc, CI; đăng nhập, lập user story</td><td>13</td></tr>
+        <tr><td>2</td><td>2</td><td><b>AI sinh test case an toàn</b> (rủi ro cao nhất, làm sớm); sửa, phiên bản</td><td>22</td></tr>
+        <tr><td>3</td><td>3</td><td>Duyệt, chạy test, tra cứu, báo cáo</td><td>18</td></tr>
+        <tr><td>4</td><td>4</td><td>Tự động hóa bằng Playwright, quy định</td><td>19</td></tr>
+        <tr><td>5</td><td>5</td><td>Sprint trong hệ thống, nhập/xuất, Docker, hoàn thiện</td><td>16</td></tr>
+        <tr><td>–</td><td>cuối 5</td><td>Bảo vệ = Sprint Review cuối</td><td></td></tr>
       </table>
     </div>
     <div class="footer"><span>Chương 0A – Quy trình Agile</span><span class="pg"></span></div>
@@ -331,18 +329,18 @@ flowchart LR
       <div class="card">
         <h3>Đạt được</h3>
         <ul>
-          <li>Làm theo Scrum: 6 sprint, mỗi sprint đủ 7 hoạt động, đủ tài liệu</li>
+          <li>Làm theo Scrum: nhóm 4 người, 5 sprint × 1 tuần, mỗi sprint đủ 7 hoạt động</li>
           <li>Phần mềm chạy được: 12 YC, 14 màn hình, hỗ trợ Scrum</li>
           <li>AI tích hợp bài bản: Strategy, PII, injection, schema, retry, sandbox</li>
           <li>Kiểm thử tự động 3 tầng, Docker, CI</li>
         </ul>
       </div>
       <div class="card">
-        <h3>Hướng phát triển → khóa luận</h3>
+        <h3>Hướng phát triển</h3>
         <ul>
-          <li>So sánh LLM trên user story tiếng Việt</li>
+          <li>Chọn LLM phù hợp cho user story tiếng Việt</li>
           <li>RAG theo tài liệu nghiệp vụ (pgvector)</li>
-          <li>Fine-tune model nhỏ bằng LoRA</li>
+          <li>Model nhỏ chạy nội bộ, không gửi dữ liệu ra ngoài</li>
           <li>AI agent Playwright tự sửa locator (self-healing)</li>
           <li>Hàng đợi job, tích hợp Jira</li>
         </ul>

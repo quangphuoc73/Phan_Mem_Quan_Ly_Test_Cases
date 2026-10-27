@@ -4,7 +4,7 @@
 
 | Mục tiêu | Kết quả |
 |---|---|
-| Quy trình CNPM | Agile/Scrum: Sprint 0 + 6 sprint 2 tuần, Product Backlog 28 story, DoR/DoD, biên bản các sự kiện; mỗi sprint đi qua đủ 7 hoạt động của môn học |
+| Quy trình CNPM | Agile/Scrum, nhóm 4 người: 5 sprint × 1 tuần, Product Backlog 28 story, DoR/DoD, biên bản các sự kiện; mỗi sprint đi qua đủ 7 hoạt động của môn học |
 | Phần mềm chạy được | 12 yêu cầu nghiệp vụ (YC1–YC12), 14 màn hình, 40+ API; hỗ trợ đội làm Scrum (sprint, story point, burndown, velocity) |
 | Tích hợp AI đúng cách | AI Service tách riêng (Strategy pattern, 4 provider), che PII, chống prompt injection, schema + retry, rate limit, nhật ký AI |
 | Kiểm thử tự động | 55 unit/API test, 9 E2E Playwright, 8 test Playwright mẫu (POM), script AI sinh chạy được trên web thật |
@@ -27,17 +27,15 @@
 5. Quan sát LLM (Langfuse): theo dõi chi phí, độ trễ, chất lượng từng prompt.
 6. Chuyển sang PostgreSQL, thêm đăng nhập SSO.
 
-## 9.4. Hướng phát triển lên khóa luận tốt nghiệp (ngành AI)
+## 9.4. Hướng phát triển chung – nâng cao chất lượng AI
 
-Đồ án SE104 trả lời: *"Hệ thống làm được gì, thiết kế ra sao?"*. Khóa luận cần trả lời: *"Phương pháp AI nào tốt hơn, tốt hơn bao nhiêu, vì sao?"*. Hệ thống này trở thành **công cụ thực nghiệm và demo**.
+Hệ thống đã lưu sẵn dữ liệu để đo chất lượng AI: bảng `ai_logs` (prompt, model, kết quả gốc) và `test_case_versions` (bản AI sinh ra v1 và bản người dùng sửa cuối cùng). Dựa vào đó, các phiên bản sau có thể cải tiến phần AI theo hướng có số liệu:
 
-| Hướng | Câu hỏi nghiên cứu ví dụ | Đo bằng |
+| Hướng | Nội dung | Đo bằng |
 |---|---|---|
-| So sánh LLM | Model nào sinh test case tốt nhất từ user story tiếng Việt? | Độ bao phủ acceptance criteria, tỷ lệ test case hợp lệ, tỷ lệ phải sửa, đánh giá chuyên gia QA |
-| RAG theo domain | RAG với tài liệu nghiệp vụ cải thiện độ bao phủ bao nhiêu? | So sánh có/không RAG trên cùng bộ dữ liệu |
-| Fine-tune model nhỏ | Qwen/Llama 7B fine-tune bằng LoRA có tiệm cận model lớn không? | Cùng các chỉ số + chi phí, độ trễ |
-| AI agent tự sửa script | Agent dùng Playwright (qua MCP) tự chạy, đọc lỗi, sửa locator (self-healing) đạt tỷ lệ pass bao nhiêu? | Tỷ lệ script chạy được ở lần 1, sau n vòng tự sửa |
+| Chọn model phù hợp | Chạy cùng bộ user story tiếng Việt với nhiều LLM, chọn model cho kết quả tốt nhất với chi phí hợp lý | Độ bao phủ acceptance criteria, tỷ lệ test case hợp lệ, tỷ lệ phải sửa |
+| Dùng tài liệu nghiệp vụ (RAG) | Đưa tài liệu nghiệp vụ của dự án vào prompt để test case sát thực tế hơn | So sánh có / không dùng tài liệu trên cùng bộ dữ liệu |
+| Model nhỏ chạy nội bộ | Dùng model mã nguồn mở chạy trên máy chủ công ty để không gửi dữ liệu ra ngoài | Chất lượng so với model lớn, chi phí, độ trễ |
+| Script tự sửa khi giao diện đổi | Khi script fail vì không tìm thấy phần tử, AI đọc lại trang và đề xuất locator mới (self-healing) | Tỷ lệ script chạy được sau khi giao diện thay đổi |
 
-**Dữ liệu đã chuẩn bị sẵn từ SE104:** bảng `ai_logs` (prompt, model, kết quả gốc) và `test_case_versions` (bản AI gốc v1 – bản người sửa cuối cùng). Cặp này chính là dữ liệu đánh giá quý nhất.
-
-> Lưu ý: khóa luận phải có đóng góp mới so với đồ án môn và cần giảng viên hướng dẫn đồng ý. Không dùng dữ liệu nội bộ công ty khi chưa được phép bằng văn bản; dùng dữ liệu công khai hoặc dữ liệu tự xây dựng (như dự án hư cấu "App bảo hiểm thú cưng").
+> Lưu ý: không dùng dữ liệu nội bộ công ty khi chưa được phép bằng văn bản; dùng dữ liệu công khai hoặc dữ liệu tự xây dựng (như dự án hư cấu "App bảo hiểm thú cưng").

@@ -14,7 +14,7 @@ flowchart LR
 |---|---|
 | Đối tượng | Đội kiểm thử (QA) của một công ty phát triển phần mềm quy mô vừa (mô phỏng): 1 QA Lead, 4 Tester, 1 Automation Tester, làm việc cùng 6 Developer và 1 Product Owner/BA |
 | Phạm vi | Các công việc liên quan đến test case: nhận yêu cầu, viết, duyệt, chạy, tự động hóa, báo cáo |
-| Thời gian | Sprint 0 (tuần 1–2) của kế hoạch |
+| Thời gian | Đầu Sprint 1 (tuần 1) của kế hoạch; người thực hiện: Product Owner của nhóm, cả nhóm cùng phỏng vấn |
 
 > **Lưu ý đạo đức và bảo mật:** không sử dụng dữ liệu thật của công ty khi chưa được phép bằng văn bản. Toàn bộ dữ liệu minh họa trong đồ án (dự án "App bảo hiểm thú cưng") là **hư cấu**. Dự án "Sauce Demo" là trang web công khai dành cho luyện kiểm thử tự động.
 
