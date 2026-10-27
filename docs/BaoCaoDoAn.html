@@ -1028,9 +1028,11 @@ Velocity thực tế: __ SP
 </section>
 <section class="chapter" id="ch-01"><h1>Chương 1. Khảo sát hiện trạng</h1>
 <blockquote>
-<p>Sản phẩm của giai đoạn: <strong>mô tả hoạt động trong thế giới thực</strong> – tổ chức hiện đang làm việc như thế nào, gặp vấn đề gì, cần gì.</p>
+<p><strong>Mục tiêu</strong> của khảo sát hiện trạng là tìm hiểu về <strong>thế giới thực liên quan đến phần mềm</strong>: tổ chức đang làm việc như thế nào, gặp vấn đề gì, cần gì. Theo môn học, cần khảo sát 3 hiện trạng: <strong>tổ chức, nghiệp vụ, tin học</strong>. Kết quả của chương này là đầu vào để lập danh sách yêu cầu (<a href="#ch-02">Chương 2</a>) và sơ đồ luồng dữ liệu (<a href="#ch-03">Chương 3</a>).</p>
 </blockquote>
-<h2>1.1. Đối tượng và phương pháp khảo sát</h2>
+<pre class="mermaid">flowchart LR
+    A["Khảo sát&lt;br/&gt;hiện trạng"] --&gt; B["Lập danh sách các&lt;br/&gt;yêu cầu phần mềm"] --&gt; C["Lập sơ đồ&lt;br/&gt;luồng dữ liệu"]
+    C -. "bổ sung, điều chỉnh" .-&gt; B -. "bổ sung, điều chỉnh" .-&gt; A</pre><h2>1.1. Đối tượng khảo sát</h2>
 <table>
 <thead>
 <tr>
@@ -1040,20 +1042,55 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>Đối tượng</td>
-<td>Đội kiểm thử (QA) của một công ty phát triển phần mềm quy mô vừa (mô phỏng): 1 QA Lead, 4 Tester, làm việc cùng 6 Developer</td>
+<td>Đội kiểm thử (QA) của một công ty phát triển phần mềm quy mô vừa (mô phỏng): 1 QA Lead, 4 Tester, 1 Automation Tester, làm việc cùng 6 Developer và 1 Product Owner/BA</td>
 </tr>
 <tr>
-<td>Phương pháp</td>
-<td>Phỏng vấn trực tiếp, quan sát quy trình làm việc, thu thập mẫu biểu (file Excel test case, báo cáo kiểm thử)</td>
+<td>Phạm vi</td>
+<td>Các công việc liên quan đến test case: nhận yêu cầu, viết, duyệt, chạy, tự động hóa, báo cáo</td>
 </tr>
 <tr>
 <td>Thời gian</td>
-<td>Tuần 1 của kế hoạch</td>
+<td>Sprint 0 (tuần 1–2) của kế hoạch</td>
 </tr>
 </tbody></table>
 <blockquote>
 <p><strong>Lưu ý đạo đức và bảo mật:</strong> không sử dụng dữ liệu thật của công ty khi chưa được phép bằng văn bản. Toàn bộ dữ liệu minh họa trong đồ án (dự án &quot;App bảo hiểm thú cưng&quot;) là <strong>hư cấu</strong>. Dự án &quot;Sauce Demo&quot; là trang web công khai dành cho luyện kiểm thử tự động.</p>
 </blockquote>
+<h2>1.2. Phương pháp khảo sát</h2>
+<table>
+<thead>
+<tr>
+<th>Phương pháp</th>
+<th>Cách làm trong đồ án</th>
+<th>Ưu điểm</th>
+<th>Khuyết điểm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Phỏng vấn</strong></td>
+<td>Trao đổi trực tiếp 30 phút với QA Lead, 2 Tester, 1 Automation Tester theo bảng câu hỏi bên dưới</td>
+<td>Hiểu sâu, hỏi thêm được ngay chỗ chưa rõ; nắm được cả khó khăn không ghi trong tài liệu</td>
+<td>Tốn thời gian; phụ thuộc kỹ năng hỏi; người được hỏi có thể trả lời theo ý chủ quan</td>
+</tr>
+<tr>
+<td><strong>Quan sát</strong></td>
+<td>Theo dõi một Tester viết và chạy test case cho 1 user story trong một buổi làm việc</td>
+<td>Thấy cách làm thật, phát hiện thao tác thừa mà người làm không để ý</td>
+<td>Mất thời gian; người bị quan sát có thể làm khác bình thường; khó quan sát công việc định kỳ (báo cáo cuối sprint)</td>
+</tr>
+<tr>
+<td><strong>Dùng bảng câu hỏi</strong></td>
+<td>Phiếu khảo sát online 10 câu gửi cả đội QA</td>
+<td>Thu được nhiều ý kiến nhanh, dễ tổng hợp số liệu (thời gian viết test case, tỷ lệ dùng AI)</td>
+<td>Câu trả lời ngắn, thiếu chi tiết; không hỏi thêm được; tỷ lệ phản hồi có thể thấp</td>
+</tr>
+<tr>
+<td><strong>Thu thập thông tin, tài liệu</strong></td>
+<td>Thu thập file Excel test case, báo cáo kiểm thử, quy trình QA của đội</td>
+<td>Có biểu mẫu thật, chính xác; làm căn cứ để lập biểu mẫu (BM)</td>
+<td>Tài liệu có thể cũ, không phản ánh cách làm hiện tại; dữ liệu nhạy cảm phải được che trước khi dùng</td>
+</tr>
+</tbody></table>
 <h3>Bảng câu hỏi phỏng vấn (rút gọn)</h3>
 <ol>
 <li>Anh/chị nhận yêu cầu (user story) từ đâu, ở định dạng nào?</li>
@@ -1064,14 +1101,195 @@ Velocity thực tế: __ SP
 <li>Đã dùng AI (ChatGPT, Gemini…) để viết test case chưa? Gặp khó khăn gì?</li>
 <li>Có tự động hóa kiểm thử không? Tự động hóa những phần nào?</li>
 </ol>
-<h2>1.2. Cơ cấu tổ chức liên quan</h2>
+<h2>1.3. Hiện trạng tổ chức</h2>
+<h3>Sơ đồ tổ chức</h3>
 <pre class="mermaid">flowchart TD
+    KH["🏢 Khách hàng&lt;br/&gt;(đối tác bên ngoài)"] &lt;--&gt;|"yêu cầu, nghiệm thu"| PM
     PM["Product Owner / BA&lt;br/&gt;Viết user story"] --&gt; QAL["QA Lead&lt;br/&gt;Phân công, duyệt test case, báo cáo"]
     PM --&gt; DEV["Developer&lt;br/&gt;Lập trình, sửa lỗi"]
     QAL --&gt; T1["Tester&lt;br/&gt;Viết &amp; chạy test case"]
     QAL --&gt; T2["Automation Tester&lt;br/&gt;Viết script tự động"]
+    QAL --&gt;|"báo cáo chất lượng"| KH
     T1 --&gt;|Báo lỗi| DEV
-    T2 --&gt;|Báo lỗi| DEV</pre><h2>1.3. Quy trình hiện tại</h2>
+    T2 --&gt;|Báo lỗi| DEV
+    AI["☁️ Nhà cung cấp AI&lt;br/&gt;(đối tác bên ngoài)"] -. "dịch vụ LLM" .- T1</pre><h3>Các bộ phận và giao tiếp với bên ngoài</h3>
+<p>Theo môn học, cần <strong>chú trọng các bộ phận có giao tiếp với đối tác bên ngoài</strong>, vì dữ liệu đi ra hoặc đi vào tổ chức ở đó.</p>
+<table>
+<thead>
+<tr>
+<th>Bộ phận</th>
+<th>Chức năng</th>
+<th>Giao tiếp với bên ngoài</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Product Owner / BA</td>
+<td>Nhận yêu cầu từ khách hàng, viết user story và acceptance criteria</td>
+<td><strong>Có</strong> – với khách hàng: nhận yêu cầu, nghiệm thu</td>
+</tr>
+<tr>
+<td>QA Lead</td>
+<td>Phân công, duyệt test case, tổng hợp báo cáo chất lượng</td>
+<td><strong>Có</strong> – gửi báo cáo chất lượng cho khách hàng mỗi sprint</td>
+</tr>
+<tr>
+<td>Tester</td>
+<td>Viết test case, chạy test thủ công, ghi kết quả</td>
+<td><strong>Có</strong> – đang tự dùng dịch vụ AI bên ngoài (ChatGPT) để viết test case, có nguy cơ lộ dữ liệu</td>
+</tr>
+<tr>
+<td>Automation Tester</td>
+<td>Viết script kiểm thử tự động</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>Developer</td>
+<td>Lập trình, sửa lỗi theo bug Tester báo</td>
+<td>Không</td>
+</tr>
+</tbody></table>
+<h2>1.4. Hiện trạng nghiệp vụ</h2>
+<h3>Danh sách nghiệp vụ của từng bộ phận</h3>
+<table>
+<thead>
+<tr>
+<th>Bộ phận</th>
+<th>Nghiệp vụ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Product Owner / BA</td>
+<td>NV1. Lập user story</td>
+</tr>
+<tr>
+<td>Tester</td>
+<td>NV2. Viết test case · NV3. Cập nhật test case khi yêu cầu đổi · NV5. Chạy test và ghi kết quả · NV6. Báo lỗi</td>
+</tr>
+<tr>
+<td>QA Lead</td>
+<td>NV4. Duyệt test case · NV8. Lập báo cáo kiểm thử · NV9. Lập kế hoạch sprint kiểm thử · NV10. Quản lý thành viên, quy định của đội</td>
+</tr>
+<tr>
+<td>Automation Tester</td>
+<td>NV7. Viết và chạy script kiểm thử tự động</td>
+</tr>
+</tbody></table>
+<h3>Mô tả nghiệp vụ</h3>
+<table>
+<thead>
+<tr>
+<th>Mã</th>
+<th>Tên công việc</th>
+<th>Biểu mẫu liên quan</th>
+<th>Quy định liên quan</th>
+<th>Người thực hiện</th>
+<th>Tần suất</th>
+<th>Thời điểm</th>
+<th>Cách thức thực hiện hiện tại</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NV1</td>
+<td>Lập user story</td>
+<td>Ticket Jira (tiêu đề, mô tả, acceptance criteria)</td>
+<td>Mỗi story có ít nhất 1 acceptance criterion</td>
+<td>PO/BA</td>
+<td>10–20 story/sprint</td>
+<td>Đầu sprint</td>
+<td>Gõ trên Jira</td>
+</tr>
+<tr>
+<td>NV2</td>
+<td>Viết test case</td>
+<td>File Excel test case (mục 1.4)</td>
+<td>Mỗi acceptance criterion có ít nhất 1 test case; ưu tiên High/Medium/Low</td>
+<td>Tester</td>
+<td>5–15 test case/story</td>
+<td>Sau khi nhận story</td>
+<td>Viết tay trên Excel, mất 30–60 phút/story; một số người dán story vào ChatGPT</td>
+</tr>
+<tr>
+<td>NV3</td>
+<td>Cập nhật test case</td>
+<td>File Excel</td>
+<td>Không có quy định lưu phiên bản</td>
+<td>Tester</td>
+<td>Khi yêu cầu đổi</td>
+<td>Bất kỳ lúc nào</td>
+<td>Sửa đè trong file, đặt tên file <code>_v2</code>, <code>_final</code></td>
+</tr>
+<tr>
+<td>NV4</td>
+<td>Duyệt test case</td>
+<td>Không có (nhận xét qua chat)</td>
+<td>Chỉ QA Lead được duyệt</td>
+<td>QA Lead</td>
+<td>Mỗi story</td>
+<td>Trước khi chạy test</td>
+<td>Mở file, nhận xét qua chat/email; không lưu vết</td>
+</tr>
+<tr>
+<td>NV5</td>
+<td>Chạy test, ghi kết quả</td>
+<td>Cột &quot;Kết quả&quot; trong file Excel</td>
+<td>Fail phải ghi mã bug</td>
+<td>Tester</td>
+<td>Hằng ngày</td>
+<td>Trong sprint</td>
+<td>Chạy tay, tô màu ô kết quả</td>
+</tr>
+<tr>
+<td>NV6</td>
+<td>Báo lỗi</td>
+<td>Ticket bug trên Jira</td>
+<td>Có bước tái hiện, ảnh chụp</td>
+<td>Tester</td>
+<td>Khi Fail</td>
+<td>Ngay khi phát hiện</td>
+<td>Tạo ticket Jira, chụp màn hình thủ công</td>
+</tr>
+<tr>
+<td>NV7</td>
+<td>Viết, chạy script tự động</td>
+<td>File script (WebdriverIO/Playwright)</td>
+<td>Chỉ tự động hóa test case đã ổn định</td>
+<td>Automation Tester</td>
+<td>Cuối sprint</td>
+<td>Sau khi test case được duyệt</td>
+<td>Đọc test case trên Excel, viết lại thành script</td>
+</tr>
+<tr>
+<td>NV8</td>
+<td>Lập báo cáo kiểm thử</td>
+<td>File báo cáo (tỷ lệ pass, số bug)</td>
+<td>Báo cáo theo lần chạy gần nhất</td>
+<td>QA Lead</td>
+<td>1 lần/sprint</td>
+<td>Cuối sprint</td>
+<td>Tổng hợp bằng tay từ nhiều file Excel, mất 1–2 giờ</td>
+</tr>
+<tr>
+<td>NV9</td>
+<td>Lập kế hoạch sprint kiểm thử</td>
+<td>Bảng sprint trên Jira</td>
+<td>Sprint 2 tuần</td>
+<td>QA Lead</td>
+<td>1 lần/sprint</td>
+<td>Đầu sprint</td>
+<td>Họp, chọn story trên Jira</td>
+</tr>
+<tr>
+<td>NV10</td>
+<td>Quản lý thành viên, quy định</td>
+<td>Không có</td>
+<td>Không có</td>
+<td>QA Lead</td>
+<td>Khi có thay đổi</td>
+<td>Bất kỳ lúc nào</td>
+<td>Trao đổi miệng, không ghi nhận</td>
+</tr>
+</tbody></table>
+<h3>Quy trình hiện tại</h3>
 <pre class="mermaid">flowchart TD
     S([Bắt đầu sprint]) --&gt; A["BA tạo user story trên Jira"]
     A --&gt; B["Tester đọc user story, viết test case thủ công trên Excel"]
@@ -1083,7 +1301,7 @@ Velocity thực tế: __ SP
     G --&gt;|Có| H["Tạo bug trên Jira"] --&gt; F
     G --&gt;|Không| I["Automation Tester viết lại test case thành script"]
     I --&gt; J["QA Lead tổng hợp báo cáo bằng tay"]
-    J --&gt; K([Kết thúc sprint])</pre><h2>1.4. Mẫu biểu đang dùng</h2>
+    J --&gt; K([Kết thúc sprint])</pre><h3>Mẫu biểu đang dùng</h3>
 <p><strong>Mẫu test case Excel hiện tại:</strong></p>
 <table>
 <thead>
@@ -1110,7 +1328,37 @@ Velocity thực tế: __ SP
 </tr>
 </tbody></table>
 <p>Nhược điểm: không có trạng thái duyệt, không có lịch sử thay đổi, không liên kết với user story, mỗi người một phiên bản file.</p>
-<h2>1.5. Vấn đề ghi nhận</h2>
+<h2>1.5. Hiện trạng tin học</h2>
+<table>
+<thead>
+<tr>
+<th>Thành phần</th>
+<th>Hiện trạng</th>
+<th>Ảnh hưởng đến phần mềm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Hệ thống phần cứng</strong></td>
+<td>Mỗi người có 1 laptop (macOS hoặc Windows, RAM 8–16 GB); có 1 máy chủ nội bộ chạy Jira</td>
+<td>Phần mềm chạy trên trình duyệt, không cần máy mạnh; chạy script Playwright cần máy có ít nhất 8 GB RAM</td>
+</tr>
+<tr>
+<td><strong>Hệ thống phần mềm</strong></td>
+<td>Jira (yêu cầu, bug), Microsoft Excel / Google Sheets (test case), Chrome, VS Code, Node.js; một số Tester dùng ChatGPT bản miễn phí</td>
+<td>Cần nhập được user story từ file xuất của Jira (CSV), xuất test case ra Excel; chạy trên Chrome</td>
+</tr>
+<tr>
+<td><strong>Hệ thống mạng</strong></td>
+<td>Mạng LAN văn phòng, Internet ổn định; truy cập Jira qua VPN khi làm ở nhà</td>
+<td>Gọi dịch vụ LLM cần Internet; cần chế độ AI giả lập để vẫn làm được khi mất mạng</td>
+</tr>
+<tr>
+<td><strong>Con người</strong></td>
+<td>Đội QA thành thạo viết test case và Jira; 1 người biết viết script tự động; chưa ai được hướng dẫn dùng AI an toàn</td>
+<td>Giao diện tiếng Việt, dễ học; hệ thống phải tự che dữ liệu nhạy cảm thay vì trông chờ người dùng tự nhớ</td>
+</tr>
+</tbody></table>
+<h2>1.6. Vấn đề ghi nhận</h2>
 <table>
 <thead>
 <tr>
@@ -1159,8 +1407,13 @@ Velocity thực tế: __ SP
 <td>Dùng ChatGPT tự phát, dán cả dữ liệu khách hàng</td>
 <td><strong>Nguy cơ lộ dữ liệu nhạy cảm</strong>; kết quả không được kiểm soát</td>
 </tr>
+<tr>
+<td>V9</td>
+<td>Quy định của đội (số test case tối đa, ai được duyệt) chỉ trao đổi miệng</td>
+<td>Mỗi người hiểu một kiểu, không kiểm soát được</td>
+</tr>
 </tbody></table>
-<h2>1.6. Nhu cầu của người dùng</h2>
+<h2>1.7. Nhu cầu của người dùng</h2>
 <table>
 <thead>
 <tr>
@@ -1174,7 +1427,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>QA Lead</td>
-<td>Có hàng đợi duyệt rõ ràng; trả lại kèm góp ý; xem báo cáo tỷ lệ pass, độ bao phủ ngay lập tức; tự điều chỉnh quy định của đội</td>
+<td>Có hàng đợi duyệt rõ ràng; trả lại kèm góp ý; xem báo cáo tỷ lệ pass, độ bao phủ ngay lập tức; tự điều chỉnh quy định của đội; lập kế hoạch sprint</td>
 </tr>
 <tr>
 <td>Developer</td>
@@ -1185,13 +1438,97 @@ Velocity thực tế: __ SP
 <td>Quản lý tài khoản, phân quyền, dự án; kiểm soát việc dùng AI (chi phí, bảo mật)</td>
 </tr>
 </tbody></table>
-<h2>1.7. Kết luận khảo sát</h2>
-<p>Cần một hệ thống tập trung, quản lý toàn bộ vòng đời test case, trong đó AI giúp tăng tốc khâu viết nháp và chuyển thành script tự động, còn <strong>con người giữ quyền quyết định</strong> (chỉnh sửa, duyệt). Hệ thống phải lưu vết đầy đủ, báo cáo tự động và bảo vệ dữ liệu khi làm việc với AI bên ngoài. Các nhu cầu này được cụ thể hóa thành yêu cầu ở <a href="#ch-02">Chương 2</a>.</p>
+<h2>1.8. Kết luận khảo sát</h2>
+<p>Cần một hệ thống tập trung, quản lý toàn bộ vòng đời test case, trong đó AI giúp tăng tốc khâu viết nháp và chuyển thành script tự động, còn <strong>con người giữ quyền quyết định</strong> (chỉnh sửa, duyệt). Hệ thống phải lưu vết đầy đủ, báo cáo tự động và bảo vệ dữ liệu khi làm việc với AI bên ngoài.</p>
+<p>Các nghiệp vụ khảo sát được chuyển thành yêu cầu phần mềm ở <a href="#ch-02">Chương 2</a>:</p>
+<table>
+<thead>
+<tr>
+<th>Nghiệp vụ</th>
+<th>Yêu cầu phần mềm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NV1 Lập user story</td>
+<td>YC1 Lập user story, YC8 Nhập user story từ file</td>
+</tr>
+<tr>
+<td>NV2 Viết test case</td>
+<td>YC2 Sinh test case bằng AI, YC3 Soạn thảo test case</td>
+</tr>
+<tr>
+<td>NV3 Cập nhật test case</td>
+<td>YC3 Soạn thảo (lưu phiên bản)</td>
+</tr>
+<tr>
+<td>NV4 Duyệt test case</td>
+<td>YC4 Duyệt test case</td>
+</tr>
+<tr>
+<td>NV5 Chạy test, ghi kết quả</td>
+<td>YC5 Ghi nhận kết quả chạy test</td>
+</tr>
+<tr>
+<td>NV6 Báo lỗi</td>
+<td>Ngoài phạm vi (vẫn dùng Jira); hệ thống lưu mã bug trong ghi chú kết quả</td>
+</tr>
+<tr>
+<td>NV7 Viết, chạy script tự động</td>
+<td>YC9 Sinh và chạy script tự động</td>
+</tr>
+<tr>
+<td>NV8 Lập báo cáo</td>
+<td>YC6 Lập báo cáo, YC7 Tra cứu, YC8 Xuất Excel</td>
+</tr>
+<tr>
+<td>NV9 Lập kế hoạch sprint</td>
+<td>YC12 Quản lý sprint</td>
+</tr>
+<tr>
+<td>NV10 Quản lý thành viên, quy định</td>
+<td>YC10 Thay đổi quy định, YC11 Quản lý người dùng, dự án</td>
+</tr>
+</tbody></table>
 </section>
 <section class="chapter" id="ch-02"><h1>Chương 2. Xác định và đặc tả yêu cầu</h1>
 <blockquote>
-<p>Sản phẩm của giai đoạn: <strong>danh sách yêu cầu</strong> kèm biểu mẫu (BM) và quy định (QĐ), yêu cầu phi chức năng và bảng trách nhiệm.</p>
+<p>Sản phẩm của giai đoạn: <strong>danh sách các yêu cầu phần mềm</strong> kèm biểu mẫu (BM) và quy định (QĐ), cùng bảng trách nhiệm. <strong>Yêu cầu phần mềm</strong> là các công việc, các nghiệp vụ được hỗ trợ thực hiện trên máy tính với phần mềm.</p>
 </blockquote>
+<p>Theo môn học, yêu cầu phần mềm được lập theo thứ tự <strong>nghiệp vụ → chất lượng → hệ thống</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Nhóm</th>
+<th>Gồm</th>
+<th>Đảm bảo</th>
+<th>Mục trong chương</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Yêu cầu nghiệp vụ</strong></td>
+<td>Lưu trữ, tra cứu, tính toán, kết xuất</td>
+<td>Tính <strong>đúng đắn</strong></td>
+<td>2.2 – 2.4</td>
+</tr>
+<tr>
+<td><strong>Yêu cầu chất lượng</strong></td>
+<td>Tính tiến hóa, tiện dụng, hiệu quả, tương thích</td>
+<td></td>
+<td>2.5</td>
+</tr>
+<tr>
+<td><strong>Yêu cầu hệ thống</strong></td>
+<td>Tính an toàn, bảo mật</td>
+<td></td>
+<td>2.6</td>
+</tr>
+<tr>
+<td>Yêu cầu khác</td>
+<td>Yêu cầu công nghệ (dễ sửa lỗi, bảo trì, tái sử dụng, mang chuyển)</td>
+<td></td>
+<td>2.7</td>
+</tr>
+</tbody></table>
 <h2>2.1. Tác nhân (actor)</h2>
 <table>
 <thead>
@@ -1231,6 +1568,7 @@ Velocity thực tế: __ SP
 <tr>
 <th>STT</th>
 <th>Tên yêu cầu</th>
+<th>Loại yêu cầu</th>
 <th>Biểu mẫu</th>
 <th>Quy định</th>
 <th>Ghi chú</th>
@@ -1239,6 +1577,7 @@ Velocity thực tế: __ SP
 <tbody><tr>
 <td>1</td>
 <td>YC1 – Lập user story</td>
+<td>Lưu trữ</td>
 <td>BM1</td>
 <td>QĐ1</td>
 <td>Nhập tay</td>
@@ -1246,6 +1585,7 @@ Velocity thực tế: __ SP
 <tr>
 <td>2</td>
 <td>YC2 – Sinh test case bằng AI</td>
+<td>Lưu trữ, tính toán</td>
 <td>BM2</td>
 <td>QĐ2</td>
 <td>Chức năng AI chính</td>
@@ -1253,6 +1593,7 @@ Velocity thực tế: __ SP
 <tr>
 <td>3</td>
 <td>YC3 – Soạn thảo và gửi duyệt test case</td>
+<td>Lưu trữ</td>
 <td>BM2</td>
 <td>QĐ3</td>
 <td>Có lịch sử phiên bản</td>
@@ -1260,6 +1601,7 @@ Velocity thực tế: __ SP
 <tr>
 <td>4</td>
 <td>YC4 – Duyệt test case</td>
+<td>Lưu trữ</td>
 <td>BM3</td>
 <td>QĐ4</td>
 <td>Chỉ QA Lead</td>
@@ -1267,6 +1609,7 @@ Velocity thực tế: __ SP
 <tr>
 <td>5</td>
 <td>YC5 – Ghi nhận kết quả chạy test</td>
+<td>Lưu trữ</td>
 <td>BM4</td>
 <td>QĐ5</td>
 <td></td>
@@ -1274,13 +1617,15 @@ Velocity thực tế: __ SP
 <tr>
 <td>6</td>
 <td>YC6 – Lập báo cáo kiểm thử</td>
+<td>Tính toán, kết xuất</td>
 <td>BM5</td>
 <td></td>
-<td>Tự động</td>
+<td>Tỷ lệ pass, độ bao phủ, tiến độ</td>
 </tr>
 <tr>
 <td>7</td>
 <td>YC7 – Tra cứu test case</td>
+<td>Tra cứu</td>
 <td>BM6</td>
 <td></td>
 <td></td>
@@ -1288,6 +1633,7 @@ Velocity thực tế: __ SP
 <tr>
 <td>8</td>
 <td>YC8 – Nhập/xuất dữ liệu</td>
+<td>Lưu trữ, kết xuất</td>
 <td>BM7, BM8</td>
 <td>QĐ8</td>
 <td>CSV/JSON vào, Excel ra</td>
@@ -1295,6 +1641,7 @@ Velocity thực tế: __ SP
 <tr>
 <td>9</td>
 <td>YC9 – Sinh và chạy script kiểm thử tự động</td>
+<td>Lưu trữ, tính toán</td>
 <td>BM9</td>
 <td>QĐ9</td>
 <td>Playwright</td>
@@ -1302,6 +1649,7 @@ Velocity thực tế: __ SP
 <tr>
 <td>10</td>
 <td>YC10 – Thay đổi quy định</td>
+<td>Lưu trữ</td>
 <td></td>
 <td>QĐ10</td>
 <td>Tính tiến hóa</td>
@@ -1309,6 +1657,7 @@ Velocity thực tế: __ SP
 <tr>
 <td>11</td>
 <td>YC11 – Quản lý người dùng, dự án</td>
+<td>Lưu trữ</td>
 <td></td>
 <td>QĐ11</td>
 <td>Admin</td>
@@ -1316,11 +1665,19 @@ Velocity thực tế: __ SP
 <tr>
 <td>12</td>
 <td>YC12 – Quản lý sprint (Agile/Scrum)</td>
+<td>Lưu trữ, tính toán</td>
 <td>BM10</td>
 <td>QĐ12</td>
-<td>Sprint, story point, burndown, velocity</td>
+<td>Velocity, burndown được tính, không nhập</td>
 </tr>
 </tbody></table>
+<p><strong>Ý nghĩa loại yêu cầu:</strong></p>
+<ul>
+<li><strong>Lưu trữ:</strong> ghi thông tin mới hoặc thay đổi xuống bộ nhớ phụ.</li>
+<li><strong>Tra cứu:</strong> tìm và xem lại thông tin đã lưu.</li>
+<li><strong>Tính toán:</strong> tạo ra thông tin mới từ thông tin đã có theo quy định, công thức (tỷ lệ pass, số test case còn được thêm, velocity).</li>
+<li><strong>Kết xuất:</strong> đưa thông tin ra màn hình, máy in hoặc file theo biểu mẫu.</li>
+</ul>
 <h2>2.3. Biểu mẫu và quy định</h2>
 <h3>BM1 – User story</h3>
 <table>
@@ -1605,7 +1962,8 @@ Velocity thực tế: __ SP
 <td>Hỗ trợ đội làm Scrum</td>
 </tr>
 </tbody></table>
-<h2>2.5. Yêu cầu tiến hóa</h2>
+<h2>2.5. Yêu cầu chất lượng</h2>
+<h3>2.5.1. Tính tiến hóa</h3>
 <table>
 <thead>
 <tr>
@@ -1640,7 +1998,36 @@ Velocity thực tế: __ SP
 <td>Thang story point</td>
 </tr>
 </tbody></table>
-<h2>2.6. Yêu cầu hiệu quả</h2>
+<h3>2.5.2. Tính tiện dụng</h3>
+<table>
+<thead>
+<tr>
+<th>STT</th>
+<th>Nghiệp vụ</th>
+<th>Mức độ dễ học</th>
+<th>Mức độ dễ sử dụng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Sinh test case bằng AI</td>
+<td>5 phút làm quen</td>
+<td>1 nút bấm; thông báo rõ số test case, thời gian, dữ liệu đã che</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Duyệt</td>
+<td>Không cần hướng dẫn</td>
+<td>Hàng đợi duyệt, duyệt hàng loạt, huy hiệu số lượng chờ duyệt</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Toàn hệ thống</td>
+<td>Giao diện tiếng Việt</td>
+<td>Thông báo lỗi bằng tiếng Việt, nêu rõ quy định bị vi phạm</td>
+</tr>
+</tbody></table>
+<h3>2.5.3. Tính hiệu quả</h3>
 <table>
 <thead>
 <tr>
@@ -1675,36 +2062,7 @@ Velocity thực tế: __ SP
 <td>Ảnh chụp lỗi ~100 KB/lần</td>
 </tr>
 </tbody></table>
-<h2>2.7. Yêu cầu tiện dụng</h2>
-<table>
-<thead>
-<tr>
-<th>STT</th>
-<th>Nghiệp vụ</th>
-<th>Mức độ dễ học</th>
-<th>Mức độ dễ sử dụng</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>1</td>
-<td>Sinh test case bằng AI</td>
-<td>5 phút làm quen</td>
-<td>1 nút bấm; thông báo rõ số test case, thời gian, dữ liệu đã che</td>
-</tr>
-<tr>
-<td>2</td>
-<td>Duyệt</td>
-<td>Không cần hướng dẫn</td>
-<td>Hàng đợi duyệt, duyệt hàng loạt, huy hiệu số lượng chờ duyệt</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Toàn hệ thống</td>
-<td>Giao diện tiếng Việt</td>
-<td>Thông báo lỗi bằng tiếng Việt, nêu rõ quy định bị vi phạm</td>
-</tr>
-</tbody></table>
-<h2>2.8. Yêu cầu tương thích</h2>
+<h3>2.5.4. Tính tương thích</h3>
 <table>
 <thead>
 <tr>
@@ -1739,7 +2097,33 @@ Velocity thực tế: __ SP
 <td>Gemini API, Claude API, OpenAI API (cùng interface <code>LLMProvider</code>)</td>
 </tr>
 </tbody></table>
-<h2>2.9. Yêu cầu bảo mật</h2>
+<h2>2.6. Yêu cầu hệ thống</h2>
+<h3>2.6.1. Tính an toàn</h3>
+<table>
+<thead>
+<tr>
+<th>STT</th>
+<th>Nghiệp vụ</th>
+<th>Đối tượng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Phục hồi</td>
+<td>Test case đã xóa nhầm: có lịch sử phiên bản; CSDL sao lưu định kỳ (volume Docker)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Hủy thật sự</td>
+<td>Xóa user story xóa kèm test case (có xác nhận 2 bước)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Không cho phép xóa</td>
+<td>Test case <em>Chờ duyệt</em>/<em>Đã duyệt</em>; tài khoản đang đăng nhập không tự khóa</td>
+</tr>
+</tbody></table>
+<h3>2.6.2. Tính bảo mật</h3>
 <table>
 <thead>
 <tr>
@@ -1905,32 +2289,7 @@ Velocity thực tế: __ SP
 <td>Ghi rõ chính sách dữ liệu của nhà cung cấp LLM (dùng gói API không dùng dữ liệu để huấn luyện)</td>
 </tr>
 </tbody></table>
-<h2>2.10. Yêu cầu an toàn</h2>
-<table>
-<thead>
-<tr>
-<th>STT</th>
-<th>Nghiệp vụ</th>
-<th>Đối tượng</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>1</td>
-<td>Phục hồi</td>
-<td>Test case đã xóa nhầm: có lịch sử phiên bản; CSDL sao lưu định kỳ (volume Docker)</td>
-</tr>
-<tr>
-<td>2</td>
-<td>Hủy thật sự</td>
-<td>Xóa user story xóa kèm test case (có xác nhận 2 bước)</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Không cho phép xóa</td>
-<td>Test case <em>Chờ duyệt</em>/<em>Đã duyệt</em>; tài khoản đang đăng nhập không tự khóa</td>
-</tr>
-</tbody></table>
-<h2>2.11. Yêu cầu công nghệ</h2>
+<h2>2.7. Yêu cầu khác – yêu cầu công nghệ</h2>
 <table>
 <thead>
 <tr>
@@ -2350,89 +2709,797 @@ Velocity thực tế: __ SP
 <td>Sai thông tin → thông báo chung &quot;Tên đăng nhập hoặc mật khẩu không đúng&quot; (không tiết lộ tài khoản có tồn tại), ghi <code>LOGIN_FAILED</code>. Sai quá 10 lần/15 phút → tạm khóa theo IP. Tài khoản bị khóa → từ chối.</td>
 </tr>
 </tbody></table>
+<!-- DFD:BEGIN (sinh tự động bởi docs/dfd/generate_dfd.py, đừng sửa tay) -->
 <h2>3.4. Sơ đồ luồng dữ liệu (DFD) cho từng yêu cầu</h2>
-<p>Ký hiệu theo chuẩn môn học: <strong>D1</strong> thông tin người dùng nhập, <strong>D2</strong> thông tin xuất ra thiết bị xuất (nếu có), <strong>D3</strong> dữ liệu đọc từ bộ nhớ phụ, <strong>D4</strong> dữ liệu ghi xuống bộ nhớ phụ, <strong>D5</strong> thông tin xuất ra máy in, <strong>D6</strong> thông tin trả về người dùng.</p>
-<h3>DFD YC1 – Lập user story</h3>
-<pre class="mermaid">flowchart LR
-    U["Tester"] --&gt;|D1| P(("Lập user story"))
-    P --&gt;|D6| U
-    DB[("Bộ nhớ phụ")] --&gt;|D3| P
-    P --&gt;|D4| DB</pre><ul>
-<li><strong>D1:</strong> mã, dự án, module, tiêu đề, mô tả, acceptance criteria, độ ưu tiên.</li>
-<li><strong>D3:</strong> danh sách mã user story đã có, danh sách dự án/module, tham số <code>MIN_AC_PER_STORY</code>, <code>PRIORITIES</code>.</li>
-<li><strong>D4:</strong> D1 + người tạo, ngày tạo.</li>
-<li><strong>D6:</strong> kết quả lưu hoặc thông báo lỗi.</li>
-<li><strong>Thuật toán:</strong> B1 nhận D1 → B2 đọc D3 → B3 kiểm tra mã đúng định dạng và không trùng → B4 kiểm tra độ ưu tiên thuộc danh sách → B5 đếm số acceptance criteria ≥ tối thiểu → B6 kiểm tra module thuộc dự án → B7 nếu không thỏa thì trả lỗi (D6), dừng → B8 lưu D4 → B9 trả D6.</li>
+<p>Các sơ đồ được vẽ bằng phần mềm chuyên dụng <strong>draw.io (diagrams.net)</strong>. File gốc <code>.drawio</code> nằm trong thư mục <code>docs/dfd/</code> (mở bằng <a href="https://app.diagrams.net">app.diagrams.net</a> hoặc draw.io Desktop để xem, sửa); hình trong báo cáo được sinh từ cùng một nguồn bằng lệnh <code>python3 docs/dfd/generate_dfd.py</code>.</p>
+<h3>3.4.1. Ký hiệu và quy ước</h3>
+<table>
+<thead>
+<tr>
+<th>Ký hiệu</th>
+<th>Ý nghĩa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hình chữ nhật</td>
+<td>Người dùng (tác nhân) hoặc thiết bị nhập / xuất</td>
+</tr>
+<tr>
+<td>Hình elip</td>
+<td>Khối xử lý – một công việc của phần mềm</td>
+</tr>
+<tr>
+<td>Mũi tên khối</td>
+<td>Luồng dữ liệu, ghi tên D1–D6. Luồng <strong>không có</strong> được vẽ <strong>màu trắng</strong> và mô tả là &quot;Không có&quot;</td>
+</tr>
+<tr>
+<td>Hai đường kẻ ngang</td>
+<td>Bộ nhớ phụ (cơ sở dữ liệu)</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Ý nghĩa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>D1</strong></td>
+<td>Thông tin <strong>người dùng nhập</strong> vào khối xử lý</td>
+</tr>
+<tr>
+<td><strong>D2</strong></td>
+<td>Thông tin từ <strong>thiết bị nhập khác</strong> (không phải bàn phím, chuột): file, dịch vụ bên ngoài…</td>
+</tr>
+<tr>
+<td><strong>D3</strong></td>
+<td>Dữ liệu <strong>đọc</strong> từ bộ nhớ phụ</td>
+</tr>
+<tr>
+<td><strong>D4</strong></td>
+<td>Dữ liệu <strong>ghi</strong> xuống bộ nhớ phụ (thông tin nhập cần lưu + kết quả mới tạo ra hoặc thay đổi)</td>
+</tr>
+<tr>
+<td><strong>D5</strong></td>
+<td>Thông tin đưa ra <strong>thiết bị xuất khác</strong> (không phải màn hình): máy in, file, dịch vụ bên ngoài…</td>
+</tr>
+<tr>
+<td><strong>D6</strong></td>
+<td>Thông tin <strong>trả về người dùng</strong>, luôn có thông báo thành công hoặc thất bại</td>
+</tr>
+</tbody></table>
+<p><strong>Lưu ý khi vẽ:</strong></p>
+<ul>
+<li>Tên luồng D là <strong>thông tin</strong>, không phải hành động.</li>
+<li>Mỗi khối xử lý có ít nhất một luồng vào và một luồng ra.</li>
+<li>Không có luồng trực tiếp giữa tác nhân với tác nhân, hay giữa tác nhân với bộ nhớ phụ: mọi dữ liệu đều đi qua khối xử lý.</li>
+<li>Người dùng không nhập những thông tin đã lưu hoặc tính được (VD: người tạo, ngày tạo, phiên bản, tỷ lệ pass do hệ thống tự lấy / tự tính).</li>
 </ul>
-<h3>DFD YC2 – Sinh test case bằng AI</h3>
-<pre class="mermaid">flowchart LR
-    U["Tester"] --&gt;|"D1: mã user story"| P(("Sinh test case&lt;br/&gt;bằng AI"))
-    P --&gt;|"D6: danh sách test case Nháp"| U
-    DB[("Bộ nhớ phụ")] --&gt;|D3| P
-    P --&gt;|D4| DB
-    P --&gt;|"D2: prompt đã che PII"| LLM[["Dịch vụ LLM"]]
-    LLM --&gt;|"JSON test case"| P</pre><ul>
-<li><strong>D3:</strong> nội dung user story; tham số <code>MAX_TC_PER_STORY</code>, <code>AI_MAX_RETRY</code>, <code>AI_TIMEOUT_SEC</code>, <code>AI_CALLS_PER_HOUR</code>; số lần gọi AI của người dùng trong 1 giờ; số test case hiện có.</li>
-<li><strong>D4:</strong> test case mới (nguồn AI, Nháp, v1), phiên bản v1, nhật ký AI (prompt đã che, model, kết quả gốc, số lần thử, thời gian, cờ injection).</li>
-<li><strong>Thuật toán:</strong> B1 nhận D1 → B2 đọc D3 → B3 kiểm tra hạn mức gọi AI → B4 che PII → B5 phát hiện injection → B6 ghép prompt → B7 gửi LLM (D2), chờ tối đa <code>AI_TIMEOUT_SEC</code> → B8 kiểm tra schema; sai thì lặp B7 tối đa <code>AI_MAX_RETRY</code> lần → B9 xóa test case AI Nháp cũ, cắt theo số tối đa còn lại → B10 ghi D4 → B11 trả D6.</li>
+<p><strong>Ba bước thực hiện cho mỗi yêu cầu:</strong> (1) vẽ sơ đồ luồng dữ liệu; (2) mô tả các luồng D1–D6 (luồng không có ghi &quot;Không có&quot;); (3) viết thuật toán xử lý theo khuôn <em>Nhận D1 → Kết nối CSDL → Đọc D3 → kiểm tra quy định → Lưu D4 → Xuất D5 → Xuất D6 → Đóng kết nối → Kết thúc</em>. Ở mỗi bước kiểm tra, nếu không thỏa quy định thì ghi thông báo lỗi vào D6 và nhảy tới bước Xuất D6.</p>
+<h3>3.4.2. DFD YC1 – Lập user story</h3>
+<p><img src="dfd/YC01_LapUserStory.svg" alt="DFD YC1 – Lập user story"></p>
+<p><em>Biểu mẫu:</em> BM1 · <em>Quy định:</em> QĐ1 · <em>File:</em> <code>docs/dfd/YC01_LapUserStory.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Mã user story, dự án, module, tiêu đề, mô tả, các acceptance criteria, độ ưu tiên.</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Danh sách mã user story đã có; danh sách dự án, module; tham số MIN_AC_PER_STORY, PRIORITIES.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>D1 + người tạo, ngày tạo.</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Thông báo lưu thành công kèm user story vừa lập, hoặc thông báo lỗi vi phạm QĐ1.</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Kết nối cơ sở dữ liệu.</li>
+<li>B3: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B4: Kiểm tra mã user story đúng dạng US-XXX và không trùng với mã đã có? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B5: Kiểm tra tiêu đề ≥ 5 ký tự, mô tả ≥ 10 ký tự? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B6: Kiểm tra độ ưu tiên thuộc danh sách PRIORITIES? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B7: Kiểm tra số acceptance criteria ≥ MIN_AC_PER_STORY? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B8: Kiểm tra module thuộc dự án đã chọn? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B9: Lưu D4 xuống bộ nhớ phụ.</li>
+<li>B10: Xuất D6 cho người dùng.</li>
+<li>B11: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B12: Kết thúc.</li>
 </ul>
-<h3>DFD YC3 – Soạn thảo và gửi duyệt</h3>
-<pre class="mermaid">flowchart LR
-    U["Tester"] --&gt;|D1| P(("Soạn thảo,&lt;br/&gt;gửi duyệt"))
-    P --&gt;|D6| U
-    DB[("Bộ nhớ phụ")] --&gt;|D3| P
-    P --&gt;|D4| DB</pre><ul>
-<li><strong>D1:</strong> nội dung test case mới hoặc danh sách mã test case cần gửi duyệt, ghi chú thay đổi.</li>
-<li><strong>D3:</strong> trạng thái và phiên bản hiện tại của test case.</li>
-<li><strong>D4:</strong> nội dung mới, phiên bản + 1, bản chụp phiên bản; hoặc trạng thái <em>Chờ duyệt</em>.</li>
-<li><strong>Thuật toán:</strong> kiểm tra trạng thái cho phép theo QĐ3 → lưu phiên bản mới (sửa bản <em>Đã duyệt</em> thì đưa về <em>Nháp</em>) → hoặc đổi trạng thái sang <em>Chờ duyệt</em> (trong 1 giao dịch cho cả danh sách).</li>
+<h3>3.4.3. DFD YC2 – Sinh test case bằng AI</h3>
+<p><img src="dfd/YC02_SinhTestCaseBangAI.svg" alt="DFD YC2 – Sinh test case bằng AI"></p>
+<p><em>Biểu mẫu:</em> BM2 · <em>Quy định:</em> QĐ2 · <em>File:</em> <code>docs/dfd/YC02_SinhTestCaseBangAI.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Mã user story cần sinh test case.</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Chuỗi JSON danh sách test case do LLM trả về.</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Nội dung user story; tham số MAX_TC_PER_STORY, AI_MAX_RETRY, AI_TIMEOUT_SEC, AI_CALLS_PER_HOUR; số lần gọi AI của người dùng trong 1 giờ; số test case hiện có của user story.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Các test case mới (nguồn AI, trạng thái Nháp, phiên bản 1); nhật ký AI (prompt đã che PII, model, kết quả gốc, số lần thử, thời gian, cờ injection).</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Prompt gửi LLM: vai trò QA, quy định QĐ2, nội dung user story ĐÃ CHE dữ liệu nhạy cảm (PII).</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Thông báo thành công kèm danh sách test case Nháp, cảnh báo nếu có prompt injection; hoặc thông báo lỗi (hết hạn mức, LLM lỗi, vượt số test case tối đa).</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Kết nối cơ sở dữ liệu.</li>
+<li>B3: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B4: Kiểm tra số lần gọi AI trong 1 giờ &lt; AI_CALLS_PER_HOUR? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B11.</li>
+<li>B5: Tính số test case còn được sinh = MAX_TC_PER_STORY − số test case hiện có (không tính test case AI Nháp sẽ thay thế). Kiểm tra số này &gt; 0? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B11.</li>
+<li>B6: Che dữ liệu nhạy cảm (email, số điện thoại, khóa API…) và đánh dấu nếu phát hiện prompt injection.</li>
+<li>B7: Ghép prompt và xuất D5 đến Dịch vụ LLM, chờ tối đa AI_TIMEOUT_SEC giây.</li>
+<li>B8: Nhận D2 từ Dịch vụ LLM. Nếu D2 sai JSON schema thì quay lại bước trước, tối đa AI_MAX_RETRY lần; quá số lần vẫn sai? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B11.</li>
+<li>B9: Xóa các test case AI còn Nháp của user story; cắt danh sách theo số test case còn được sinh.</li>
+<li>B10: Lưu D4 xuống bộ nhớ phụ.</li>
+<li>B11: Xuất D6 cho người dùng.</li>
+<li>B12: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B13: Kết thúc.</li>
 </ul>
-<h3>DFD YC4 – Duyệt test case</h3>
-<pre class="mermaid">flowchart LR
-    U["QA Lead"] --&gt;|"D1: quyết định, ghi chú"| P(("Duyệt&lt;br/&gt;test case"))
-    P --&gt;|D6| U
-    DB[("Bộ nhớ phụ")] --&gt;|"D3: trạng thái, vai trò"| P
-    P --&gt;|"D4: trạng thái mới, phiếu duyệt"| DB</pre><ul>
-<li><strong>Thuật toán:</strong> kiểm tra vai trò QA Lead → kiểm tra trạng thái <em>Chờ duyệt</em> → nếu Trả lại thì bắt buộc có ghi chú → ghi trạng thái mới + phiếu duyệt trong 1 giao dịch → ghi audit log.</li>
+<h3>3.4.4. DFD YC3 – Soạn thảo và gửi duyệt test case</h3>
+<p><img src="dfd/YC03_SoanThaoGuiDuyet.svg" alt="DFD YC3 – Soạn thảo và gửi duyệt test case"></p>
+<p><em>Biểu mẫu:</em> BM2 · <em>Quy định:</em> QĐ2, QĐ3 · <em>File:</em> <code>docs/dfd/YC03_SoanThaoGuiDuyet.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Nội dung test case (BM2) cần thêm/sửa kèm ghi chú thay đổi; hoặc danh sách mã test case cần gửi duyệt.</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Trạng thái, phiên bản hiện tại của test case; số test case của user story; tham số MAX_TC_PER_STORY.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Nội dung mới, phiên bản + 1, bản chụp phiên bản; hoặc trạng thái Chờ duyệt của các test case gửi duyệt.</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Thông báo lưu / gửi duyệt thành công kèm test case sau khi lưu, hoặc thông báo lỗi vi phạm QĐ2, QĐ3.</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Kết nối cơ sở dữ liệu.</li>
+<li>B3: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B4: Thêm mới: kiểm tra số test case của user story &lt; MAX_TC_PER_STORY và có 1–15 bước? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B8.</li>
+<li>B5: Sửa / gửi duyệt / xóa: kiểm tra trạng thái cho phép theo QĐ3 (Chờ duyệt thì không được sửa; chỉ Nháp, Bị trả lại mới được gửi duyệt)? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B8.</li>
+<li>B6: Sửa test case Đã duyệt thì đưa trạng thái về Nháp; tính phiên bản mới = phiên bản hiện tại + 1.</li>
+<li>B7: Lưu D4 xuống bộ nhớ phụ.</li>
+<li>B8: Xuất D6 cho người dùng.</li>
+<li>B9: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B10: Kết thúc.</li>
 </ul>
-<h3>DFD YC5 – Ghi nhận kết quả chạy test</h3>
-<pre class="mermaid">flowchart LR
-    U["Tester"] --&gt;|"D1: kết quả, ghi chú"| P(("Ghi nhận&lt;br/&gt;kết quả"))
-    P --&gt;|D6| U
-    DB[("Bộ nhớ phụ")] --&gt;|"D3: trạng thái test case"| P
-    P --&gt;|"D4: kết quả chạy"| DB</pre><h3>DFD YC6 – Lập báo cáo</h3>
-<pre class="mermaid">flowchart LR
-    U["Người dùng"] --&gt;|"D1: dự án"| P(("Lập báo cáo"))
-    DB[("Bộ nhớ phụ")] --&gt;|"D3: user story, test case, kết quả chạy, nhật ký AI"| P
-    P --&gt;|"D6: chỉ số, biểu đồ"| U
-    P -.-&gt;|"D5: xuất/in"| PR["Máy in / file"]</pre><ul>
-<li><strong>Thuật toán:</strong> lấy kết quả chạy <strong>gần nhất</strong> của mỗi test case → tỷ lệ pass = Pass/đã chạy → độ bao phủ = story có test case đã duyệt / tổng story → tiến độ = đã chạy / đã duyệt → nhóm theo module, theo ngày → thống kê AI.</li>
+<h3>3.4.5. DFD YC4 – Duyệt test case</h3>
+<p><img src="dfd/YC04_DuyetTestCase.svg" alt="DFD YC4 – Duyệt test case"></p>
+<p><em>Biểu mẫu:</em> BM3 · <em>Quy định:</em> QĐ4 · <em>File:</em> <code>docs/dfd/YC04_DuyetTestCase.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Mã test case, quyết định Duyệt / Trả lại, ghi chú (BM3).</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Trạng thái hiện tại của test case; vai trò của người duyệt.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Trạng thái mới (Đã duyệt / Bị trả lại); phiếu duyệt (người duyệt, quyết định, ghi chú, ngày duyệt); nhật ký hoạt động.</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Thông báo duyệt thành công kèm trạng thái mới, hoặc thông báo lỗi vi phạm QĐ4.</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Kết nối cơ sở dữ liệu.</li>
+<li>B3: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B4: Kiểm tra người duyệt có vai trò QA Lead? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B8.</li>
+<li>B5: Kiểm tra test case đang ở trạng thái Chờ duyệt? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B8.</li>
+<li>B6: Nếu quyết định là Trả lại: kiểm tra có ghi chú? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B8.</li>
+<li>B7: Lưu D4 xuống bộ nhớ phụ.</li>
+<li>B8: Xuất D6 cho người dùng.</li>
+<li>B9: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B10: Kết thúc.</li>
 </ul>
-<h3>DFD YC9 – Sinh và chạy script tự động</h3>
-<pre class="mermaid">flowchart LR
-    U["Tester"] --&gt;|"D1: mã test case, mã script đã sửa"| P(("Sinh &amp; chạy&lt;br/&gt;script"))
-    P --&gt;|"D6: script, kết quả, log, ảnh"| U
-    DB[("Bộ nhớ phụ")] --&gt;|D3| P
-    P --&gt;|D4| DB
-    P --&gt;|"D2: prompt"| LLM[["Dịch vụ LLM"]]
-    LLM --&gt;|"mã script"| P
-    P --&gt;|"script đã kiểm tra"| PW[["Playwright Worker"]]
-    PW --&gt;|"báo cáo JSON, ảnh chụp"| P</pre><h3>DFD YC12 – Quản lý sprint</h3>
-<pre class="mermaid">flowchart LR
-    U["QA Lead"] --&gt;|"D1: tên, mục tiêu, ngày; story đưa vào sprint"| P(("Quản lý&lt;br/&gt;sprint"))
-    P --&gt;|"D6: bảng sprint, burndown, velocity"| U
-    DB[("Bộ nhớ phụ")] --&gt;|D3| P
-    P --&gt;|D4| DB</pre><ul>
-<li><strong>D3:</strong> các sprint hiện có của dự án, tham số <code>SPRINT_MAX_DAYS</code>, user story, test case đã duyệt và kết quả chạy gần nhất.</li>
-<li><strong>D4:</strong> sprint mới; <code>sprint_id</code>, <code>story_points</code> của user story.</li>
-<li><strong>Thuật toán burndown:</strong> với mỗi ngày d của sprint: còn lại(d) = tổng story point − tổng story point của các story đạt DoD trước hoặc trong ngày d; đường lý tưởng giảm đều từ tổng điểm về 0.</li>
+<h3>3.4.6. DFD YC5 – Ghi nhận kết quả chạy test</h3>
+<p><img src="dfd/YC05_GhiKetQuaChayTest.svg" alt="DFD YC5 – Ghi nhận kết quả chạy test"></p>
+<p><em>Biểu mẫu:</em> BM4 · <em>Quy định:</em> QĐ5 · <em>File:</em> <code>docs/dfd/YC05_GhiKetQuaChayTest.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Mã test case, kết quả Pass / Fail / Blocked, ghi chú (mã bug).</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Trạng thái của test case.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Kết quả chạy: kết quả, hình thức Thủ công, ghi chú, người chạy, thời điểm chạy.</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Thông báo ghi nhận thành công, hoặc thông báo lỗi vi phạm QĐ5.</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Kết nối cơ sở dữ liệu.</li>
+<li>B3: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B4: Kiểm tra test case ở trạng thái Đã duyệt? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B7.</li>
+<li>B5: Nếu kết quả là Fail hoặc Blocked: kiểm tra có ghi chú? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B7.</li>
+<li>B6: Lưu D4 xuống bộ nhớ phụ.</li>
+<li>B7: Xuất D6 cho người dùng.</li>
+<li>B8: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B9: Kết thúc.</li>
 </ul>
-<h3>DFD YC10 – Thay đổi quy định</h3>
-<pre class="mermaid">flowchart LR
-    U["Admin / QA Lead"] --&gt;|"D1: tham số, giá trị mới"| P(("Thay đổi&lt;br/&gt;quy định"))
-    P --&gt;|D6| U
-    DB[("Bộ nhớ phụ")] --&gt;|"D3: tham số hiện tại, miền giá trị"| P
-    P --&gt;|"D4: giá trị mới, người sửa, thời gian"| DB</pre><h2>3.5. Sơ đồ hoạt động – quy trình nghiệp vụ mới</h2>
+<h3>3.4.7. DFD YC6 – Lập báo cáo kiểm thử</h3>
+<p><img src="dfd/YC06_LapBaoCao.svg" alt="DFD YC6 – Lập báo cáo kiểm thử"></p>
+<p><em>Biểu mẫu:</em> BM5 · <em>Quy định:</em> QĐ5 · <em>File:</em> <code>docs/dfd/YC06_LapBaoCao.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Dự án cần xem báo cáo.</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>User story, test case, các lần chạy test, nhật ký AI của dự án.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Báo cáo BM5: tỷ lệ pass, độ bao phủ, tiến độ thực thi, kết quả theo module, xu hướng theo ngày, thống kê AI, danh sách user story chưa được bao phủ (dạng bảng và biểu đồ).</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Kết nối cơ sở dữ liệu.</li>
+<li>B3: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B4: Với mỗi test case: lấy kết quả của lần chạy GẦN NHẤT.</li>
+<li>B5: Tính tỷ lệ pass = số test case Pass / số test case đã chạy.</li>
+<li>B6: Tính độ bao phủ = số user story có ≥ 1 test case Đã duyệt / tổng số user story.</li>
+<li>B7: Tính tiến độ thực thi = số test case đã chạy / số test case Đã duyệt.</li>
+<li>B8: Nhóm kết quả theo module và theo ngày; thống kê số test case AI sinh, tỷ lệ phải sửa.</li>
+<li>B9: Xuất D6 cho người dùng.</li>
+<li>B10: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B11: Kết thúc.</li>
+</ul>
+<h3>3.4.8. DFD YC7 – Tra cứu test case</h3>
+<p><img src="dfd/YC07_TraCuuTestCase.svg" alt="DFD YC7 – Tra cứu test case"></p>
+<p><em>Biểu mẫu:</em> BM6 · <em>Quy định:</em> Không có · <em>File:</em> <code>docs/dfd/YC07_TraCuuTestCase.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Điều kiện tra cứu: từ khóa (mã / tiêu đề), dự án, trạng thái, độ ưu tiên, loại, nguồn.</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Các test case thỏa điều kiện kèm user story, kết quả chạy gần nhất, có script hay không.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Danh sách test case thỏa điều kiện (BM6), hoặc thông báo không tìm thấy.</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Kết nối cơ sở dữ liệu.</li>
+<li>B3: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B4: Ghép điều kiện D1 thành câu truy vấn có tham số (không nối chuỗi SQL) trước khi đọc D3.</li>
+<li>B5: Xuất D6 cho người dùng.</li>
+<li>B6: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B7: Kết thúc.</li>
+</ul>
+<h3>3.4.9. DFD YC8a – Nhập user story từ file</h3>
+<p><img src="dfd/YC08a_NhapUserStory.svg" alt="DFD YC8a – Nhập user story từ file"></p>
+<p><em>Biểu mẫu:</em> BM7 · <em>Quy định:</em> QĐ1, QĐ8 · <em>File:</em> <code>docs/dfd/YC08_NhapXuatDuLieu.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Dự án nhận dữ liệu; lệnh chọn file.</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Các dòng user story trong file (BM7).</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Danh sách mã user story đã có; module của dự án; tham số MIN_AC_PER_STORY, PRIORITIES.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Các user story hợp lệ.</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Thông báo số dòng nhập thành công và danh sách dòng lỗi kèm lý do.</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Nhận D2 từ thiết bị nhập.</li>
+<li>B3: Kết nối cơ sở dữ liệu.</li>
+<li>B4: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B5: Kiểm tra số dòng trong D2 ≤ 200? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B8.</li>
+<li>B6: Với từng dòng: kiểm tra theo QĐ1 như YC1; dòng lỗi được ghi lại số dòng và lý do, không làm hỏng các dòng hợp lệ.</li>
+<li>B7: Lưu D4 xuống bộ nhớ phụ.</li>
+<li>B8: Xuất D6 cho người dùng.</li>
+<li>B9: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B10: Kết thúc.</li>
+</ul>
+<h3>3.4.10. DFD YC8b – Xuất test case ra Excel</h3>
+<p><img src="dfd/YC08b_XuatTestCase.svg" alt="DFD YC8b – Xuất test case ra Excel"></p>
+<p><em>Biểu mẫu:</em> BM8 · <em>Quy định:</em> Không có · <em>File:</em> <code>docs/dfd/YC08_NhapXuatDuLieu.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Điều kiện lọc như YC7.</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Các test case thỏa điều kiện kèm kết quả chạy gần nhất.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>File Excel: mỗi test case một dòng theo các cột của BM2 và kết quả gần nhất (BM8).</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Thông báo xuất file thành công (trình duyệt tải file về).</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Kết nối cơ sở dữ liệu.</li>
+<li>B3: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B4: Ghi từng test case thành một dòng Excel; các bước, acceptance criteria xuống dòng trong ô.</li>
+<li>B5: Xuất D5 ra thiết bị xuất.</li>
+<li>B6: Xuất D6 cho người dùng.</li>
+<li>B7: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B8: Kết thúc.</li>
+</ul>
+<h3>3.4.11. DFD YC9 – Sinh và chạy script kiểm thử tự động</h3>
+<p><img src="dfd/YC09_SinhVaChayScript.svg" alt="DFD YC9 – Sinh và chạy script kiểm thử tự động"></p>
+<p><em>Biểu mẫu:</em> BM9 · <em>Quy định:</em> QĐ9 · <em>File:</em> <code>docs/dfd/YC09_SinhVaChayScript.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Mã test case; yêu cầu sinh script hoặc chạy script; mã script đã sửa (nếu Tester sửa tay).</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Từ LLM: mã script Playwright. Từ Playwright Worker: báo cáo chạy (JSON), log, ảnh chụp lỗi.</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Test case Đã duyệt, URL ứng dụng của dự án, script đang lưu; tham số RUN_TIMEOUT_SEC, AI_MAX_RETRY.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Script (mã nguồn, người tạo, ngày); kết quả chạy hình thức Tự động (kết quả, thời gian, log, ảnh lỗi); nhật ký AI.</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Đến LLM: prompt đã che PII. Đến Playwright Worker: script đã qua kiểm tra tĩnh.</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Thông báo thành công kèm mã script, kết quả Pass / Fail, log, ảnh chụp lỗi; hoặc thông báo lỗi vi phạm QĐ9.</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Kết nối cơ sở dữ liệu.</li>
+<li>B3: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B4: Kiểm tra test case ở trạng thái Đã duyệt? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B5: Sinh script: xuất D5 (prompt) đến Dịch vụ LLM, nhận D2 (mã script).</li>
+<li>B6: Kiểm tra tĩnh script: không dùng module nguy hiểm, không truy cập process.env, không eval / new Function? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B7: Chạy script: xuất D5 (script) đến Playwright Worker, chờ tối đa RUN_TIMEOUT_SEC giây, nhận D2 (báo cáo, ảnh lỗi).</li>
+<li>B8: Xác định kết quả Pass / Fail từ báo cáo.</li>
+<li>B9: Lưu D4 xuống bộ nhớ phụ.</li>
+<li>B10: Xuất D6 cho người dùng.</li>
+<li>B11: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B12: Kết thúc.</li>
+</ul>
+<h3>3.4.12. DFD YC10 – Thay đổi quy định</h3>
+<p><img src="dfd/YC10_ThayDoiQuyDinh.svg" alt="DFD YC10 – Thay đổi quy định"></p>
+<p><em>Biểu mẫu:</em> Không có · <em>Quy định:</em> QĐ10 · <em>File:</em> <code>docs/dfd/YC10_ThayDoiQuyDinh.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Tham số cần thay đổi, giá trị mới.</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Giá trị hiện tại, kiểu dữ liệu, miền giá trị cho phép của tham số; vai trò người sửa.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Giá trị mới, người sửa, thời điểm sửa; nhật ký hoạt động.</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Thông báo thay đổi thành công (giá trị cũ → mới), hoặc thông báo giá trị ngoài miền cho phép.</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Kết nối cơ sở dữ liệu.</li>
+<li>B3: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B4: Kiểm tra người sửa có vai trò Admin hoặc QA Lead? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B7.</li>
+<li>B5: Kiểm tra giá trị mới đúng kiểu và thuộc miền giá trị cho phép (QĐ10)? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B7.</li>
+<li>B6: Lưu D4 xuống bộ nhớ phụ.</li>
+<li>B7: Xuất D6 cho người dùng.</li>
+<li>B8: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B9: Kết thúc.</li>
+</ul>
+<h3>3.4.13. DFD YC11 – Quản lý người dùng, dự án</h3>
+<p><img src="dfd/YC11_QuanLyNguoiDungDuAn.svg" alt="DFD YC11 – Quản lý người dùng, dự án"></p>
+<p><em>Biểu mẫu:</em> Không có · <em>Quy định:</em> QĐ11 · <em>File:</em> <code>docs/dfd/YC11_QuanLyNguoiDungDuAn.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Thông tin tài khoản (tên đăng nhập, họ tên, vai trò, mật khẩu, khóa/mở); hoặc thông tin dự án, module.</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Danh sách tài khoản, dự án, module hiện có.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Tài khoản (mật khẩu ĐÃ BĂM bcrypt), dự án, module; nhật ký hoạt động.</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Thông báo lưu thành công (không bao giờ chứa mật khẩu băm), hoặc thông báo lỗi vi phạm QĐ11.</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Kết nối cơ sở dữ liệu.</li>
+<li>B3: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B4: Kiểm tra người thực hiện có vai trò Admin? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B9.</li>
+<li>B5: Kiểm tra tên đăng nhập 3–30 ký tự a-z 0-9 _ . và không trùng; mật khẩu ≥ 8 ký tự? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B9.</li>
+<li>B6: Kiểm tra Admin không tự khóa hoặc tự hạ quyền chính mình? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B9.</li>
+<li>B7: Băm mật khẩu bằng bcrypt.</li>
+<li>B8: Lưu D4 xuống bộ nhớ phụ.</li>
+<li>B9: Xuất D6 cho người dùng.</li>
+<li>B10: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B11: Kết thúc.</li>
+</ul>
+<h3>3.4.14. DFD YC12 – Quản lý sprint (Agile/Scrum)</h3>
+<p><img src="dfd/YC12_QuanLySprint.svg" alt="DFD YC12 – Quản lý sprint (Agile/Scrum)"></p>
+<p><em>Biểu mẫu:</em> BM10 · <em>Quy định:</em> QĐ12 · <em>File:</em> <code>docs/dfd/YC12_QuanLySprint.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Tên, mục tiêu, ngày bắt đầu, ngày kết thúc sprint (BM10); user story đưa vào sprint và story point.</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Các sprint hiện có của dự án; tham số SPRINT_MAX_DAYS; user story, test case Đã duyệt và kết quả chạy gần nhất.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Sprint mới / đã sửa; sprint_id, story_points của user story.</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Thông báo lưu thành công kèm bảng sprint, burndown, velocity; hoặc thông báo lỗi vi phạm QĐ12.</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Kết nối cơ sở dữ liệu.</li>
+<li>B3: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B4: Kiểm tra số ngày của sprint ≤ SPRINT_MAX_DAYS và ngày kết thúc không trước ngày bắt đầu? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B5: Kiểm tra sprint không trùng thời gian với sprint khác của dự án? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B6: Kiểm tra user story cùng dự án và story point thuộc dãy 1, 2, 3, 5, 8, 13? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B7: Xác định story đạt DoD: có ≥ 1 test case Đã duyệt và mọi test case Đã duyệt có lần chạy gần nhất là Pass.</li>
+<li>B8: Tính velocity = tổng story point của story đạt DoD; burndown: còn lại(ngày) = tổng story point − story point đã đạt DoD đến ngày đó.</li>
+<li>B9: Lưu D4 xuống bộ nhớ phụ.</li>
+<li>B10: Xuất D6 cho người dùng.</li>
+<li>B11: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B12: Kết thúc.</li>
+</ul>
+<h3>3.4.15. Sơ đồ phối hợp giữa các công việc</h3>
+<p><img src="dfd/PhoiHop_CacCongViec.svg" alt="Sơ đồ phối hợp giữa các công việc"></p>
+<p><em>File:</em> <code>docs/dfd/PhoiHop_CacCongViec.drawio</code>. Mỗi mũi tên là <strong>thông tin</strong> do công việc trước tạo ra (ghi xuống bộ nhớ phụ ở D4) và công việc sau sử dụng (đọc lên ở D3).</p>
+<table>
+<thead>
+<tr>
+<th>Công việc trước</th>
+<th>Thông tin chuyển giao</th>
+<th>Công việc sau</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>YC1 – Lập user story</td>
+<td>user story</td>
+<td>YC2 – Sinh test case bằng AI</td>
+</tr>
+<tr>
+<td>YC8a – Nhập user story từ file</td>
+<td>user story</td>
+<td>YC2 – Sinh test case bằng AI</td>
+</tr>
+<tr>
+<td>YC1 – Lập user story</td>
+<td>user story, story point</td>
+<td>YC12 – Quản lý sprint</td>
+</tr>
+<tr>
+<td>YC2 – Sinh test case bằng AI</td>
+<td>test case Nháp</td>
+<td>YC3 – Soạn thảo, gửi duyệt</td>
+</tr>
+<tr>
+<td>YC3 – Soạn thảo, gửi duyệt</td>
+<td>test case Chờ duyệt</td>
+<td>YC4 – Duyệt test case</td>
+</tr>
+<tr>
+<td>YC4 – Duyệt test case</td>
+<td>test case Bị trả lại + ghi chú</td>
+<td>YC3 – Soạn thảo, gửi duyệt</td>
+</tr>
+<tr>
+<td>YC4 – Duyệt test case</td>
+<td>test case Đã duyệt</td>
+<td>YC5 – Ghi nhận kết quả</td>
+</tr>
+<tr>
+<td>YC4 – Duyệt test case</td>
+<td>test case Đã duyệt</td>
+<td>YC9 – Sinh và chạy script</td>
+</tr>
+<tr>
+<td>YC5 – Ghi nhận kết quả</td>
+<td>kết quả chạy gần nhất (xét DoD)</td>
+<td>YC12 – Quản lý sprint</td>
+</tr>
+<tr>
+<td>YC5 – Ghi nhận kết quả</td>
+<td>kết quả gần nhất</td>
+<td>YC7 – Tra cứu test case</td>
+</tr>
+<tr>
+<td>YC5 – Ghi nhận kết quả</td>
+<td>kết quả chạy thủ công</td>
+<td>YC6 – Lập báo cáo</td>
+</tr>
+<tr>
+<td>YC9 – Sinh và chạy script</td>
+<td>kết quả chạy tự động</td>
+<td>YC6 – Lập báo cáo</td>
+</tr>
+<tr>
+<td>YC9 – Sinh và chạy script</td>
+<td>kết quả gần nhất</td>
+<td>YC8b – Xuất test case ra Excel</td>
+</tr>
+<tr>
+<td>YC9 – Sinh và chạy script</td>
+<td>kết quả chạy tự động gần nhất (xét DoD)</td>
+<td>YC12 – Quản lý sprint</td>
+</tr>
+<tr>
+<td>YC11 – Quản lý người dùng, dự án</td>
+<td>tài khoản, vai trò, dự án, module</td>
+<td>Mọi công việc</td>
+</tr>
+<tr>
+<td>YC10 – Thay đổi quy định</td>
+<td>tham số quy định QĐ1–QĐ12</td>
+<td>Mọi công việc</td>
+</tr>
+</tbody></table>
+<!-- DFD:END -->
+
+<h2>3.5. Sơ đồ hoạt động – quy trình nghiệp vụ mới</h2>
 <pre class="mermaid">flowchart TD
     S([Bắt đầu]) --&gt; A["Tester lập / nhập user story"]
     A --&gt; B["Bấm Sinh test case bằng AI"]

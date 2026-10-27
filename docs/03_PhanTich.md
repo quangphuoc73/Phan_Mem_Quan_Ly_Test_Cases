@@ -147,128 +147,430 @@ flowchart LR
 | Luồng chính | 1. Nhập tên đăng nhập, mật khẩu. 2. Hệ thống so khớp mật khẩu băm (bcrypt). 3. Cấp JWT hạn 8 giờ, ghi audit log `LOGIN`. 4. Hiển thị menu theo vai trò. |
 | Luồng ngoại lệ | Sai thông tin → thông báo chung "Tên đăng nhập hoặc mật khẩu không đúng" (không tiết lộ tài khoản có tồn tại), ghi `LOGIN_FAILED`. Sai quá 10 lần/15 phút → tạm khóa theo IP. Tài khoản bị khóa → từ chối. |
 
+<!-- DFD:BEGIN (sinh tự động bởi docs/dfd/generate_dfd.py, đừng sửa tay) -->
 ## 3.4. Sơ đồ luồng dữ liệu (DFD) cho từng yêu cầu
 
-Ký hiệu theo chuẩn môn học: **D1** thông tin người dùng nhập, **D2** thông tin xuất ra thiết bị xuất (nếu có), **D3** dữ liệu đọc từ bộ nhớ phụ, **D4** dữ liệu ghi xuống bộ nhớ phụ, **D5** thông tin xuất ra máy in, **D6** thông tin trả về người dùng.
+Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagrams.net)**. File gốc `.drawio` nằm trong thư mục `docs/dfd/` (mở bằng [app.diagrams.net](https://app.diagrams.net) hoặc draw.io Desktop để xem, sửa); hình trong báo cáo được sinh từ cùng một nguồn bằng lệnh `python3 docs/dfd/generate_dfd.py`.
 
-### DFD YC1 – Lập user story
+### 3.4.1. Ký hiệu và quy ước
 
-```mermaid
-flowchart LR
-    U["Tester"] -->|D1| P(("Lập user story"))
-    P -->|D6| U
-    DB[("Bộ nhớ phụ")] -->|D3| P
-    P -->|D4| DB
-```
+| Ký hiệu | Ý nghĩa |
+|---|---|
+| Hình chữ nhật | Người dùng (tác nhân) hoặc thiết bị nhập / xuất |
+| Hình elip | Khối xử lý – một công việc của phần mềm |
+| Mũi tên khối | Luồng dữ liệu, ghi tên D1–D6. Luồng **không có** được vẽ **màu trắng** và mô tả là "Không có" |
+| Hai đường kẻ ngang | Bộ nhớ phụ (cơ sở dữ liệu) |
 
-- **D1:** mã, dự án, module, tiêu đề, mô tả, acceptance criteria, độ ưu tiên.
-- **D3:** danh sách mã user story đã có, danh sách dự án/module, tham số `MIN_AC_PER_STORY`, `PRIORITIES`.
-- **D4:** D1 + người tạo, ngày tạo.
-- **D6:** kết quả lưu hoặc thông báo lỗi.
-- **Thuật toán:** B1 nhận D1 → B2 đọc D3 → B3 kiểm tra mã đúng định dạng và không trùng → B4 kiểm tra độ ưu tiên thuộc danh sách → B5 đếm số acceptance criteria ≥ tối thiểu → B6 kiểm tra module thuộc dự án → B7 nếu không thỏa thì trả lỗi (D6), dừng → B8 lưu D4 → B9 trả D6.
+| Luồng | Ý nghĩa |
+|---|---|
+| **D1** | Thông tin **người dùng nhập** vào khối xử lý |
+| **D2** | Thông tin từ **thiết bị nhập khác** (không phải bàn phím, chuột): file, dịch vụ bên ngoài… |
+| **D3** | Dữ liệu **đọc** từ bộ nhớ phụ |
+| **D4** | Dữ liệu **ghi** xuống bộ nhớ phụ (thông tin nhập cần lưu + kết quả mới tạo ra hoặc thay đổi) |
+| **D5** | Thông tin đưa ra **thiết bị xuất khác** (không phải màn hình): máy in, file, dịch vụ bên ngoài… |
+| **D6** | Thông tin **trả về người dùng**, luôn có thông báo thành công hoặc thất bại |
 
-### DFD YC2 – Sinh test case bằng AI
+**Lưu ý khi vẽ:**
+- Tên luồng D là **thông tin**, không phải hành động.
+- Mỗi khối xử lý có ít nhất một luồng vào và một luồng ra.
+- Không có luồng trực tiếp giữa tác nhân với tác nhân, hay giữa tác nhân với bộ nhớ phụ: mọi dữ liệu đều đi qua khối xử lý.
+- Người dùng không nhập những thông tin đã lưu hoặc tính được (VD: người tạo, ngày tạo, phiên bản, tỷ lệ pass do hệ thống tự lấy / tự tính).
 
-```mermaid
-flowchart LR
-    U["Tester"] -->|"D1: mã user story"| P(("Sinh test case<br/>bằng AI"))
-    P -->|"D6: danh sách test case Nháp"| U
-    DB[("Bộ nhớ phụ")] -->|D3| P
-    P -->|D4| DB
-    P -->|"D2: prompt đã che PII"| LLM[["Dịch vụ LLM"]]
-    LLM -->|"JSON test case"| P
-```
+**Ba bước thực hiện cho mỗi yêu cầu:** (1) vẽ sơ đồ luồng dữ liệu; (2) mô tả các luồng D1–D6 (luồng không có ghi "Không có"); (3) viết thuật toán xử lý theo khuôn *Nhận D1 → Kết nối CSDL → Đọc D3 → kiểm tra quy định → Lưu D4 → Xuất D5 → Xuất D6 → Đóng kết nối → Kết thúc*. Ở mỗi bước kiểm tra, nếu không thỏa quy định thì ghi thông báo lỗi vào D6 và nhảy tới bước Xuất D6.
+### 3.4.2. DFD YC1 – Lập user story
 
-- **D3:** nội dung user story; tham số `MAX_TC_PER_STORY`, `AI_MAX_RETRY`, `AI_TIMEOUT_SEC`, `AI_CALLS_PER_HOUR`; số lần gọi AI của người dùng trong 1 giờ; số test case hiện có.
-- **D4:** test case mới (nguồn AI, Nháp, v1), phiên bản v1, nhật ký AI (prompt đã che, model, kết quả gốc, số lần thử, thời gian, cờ injection).
-- **Thuật toán:** B1 nhận D1 → B2 đọc D3 → B3 kiểm tra hạn mức gọi AI → B4 che PII → B5 phát hiện injection → B6 ghép prompt → B7 gửi LLM (D2), chờ tối đa `AI_TIMEOUT_SEC` → B8 kiểm tra schema; sai thì lặp B7 tối đa `AI_MAX_RETRY` lần → B9 xóa test case AI Nháp cũ, cắt theo số tối đa còn lại → B10 ghi D4 → B11 trả D6.
+![DFD YC1 – Lập user story](dfd/YC01_LapUserStory.svg)
 
-### DFD YC3 – Soạn thảo và gửi duyệt
+*Biểu mẫu:* BM1 · *Quy định:* QĐ1 · *File:* `docs/dfd/YC01_LapUserStory.drawio`
 
-```mermaid
-flowchart LR
-    U["Tester"] -->|D1| P(("Soạn thảo,<br/>gửi duyệt"))
-    P -->|D6| U
-    DB[("Bộ nhớ phụ")] -->|D3| P
-    P -->|D4| DB
-```
+| Luồng | Mô tả |
+|---|---|
+| D1 | Mã user story, dự án, module, tiêu đề, mô tả, các acceptance criteria, độ ưu tiên. |
+| D2 | Không có |
+| D3 | Danh sách mã user story đã có; danh sách dự án, module; tham số MIN_AC_PER_STORY, PRIORITIES. |
+| D4 | D1 + người tạo, ngày tạo. |
+| D5 | Không có |
+| D6 | Thông báo lưu thành công kèm user story vừa lập, hoặc thông báo lỗi vi phạm QĐ1. |
 
-- **D1:** nội dung test case mới hoặc danh sách mã test case cần gửi duyệt, ghi chú thay đổi.
-- **D3:** trạng thái và phiên bản hiện tại của test case.
-- **D4:** nội dung mới, phiên bản + 1, bản chụp phiên bản; hoặc trạng thái *Chờ duyệt*.
-- **Thuật toán:** kiểm tra trạng thái cho phép theo QĐ3 → lưu phiên bản mới (sửa bản *Đã duyệt* thì đưa về *Nháp*) → hoặc đổi trạng thái sang *Chờ duyệt* (trong 1 giao dịch cho cả danh sách).
+**Thuật toán:**
 
-### DFD YC4 – Duyệt test case
+- B1: Nhận D1 từ người dùng.
+- B2: Kết nối cơ sở dữ liệu.
+- B3: Đọc D3 từ bộ nhớ phụ.
+- B4: Kiểm tra mã user story đúng dạng US-XXX và không trùng với mã đã có? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B5: Kiểm tra tiêu đề ≥ 5 ký tự, mô tả ≥ 10 ký tự? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B6: Kiểm tra độ ưu tiên thuộc danh sách PRIORITIES? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B7: Kiểm tra số acceptance criteria ≥ MIN_AC_PER_STORY? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B8: Kiểm tra module thuộc dự án đã chọn? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B9: Lưu D4 xuống bộ nhớ phụ.
+- B10: Xuất D6 cho người dùng.
+- B11: Đóng kết nối cơ sở dữ liệu.
+- B12: Kết thúc.
 
-```mermaid
-flowchart LR
-    U["QA Lead"] -->|"D1: quyết định, ghi chú"| P(("Duyệt<br/>test case"))
-    P -->|D6| U
-    DB[("Bộ nhớ phụ")] -->|"D3: trạng thái, vai trò"| P
-    P -->|"D4: trạng thái mới, phiếu duyệt"| DB
-```
+### 3.4.3. DFD YC2 – Sinh test case bằng AI
 
-- **Thuật toán:** kiểm tra vai trò QA Lead → kiểm tra trạng thái *Chờ duyệt* → nếu Trả lại thì bắt buộc có ghi chú → ghi trạng thái mới + phiếu duyệt trong 1 giao dịch → ghi audit log.
+![DFD YC2 – Sinh test case bằng AI](dfd/YC02_SinhTestCaseBangAI.svg)
 
-### DFD YC5 – Ghi nhận kết quả chạy test
+*Biểu mẫu:* BM2 · *Quy định:* QĐ2 · *File:* `docs/dfd/YC02_SinhTestCaseBangAI.drawio`
 
-```mermaid
-flowchart LR
-    U["Tester"] -->|"D1: kết quả, ghi chú"| P(("Ghi nhận<br/>kết quả"))
-    P -->|D6| U
-    DB[("Bộ nhớ phụ")] -->|"D3: trạng thái test case"| P
-    P -->|"D4: kết quả chạy"| DB
-```
+| Luồng | Mô tả |
+|---|---|
+| D1 | Mã user story cần sinh test case. |
+| D2 | Chuỗi JSON danh sách test case do LLM trả về. |
+| D3 | Nội dung user story; tham số MAX_TC_PER_STORY, AI_MAX_RETRY, AI_TIMEOUT_SEC, AI_CALLS_PER_HOUR; số lần gọi AI của người dùng trong 1 giờ; số test case hiện có của user story. |
+| D4 | Các test case mới (nguồn AI, trạng thái Nháp, phiên bản 1); nhật ký AI (prompt đã che PII, model, kết quả gốc, số lần thử, thời gian, cờ injection). |
+| D5 | Prompt gửi LLM: vai trò QA, quy định QĐ2, nội dung user story ĐÃ CHE dữ liệu nhạy cảm (PII). |
+| D6 | Thông báo thành công kèm danh sách test case Nháp, cảnh báo nếu có prompt injection; hoặc thông báo lỗi (hết hạn mức, LLM lỗi, vượt số test case tối đa). |
 
-### DFD YC6 – Lập báo cáo
+**Thuật toán:**
 
-```mermaid
-flowchart LR
-    U["Người dùng"] -->|"D1: dự án"| P(("Lập báo cáo"))
-    DB[("Bộ nhớ phụ")] -->|"D3: user story, test case, kết quả chạy, nhật ký AI"| P
-    P -->|"D6: chỉ số, biểu đồ"| U
-    P -.->|"D5: xuất/in"| PR["Máy in / file"]
-```
+- B1: Nhận D1 từ người dùng.
+- B2: Kết nối cơ sở dữ liệu.
+- B3: Đọc D3 từ bộ nhớ phụ.
+- B4: Kiểm tra số lần gọi AI trong 1 giờ < AI_CALLS_PER_HOUR? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B11.
+- B5: Tính số test case còn được sinh = MAX_TC_PER_STORY − số test case hiện có (không tính test case AI Nháp sẽ thay thế). Kiểm tra số này > 0? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B11.
+- B6: Che dữ liệu nhạy cảm (email, số điện thoại, khóa API…) và đánh dấu nếu phát hiện prompt injection.
+- B7: Ghép prompt và xuất D5 đến Dịch vụ LLM, chờ tối đa AI_TIMEOUT_SEC giây.
+- B8: Nhận D2 từ Dịch vụ LLM. Nếu D2 sai JSON schema thì quay lại bước trước, tối đa AI_MAX_RETRY lần; quá số lần vẫn sai? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B11.
+- B9: Xóa các test case AI còn Nháp của user story; cắt danh sách theo số test case còn được sinh.
+- B10: Lưu D4 xuống bộ nhớ phụ.
+- B11: Xuất D6 cho người dùng.
+- B12: Đóng kết nối cơ sở dữ liệu.
+- B13: Kết thúc.
 
-- **Thuật toán:** lấy kết quả chạy **gần nhất** của mỗi test case → tỷ lệ pass = Pass/đã chạy → độ bao phủ = story có test case đã duyệt / tổng story → tiến độ = đã chạy / đã duyệt → nhóm theo module, theo ngày → thống kê AI.
+### 3.4.4. DFD YC3 – Soạn thảo và gửi duyệt test case
 
-### DFD YC9 – Sinh và chạy script tự động
+![DFD YC3 – Soạn thảo và gửi duyệt test case](dfd/YC03_SoanThaoGuiDuyet.svg)
 
-```mermaid
-flowchart LR
-    U["Tester"] -->|"D1: mã test case, mã script đã sửa"| P(("Sinh & chạy<br/>script"))
-    P -->|"D6: script, kết quả, log, ảnh"| U
-    DB[("Bộ nhớ phụ")] -->|D3| P
-    P -->|D4| DB
-    P -->|"D2: prompt"| LLM[["Dịch vụ LLM"]]
-    LLM -->|"mã script"| P
-    P -->|"script đã kiểm tra"| PW[["Playwright Worker"]]
-    PW -->|"báo cáo JSON, ảnh chụp"| P
-```
+*Biểu mẫu:* BM2 · *Quy định:* QĐ2, QĐ3 · *File:* `docs/dfd/YC03_SoanThaoGuiDuyet.drawio`
 
-### DFD YC12 – Quản lý sprint
+| Luồng | Mô tả |
+|---|---|
+| D1 | Nội dung test case (BM2) cần thêm/sửa kèm ghi chú thay đổi; hoặc danh sách mã test case cần gửi duyệt. |
+| D2 | Không có |
+| D3 | Trạng thái, phiên bản hiện tại của test case; số test case của user story; tham số MAX_TC_PER_STORY. |
+| D4 | Nội dung mới, phiên bản + 1, bản chụp phiên bản; hoặc trạng thái Chờ duyệt của các test case gửi duyệt. |
+| D5 | Không có |
+| D6 | Thông báo lưu / gửi duyệt thành công kèm test case sau khi lưu, hoặc thông báo lỗi vi phạm QĐ2, QĐ3. |
 
-```mermaid
-flowchart LR
-    U["QA Lead"] -->|"D1: tên, mục tiêu, ngày; story đưa vào sprint"| P(("Quản lý<br/>sprint"))
-    P -->|"D6: bảng sprint, burndown, velocity"| U
-    DB[("Bộ nhớ phụ")] -->|D3| P
-    P -->|D4| DB
-```
+**Thuật toán:**
 
-- **D3:** các sprint hiện có của dự án, tham số `SPRINT_MAX_DAYS`, user story, test case đã duyệt và kết quả chạy gần nhất.
-- **D4:** sprint mới; `sprint_id`, `story_points` của user story.
-- **Thuật toán burndown:** với mỗi ngày d của sprint: còn lại(d) = tổng story point − tổng story point của các story đạt DoD trước hoặc trong ngày d; đường lý tưởng giảm đều từ tổng điểm về 0.
+- B1: Nhận D1 từ người dùng.
+- B2: Kết nối cơ sở dữ liệu.
+- B3: Đọc D3 từ bộ nhớ phụ.
+- B4: Thêm mới: kiểm tra số test case của user story < MAX_TC_PER_STORY và có 1–15 bước? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B8.
+- B5: Sửa / gửi duyệt / xóa: kiểm tra trạng thái cho phép theo QĐ3 (Chờ duyệt thì không được sửa; chỉ Nháp, Bị trả lại mới được gửi duyệt)? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B8.
+- B6: Sửa test case Đã duyệt thì đưa trạng thái về Nháp; tính phiên bản mới = phiên bản hiện tại + 1.
+- B7: Lưu D4 xuống bộ nhớ phụ.
+- B8: Xuất D6 cho người dùng.
+- B9: Đóng kết nối cơ sở dữ liệu.
+- B10: Kết thúc.
 
-### DFD YC10 – Thay đổi quy định
+### 3.4.5. DFD YC4 – Duyệt test case
 
-```mermaid
-flowchart LR
-    U["Admin / QA Lead"] -->|"D1: tham số, giá trị mới"| P(("Thay đổi<br/>quy định"))
-    P -->|D6| U
-    DB[("Bộ nhớ phụ")] -->|"D3: tham số hiện tại, miền giá trị"| P
-    P -->|"D4: giá trị mới, người sửa, thời gian"| DB
-```
+![DFD YC4 – Duyệt test case](dfd/YC04_DuyetTestCase.svg)
+
+*Biểu mẫu:* BM3 · *Quy định:* QĐ4 · *File:* `docs/dfd/YC04_DuyetTestCase.drawio`
+
+| Luồng | Mô tả |
+|---|---|
+| D1 | Mã test case, quyết định Duyệt / Trả lại, ghi chú (BM3). |
+| D2 | Không có |
+| D3 | Trạng thái hiện tại của test case; vai trò của người duyệt. |
+| D4 | Trạng thái mới (Đã duyệt / Bị trả lại); phiếu duyệt (người duyệt, quyết định, ghi chú, ngày duyệt); nhật ký hoạt động. |
+| D5 | Không có |
+| D6 | Thông báo duyệt thành công kèm trạng thái mới, hoặc thông báo lỗi vi phạm QĐ4. |
+
+**Thuật toán:**
+
+- B1: Nhận D1 từ người dùng.
+- B2: Kết nối cơ sở dữ liệu.
+- B3: Đọc D3 từ bộ nhớ phụ.
+- B4: Kiểm tra người duyệt có vai trò QA Lead? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B8.
+- B5: Kiểm tra test case đang ở trạng thái Chờ duyệt? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B8.
+- B6: Nếu quyết định là Trả lại: kiểm tra có ghi chú? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B8.
+- B7: Lưu D4 xuống bộ nhớ phụ.
+- B8: Xuất D6 cho người dùng.
+- B9: Đóng kết nối cơ sở dữ liệu.
+- B10: Kết thúc.
+
+### 3.4.6. DFD YC5 – Ghi nhận kết quả chạy test
+
+![DFD YC5 – Ghi nhận kết quả chạy test](dfd/YC05_GhiKetQuaChayTest.svg)
+
+*Biểu mẫu:* BM4 · *Quy định:* QĐ5 · *File:* `docs/dfd/YC05_GhiKetQuaChayTest.drawio`
+
+| Luồng | Mô tả |
+|---|---|
+| D1 | Mã test case, kết quả Pass / Fail / Blocked, ghi chú (mã bug). |
+| D2 | Không có |
+| D3 | Trạng thái của test case. |
+| D4 | Kết quả chạy: kết quả, hình thức Thủ công, ghi chú, người chạy, thời điểm chạy. |
+| D5 | Không có |
+| D6 | Thông báo ghi nhận thành công, hoặc thông báo lỗi vi phạm QĐ5. |
+
+**Thuật toán:**
+
+- B1: Nhận D1 từ người dùng.
+- B2: Kết nối cơ sở dữ liệu.
+- B3: Đọc D3 từ bộ nhớ phụ.
+- B4: Kiểm tra test case ở trạng thái Đã duyệt? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B7.
+- B5: Nếu kết quả là Fail hoặc Blocked: kiểm tra có ghi chú? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B7.
+- B6: Lưu D4 xuống bộ nhớ phụ.
+- B7: Xuất D6 cho người dùng.
+- B8: Đóng kết nối cơ sở dữ liệu.
+- B9: Kết thúc.
+
+### 3.4.7. DFD YC6 – Lập báo cáo kiểm thử
+
+![DFD YC6 – Lập báo cáo kiểm thử](dfd/YC06_LapBaoCao.svg)
+
+*Biểu mẫu:* BM5 · *Quy định:* QĐ5 · *File:* `docs/dfd/YC06_LapBaoCao.drawio`
+
+| Luồng | Mô tả |
+|---|---|
+| D1 | Dự án cần xem báo cáo. |
+| D2 | Không có |
+| D3 | User story, test case, các lần chạy test, nhật ký AI của dự án. |
+| D4 | Không có |
+| D5 | Không có |
+| D6 | Báo cáo BM5: tỷ lệ pass, độ bao phủ, tiến độ thực thi, kết quả theo module, xu hướng theo ngày, thống kê AI, danh sách user story chưa được bao phủ (dạng bảng và biểu đồ). |
+
+**Thuật toán:**
+
+- B1: Nhận D1 từ người dùng.
+- B2: Kết nối cơ sở dữ liệu.
+- B3: Đọc D3 từ bộ nhớ phụ.
+- B4: Với mỗi test case: lấy kết quả của lần chạy GẦN NHẤT.
+- B5: Tính tỷ lệ pass = số test case Pass / số test case đã chạy.
+- B6: Tính độ bao phủ = số user story có ≥ 1 test case Đã duyệt / tổng số user story.
+- B7: Tính tiến độ thực thi = số test case đã chạy / số test case Đã duyệt.
+- B8: Nhóm kết quả theo module và theo ngày; thống kê số test case AI sinh, tỷ lệ phải sửa.
+- B9: Xuất D6 cho người dùng.
+- B10: Đóng kết nối cơ sở dữ liệu.
+- B11: Kết thúc.
+
+### 3.4.8. DFD YC7 – Tra cứu test case
+
+![DFD YC7 – Tra cứu test case](dfd/YC07_TraCuuTestCase.svg)
+
+*Biểu mẫu:* BM6 · *Quy định:* Không có · *File:* `docs/dfd/YC07_TraCuuTestCase.drawio`
+
+| Luồng | Mô tả |
+|---|---|
+| D1 | Điều kiện tra cứu: từ khóa (mã / tiêu đề), dự án, trạng thái, độ ưu tiên, loại, nguồn. |
+| D2 | Không có |
+| D3 | Các test case thỏa điều kiện kèm user story, kết quả chạy gần nhất, có script hay không. |
+| D4 | Không có |
+| D5 | Không có |
+| D6 | Danh sách test case thỏa điều kiện (BM6), hoặc thông báo không tìm thấy. |
+
+**Thuật toán:**
+
+- B1: Nhận D1 từ người dùng.
+- B2: Kết nối cơ sở dữ liệu.
+- B3: Đọc D3 từ bộ nhớ phụ.
+- B4: Ghép điều kiện D1 thành câu truy vấn có tham số (không nối chuỗi SQL) trước khi đọc D3.
+- B5: Xuất D6 cho người dùng.
+- B6: Đóng kết nối cơ sở dữ liệu.
+- B7: Kết thúc.
+
+### 3.4.9. DFD YC8a – Nhập user story từ file
+
+![DFD YC8a – Nhập user story từ file](dfd/YC08a_NhapUserStory.svg)
+
+*Biểu mẫu:* BM7 · *Quy định:* QĐ1, QĐ8 · *File:* `docs/dfd/YC08_NhapXuatDuLieu.drawio`
+
+| Luồng | Mô tả |
+|---|---|
+| D1 | Dự án nhận dữ liệu; lệnh chọn file. |
+| D2 | Các dòng user story trong file (BM7). |
+| D3 | Danh sách mã user story đã có; module của dự án; tham số MIN_AC_PER_STORY, PRIORITIES. |
+| D4 | Các user story hợp lệ. |
+| D5 | Không có |
+| D6 | Thông báo số dòng nhập thành công và danh sách dòng lỗi kèm lý do. |
+
+**Thuật toán:**
+
+- B1: Nhận D1 từ người dùng.
+- B2: Nhận D2 từ thiết bị nhập.
+- B3: Kết nối cơ sở dữ liệu.
+- B4: Đọc D3 từ bộ nhớ phụ.
+- B5: Kiểm tra số dòng trong D2 ≤ 200? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B8.
+- B6: Với từng dòng: kiểm tra theo QĐ1 như YC1; dòng lỗi được ghi lại số dòng và lý do, không làm hỏng các dòng hợp lệ.
+- B7: Lưu D4 xuống bộ nhớ phụ.
+- B8: Xuất D6 cho người dùng.
+- B9: Đóng kết nối cơ sở dữ liệu.
+- B10: Kết thúc.
+
+### 3.4.10. DFD YC8b – Xuất test case ra Excel
+
+![DFD YC8b – Xuất test case ra Excel](dfd/YC08b_XuatTestCase.svg)
+
+*Biểu mẫu:* BM8 · *Quy định:* Không có · *File:* `docs/dfd/YC08_NhapXuatDuLieu.drawio`
+
+| Luồng | Mô tả |
+|---|---|
+| D1 | Điều kiện lọc như YC7. |
+| D2 | Không có |
+| D3 | Các test case thỏa điều kiện kèm kết quả chạy gần nhất. |
+| D4 | Không có |
+| D5 | File Excel: mỗi test case một dòng theo các cột của BM2 và kết quả gần nhất (BM8). |
+| D6 | Thông báo xuất file thành công (trình duyệt tải file về). |
+
+**Thuật toán:**
+
+- B1: Nhận D1 từ người dùng.
+- B2: Kết nối cơ sở dữ liệu.
+- B3: Đọc D3 từ bộ nhớ phụ.
+- B4: Ghi từng test case thành một dòng Excel; các bước, acceptance criteria xuống dòng trong ô.
+- B5: Xuất D5 ra thiết bị xuất.
+- B6: Xuất D6 cho người dùng.
+- B7: Đóng kết nối cơ sở dữ liệu.
+- B8: Kết thúc.
+
+### 3.4.11. DFD YC9 – Sinh và chạy script kiểm thử tự động
+
+![DFD YC9 – Sinh và chạy script kiểm thử tự động](dfd/YC09_SinhVaChayScript.svg)
+
+*Biểu mẫu:* BM9 · *Quy định:* QĐ9 · *File:* `docs/dfd/YC09_SinhVaChayScript.drawio`
+
+| Luồng | Mô tả |
+|---|---|
+| D1 | Mã test case; yêu cầu sinh script hoặc chạy script; mã script đã sửa (nếu Tester sửa tay). |
+| D2 | Từ LLM: mã script Playwright. Từ Playwright Worker: báo cáo chạy (JSON), log, ảnh chụp lỗi. |
+| D3 | Test case Đã duyệt, URL ứng dụng của dự án, script đang lưu; tham số RUN_TIMEOUT_SEC, AI_MAX_RETRY. |
+| D4 | Script (mã nguồn, người tạo, ngày); kết quả chạy hình thức Tự động (kết quả, thời gian, log, ảnh lỗi); nhật ký AI. |
+| D5 | Đến LLM: prompt đã che PII. Đến Playwright Worker: script đã qua kiểm tra tĩnh. |
+| D6 | Thông báo thành công kèm mã script, kết quả Pass / Fail, log, ảnh chụp lỗi; hoặc thông báo lỗi vi phạm QĐ9. |
+
+**Thuật toán:**
+
+- B1: Nhận D1 từ người dùng.
+- B2: Kết nối cơ sở dữ liệu.
+- B3: Đọc D3 từ bộ nhớ phụ.
+- B4: Kiểm tra test case ở trạng thái Đã duyệt? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B5: Sinh script: xuất D5 (prompt) đến Dịch vụ LLM, nhận D2 (mã script).
+- B6: Kiểm tra tĩnh script: không dùng module nguy hiểm, không truy cập process.env, không eval / new Function? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B7: Chạy script: xuất D5 (script) đến Playwright Worker, chờ tối đa RUN_TIMEOUT_SEC giây, nhận D2 (báo cáo, ảnh lỗi).
+- B8: Xác định kết quả Pass / Fail từ báo cáo.
+- B9: Lưu D4 xuống bộ nhớ phụ.
+- B10: Xuất D6 cho người dùng.
+- B11: Đóng kết nối cơ sở dữ liệu.
+- B12: Kết thúc.
+
+### 3.4.12. DFD YC10 – Thay đổi quy định
+
+![DFD YC10 – Thay đổi quy định](dfd/YC10_ThayDoiQuyDinh.svg)
+
+*Biểu mẫu:* Không có · *Quy định:* QĐ10 · *File:* `docs/dfd/YC10_ThayDoiQuyDinh.drawio`
+
+| Luồng | Mô tả |
+|---|---|
+| D1 | Tham số cần thay đổi, giá trị mới. |
+| D2 | Không có |
+| D3 | Giá trị hiện tại, kiểu dữ liệu, miền giá trị cho phép của tham số; vai trò người sửa. |
+| D4 | Giá trị mới, người sửa, thời điểm sửa; nhật ký hoạt động. |
+| D5 | Không có |
+| D6 | Thông báo thay đổi thành công (giá trị cũ → mới), hoặc thông báo giá trị ngoài miền cho phép. |
+
+**Thuật toán:**
+
+- B1: Nhận D1 từ người dùng.
+- B2: Kết nối cơ sở dữ liệu.
+- B3: Đọc D3 từ bộ nhớ phụ.
+- B4: Kiểm tra người sửa có vai trò Admin hoặc QA Lead? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B7.
+- B5: Kiểm tra giá trị mới đúng kiểu và thuộc miền giá trị cho phép (QĐ10)? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B7.
+- B6: Lưu D4 xuống bộ nhớ phụ.
+- B7: Xuất D6 cho người dùng.
+- B8: Đóng kết nối cơ sở dữ liệu.
+- B9: Kết thúc.
+
+### 3.4.13. DFD YC11 – Quản lý người dùng, dự án
+
+![DFD YC11 – Quản lý người dùng, dự án](dfd/YC11_QuanLyNguoiDungDuAn.svg)
+
+*Biểu mẫu:* Không có · *Quy định:* QĐ11 · *File:* `docs/dfd/YC11_QuanLyNguoiDungDuAn.drawio`
+
+| Luồng | Mô tả |
+|---|---|
+| D1 | Thông tin tài khoản (tên đăng nhập, họ tên, vai trò, mật khẩu, khóa/mở); hoặc thông tin dự án, module. |
+| D2 | Không có |
+| D3 | Danh sách tài khoản, dự án, module hiện có. |
+| D4 | Tài khoản (mật khẩu ĐÃ BĂM bcrypt), dự án, module; nhật ký hoạt động. |
+| D5 | Không có |
+| D6 | Thông báo lưu thành công (không bao giờ chứa mật khẩu băm), hoặc thông báo lỗi vi phạm QĐ11. |
+
+**Thuật toán:**
+
+- B1: Nhận D1 từ người dùng.
+- B2: Kết nối cơ sở dữ liệu.
+- B3: Đọc D3 từ bộ nhớ phụ.
+- B4: Kiểm tra người thực hiện có vai trò Admin? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B9.
+- B5: Kiểm tra tên đăng nhập 3–30 ký tự a-z 0-9 _ . và không trùng; mật khẩu ≥ 8 ký tự? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B9.
+- B6: Kiểm tra Admin không tự khóa hoặc tự hạ quyền chính mình? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B9.
+- B7: Băm mật khẩu bằng bcrypt.
+- B8: Lưu D4 xuống bộ nhớ phụ.
+- B9: Xuất D6 cho người dùng.
+- B10: Đóng kết nối cơ sở dữ liệu.
+- B11: Kết thúc.
+
+### 3.4.14. DFD YC12 – Quản lý sprint (Agile/Scrum)
+
+![DFD YC12 – Quản lý sprint (Agile/Scrum)](dfd/YC12_QuanLySprint.svg)
+
+*Biểu mẫu:* BM10 · *Quy định:* QĐ12 · *File:* `docs/dfd/YC12_QuanLySprint.drawio`
+
+| Luồng | Mô tả |
+|---|---|
+| D1 | Tên, mục tiêu, ngày bắt đầu, ngày kết thúc sprint (BM10); user story đưa vào sprint và story point. |
+| D2 | Không có |
+| D3 | Các sprint hiện có của dự án; tham số SPRINT_MAX_DAYS; user story, test case Đã duyệt và kết quả chạy gần nhất. |
+| D4 | Sprint mới / đã sửa; sprint_id, story_points của user story. |
+| D5 | Không có |
+| D6 | Thông báo lưu thành công kèm bảng sprint, burndown, velocity; hoặc thông báo lỗi vi phạm QĐ12. |
+
+**Thuật toán:**
+
+- B1: Nhận D1 từ người dùng.
+- B2: Kết nối cơ sở dữ liệu.
+- B3: Đọc D3 từ bộ nhớ phụ.
+- B4: Kiểm tra số ngày của sprint ≤ SPRINT_MAX_DAYS và ngày kết thúc không trước ngày bắt đầu? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B5: Kiểm tra sprint không trùng thời gian với sprint khác của dự án? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B6: Kiểm tra user story cùng dự án và story point thuộc dãy 1, 2, 3, 5, 8, 13? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B7: Xác định story đạt DoD: có ≥ 1 test case Đã duyệt và mọi test case Đã duyệt có lần chạy gần nhất là Pass.
+- B8: Tính velocity = tổng story point của story đạt DoD; burndown: còn lại(ngày) = tổng story point − story point đã đạt DoD đến ngày đó.
+- B9: Lưu D4 xuống bộ nhớ phụ.
+- B10: Xuất D6 cho người dùng.
+- B11: Đóng kết nối cơ sở dữ liệu.
+- B12: Kết thúc.
+
+### 3.4.15. Sơ đồ phối hợp giữa các công việc
+
+![Sơ đồ phối hợp giữa các công việc](dfd/PhoiHop_CacCongViec.svg)
+
+*File:* `docs/dfd/PhoiHop_CacCongViec.drawio`. Mỗi mũi tên là **thông tin** do công việc trước tạo ra (ghi xuống bộ nhớ phụ ở D4) và công việc sau sử dụng (đọc lên ở D3).
+
+| Công việc trước | Thông tin chuyển giao | Công việc sau |
+|---|---|---|
+| YC1 – Lập user story | user story | YC2 – Sinh test case bằng AI |
+| YC8a – Nhập user story từ file | user story | YC2 – Sinh test case bằng AI |
+| YC1 – Lập user story | user story, story point | YC12 – Quản lý sprint |
+| YC2 – Sinh test case bằng AI | test case Nháp | YC3 – Soạn thảo, gửi duyệt |
+| YC3 – Soạn thảo, gửi duyệt | test case Chờ duyệt | YC4 – Duyệt test case |
+| YC4 – Duyệt test case | test case Bị trả lại + ghi chú | YC3 – Soạn thảo, gửi duyệt |
+| YC4 – Duyệt test case | test case Đã duyệt | YC5 – Ghi nhận kết quả |
+| YC4 – Duyệt test case | test case Đã duyệt | YC9 – Sinh và chạy script |
+| YC5 – Ghi nhận kết quả | kết quả chạy gần nhất (xét DoD) | YC12 – Quản lý sprint |
+| YC5 – Ghi nhận kết quả | kết quả gần nhất | YC7 – Tra cứu test case |
+| YC5 – Ghi nhận kết quả | kết quả chạy thủ công | YC6 – Lập báo cáo |
+| YC9 – Sinh và chạy script | kết quả chạy tự động | YC6 – Lập báo cáo |
+| YC9 – Sinh và chạy script | kết quả gần nhất | YC8b – Xuất test case ra Excel |
+| YC9 – Sinh và chạy script | kết quả chạy tự động gần nhất (xét DoD) | YC12 – Quản lý sprint |
+| YC11 – Quản lý người dùng, dự án | tài khoản, vai trò, dự án, module | Mọi công việc |
+| YC10 – Thay đổi quy định | tham số quy định QĐ1–QĐ12 | Mọi công việc |
+
+<!-- DFD:END -->
 
 ## 3.5. Sơ đồ hoạt động – quy trình nghiệp vụ mới
 

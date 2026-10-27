@@ -1,6 +1,15 @@
 # Chương 2. Xác định và đặc tả yêu cầu
 
-> Sản phẩm của giai đoạn: **danh sách yêu cầu** kèm biểu mẫu (BM) và quy định (QĐ), yêu cầu phi chức năng và bảng trách nhiệm.
+> Sản phẩm của giai đoạn: **danh sách các yêu cầu phần mềm** kèm biểu mẫu (BM) và quy định (QĐ), cùng bảng trách nhiệm. **Yêu cầu phần mềm** là các công việc, các nghiệp vụ được hỗ trợ thực hiện trên máy tính với phần mềm.
+
+Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghiệp vụ → chất lượng → hệ thống**:
+
+| Nhóm | Gồm | Đảm bảo | Mục trong chương |
+|---|---|---|---|
+| **Yêu cầu nghiệp vụ** | Lưu trữ, tra cứu, tính toán, kết xuất | Tính **đúng đắn** | 2.2 – 2.4 |
+| **Yêu cầu chất lượng** | Tính tiến hóa, tiện dụng, hiệu quả, tương thích | | 2.5 |
+| **Yêu cầu hệ thống** | Tính an toàn, bảo mật | | 2.6 |
+| Yêu cầu khác | Yêu cầu công nghệ (dễ sửa lỗi, bảo trì, tái sử dụng, mang chuyển) | | 2.7 |
 
 ## 2.1. Tác nhân (actor)
 
@@ -15,20 +24,26 @@
 
 ## 2.2. Danh sách yêu cầu nghiệp vụ
 
-| STT | Tên yêu cầu | Biểu mẫu | Quy định | Ghi chú |
-|---|---|---|---|---|
-| 1 | YC1 – Lập user story | BM1 | QĐ1 | Nhập tay |
-| 2 | YC2 – Sinh test case bằng AI | BM2 | QĐ2 | Chức năng AI chính |
-| 3 | YC3 – Soạn thảo và gửi duyệt test case | BM2 | QĐ3 | Có lịch sử phiên bản |
-| 4 | YC4 – Duyệt test case | BM3 | QĐ4 | Chỉ QA Lead |
-| 5 | YC5 – Ghi nhận kết quả chạy test | BM4 | QĐ5 | |
-| 6 | YC6 – Lập báo cáo kiểm thử | BM5 | | Tự động |
-| 7 | YC7 – Tra cứu test case | BM6 | | |
-| 8 | YC8 – Nhập/xuất dữ liệu | BM7, BM8 | QĐ8 | CSV/JSON vào, Excel ra |
-| 9 | YC9 – Sinh và chạy script kiểm thử tự động | BM9 | QĐ9 | Playwright |
-| 10 | YC10 – Thay đổi quy định | | QĐ10 | Tính tiến hóa |
-| 11 | YC11 – Quản lý người dùng, dự án | | QĐ11 | Admin |
-| 12 | YC12 – Quản lý sprint (Agile/Scrum) | BM10 | QĐ12 | Sprint, story point, burndown, velocity |
+| STT | Tên yêu cầu | Loại yêu cầu | Biểu mẫu | Quy định | Ghi chú |
+|---|---|---|---|---|---|
+| 1 | YC1 – Lập user story | Lưu trữ | BM1 | QĐ1 | Nhập tay |
+| 2 | YC2 – Sinh test case bằng AI | Lưu trữ, tính toán | BM2 | QĐ2 | Chức năng AI chính |
+| 3 | YC3 – Soạn thảo và gửi duyệt test case | Lưu trữ | BM2 | QĐ3 | Có lịch sử phiên bản |
+| 4 | YC4 – Duyệt test case | Lưu trữ | BM3 | QĐ4 | Chỉ QA Lead |
+| 5 | YC5 – Ghi nhận kết quả chạy test | Lưu trữ | BM4 | QĐ5 | |
+| 6 | YC6 – Lập báo cáo kiểm thử | Tính toán, kết xuất | BM5 | | Tỷ lệ pass, độ bao phủ, tiến độ |
+| 7 | YC7 – Tra cứu test case | Tra cứu | BM6 | | |
+| 8 | YC8 – Nhập/xuất dữ liệu | Lưu trữ, kết xuất | BM7, BM8 | QĐ8 | CSV/JSON vào, Excel ra |
+| 9 | YC9 – Sinh và chạy script kiểm thử tự động | Lưu trữ, tính toán | BM9 | QĐ9 | Playwright |
+| 10 | YC10 – Thay đổi quy định | Lưu trữ | | QĐ10 | Tính tiến hóa |
+| 11 | YC11 – Quản lý người dùng, dự án | Lưu trữ | | QĐ11 | Admin |
+| 12 | YC12 – Quản lý sprint (Agile/Scrum) | Lưu trữ, tính toán | BM10 | QĐ12 | Velocity, burndown được tính, không nhập |
+
+**Ý nghĩa loại yêu cầu:**
+- **Lưu trữ:** ghi thông tin mới hoặc thay đổi xuống bộ nhớ phụ.
+- **Tra cứu:** tìm và xem lại thông tin đã lưu.
+- **Tính toán:** tạo ra thông tin mới từ thông tin đã có theo quy định, công thức (tỷ lệ pass, số test case còn được thêm, velocity).
+- **Kết xuất:** đưa thông tin ra màn hình, máy in hoặc file theo biểu mẫu.
 
 ## 2.3. Biểu mẫu và quy định
 
@@ -139,7 +154,9 @@
 | 11 | YC11 Quản lý người dùng | Nhập thông tin, khóa/mở khóa | Băm mật khẩu, kiểm tra QĐ11 | |
 | 12 | YC12 Quản lý sprint | Tạo sprint (tên, mục tiêu, ngày); đưa story từ backlog vào sprint; ước lượng story point | Kiểm tra QĐ12; tự tính trạng thái DoD của story, velocity, burndown | Hỗ trợ đội làm Scrum |
 
-## 2.5. Yêu cầu tiến hóa
+## 2.5. Yêu cầu chất lượng
+
+### 2.5.1. Tính tiến hóa
 
 | STT | Nghiệp vụ | Tham số cần thay đổi | Miền giá trị cần thay đổi |
 |---|---|---|---|
@@ -148,7 +165,15 @@
 | 3 | Chạy script tự động | Thời gian chạy tối đa | Framework kiểm thử (thiết kế mở cho WebdriverIO, Cypress) |
 | 4 | Quản lý sprint | Độ dài tối đa sprint | Thang story point |
 
-## 2.6. Yêu cầu hiệu quả
+### 2.5.2. Tính tiện dụng
+
+| STT | Nghiệp vụ | Mức độ dễ học | Mức độ dễ sử dụng |
+|---|---|---|---|
+| 1 | Sinh test case bằng AI | 5 phút làm quen | 1 nút bấm; thông báo rõ số test case, thời gian, dữ liệu đã che |
+| 2 | Duyệt | Không cần hướng dẫn | Hàng đợi duyệt, duyệt hàng loạt, huy hiệu số lượng chờ duyệt |
+| 3 | Toàn hệ thống | Giao diện tiếng Việt | Thông báo lỗi bằng tiếng Việt, nêu rõ quy định bị vi phạm |
+
+### 2.5.3. Tính hiệu quả
 
 | STT | Nghiệp vụ | Tốc độ xử lý | Dung lượng lưu trữ |
 |---|---|---|---|
@@ -157,15 +182,7 @@
 | 3 | Lập báo cáo | < 2 giây với 10.000 test case | |
 | 4 | Chạy một script tự động | ≤ 60 giây | Ảnh chụp lỗi ~100 KB/lần |
 
-## 2.7. Yêu cầu tiện dụng
-
-| STT | Nghiệp vụ | Mức độ dễ học | Mức độ dễ sử dụng |
-|---|---|---|---|
-| 1 | Sinh test case bằng AI | 5 phút làm quen | 1 nút bấm; thông báo rõ số test case, thời gian, dữ liệu đã che |
-| 2 | Duyệt | Không cần hướng dẫn | Hàng đợi duyệt, duyệt hàng loạt, huy hiệu số lượng chờ duyệt |
-| 3 | Toàn hệ thống | Giao diện tiếng Việt | Thông báo lỗi bằng tiếng Việt, nêu rõ quy định bị vi phạm |
-
-## 2.8. Yêu cầu tương thích
+### 2.5.4. Tính tương thích
 
 | STT | Nghiệp vụ | Đối tượng liên quan |
 |---|---|---|
@@ -175,7 +192,17 @@
 | 4 | Trình duyệt | Chrome, Edge, Firefox, Safari bản mới |
 | 5 | LLM | Gemini API, Claude API, OpenAI API (cùng interface `LLMProvider`) |
 
-## 2.9. Yêu cầu bảo mật
+## 2.6. Yêu cầu hệ thống
+
+### 2.6.1. Tính an toàn
+
+| STT | Nghiệp vụ | Đối tượng |
+|---|---|---|
+| 1 | Phục hồi | Test case đã xóa nhầm: có lịch sử phiên bản; CSDL sao lưu định kỳ (volume Docker) |
+| 2 | Hủy thật sự | Xóa user story xóa kèm test case (có xác nhận 2 bước) |
+| 3 | Không cho phép xóa | Test case *Chờ duyệt*/*Đã duyệt*; tài khoản đang đăng nhập không tự khóa |
+
+### 2.6.2. Tính bảo mật
 
 | STT | Nghiệp vụ | Admin | QA Lead | Tester | Developer |
 |---|---|---|---|---|---|
@@ -210,15 +237,7 @@
 | BM-13 | Nhật ký hoạt động (audit log) cho mọi thao tác ghi: ai, làm gì, đối tượng nào, lúc nào, IP |
 | BM-14 | Ghi rõ chính sách dữ liệu của nhà cung cấp LLM (dùng gói API không dùng dữ liệu để huấn luyện) |
 
-## 2.10. Yêu cầu an toàn
-
-| STT | Nghiệp vụ | Đối tượng |
-|---|---|---|
-| 1 | Phục hồi | Test case đã xóa nhầm: có lịch sử phiên bản; CSDL sao lưu định kỳ (volume Docker) |
-| 2 | Hủy thật sự | Xóa user story xóa kèm test case (có xác nhận 2 bước) |
-| 3 | Không cho phép xóa | Test case *Chờ duyệt*/*Đã duyệt*; tài khoản đang đăng nhập không tự khóa |
-
-## 2.11. Yêu cầu công nghệ
+## 2.7. Yêu cầu khác – yêu cầu công nghệ
 
 | STT | Yêu cầu | Mô tả chi tiết |
 |---|---|---|
