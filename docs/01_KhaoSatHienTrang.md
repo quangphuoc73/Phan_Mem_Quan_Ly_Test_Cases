@@ -52,6 +52,7 @@ flowchart TD
     T1 -->|Báo lỗi| DEV
     T2 -->|Báo lỗi| DEV
     AI["☁️ Nhà cung cấp AI<br/>(đối tác bên ngoài)"] -. "dịch vụ LLM" .- T1
+    AI -. "dịch vụ LLM" .- T2
 ```
 
 ### Các bộ phận và giao tiếp với bên ngoài
@@ -63,7 +64,7 @@ Theo môn học, cần **chú trọng các bộ phận có giao tiếp với đ�
 | Product Owner / BA | Nhận yêu cầu từ khách hàng, viết user story và acceptance criteria | **Có** – với khách hàng: nhận yêu cầu, nghiệm thu |
 | QA Lead | Phân công, duyệt test case, tổng hợp báo cáo chất lượng | **Có** – gửi báo cáo chất lượng cho khách hàng mỗi sprint |
 | Tester | Viết test case, chạy test thủ công, ghi kết quả | **Có** – đang tự dùng dịch vụ AI bên ngoài (ChatGPT) để viết test case, có nguy cơ lộ dữ liệu |
-| Automation Tester | Viết script kiểm thử tự động | Không |
+| Automation Tester | Viết script kiểm thử tự động | **Có** – tự dùng ChatGPT / GitHub Copilot để viết, sửa script; có thể dán cả URL nội bộ, tài khoản test vào prompt |
 | Developer | Lập trình, sửa lỗi theo bug Tester báo | Không |
 
 ## 1.4. Hiện trạng nghiệp vụ
@@ -87,7 +88,7 @@ Theo môn học, cần **chú trọng các bộ phận có giao tiếp với đ�
 | NV4 | Duyệt test case | Không có (nhận xét qua chat) | Chỉ QA Lead được duyệt | QA Lead | Mỗi story | Trước khi chạy test | Mở file, nhận xét qua chat/email; không lưu vết |
 | NV5 | Chạy test, ghi kết quả | Cột "Kết quả" trong file Excel | Fail phải ghi mã bug | Tester | Hằng ngày | Trong sprint | Chạy tay, tô màu ô kết quả |
 | NV6 | Báo lỗi | Ticket bug trên Jira | Có bước tái hiện, ảnh chụp | Tester | Khi Fail | Ngay khi phát hiện | Tạo ticket Jira, chụp màn hình thủ công |
-| NV7 | Viết, chạy script tự động | File script (WebdriverIO/Playwright) | Chỉ tự động hóa test case đã ổn định | Automation Tester | Cuối sprint | Sau khi test case được duyệt | Đọc test case trên Excel, viết lại thành script |
+| NV7 | Viết, chạy script tự động | File script (WebdriverIO/Playwright) | Chỉ tự động hóa test case đã ổn định | Automation Tester | Cuối sprint | Sau khi test case được duyệt | Đọc test case trên Excel, viết lại thành script; đôi khi nhờ ChatGPT / Copilot viết hộ rồi sửa lại |
 | NV8 | Lập báo cáo kiểm thử | File báo cáo (tỷ lệ pass, số bug) | Báo cáo theo lần chạy gần nhất | QA Lead | 1 lần/sprint | Cuối sprint | Tổng hợp bằng tay từ nhiều file Excel, mất 1–2 giờ |
 | NV9 | Lập kế hoạch sprint kiểm thử | Bảng sprint trên Jira | Sprint 2 tuần | QA Lead | 1 lần/sprint | Đầu sprint | Họp, chọn story trên Jira |
 | NV10 | Quản lý thành viên, quy định | Không có | Không có | QA Lead | Khi có thay đổi | Bất kỳ lúc nào | Trao đổi miệng, không ghi nhận |
@@ -124,7 +125,7 @@ Nhược điểm: không có trạng thái duyệt, không có lịch sử thay 
 | Thành phần | Hiện trạng | Ảnh hưởng đến phần mềm |
 |---|---|---|
 | **Hệ thống phần cứng** | Mỗi người có 1 laptop (macOS hoặc Windows, RAM 8–16 GB); có 1 máy chủ nội bộ chạy Jira | Phần mềm chạy trên trình duyệt, không cần máy mạnh; chạy script Playwright cần máy có ít nhất 8 GB RAM |
-| **Hệ thống phần mềm** | Jira (yêu cầu, bug), Microsoft Excel / Google Sheets (test case), Chrome, VS Code, Node.js; một số Tester dùng ChatGPT bản miễn phí | Cần nhập được user story từ file xuất của Jira (CSV), xuất test case ra Excel; chạy trên Chrome |
+| **Hệ thống phần mềm** | Jira (yêu cầu, bug), Microsoft Excel / Google Sheets (test case), Chrome, VS Code, Node.js; một số Tester và Automation Tester dùng ChatGPT bản miễn phí, GitHub Copilot | Cần nhập được user story từ file xuất của Jira (CSV), xuất test case ra Excel; chạy trên Chrome |
 | **Hệ thống mạng** | Mạng LAN văn phòng, Internet ổn định; truy cập Jira qua VPN khi làm ở nhà | Gọi dịch vụ LLM cần Internet; cần chế độ AI giả lập để vẫn làm được khi mất mạng |
 | **Con người** | Đội QA thành thạo viết test case và Jira; 1 người biết viết script tự động; chưa ai được hướng dẫn dùng AI an toàn | Giao diện tiếng Việt, dễ học; hệ thống phải tự che dữ liệu nhạy cảm thay vì trông chờ người dùng tự nhớ |
 
@@ -139,7 +140,7 @@ Nhược điểm: không có trạng thái duyệt, không có lịch sử thay 
 | V5 | Không biết user story nào chưa có test case | Không đo được độ bao phủ yêu cầu |
 | V6 | Tổng hợp báo cáo bằng tay | Mất 1–2 giờ mỗi lần, số liệu dễ sai |
 | V7 | Viết lại test case thành script tự động | Làm 2 lần cùng một việc |
-| V8 | Dùng ChatGPT tự phát, dán cả dữ liệu khách hàng | **Nguy cơ lộ dữ liệu nhạy cảm**; kết quả không được kiểm soát |
+| V8 | Tester và Automation Tester dùng AI tự phát (ChatGPT, Copilot), dán cả dữ liệu khách hàng, URL nội bộ, tài khoản test | **Nguy cơ lộ dữ liệu nhạy cảm**; kết quả không được kiểm soát |
 | V9 | Quy định của đội (số test case tối đa, ai được duyệt) chỉ trao đổi miệng | Mỗi người hiểu một kiểu, không kiểm soát được |
 
 ## 1.7. Nhu cầu của người dùng

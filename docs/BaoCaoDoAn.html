@@ -1113,7 +1113,8 @@ Velocity thực tế: __ SP
     QAL --&gt;|"báo cáo chất lượng"| KH
     T1 --&gt;|Báo lỗi| DEV
     T2 --&gt;|Báo lỗi| DEV
-    AI["☁️ Nhà cung cấp AI&lt;br/&gt;(đối tác bên ngoài)"] -. "dịch vụ LLM" .- T1</pre><h3>Các bộ phận và giao tiếp với bên ngoài</h3>
+    AI["☁️ Nhà cung cấp AI&lt;br/&gt;(đối tác bên ngoài)"] -. "dịch vụ LLM" .- T1
+    AI -. "dịch vụ LLM" .- T2</pre><h3>Các bộ phận và giao tiếp với bên ngoài</h3>
 <p>Theo môn học, cần <strong>chú trọng các bộ phận có giao tiếp với đối tác bên ngoài</strong>, vì dữ liệu đi ra hoặc đi vào tổ chức ở đó.</p>
 <table>
 <thead>
@@ -1141,7 +1142,7 @@ Velocity thực tế: __ SP
 <tr>
 <td>Automation Tester</td>
 <td>Viết script kiểm thử tự động</td>
-<td>Không</td>
+<td><strong>Có</strong> – tự dùng ChatGPT / GitHub Copilot để viết, sửa script; có thể dán cả URL nội bộ, tài khoản test vào prompt</td>
 </tr>
 <tr>
 <td>Developer</td>
@@ -1257,7 +1258,7 @@ Velocity thực tế: __ SP
 <td>Automation Tester</td>
 <td>Cuối sprint</td>
 <td>Sau khi test case được duyệt</td>
-<td>Đọc test case trên Excel, viết lại thành script</td>
+<td>Đọc test case trên Excel, viết lại thành script; đôi khi nhờ ChatGPT / Copilot viết hộ rồi sửa lại</td>
 </tr>
 <tr>
 <td>NV8</td>
@@ -1345,7 +1346,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td><strong>Hệ thống phần mềm</strong></td>
-<td>Jira (yêu cầu, bug), Microsoft Excel / Google Sheets (test case), Chrome, VS Code, Node.js; một số Tester dùng ChatGPT bản miễn phí</td>
+<td>Jira (yêu cầu, bug), Microsoft Excel / Google Sheets (test case), Chrome, VS Code, Node.js; một số Tester và Automation Tester dùng ChatGPT bản miễn phí, GitHub Copilot</td>
 <td>Cần nhập được user story từ file xuất của Jira (CSV), xuất test case ra Excel; chạy trên Chrome</td>
 </tr>
 <tr>
@@ -1405,7 +1406,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>V8</td>
-<td>Dùng ChatGPT tự phát, dán cả dữ liệu khách hàng</td>
+<td>Tester và Automation Tester dùng AI tự phát (ChatGPT, Copilot), dán cả dữ liệu khách hàng, URL nội bộ, tài khoản test</td>
 <td><strong>Nguy cơ lộ dữ liệu nhạy cảm</strong>; kết quả không được kiểm soát</td>
 </tr>
 <tr>
