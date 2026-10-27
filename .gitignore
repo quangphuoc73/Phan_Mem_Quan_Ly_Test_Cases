@@ -7,3 +7,6 @@ automation/test-results/
 automation/playwright-report/
 automation/specs/generated/*.spec.js
 .DS_Store
+
+# File khóa tạm của Word/Excel/PowerPoint khi đang mở file
+~$*
