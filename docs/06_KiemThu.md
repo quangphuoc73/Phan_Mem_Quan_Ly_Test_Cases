@@ -8,9 +8,9 @@
 
 ```mermaid
 flowchart TB
-    E2E["🔺 E2E – Playwright (9 kịch bản)<br/>Toàn bộ luồng qua giao diện thật"]
-    API["🔷 API / tích hợp – supertest (34 test)<br/>Quy định nghiệp vụ, phân quyền, bảo mật AI, sprint"]
-    UNIT["🟩 Unit – node:test (21 test)<br/>Che PII, chống injection, kiểm tra tĩnh, AI mock, schema"]
+    E2E["E2E – Playwright (9 kịch bản)<br/>Toàn bộ luồng qua giao diện thật"]
+    API["API / tích hợp – supertest (34 test)<br/>Quy định nghiệp vụ, phân quyền, bảo mật AI, sprint"]
+    UNIT["Unit – node:test (21 test)<br/>Che PII, chống injection, kiểm tra tĩnh, AI mock, schema"]
     E2E --- API --- UNIT
 ```
 
@@ -33,61 +33,61 @@ Chạy: `cd app && npm test`
 
 | Mã | Mô tả | Kết quả |
 |---|---|---|
-| UT-01 | Che email | ✅ Pass |
-| UT-02 | Che số điện thoại VN (0xxx, +84) | ✅ Pass |
-| UT-03 | Che CCCD 12 số, số thẻ 16 số | ✅ Pass |
-| UT-04 | Không che nhầm số thông thường (10 MB, 8 ký tự, mã US) | ✅ Pass |
-| UT-05 | Chuỗi rỗng/null không lỗi | ✅ Pass |
-| UT-06 | Phát hiện prompt injection tiếng Anh | ✅ Pass |
-| UT-07 | Phát hiện prompt injection tiếng Việt | ✅ Pass |
-| UT-08 | User story bình thường không bị gắn cờ | ✅ Pass |
-| UT-09 | Loại bỏ thẻ giả `</user_story><system>` | ✅ Pass |
-| UT-10 | Kiểm tra tĩnh chặn child_process, fs, process.env, eval | ✅ Pass |
-| UT-11 | Kiểm tra tĩnh cho qua script Playwright hợp lệ | ✅ Pass |
-| UT-12 | Kiểm tra tĩnh yêu cầu có khối test() | ✅ Pass |
-| UT-13 | Tách acceptance criteria theo dòng | ✅ Pass |
-| UT-14 | MockProvider trả kết quả đúng schema | ✅ Pass |
-| UT-15 | Mỗi acceptance criterion có ít nhất 1 case Positive | ✅ Pass |
-| UT-16 | Có case Negative và Edge (giá trị biên 10 MB) | ✅ Pass |
-| UT-17 | Tuân thủ QĐ2: không vượt số tối đa | ✅ Pass |
-| UT-18 | Prompt chứa quy định số lượng, dữ liệu bọc trong `<user_story>` | ✅ Pass |
-| UT-19 | Schema từ chối priority sai, steps rỗng | ✅ Pass |
-| UT-20 | Bỏ code fence ```json | ✅ Pass |
-| UT-21 | Sinh script Playwright có locator `data-test` | ✅ Pass |
-| IT-01 | Đăng nhập đúng trả JWT, không trả mật khẩu băm | ✅ Pass |
-| IT-02 | Sai mật khẩu → 401, thông báo chung | ✅ Pass |
-| IT-03 | Không có token → 401 | ✅ Pass |
-| IT-04 | Token giả mạo → 401 | ✅ Pass |
-| IT-05 | QĐ4: Tester không được duyệt → 403 | ✅ Pass |
-| IT-06 | Developer chỉ xem, không lập story, không gọi AI | ✅ Pass |
-| IT-07 | Tester không được đổi quy định | ✅ Pass |
-| IT-08 | Chỉ Admin quản lý người dùng; không lộ mật khẩu băm | ✅ Pass |
-| IT-09 | Tài khoản bị khóa không đăng nhập được | ✅ Pass |
-| IT-10 | Header bảo mật, CSP được bật | ✅ Pass |
-| IT-11 | QĐ1: mã sai định dạng → 400 | ✅ Pass |
-| IT-12 | QĐ1: mã trùng → 409 | ✅ Pass |
-| IT-13 | QĐ1: độ ưu tiên sai → 400 | ✅ Pass |
-| IT-14→22 | Luồng đầy đủ: lập story → AI sinh → sửa (phiên bản) → chưa duyệt không chạy → gửi duyệt (khóa sửa) → trả lại thiếu ghi chú bị chặn → trả lại → duyệt → Fail thiếu ghi chú bị chặn → Pass → báo cáo bao phủ → sửa bản đã duyệt quay về Nháp | ✅ Pass |
-| IT-23 | QĐ2 + YC10: đổi tối đa 3 → AI chỉ sinh 3; thêm tay bị chặn | ✅ Pass |
-| IT-24 | Tham số ngoài miền giá trị → 400 | ✅ Pass |
-| IT-25 | Email, SĐT được che trong prompt lưu ở nhật ký | ✅ Pass |
-| IT-26 | Prompt injection được gắn cờ, vẫn sinh đúng schema | ✅ Pass |
-| IT-27 | AI sai định dạng lần đầu → tự thử lại, attempts = 2 | ✅ Pass |
-| IT-28 | AI luôn sai → 502, nhật ký FAILED, attempts = 3 | ✅ Pass |
-| IT-29 | Vượt hạn mức gọi AI/giờ → 429 | ✅ Pass |
-| IT-30 | Nhập file: dòng lỗi không làm hỏng dòng hợp lệ | ✅ Pass |
-| IT-31 | Xuất Excel đúng định dạng | ✅ Pass |
-| IT-32 | YC9: chỉ sinh script cho test case đã duyệt | ✅ Pass |
-| IT-33 | Audit log ghi thao tác duyệt | ✅ Pass |
-| IT-34 | QA Lead tạo sprint mới cho dự án | ✅ Pass |
-| IT-35 | QĐ12: sprint trùng thời gian → 409 | ✅ Pass |
-| IT-36 | QĐ12: sprint quá dài / kết thúc trước khi bắt đầu → 400 | ✅ Pass |
-| IT-37 | Tester không được tạo sprint → 403 | ✅ Pass |
-| IT-38 | Story chỉ gắn sprint cùng dự án; story point phải thuộc Fibonacci | ✅ Pass |
-| IT-39 | Product backlog chỉ gồm story chưa có sprint; đưa story vào sprint | ✅ Pass |
-| IT-40 | Definition of Done và velocity: Sprint 1 hoàn thành 5/13 SP | ✅ Pass |
-| IT-41 | Burndown: 1 điểm/ngày, đường lý tưởng giảm về 0 | ✅ Pass |
-| IT-42 | Báo cáo lọc theo sprint, trả velocity các sprint | ✅ Pass |
+| UT-01 | Che email | Pass |
+| UT-02 | Che số điện thoại VN (0xxx, +84) | Pass |
+| UT-03 | Che CCCD 12 số, số thẻ 16 số | Pass |
+| UT-04 | Không che nhầm số thông thường (10 MB, 8 ký tự, mã US) | Pass |
+| UT-05 | Chuỗi rỗng/null không lỗi | Pass |
+| UT-06 | Phát hiện prompt injection tiếng Anh | Pass |
+| UT-07 | Phát hiện prompt injection tiếng Việt | Pass |
+| UT-08 | User story bình thường không bị gắn cờ | Pass |
+| UT-09 | Loại bỏ thẻ giả `</user_story><system>` | Pass |
+| UT-10 | Kiểm tra tĩnh chặn child_process, fs, process.env, eval | Pass |
+| UT-11 | Kiểm tra tĩnh cho qua script Playwright hợp lệ | Pass |
+| UT-12 | Kiểm tra tĩnh yêu cầu có khối test() | Pass |
+| UT-13 | Tách acceptance criteria theo dòng | Pass |
+| UT-14 | MockProvider trả kết quả đúng schema | Pass |
+| UT-15 | Mỗi acceptance criterion có ít nhất 1 case Positive | Pass |
+| UT-16 | Có case Negative và Edge (giá trị biên 10 MB) | Pass |
+| UT-17 | Tuân thủ QĐ2: không vượt số tối đa | Pass |
+| UT-18 | Prompt chứa quy định số lượng, dữ liệu bọc trong `<user_story>` | Pass |
+| UT-19 | Schema từ chối priority sai, steps rỗng | Pass |
+| UT-20 | Bỏ code fence ```json | Pass |
+| UT-21 | Sinh script Playwright có locator `data-test` | Pass |
+| IT-01 | Đăng nhập đúng trả JWT, không trả mật khẩu băm | Pass |
+| IT-02 | Sai mật khẩu → 401, thông báo chung | Pass |
+| IT-03 | Không có token → 401 | Pass |
+| IT-04 | Token giả mạo → 401 | Pass |
+| IT-05 | QĐ4: Tester không được duyệt → 403 | Pass |
+| IT-06 | Developer chỉ xem, không lập story, không gọi AI | Pass |
+| IT-07 | Tester không được đổi quy định | Pass |
+| IT-08 | Chỉ Admin quản lý người dùng; không lộ mật khẩu băm | Pass |
+| IT-09 | Tài khoản bị khóa không đăng nhập được | Pass |
+| IT-10 | Header bảo mật, CSP được bật | Pass |
+| IT-11 | QĐ1: mã sai định dạng → 400 | Pass |
+| IT-12 | QĐ1: mã trùng → 409 | Pass |
+| IT-13 | QĐ1: độ ưu tiên sai → 400 | Pass |
+| IT-14→22 | Luồng đầy đủ: lập story → AI sinh → sửa (phiên bản) → chưa duyệt không chạy → gửi duyệt (khóa sửa) → trả lại thiếu ghi chú bị chặn → trả lại → duyệt → Fail thiếu ghi chú bị chặn → Pass → báo cáo bao phủ → sửa bản đã duyệt quay về Nháp | Pass |
+| IT-23 | QĐ2 + YC10: đổi tối đa 3 → AI chỉ sinh 3; thêm tay bị chặn | Pass |
+| IT-24 | Tham số ngoài miền giá trị → 400 | Pass |
+| IT-25 | Email, SĐT được che trong prompt lưu ở nhật ký | Pass |
+| IT-26 | Prompt injection được gắn cờ, vẫn sinh đúng schema | Pass |
+| IT-27 | AI sai định dạng lần đầu → tự thử lại, attempts = 2 | Pass |
+| IT-28 | AI luôn sai → 502, nhật ký FAILED, attempts = 3 | Pass |
+| IT-29 | Vượt hạn mức gọi AI/giờ → 429 | Pass |
+| IT-30 | Nhập file: dòng lỗi không làm hỏng dòng hợp lệ | Pass |
+| IT-31 | Xuất Excel đúng định dạng | Pass |
+| IT-32 | YC9: chỉ sinh script cho test case đã duyệt | Pass |
+| IT-33 | Audit log ghi thao tác duyệt | Pass |
+| IT-34 | QA Lead tạo sprint mới cho dự án | Pass |
+| IT-35 | QĐ12: sprint trùng thời gian → 409 | Pass |
+| IT-36 | QĐ12: sprint quá dài / kết thúc trước khi bắt đầu → 400 | Pass |
+| IT-37 | Tester không được tạo sprint → 403 | Pass |
+| IT-38 | Story chỉ gắn sprint cùng dự án; story point phải thuộc Fibonacci | Pass |
+| IT-39 | Product backlog chỉ gồm story chưa có sprint; đưa story vào sprint | Pass |
+| IT-40 | Definition of Done và velocity: Sprint 1 hoàn thành 5/13 SP | Pass |
+| IT-41 | Burndown: 1 điểm/ngày, đường lý tưởng giảm về 0 | Pass |
+| IT-42 | Báo cáo lọc theo sprint, trả velocity các sprint | Pass |
 
 **Kết quả:** `55 tests, 55 pass, 0 fail` (Node.js 21, macOS, 20/10/2026).
 
@@ -105,15 +105,15 @@ Chạy: `cd app && npm run test:e2e` (Playwright tự khởi động server ở 
 
 | Mã | Kịch bản | Kết quả |
 |---|---|---|
-| E2E-01 | Đăng nhập sai mật khẩu hiển thị lỗi | ✅ Pass |
-| E2E-02 | Tester lập user story mới qua hộp thoại | ✅ Pass |
-| E2E-03 | Tester sinh test case bằng AI, chọn tất cả và gửi duyệt | ✅ Pass |
-| E2E-04 | QA Lead trả lại thiếu ghi chú bị chặn; trả lại có ghi chú; duyệt hàng loạt phần còn lại | ✅ Pass |
-| E2E-05 | Tester ghi kết quả Fail: thiếu ghi chú bị chặn, có ghi chú thì lưu | ✅ Pass |
-| E2E-06 | QA Lead đổi QĐ2 thành 2, sinh lại → AI chỉ sinh 2 | ✅ Pass |
-| E2E-07 | Developer không thấy chức năng ghi | ✅ Pass |
-| E2E-08 | QA Lead Sprint Planning: đưa story từ Product backlog vào sprint đang chạy, bảng sprint cập nhật | ✅ Pass |
-| E2E-09 | Tester xem được burndown nhưng không có nút tạo sprint | ✅ Pass |
+| E2E-01 | Đăng nhập sai mật khẩu hiển thị lỗi | Pass |
+| E2E-02 | Tester lập user story mới qua hộp thoại | Pass |
+| E2E-03 | Tester sinh test case bằng AI, chọn tất cả và gửi duyệt | Pass |
+| E2E-04 | QA Lead trả lại thiếu ghi chú bị chặn; trả lại có ghi chú; duyệt hàng loạt phần còn lại | Pass |
+| E2E-05 | Tester ghi kết quả Fail: thiếu ghi chú bị chặn, có ghi chú thì lưu | Pass |
+| E2E-06 | QA Lead đổi QĐ2 thành 2, sinh lại → AI chỉ sinh 2 | Pass |
+| E2E-07 | Developer không thấy chức năng ghi | Pass |
+| E2E-08 | QA Lead Sprint Planning: đưa story từ Product backlog vào sprint đang chạy, bảng sprint cập nhật | Pass |
+| E2E-09 | Tester xem được burndown nhưng không có nút tạo sprint | Pass |
 
 **Kết quả:** `9 passed (10.1s)`.
 
@@ -166,12 +166,12 @@ Chạy: `cd automation && npm run test:samples` → **8 passed (7.0s)**.
 
 | Test case | Kết quả chạy tự động | Thời gian |
 |---|---|---|
-| US-SAU-001-TC01 Đăng nhập thành công | ✅ Pass | 2,4 s |
-| US-SAU-001-TC02 Đăng nhập sai mật khẩu | ✅ Pass | 2,2 s |
-| US-SAU-001-TC03 Tài khoản bị khóa | ✅ Pass | 2,2 s |
-| US-SAU-002-TC01 Thêm sản phẩm vào giỏ | ✅ Pass | 2,4 s |
-| US-SAU-002-TC01 (cố ý sửa expect thành 2) | ❌ Fail đúng như mong đợi, có ảnh chụp lỗi | 6,8 s |
-| Script chứa `child_process`, `process.env` | ⛔ Bị chặn trước khi chạy | – |
+| US-SAU-001-TC01 Đăng nhập thành công | Pass | 2,4 s |
+| US-SAU-001-TC02 Đăng nhập sai mật khẩu | Pass | 2,2 s |
+| US-SAU-001-TC03 Tài khoản bị khóa | Pass | 2,2 s |
+| US-SAU-002-TC01 Thêm sản phẩm vào giỏ | Pass | 2,4 s |
+| US-SAU-002-TC01 (cố ý sửa expect thành 2) | Fail đúng như mong đợi, có ảnh chụp lỗi | 6,8 s |
+| Script chứa `child_process`, `process.env` | Bị chặn trước khi chạy | – |
 
 **So sánh script AI với bộ viết tay:** script AI viết "phẳng" (mỗi bước một lệnh, locator CSS `[data-test=...]`), đủ để chạy nhưng chưa tái sử dụng được. Bộ viết tay dùng POM, data-driven, dễ bảo trì hơn. Đây là lý do hệ thống bắt buộc **Tester xem lại script** trước khi chạy và là hướng phát triển ở các phiên bản sau (AI sinh script theo POM, tự sửa locator).
 

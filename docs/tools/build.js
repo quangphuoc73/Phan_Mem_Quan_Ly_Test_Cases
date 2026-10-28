@@ -37,35 +37,37 @@ const html = `<!doctype html>
 <html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Báo cáo đồ án SE104</title>
 <style>
-  :root { --text:#1c2333; --muted:#5b6478; --border:#d9dee8; --primary:#1d4ed8; --bg:#ffffff; --soft:#f5f7fb; }
-  body { margin:0; font-family: "Times New Roman", Times, serif; font-size: 13.5pt; line-height:1.55; color:var(--text); background:var(--bg); }
-  .wrap { max-width: 900px; margin: 0 auto; padding: 0 28px 60px; }
-  h1 { font-size: 20pt; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 6px; margin-top: 0; }
-  h2 { font-size: 15.5pt; margin-top: 28px; }
-  h3 { font-size: 13.5pt; margin-top: 20px; }
-  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 11.5pt; page-break-inside: auto; }
-  th, td { border: 1px solid var(--border); padding: 6px 8px; vertical-align: top; text-align: left; }
-  th { background: var(--soft); }
+  :root { --text:#111; --muted:#555; --border:#999; --soft:#f2f2f2; --bg:#fff; }
+  body { margin:0; font-family: "Times New Roman", Times, serif; font-size: 13pt; line-height:1.5; color:var(--text); background:var(--bg); }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 28px 60px; }
+  h1 { font-size: 18pt; text-transform: uppercase; text-align: center; margin: 0 0 18px; }
+  h2 { font-size: 14pt; margin-top: 24px; }
+  h3 { font-size: 13pt; margin-top: 18px; }
+  h4 { font-size: 13pt; font-style: italic; }
+  a { color: inherit; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 11.5pt; page-break-inside: auto; }
+  th, td { border: 1px solid var(--border); padding: 4px 7px; vertical-align: top; text-align: left; }
+  th { background: var(--soft); font-weight: bold; }
   tr { page-break-inside: avoid; }
-  code { font-family: Menlo, Consolas, monospace; font-size: 10.5pt; background: var(--soft); padding: 1px 4px; border-radius: 3px; }
-  pre { background: #0f172a; color: #e2e8f0; padding: 12px 14px; border-radius: 6px; overflow-x: auto; font-size: 10pt; line-height: 1.45; }
-  pre code { background: none; color: inherit; padding: 0; }
-  pre.mermaid { background: #fff; color: inherit; text-align: center; border: 1px solid var(--border); page-break-inside: avoid; }
-  blockquote { margin: 12px 0; padding: 8px 14px; border-left: 4px solid var(--primary); background: #eef3ff; color: #1e3a8a; }
-  img { max-width: 100%; border: 1px solid var(--border); border-radius: 6px; page-break-inside: avoid; }
+  code { font-family: Consolas, Menlo, monospace; font-size: 10.5pt; }
+  pre { background: #fafafa; border: 1px solid #ccc; padding: 10px 12px; overflow-x: auto; font-size: 10pt; line-height: 1.4; }
+  pre code { background: none; padding: 0; }
+  pre.mermaid { background: #fff; border: 0; text-align: center; page-break-inside: avoid; }
+  blockquote { margin: 10px 0; padding: 2px 12px; border-left: 3px solid var(--border); color: var(--text); }
+  img { max-width: 100%; page-break-inside: avoid; }
   p:has(> img) { page-break-inside: avoid; text-align: center; }
-  .cover { min-height: 96vh; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; padding: 40px 20px; box-sizing: border-box; border: 3px double #1c2333; margin: 16px 0 40px; }
+  .cover { min-height: 96vh; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; padding: 40px 20px; box-sizing: border-box; border: 1px solid #000; margin: 16px 0 40px; }
   .cover .school { font-weight: bold; font-size: 13pt; line-height: 1.6; }
   .cover .faculty { margin-top: 6px; font-weight: bold; }
-  .cover .logo { width: 110px; height: 110px; border-radius: 50%; border: 3px solid var(--primary); display: grid; place-items: center; color: var(--primary); font-weight: bold; font-size: 26pt; margin: 30px auto; }
+  .cover .logo { font-weight: bold; font-size: 24pt; margin: 30px auto; }
   .cover .course { font-size: 14pt; font-weight: bold; }
-  .cover .title { font-size: 22pt; font-weight: bold; color: var(--primary); margin: 18px 0 6px; line-height: 1.35; }
+  .cover .title { font-size: 20pt; font-weight: bold; margin: 18px 0 6px; line-height: 1.35; }
   .cover table { width: auto; margin: 30px auto 0; font-size: 13pt; }
   .cover td { border: 0; padding: 4px 12px; }
   .toc { page-break-after: always; }
   .toc ol { line-height: 2; }
   .chapter { page-break-before: always; }
-  @media print { .wrap { max-width: none; padding: 0; } a { color: inherit; text-decoration: none; } @page { size: A4; margin: 18mm 16mm; } }
+  @media print { .wrap { max-width: none; padding: 0; } a { text-decoration: none; } @page { size: A4; margin: 20mm 18mm 20mm 25mm; } }
 </style></head>
 <body><div class="wrap">
   <div class="cover">
@@ -83,7 +85,7 @@ const html = `<!doctype html>
 </div>
 <script src="assets/mermaid.min.js"></script>
 <script>
-  mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'strict', flowchart: { htmlLabels: true, useMaxWidth: true } });
+  mermaid.initialize({ startOnLoad: false, theme: 'default', themeVariables: { primaryTextColor: '#000000', textColor: '#000000', lineColor: '#333333' }, securityLevel: 'strict', flowchart: { htmlLabels: true, useMaxWidth: true } });
   mermaid.run().then(() => { document.body.dataset.ready = '1'; }).catch((e) => { document.body.dataset.ready = 'error'; console.error(e); });
 </script>
 </body></html>`;

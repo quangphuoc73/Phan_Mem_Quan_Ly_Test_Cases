@@ -26,12 +26,12 @@
 
 ```mermaid
 flowchart LR
-    PB["📋 Product Backlog<br/>danh sách user story<br/>sắp theo ưu tiên"] --> SP["🗓️ Sprint Planning<br/>chọn story + Sprint Goal"]
-    SP --> SB["📝 Sprint Backlog"]
-    SB --> S["🏃 Sprint 1 tuần<br/>phân tích → thiết kế → code → test<br/>Daily Scrum mỗi ngày"]
-    S --> INC["📦 Increment<br/>phần mềm chạy được<br/>đạt Definition of Done"]
-    INC --> RV["👀 Sprint Review<br/>demo, lấy góp ý"]
-    RV --> RT["🔁 Retrospective<br/>cải tiến cách làm"]
+    PB["Product Backlog<br/>danh sách user story<br/>sắp theo ưu tiên"] --> SP["Sprint Planning<br/>chọn story + Sprint Goal"]
+    SP --> SB["Sprint Backlog"]
+    SB --> S["Sprint 1 tuần<br/>phân tích → thiết kế → code → test<br/>Daily Scrum mỗi ngày"]
+    S --> INC["Increment<br/>phần mềm chạy được<br/>đạt Definition of Done"]
+    INC --> RV["Sprint Review<br/>demo, lấy góp ý"]
+    RV --> RT["Retrospective<br/>cải tiến cách làm"]
     RT -->|cập nhật, sắp xếp lại| PB
 ```
 

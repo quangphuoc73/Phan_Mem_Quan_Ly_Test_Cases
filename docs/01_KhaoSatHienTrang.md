@@ -43,7 +43,7 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    KH["🏢 Khách hàng<br/>(đối tác bên ngoài)"] <-->|"yêu cầu, nghiệm thu"| PM
+    KH["Khách hàng<br/>(đối tác bên ngoài)"] <-->|"yêu cầu, nghiệm thu"| PM
     PM["Product Owner / BA<br/>Viết user story"] --> QAL["QA Lead<br/>Phân công, duyệt test case, báo cáo"]
     PM --> DEV["Developer<br/>Lập trình, sửa lỗi"]
     QAL --> T1["Tester<br/>Viết & chạy test case"]
@@ -51,7 +51,7 @@ flowchart TD
     QAL -->|"báo cáo chất lượng"| KH
     T1 -->|Báo lỗi| DEV
     T2 -->|Báo lỗi| DEV
-    AI["☁️ Nhà cung cấp AI<br/>(đối tác bên ngoài)"] -. "dịch vụ LLM" .- T1
+    AI["Nhà cung cấp AI<br/>(đối tác bên ngoài)"] -. "dịch vụ LLM" .- T1
     AI -. "dịch vụ LLM" .- T2
 ```
 

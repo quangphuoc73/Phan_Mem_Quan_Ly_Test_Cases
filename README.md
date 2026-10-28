@@ -41,11 +41,13 @@ Mặc định AI chạy chế độ **mock** (offline, không cần API key). D�
 
 | Thư mục / file | Nội dung |
 |---|---|
-| `docs/BaoCaoDoAn.pdf` | **Báo cáo đồ án** đầy đủ (bản HTML: `docs/BaoCaoDoAn.html`) |
+| `docs/BaoCaoDoAn.pdf` | **Báo cáo đồ án** đầy đủ (bản Word để chỉnh sửa: `docs/BaoCaoDoAn.docx`; bản HTML: `docs/BaoCaoDoAn.html`) |
 | `docs/SlideThuyetTrinh.html` | **Slide bảo vệ** (mở bằng trình duyệt, phím ← → để chuyển, có bản `.pdf`) |
 | `docs/00a_QuyTrinhAgile.md` | **Quy trình Agile/Scrum**: vai trò, Product Backlog, kế hoạch 5 sprint, phân công nhóm, DoR/DoD, các sự kiện Scrum, mẫu biên bản |
 | `docs/agile/ProductBacklog.csv` | Product Backlog để nhập vào Jira/Trello |
 | `docs/00…09_*.md` | Từng chương: kế hoạch, khảo sát, yêu cầu, phân tích, thiết kế, cài đặt, kiểm thử, triển khai, **kịch bản demo**, hướng phát triển |
+| `docs/dfd/` | 13 sơ đồ DFD + sơ đồ phối hợp (draw.io), sinh bằng `python3 docs/dfd/generate_dfd.py` |
+| `docs/erd/` | Sơ đồ ERD (draw.io) sinh từ `app/src/db/schema.sql` bằng `python3 docs/erd/generate_erd.py` |
 | `docs/images/` | Ảnh chụp màn hình hệ thống |
 | `app/` | Mã nguồn hệ thống (Node.js, Express, SQLite) + unit/API test + E2E Playwright |
 | `automation/` | Playwright worker chạy script do AI sinh + bộ test mẫu Page Object Model cho Sauce Demo |
@@ -68,7 +70,7 @@ Cấu hình automation (URL cần test, tài khoản test, chạy hiện trình 
 Sửa tên, MSSV các thành viên trong `docs/tools/cover.js`, sau đó:
 
 ```bash
-cd docs/tools && npm install && npm run build
+cd docs/tools && npm install && npm run build && npm run docx
 ```
 
 ## Công nghệ

@@ -6,12 +6,12 @@
 
 ```mermaid
 flowchart LR
-    Admin(["👤 Admin"])
-    QA(["👤 QA Lead"])
-    T(["👤 Tester"])
-    Dev(["👤 Developer"])
-    LLM[["🤖 Dịch vụ LLM"]]
-    PW[["🎭 Playwright Worker"]]
+    Admin(["Admin"])
+    QA(["QA Lead"])
+    T(["Tester"])
+    Dev(["Developer"])
+    LLM[["Dịch vụ LLM"]]
+    PW[["Playwright Worker"]]
 
     subgraph SYS["AI TestCase Manager"]
         direction TB

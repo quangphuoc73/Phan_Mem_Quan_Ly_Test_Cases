@@ -85,7 +85,7 @@ function inline(tokens, style = {}) {
       case 'br': out.push(new TextRun({ break: 1 })); break;
       case 'link':
         if (/^https?:/.test(t.href)) {
-          out.push(new ExternalHyperlink({ link: t.href, children: inline(t.tokens, { ...style, color: '1D4ED8', underline: {} }) }));
+          out.push(new ExternalHyperlink({ link: t.href, children: inline(t.tokens, { ...style, underline: {} }) }));
         } else out.push(...inline(t.tokens, style)); // liên kết giữa các chương: giữ chữ
         break;
       case 'html':
@@ -129,11 +129,11 @@ function table(t) {
     widths.forEach((w, i) => { widths[i] = short[i] ? MIN : Math.floor(w - (need * w) / pool); });
   }
   widths[cols - 1] = CONTENT_W - widths.slice(0, -1).reduce((a, b) => a + b, 0);
-  const border = { style: BorderStyle.SINGLE, size: 4, color: 'B8C0CC' };
+  const border = { style: BorderStyle.SINGLE, size: 4, color: '999999' };
   const borders = { top: border, bottom: border, left: border, right: border };
   const cell = (c, i, head) => new TableCell({
     borders, width: { size: widths[i], type: WidthType.DXA },
-    shading: head ? { type: ShadingType.CLEAR, fill: 'E8EDF5', color: 'auto' } : undefined,
+    shading: head ? { type: ShadingType.CLEAR, fill: 'F2F2F2', color: 'auto' } : undefined,
     margins: { top: 60, bottom: 60, left: 100, right: 100 },
     children: [new Paragraph({ spacing: { after: 0, line: 260 }, children: inline(c.tokens, { size: 22, ...(head ? { bold: true } : {}) }) })],
   });
@@ -215,14 +215,13 @@ function blocks(tokens) {
         for (const p of t.tokens) {
           out.push(new Paragraph({
             indent: { left: 360 }, spacing: { after: 80 },
-            border: { left: { style: BorderStyle.SINGLE, size: 18, color: '1D4ED8', space: 8 } },
-            shading: { type: ShadingType.CLEAR, fill: 'EEF3FF', color: 'auto' },
-            children: p.tokens ? inline(p.tokens, { color: '1E3A8A' }) : [],
+            border: { left: { style: BorderStyle.SINGLE, size: 12, color: '999999', space: 8 } },
+            children: p.tokens ? inline(p.tokens) : [],
           }));
         }
         break;
       case 'hr':
-        out.push(new Paragraph({ border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: 'B8C0CC', space: 1 } }, children: [] }));
+        out.push(new Paragraph({ border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: '999999', space: 1 } }, children: [] }));
         break;
       case 'html':
         break; // chú thích HTML (VD: <!-- DFD:BEGIN -->) không đưa vào Word
@@ -247,15 +246,15 @@ function cover() {
   return [
     ...lines(COVER.school).map((s) => p(s)),
     p(COVER.faculty, { p: { spacing: { after: 1400 } } }),
-    p('UIT', { r: { size: 56, color: '1D4ED8' }, p: { spacing: { after: 1000 } } }),
+    p('UIT', { r: { size: 48 }, p: { spacing: { after: 1000 } } }),
     p(COVER.course, { r: { size: 28 }, p: { spacing: { after: 400 } } }),
-    ...lines(COVER.title).map((s) => p(s, { r: { size: 40, color: '1D4ED8' } })),
+    ...lines(COVER.title).map((s) => p(s, { r: { size: 40 } })),
     p(COVER.subtitle, { r: { bold: false, italics: true }, p: { spacing: { after: 1000 } } }),
     ...info.map(([k, v]) => new Paragraph({ indent: { left: 2000 }, spacing: { after: 80 }, children: [new TextRun({ text: `${k} `, size: 26 }), new TextRun({ text: v, bold: true, size: 26 })] })),
     p(COVER.place, { r: { bold: false }, p: { spacing: { before: 1600 } } }),
     new Paragraph({ children: [new PageBreak()] }),
     new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun('MỤC LỤC')] }),
-    new Paragraph({ children: [new TextRun({ text: 'Trong Word: nhấn chuột phải vào mục lục → Update Field (Cập nhật trường) để cập nhật số trang.', italics: true, size: 20, color: '5B6478' })] }),
+    new Paragraph({ children: [new TextRun({ text: 'Trong Word: nhấn chuột phải vào mục lục → Update Field (Cập nhật trường) để cập nhật số trang.', italics: true, size: 20, color: '666666' })] }),
     new TableOfContents('Mục lục', { hyperlink: true, headingStyleRange: '1-3' }),
     new Paragraph({ children: [new PageBreak()] }),
   ];
@@ -276,9 +275,9 @@ async function main() {
     styles: {
       default: { document: { run: { font: FONT, size: 26 }, paragraph: { spacing: { line: 300 } } } },
       paragraphStyles: [
-        { id: 'Title', name: 'Title', basedOn: 'Normal', run: { font: FONT, size: 36, bold: true, color: '1D4ED8' }, paragraph: { alignment: AlignmentType.CENTER, spacing: { after: 240 } } },
-        { id: 'Heading1', name: 'Heading 1', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { font: FONT, size: 34, bold: true, color: '1D4ED8' }, paragraph: { spacing: { before: 120, after: 240 }, outlineLevel: 0, keepNext: true } },
-        { id: 'Heading2', name: 'Heading 2', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { font: FONT, size: 30, bold: true }, paragraph: { spacing: { before: 320, after: 140 }, outlineLevel: 1, keepNext: true } },
+        { id: 'Title', name: 'Title', basedOn: 'Normal', run: { font: FONT, size: 32, bold: true }, paragraph: { alignment: AlignmentType.CENTER, spacing: { after: 240 } } },
+        { id: 'Heading1', name: 'Heading 1', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { font: FONT, size: 32, bold: true, allCaps: true }, paragraph: { alignment: AlignmentType.CENTER, spacing: { before: 120, after: 240 }, outlineLevel: 0, keepNext: true } },
+        { id: 'Heading2', name: 'Heading 2', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { font: FONT, size: 28, bold: true }, paragraph: { spacing: { before: 320, after: 140 }, outlineLevel: 1, keepNext: true } },
         { id: 'Heading3', name: 'Heading 3', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { font: FONT, size: 27, bold: true }, paragraph: { spacing: { before: 240, after: 120 }, outlineLevel: 2, keepNext: true } },
         { id: 'Heading4', name: 'Heading 4', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { font: FONT, size: 26, bold: true, italics: true }, paragraph: { spacing: { before: 200, after: 100 }, outlineLevel: 3, keepNext: true } },
       ],

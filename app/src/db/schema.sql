@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS reviews (
 -- BM9: Script tự động (Playwright) do AI sinh
 CREATE TABLE IF NOT EXISTS automation_scripts (
   id           INTEGER PRIMARY KEY AUTOINCREMENT,
-  test_case_id INTEGER NOT NULL REFERENCES test_cases(id) ON DELETE CASCADE,
+  test_case_id INTEGER NOT NULL UNIQUE REFERENCES test_cases(id) ON DELETE CASCADE,  -- mỗi test case tối đa 1 script
   framework    TEXT    NOT NULL DEFAULT 'playwright',
   code         TEXT    NOT NULL,
   ai_log_id    INTEGER REFERENCES ai_logs(id),

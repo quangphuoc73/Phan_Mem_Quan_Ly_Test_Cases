@@ -2,35 +2,37 @@
 <html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Báo cáo đồ án SE104</title>
 <style>
-  :root { --text:#1c2333; --muted:#5b6478; --border:#d9dee8; --primary:#1d4ed8; --bg:#ffffff; --soft:#f5f7fb; }
-  body { margin:0; font-family: "Times New Roman", Times, serif; font-size: 13.5pt; line-height:1.55; color:var(--text); background:var(--bg); }
-  .wrap { max-width: 900px; margin: 0 auto; padding: 0 28px 60px; }
-  h1 { font-size: 20pt; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 6px; margin-top: 0; }
-  h2 { font-size: 15.5pt; margin-top: 28px; }
-  h3 { font-size: 13.5pt; margin-top: 20px; }
-  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 11.5pt; page-break-inside: auto; }
-  th, td { border: 1px solid var(--border); padding: 6px 8px; vertical-align: top; text-align: left; }
-  th { background: var(--soft); }
+  :root { --text:#111; --muted:#555; --border:#999; --soft:#f2f2f2; --bg:#fff; }
+  body { margin:0; font-family: "Times New Roman", Times, serif; font-size: 13pt; line-height:1.5; color:var(--text); background:var(--bg); }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 28px 60px; }
+  h1 { font-size: 18pt; text-transform: uppercase; text-align: center; margin: 0 0 18px; }
+  h2 { font-size: 14pt; margin-top: 24px; }
+  h3 { font-size: 13pt; margin-top: 18px; }
+  h4 { font-size: 13pt; font-style: italic; }
+  a { color: inherit; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 11.5pt; page-break-inside: auto; }
+  th, td { border: 1px solid var(--border); padding: 4px 7px; vertical-align: top; text-align: left; }
+  th { background: var(--soft); font-weight: bold; }
   tr { page-break-inside: avoid; }
-  code { font-family: Menlo, Consolas, monospace; font-size: 10.5pt; background: var(--soft); padding: 1px 4px; border-radius: 3px; }
-  pre { background: #0f172a; color: #e2e8f0; padding: 12px 14px; border-radius: 6px; overflow-x: auto; font-size: 10pt; line-height: 1.45; }
-  pre code { background: none; color: inherit; padding: 0; }
-  pre.mermaid { background: #fff; color: inherit; text-align: center; border: 1px solid var(--border); page-break-inside: avoid; }
-  blockquote { margin: 12px 0; padding: 8px 14px; border-left: 4px solid var(--primary); background: #eef3ff; color: #1e3a8a; }
-  img { max-width: 100%; border: 1px solid var(--border); border-radius: 6px; page-break-inside: avoid; }
+  code { font-family: Consolas, Menlo, monospace; font-size: 10.5pt; }
+  pre { background: #fafafa; border: 1px solid #ccc; padding: 10px 12px; overflow-x: auto; font-size: 10pt; line-height: 1.4; }
+  pre code { background: none; padding: 0; }
+  pre.mermaid { background: #fff; border: 0; text-align: center; page-break-inside: avoid; }
+  blockquote { margin: 10px 0; padding: 2px 12px; border-left: 3px solid var(--border); color: var(--text); }
+  img { max-width: 100%; page-break-inside: avoid; }
   p:has(> img) { page-break-inside: avoid; text-align: center; }
-  .cover { min-height: 96vh; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; padding: 40px 20px; box-sizing: border-box; border: 3px double #1c2333; margin: 16px 0 40px; }
+  .cover { min-height: 96vh; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; padding: 40px 20px; box-sizing: border-box; border: 1px solid #000; margin: 16px 0 40px; }
   .cover .school { font-weight: bold; font-size: 13pt; line-height: 1.6; }
   .cover .faculty { margin-top: 6px; font-weight: bold; }
-  .cover .logo { width: 110px; height: 110px; border-radius: 50%; border: 3px solid var(--primary); display: grid; place-items: center; color: var(--primary); font-weight: bold; font-size: 26pt; margin: 30px auto; }
+  .cover .logo { font-weight: bold; font-size: 24pt; margin: 30px auto; }
   .cover .course { font-size: 14pt; font-weight: bold; }
-  .cover .title { font-size: 22pt; font-weight: bold; color: var(--primary); margin: 18px 0 6px; line-height: 1.35; }
+  .cover .title { font-size: 20pt; font-weight: bold; margin: 18px 0 6px; line-height: 1.35; }
   .cover table { width: auto; margin: 30px auto 0; font-size: 13pt; }
   .cover td { border: 0; padding: 4px 12px; }
   .toc { page-break-after: always; }
   .toc ol { line-height: 2; }
   .chapter { page-break-before: always; }
-  @media print { .wrap { max-width: none; padding: 0; } a { color: inherit; text-decoration: none; } @page { size: A4; margin: 18mm 16mm; } }
+  @media print { .wrap { max-width: none; padding: 0; } a { text-decoration: none; } @page { size: A4; margin: 20mm 18mm 20mm 25mm; } }
 </style></head>
 <body><div class="wrap">
   <div class="cover">
@@ -386,12 +388,12 @@
 </tbody></table>
 <h2>0A.2. Khung Scrum</h2>
 <pre class="mermaid">flowchart LR
-    PB["📋 Product Backlog&lt;br/&gt;danh sách user story&lt;br/&gt;sắp theo ưu tiên"] --&gt; SP["🗓️ Sprint Planning&lt;br/&gt;chọn story + Sprint Goal"]
-    SP --&gt; SB["📝 Sprint Backlog"]
-    SB --&gt; S["🏃 Sprint 1 tuần&lt;br/&gt;phân tích → thiết kế → code → test&lt;br/&gt;Daily Scrum mỗi ngày"]
-    S --&gt; INC["📦 Increment&lt;br/&gt;phần mềm chạy được&lt;br/&gt;đạt Definition of Done"]
-    INC --&gt; RV["👀 Sprint Review&lt;br/&gt;demo, lấy góp ý"]
-    RV --&gt; RT["🔁 Retrospective&lt;br/&gt;cải tiến cách làm"]
+    PB["Product Backlog&lt;br/&gt;danh sách user story&lt;br/&gt;sắp theo ưu tiên"] --&gt; SP["Sprint Planning&lt;br/&gt;chọn story + Sprint Goal"]
+    SP --&gt; SB["Sprint Backlog"]
+    SB --&gt; S["Sprint 1 tuần&lt;br/&gt;phân tích → thiết kế → code → test&lt;br/&gt;Daily Scrum mỗi ngày"]
+    S --&gt; INC["Increment&lt;br/&gt;phần mềm chạy được&lt;br/&gt;đạt Definition of Done"]
+    INC --&gt; RV["Sprint Review&lt;br/&gt;demo, lấy góp ý"]
+    RV --&gt; RT["Retrospective&lt;br/&gt;cải tiến cách làm"]
     RT --&gt;|cập nhật, sắp xếp lại| PB</pre><h2>0A.3. Vai trò và phân công trong nhóm</h2>
 <p>Nhóm có <strong>4 thành viên</strong>, đúng quy mô Scrum (3–9 người). Product Owner và Scrum Master là hai người khác nhau; cả 4 người đều là Developer. Mỗi người phụ trách chính một mảng nhưng vẫn review code và tài liệu của nhau.</p>
 <table>
@@ -1070,7 +1072,7 @@ Velocity thực tế: __ SP
 <h2>1.3. Hiện trạng tổ chức</h2>
 <h3>Sơ đồ tổ chức</h3>
 <pre class="mermaid">flowchart TD
-    KH["🏢 Khách hàng&lt;br/&gt;(đối tác bên ngoài)"] &lt;--&gt;|"yêu cầu, nghiệm thu"| PM
+    KH["Khách hàng&lt;br/&gt;(đối tác bên ngoài)"] &lt;--&gt;|"yêu cầu, nghiệm thu"| PM
     PM["Product Owner / BA&lt;br/&gt;Viết user story"] --&gt; QAL["QA Lead&lt;br/&gt;Phân công, duyệt test case, báo cáo"]
     PM --&gt; DEV["Developer&lt;br/&gt;Lập trình, sửa lỗi"]
     QAL --&gt; T1["Tester&lt;br/&gt;Viết &amp; chạy test case"]
@@ -1078,7 +1080,7 @@ Velocity thực tế: __ SP
     QAL --&gt;|"báo cáo chất lượng"| KH
     T1 --&gt;|Báo lỗi| DEV
     T2 --&gt;|Báo lỗi| DEV
-    AI["☁️ Nhà cung cấp AI&lt;br/&gt;(đối tác bên ngoài)"] -. "dịch vụ LLM" .- T1
+    AI["Nhà cung cấp AI&lt;br/&gt;(đối tác bên ngoài)"] -. "dịch vụ LLM" .- T1
     AI -. "dịch vụ LLM" .- T2</pre><h3>Các bộ phận và giao tiếp với bên ngoài</h3>
 <p>Theo môn học, cần <strong>chú trọng các bộ phận có giao tiếp với đối tác bên ngoài</strong>, vì dữ liệu đi ra hoặc đi vào tổ chức ở đó.</p>
 <table>
@@ -2298,12 +2300,12 @@ Velocity thực tế: __ SP
 </blockquote>
 <h2>3.1. Sơ đồ use case tổng quát</h2>
 <pre class="mermaid">flowchart LR
-    Admin(["👤 Admin"])
-    QA(["👤 QA Lead"])
-    T(["👤 Tester"])
-    Dev(["👤 Developer"])
-    LLM[["🤖 Dịch vụ LLM"]]
-    PW[["🎭 Playwright Worker"]]
+    Admin(["Admin"])
+    QA(["QA Lead"])
+    T(["Tester"])
+    Dev(["Developer"])
+    LLM[["Dịch vụ LLM"]]
+    PW[["Playwright Worker"]]
 
     subgraph SYS["AI TestCase Manager"]
         direction TB
@@ -3580,7 +3582,7 @@ Velocity thực tế: __ SP
 </tbody></table>
 <h3>Sơ đồ triển khai</h3>
 <pre class="mermaid">flowchart LR
-    B["💻 Máy người dùng&lt;br/&gt;Trình duyệt"] -- "HTTPS :443" --&gt; RP["Reverse proxy&lt;br/&gt;(Nginx / Caddy)"]
+    B["Máy người dùng&lt;br/&gt;Trình duyệt"] -- "HTTPS :443" --&gt; RP["Reverse proxy&lt;br/&gt;(Nginx / Caddy)"]
     subgraph Docker["Docker host"]
         RP --&gt; APP["Container app&lt;br/&gt;Node.js + Playwright&lt;br/&gt;CPU ≤ 2, RAM ≤ 2 GB"]
         APP --- VOL[("Volume app-data&lt;br/&gt;CSDL + ảnh chụp lỗi")]
@@ -3649,144 +3651,116 @@ Velocity thực tế: __ SP
 <p>Các quy định có thể thay đổi (số test case tối đa, danh sách độ ưu tiên, số lần thử lại AI…) <strong>không viết cứng trong mã nguồn</strong> mà lưu trong bảng <code>parameters</code>. Nhà cung cấp LLM được chọn bằng cấu hình (<code>AI_PROVIDER</code>). Trạng thái, loại, vai trò dùng ràng buộc <code>CHECK</code> để dễ mở rộng.</p>
 <h3>Bước 3 – Hiệu quả</h3>
 <ul>
-<li>Chỉ mục: <code>test_cases(story_id)</code>, <code>test_cases(status)</code>, <code>test_runs(test_case_id)</code>, <code>user_stories(project_id)</code>.</li>
+<li>Chỉ mục: <code>test_cases(story_id)</code>, <code>test_cases(status)</code>, <code>test_runs(test_case_id)</code>, <code>user_stories(project_id)</code>, <code>user_stories(sprint_id)</code>; <code>UNIQUE</code> trên <code>automation_scripts(test_case_id)</code> vừa đảm bảo mỗi test case 1 script vừa là chỉ mục tra cứu.</li>
 <li>Kết quả &quot;lần chạy gần nhất&quot; tính bằng <code>MAX(id)</code> theo test case (không lưu dư thừa).</li>
 <li><code>steps</code>, <code>snapshot</code> lưu dạng JSON (TEXT; chuyển <code>JSONB</code> khi dùng PostgreSQL).</li>
 <li>Ràng buộc khóa ngoại <code>ON DELETE CASCADE</code> để xóa user story kéo theo test case.</li>
 </ul>
 <h3>Sơ đồ ERD</h3>
-<pre class="mermaid">erDiagram
-    users ||--o{ user_stories : "tạo"
-    users ||--o{ reviews : "duyệt"
-    users ||--o{ test_runs : "chạy"
-    users ||--o{ ai_logs : "gọi AI"
-    users ||--o{ audit_logs : "thao tác"
-    projects ||--o{ modules : "gồm"
-    projects ||--o{ user_stories : "chứa"
-    modules ||--o{ user_stories : "phân loại"
-    projects ||--o{ sprints : "chia thành"
-    sprints |o--o{ user_stories : "gồm"
-    user_stories ||--o{ test_cases : "có"
-    user_stories ||--o{ ai_logs : "đầu vào"
-    ai_logs ||--o{ test_cases : "sinh ra"
-    test_cases ||--o{ test_case_versions : "phiên bản"
-    test_cases ||--o{ reviews : "được duyệt"
-    test_cases ||--o{ test_runs : "kết quả"
-    test_cases ||--o| automation_scripts : "script"
-
-    users {
-        int id PK
-        text username UK
-        text password_hash
-        text full_name
-        text email
-        text role "ADMIN|QA_LEAD|TESTER|DEVELOPER"
-        int active
-    }
-    projects {
-        int id PK
-        text code UK
-        text name
-        text base_url
-    }
-    modules {
-        int id PK
-        int project_id FK
-        text name
-    }
-    user_stories {
-        int id PK
-        text code UK
-        int project_id FK
-        int module_id FK
-        int sprint_id FK
-        int story_points
-        text title
-        text description
-        text acceptance_criteria
-        text priority
-    }
-    test_cases {
-        int id PK
-        text code UK
-        int story_id FK
-        text title
-        text steps "JSON"
-        text expected_result
-        text priority
-        text type "Positive|Negative|Edge"
-        text status "DRAFT|PENDING_REVIEW|APPROVED|RETURNED"
-        text source "AI|MANUAL"
-        int ai_log_id FK
-        int version
-    }
-    test_case_versions {
-        int id PK
-        int test_case_id FK
-        int version
-        text snapshot "JSON"
-        text change_note
-    }
-    reviews {
-        int id PK
-        int test_case_id FK
-        int reviewer_id FK
-        text decision
-        text note
-    }
-    test_runs {
-        int id PK
-        int test_case_id FK
-        text result "PASS|FAIL|BLOCKED"
-        text run_type "MANUAL|AUTO"
-        text note
-        text log
-        text screenshot
-        int duration_ms
-    }
-    automation_scripts {
-        int id PK
-        int test_case_id FK
-        text framework
-        text code
-    }
-    ai_logs {
-        int id PK
-        int story_id FK
-        text task
-        text provider
-        text model
-        text prompt_masked
-        text pii_found
-        int injection_flag
-        text raw_output
-        text status
-        int attempts
-        int duration_ms
-    }
-    sprints {
-        int id PK
-        int project_id FK
-        text name
-        text goal
-        text start_date
-        text end_date
-    }
-    parameters {
-        text key PK
-        text value
-        text data_type
-        text description
-    }
-    audit_logs {
-        int id PK
-        int user_id FK
-        text action
-        text entity
-        int entity_id
-        text detail
-        text ip
-    }</pre><h3>Từ điển dữ liệu (các bảng chính)</h3>
+<p>Sơ đồ được vẽ bằng <strong>draw.io</strong> theo ký hiệu chân chim (crow&#39;s foot), sinh <strong>tự động từ lược đồ thật</strong> <code>app/src/db/schema.sql</code> bằng lệnh <code>python3 docs/erd/generate_erd.py</code>: cột, kiểu, PK/FK/UK, NOT NULL và bản số đều đọc từ CSDL nên sơ đồ luôn khớp với code. File gốc để mở và sửa: <code>docs/erd/ERD_CSDL.drawio</code>.</p>
+<p><img src="erd/ERD_CSDL.svg" alt="Sơ đồ ERD – CSDL AI TestCase Manager"></p>
+<p><strong>Đọc sơ đồ:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Ký hiệu</th>
+<th>Ý nghĩa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PK / FK / UK</td>
+<td>Khóa chính / khóa ngoại / duy nhất. Kiểu có chữ <code>NULL</code> là cột cho phép rỗng</td>
+</tr>
+<tr>
+<td><code>||</code> (hai vạch) ở phía bảng cha</td>
+<td>Mỗi dòng con <strong>bắt buộc</strong> thuộc đúng 1 dòng cha (FK <code>NOT NULL</code>)</td>
+</tr>
+<tr>
+<td><code>|o</code> (vạch + vòng) ở phía bảng cha</td>
+<td>Dòng con có thể không thuộc dòng cha nào (FK cho phép <code>NULL</code>)</td>
+</tr>
+<tr>
+<td><code>o{</code> (chân chim + vòng) ở phía bảng con</td>
+<td>Một dòng cha có <strong>0 hoặc nhiều</strong> dòng con</td>
+</tr>
+<tr>
+<td><code>o|</code> ở phía bảng con</td>
+<td>Một dòng cha có <strong>0 hoặc 1</strong> dòng con (FK có <code>UNIQUE</code>)</td>
+</tr>
+</tbody></table>
+<p><strong>Các quan hệ chính (13 bảng, 23 khóa ngoại):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Bảng cha</th>
+<th>Bảng con (khóa ngoại)</th>
+<th>Bản số</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>projects</td>
+<td>modules, sprints, user_stories (<code>project_id</code>)</td>
+<td>1 – 0..n</td>
+<td>Xóa dự án kéo theo module, sprint, user story (<code>CASCADE</code>)</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>user_stories (<code>module_id</code>)</td>
+<td>0..1 – 0..n</td>
+<td>Story có thể chưa gán module</td>
+</tr>
+<tr>
+<td>sprints</td>
+<td>user_stories (<code>sprint_id</code>)</td>
+<td>0..1 – 0..n</td>
+<td>Story chưa thuộc sprint nằm trong Product backlog</td>
+</tr>
+<tr>
+<td>user_stories</td>
+<td>test_cases (<code>story_id</code>)</td>
+<td>1 – 0..n</td>
+<td>Tối đa <code>MAX_TC_PER_STORY</code> test case (QĐ2, kiểm tra ở tầng xử lý)</td>
+</tr>
+<tr>
+<td>user_stories</td>
+<td>ai_logs (<code>story_id</code>)</td>
+<td>0..1 – 0..n</td>
+<td>Mỗi lần gọi AI sinh test case</td>
+</tr>
+<tr>
+<td>ai_logs</td>
+<td>test_cases, automation_scripts (<code>ai_log_id</code>)</td>
+<td>0..1 – 0..n</td>
+<td>Truy vết bản AI sinh ra; test case viết tay có <code>ai_log_id</code> rỗng</td>
+</tr>
+<tr>
+<td>test_cases</td>
+<td>test_case_versions, reviews, test_runs (<code>test_case_id</code>)</td>
+<td>1 – 0..n</td>
+<td>Lịch sử phiên bản, phiếu duyệt, kết quả chạy</td>
+</tr>
+<tr>
+<td>test_cases</td>
+<td>automation_scripts (<code>test_case_id</code>, <code>UNIQUE</code>)</td>
+<td>1 – 0..1</td>
+<td>Mỗi test case có tối đa 1 script</td>
+</tr>
+<tr>
+<td>users</td>
+<td>reviews (<code>reviewer_id</code>)</td>
+<td>1 – 0..n</td>
+<td>Phiếu duyệt bắt buộc có người duyệt</td>
+</tr>
+<tr>
+<td>users</td>
+<td>user_stories, ai_logs, test_runs, audit_logs, parameters</td>
+<td>0..1 – 0..n</td>
+<td>Người tạo, người gọi AI, người chạy, người thao tác, người sửa quy định</td>
+</tr>
+</tbody></table>
+<p>Để sơ đồ dễ đọc, 4 khóa ngoại chỉ ghi nhận người tạo/sửa không vẽ đường nối: <code>projects.created_by</code>, <code>test_cases.created_by</code>, <code>test_case_versions.changed_by</code>, <code>automation_scripts.created_by</code> (đều tham chiếu <code>users</code>). Cột <code>ai_logs.test_case_id</code> là tham chiếu logic (lần gọi AI sinh script cho test case nào), không khai báo khóa ngoại vì bản ghi nhật ký phải giữ lại kể cả khi test case bị xóa.</p>
+<h3>Từ điển dữ liệu (các bảng chính)</h3>
 <p><strong>test_cases</strong></p>
 <table>
 <thead>
@@ -4734,9 +4708,9 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <h2>6.1. Chiến lược kiểm thử</h2>
 <p>Áp dụng mô hình <strong>kim tự tháp kiểm thử</strong>: nhiều test nhanh ở tầng dưới, ít test chậm ở tầng trên.</p>
 <pre class="mermaid">flowchart TB
-    E2E["🔺 E2E – Playwright (9 kịch bản)&lt;br/&gt;Toàn bộ luồng qua giao diện thật"]
-    API["🔷 API / tích hợp – supertest (34 test)&lt;br/&gt;Quy định nghiệp vụ, phân quyền, bảo mật AI, sprint"]
-    UNIT["🟩 Unit – node:test (21 test)&lt;br/&gt;Che PII, chống injection, kiểm tra tĩnh, AI mock, schema"]
+    E2E["E2E – Playwright (9 kịch bản)&lt;br/&gt;Toàn bộ luồng qua giao diện thật"]
+    API["API / tích hợp – supertest (34 test)&lt;br/&gt;Quy định nghiệp vụ, phân quyền, bảo mật AI, sprint"]
+    UNIT["Unit – node:test (21 test)&lt;br/&gt;Che PII, chống injection, kiểm tra tĩnh, AI mock, schema"]
     E2E --- API --- UNIT</pre><table>
 <thead>
 <tr>
@@ -4798,277 +4772,277 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <tbody><tr>
 <td>UT-01</td>
 <td>Che email</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-02</td>
 <td>Che số điện thoại VN (0xxx, +84)</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-03</td>
 <td>Che CCCD 12 số, số thẻ 16 số</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-04</td>
 <td>Không che nhầm số thông thường (10 MB, 8 ký tự, mã US)</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-05</td>
 <td>Chuỗi rỗng/null không lỗi</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-06</td>
 <td>Phát hiện prompt injection tiếng Anh</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-07</td>
 <td>Phát hiện prompt injection tiếng Việt</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-08</td>
 <td>User story bình thường không bị gắn cờ</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-09</td>
 <td>Loại bỏ thẻ giả <code>&lt;/user_story&gt;&lt;system&gt;</code></td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-10</td>
 <td>Kiểm tra tĩnh chặn child_process, fs, process.env, eval</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-11</td>
 <td>Kiểm tra tĩnh cho qua script Playwright hợp lệ</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-12</td>
 <td>Kiểm tra tĩnh yêu cầu có khối test()</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-13</td>
 <td>Tách acceptance criteria theo dòng</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-14</td>
 <td>MockProvider trả kết quả đúng schema</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-15</td>
 <td>Mỗi acceptance criterion có ít nhất 1 case Positive</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-16</td>
 <td>Có case Negative và Edge (giá trị biên 10 MB)</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-17</td>
 <td>Tuân thủ QĐ2: không vượt số tối đa</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-18</td>
 <td>Prompt chứa quy định số lượng, dữ liệu bọc trong <code>&lt;user_story&gt;</code></td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-19</td>
 <td>Schema từ chối priority sai, steps rỗng</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-20</td>
 <td>Bỏ code fence ```json</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>UT-21</td>
 <td>Sinh script Playwright có locator <code>data-test</code></td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-01</td>
 <td>Đăng nhập đúng trả JWT, không trả mật khẩu băm</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-02</td>
 <td>Sai mật khẩu → 401, thông báo chung</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-03</td>
 <td>Không có token → 401</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-04</td>
 <td>Token giả mạo → 401</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-05</td>
 <td>QĐ4: Tester không được duyệt → 403</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-06</td>
 <td>Developer chỉ xem, không lập story, không gọi AI</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-07</td>
 <td>Tester không được đổi quy định</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-08</td>
 <td>Chỉ Admin quản lý người dùng; không lộ mật khẩu băm</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-09</td>
 <td>Tài khoản bị khóa không đăng nhập được</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-10</td>
 <td>Header bảo mật, CSP được bật</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-11</td>
 <td>QĐ1: mã sai định dạng → 400</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-12</td>
 <td>QĐ1: mã trùng → 409</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-13</td>
 <td>QĐ1: độ ưu tiên sai → 400</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-14→22</td>
 <td>Luồng đầy đủ: lập story → AI sinh → sửa (phiên bản) → chưa duyệt không chạy → gửi duyệt (khóa sửa) → trả lại thiếu ghi chú bị chặn → trả lại → duyệt → Fail thiếu ghi chú bị chặn → Pass → báo cáo bao phủ → sửa bản đã duyệt quay về Nháp</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-23</td>
 <td>QĐ2 + YC10: đổi tối đa 3 → AI chỉ sinh 3; thêm tay bị chặn</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-24</td>
 <td>Tham số ngoài miền giá trị → 400</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-25</td>
 <td>Email, SĐT được che trong prompt lưu ở nhật ký</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-26</td>
 <td>Prompt injection được gắn cờ, vẫn sinh đúng schema</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-27</td>
 <td>AI sai định dạng lần đầu → tự thử lại, attempts = 2</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-28</td>
 <td>AI luôn sai → 502, nhật ký FAILED, attempts = 3</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-29</td>
 <td>Vượt hạn mức gọi AI/giờ → 429</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-30</td>
 <td>Nhập file: dòng lỗi không làm hỏng dòng hợp lệ</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-31</td>
 <td>Xuất Excel đúng định dạng</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-32</td>
 <td>YC9: chỉ sinh script cho test case đã duyệt</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-33</td>
 <td>Audit log ghi thao tác duyệt</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-34</td>
 <td>QA Lead tạo sprint mới cho dự án</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-35</td>
 <td>QĐ12: sprint trùng thời gian → 409</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-36</td>
 <td>QĐ12: sprint quá dài / kết thúc trước khi bắt đầu → 400</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-37</td>
 <td>Tester không được tạo sprint → 403</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-38</td>
 <td>Story chỉ gắn sprint cùng dự án; story point phải thuộc Fibonacci</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-39</td>
 <td>Product backlog chỉ gồm story chưa có sprint; đưa story vào sprint</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-40</td>
 <td>Definition of Done và velocity: Sprint 1 hoàn thành 5/13 SP</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-41</td>
 <td>Burndown: 1 điểm/ngày, đường lý tưởng giảm về 0</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>IT-42</td>
 <td>Báo cáo lọc theo sprint, trả velocity các sprint</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 </tbody></table>
 <p><strong>Kết quả:</strong> <code>55 tests, 55 pass, 0 fail</code> (Node.js 21, macOS, 20/10/2026).</p>
@@ -5093,47 +5067,47 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <tbody><tr>
 <td>E2E-01</td>
 <td>Đăng nhập sai mật khẩu hiển thị lỗi</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>E2E-02</td>
 <td>Tester lập user story mới qua hộp thoại</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>E2E-03</td>
 <td>Tester sinh test case bằng AI, chọn tất cả và gửi duyệt</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>E2E-04</td>
 <td>QA Lead trả lại thiếu ghi chú bị chặn; trả lại có ghi chú; duyệt hàng loạt phần còn lại</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>E2E-05</td>
 <td>Tester ghi kết quả Fail: thiếu ghi chú bị chặn, có ghi chú thì lưu</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>E2E-06</td>
 <td>QA Lead đổi QĐ2 thành 2, sinh lại → AI chỉ sinh 2</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>E2E-07</td>
 <td>Developer không thấy chức năng ghi</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>E2E-08</td>
 <td>QA Lead Sprint Planning: đưa story từ Product backlog vào sprint đang chạy, bảng sprint cập nhật</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 <tr>
 <td>E2E-09</td>
 <td>Tester xem được burndown nhưng không có nút tạo sprint</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 </tr>
 </tbody></table>
 <p><strong>Kết quả:</strong> <code>9 passed (10.1s)</code>.</p>
@@ -5387,32 +5361,32 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </thead>
 <tbody><tr>
 <td>US-SAU-001-TC01 Đăng nhập thành công</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 <td>2,4 s</td>
 </tr>
 <tr>
 <td>US-SAU-001-TC02 Đăng nhập sai mật khẩu</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 <td>2,2 s</td>
 </tr>
 <tr>
 <td>US-SAU-001-TC03 Tài khoản bị khóa</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 <td>2,2 s</td>
 </tr>
 <tr>
 <td>US-SAU-002-TC01 Thêm sản phẩm vào giỏ</td>
-<td>✅ Pass</td>
+<td>Pass</td>
 <td>2,4 s</td>
 </tr>
 <tr>
 <td>US-SAU-002-TC01 (cố ý sửa expect thành 2)</td>
-<td>❌ Fail đúng như mong đợi, có ảnh chụp lỗi</td>
+<td>Fail đúng như mong đợi, có ảnh chụp lỗi</td>
 <td>6,8 s</td>
 </tr>
 <tr>
 <td>Script chứa <code>child_process</code>, <code>process.env</code></td>
-<td>⛔ Bị chặn trước khi chạy</td>
+<td>Bị chặn trước khi chạy</td>
 <td>–</td>
 </tr>
 </tbody></table>
@@ -6037,7 +6011,7 @@ npm install
 </div>
 <script src="assets/mermaid.min.js"></script>
 <script>
-  mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'strict', flowchart: { htmlLabels: true, useMaxWidth: true } });
+  mermaid.initialize({ startOnLoad: false, theme: 'default', themeVariables: { primaryTextColor: '#000000', textColor: '#000000', lineColor: '#333333' }, securityLevel: 'strict', flowchart: { htmlLabels: true, useMaxWidth: true } });
   mermaid.run().then(() => { document.body.dataset.ready = '1'; }).catch((e) => { document.body.dataset.ready = 'error'; console.error(e); });
 </script>
 </body></html>

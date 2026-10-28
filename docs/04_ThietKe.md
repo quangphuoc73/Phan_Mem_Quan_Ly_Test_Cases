@@ -51,7 +51,7 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-    B["💻 Máy người dùng<br/>Trình duyệt"] -- "HTTPS :443" --> RP["Reverse proxy<br/>(Nginx / Caddy)"]
+    B["Máy người dùng<br/>Trình duyệt"] -- "HTTPS :443" --> RP["Reverse proxy<br/>(Nginx / Caddy)"]
     subgraph Docker["Docker host"]
         RP --> APP["Container app<br/>Node.js + Playwright<br/>CPU ≤ 2, RAM ≤ 2 GB"]
         APP --- VOL[("Volume app-data<br/>CSDL + ảnh chụp lỗi")]
@@ -87,147 +87,43 @@ Các quy định có thể thay đổi (số test case tối đa, danh sách đ�
 
 ### Bước 3 – Hiệu quả
 
-- Chỉ mục: `test_cases(story_id)`, `test_cases(status)`, `test_runs(test_case_id)`, `user_stories(project_id)`.
+- Chỉ mục: `test_cases(story_id)`, `test_cases(status)`, `test_runs(test_case_id)`, `user_stories(project_id)`, `user_stories(sprint_id)`; `UNIQUE` trên `automation_scripts(test_case_id)` vừa đảm bảo mỗi test case 1 script vừa là chỉ mục tra cứu.
 - Kết quả "lần chạy gần nhất" tính bằng `MAX(id)` theo test case (không lưu dư thừa).
 - `steps`, `snapshot` lưu dạng JSON (TEXT; chuyển `JSONB` khi dùng PostgreSQL).
 - Ràng buộc khóa ngoại `ON DELETE CASCADE` để xóa user story kéo theo test case.
 
 ### Sơ đồ ERD
 
-```mermaid
-erDiagram
-    users ||--o{ user_stories : "tạo"
-    users ||--o{ reviews : "duyệt"
-    users ||--o{ test_runs : "chạy"
-    users ||--o{ ai_logs : "gọi AI"
-    users ||--o{ audit_logs : "thao tác"
-    projects ||--o{ modules : "gồm"
-    projects ||--o{ user_stories : "chứa"
-    modules ||--o{ user_stories : "phân loại"
-    projects ||--o{ sprints : "chia thành"
-    sprints |o--o{ user_stories : "gồm"
-    user_stories ||--o{ test_cases : "có"
-    user_stories ||--o{ ai_logs : "đầu vào"
-    ai_logs ||--o{ test_cases : "sinh ra"
-    test_cases ||--o{ test_case_versions : "phiên bản"
-    test_cases ||--o{ reviews : "được duyệt"
-    test_cases ||--o{ test_runs : "kết quả"
-    test_cases ||--o| automation_scripts : "script"
+Sơ đồ được vẽ bằng **draw.io** theo ký hiệu chân chim (crow's foot), sinh **tự động từ lược đồ thật** `app/src/db/schema.sql` bằng lệnh `python3 docs/erd/generate_erd.py`: cột, kiểu, PK/FK/UK, NOT NULL và bản số đều đọc từ CSDL nên sơ đồ luôn khớp với code. File gốc để mở và sửa: `docs/erd/ERD_CSDL.drawio`.
 
-    users {
-        int id PK
-        text username UK
-        text password_hash
-        text full_name
-        text email
-        text role "ADMIN|QA_LEAD|TESTER|DEVELOPER"
-        int active
-    }
-    projects {
-        int id PK
-        text code UK
-        text name
-        text base_url
-    }
-    modules {
-        int id PK
-        int project_id FK
-        text name
-    }
-    user_stories {
-        int id PK
-        text code UK
-        int project_id FK
-        int module_id FK
-        int sprint_id FK
-        int story_points
-        text title
-        text description
-        text acceptance_criteria
-        text priority
-    }
-    test_cases {
-        int id PK
-        text code UK
-        int story_id FK
-        text title
-        text steps "JSON"
-        text expected_result
-        text priority
-        text type "Positive|Negative|Edge"
-        text status "DRAFT|PENDING_REVIEW|APPROVED|RETURNED"
-        text source "AI|MANUAL"
-        int ai_log_id FK
-        int version
-    }
-    test_case_versions {
-        int id PK
-        int test_case_id FK
-        int version
-        text snapshot "JSON"
-        text change_note
-    }
-    reviews {
-        int id PK
-        int test_case_id FK
-        int reviewer_id FK
-        text decision
-        text note
-    }
-    test_runs {
-        int id PK
-        int test_case_id FK
-        text result "PASS|FAIL|BLOCKED"
-        text run_type "MANUAL|AUTO"
-        text note
-        text log
-        text screenshot
-        int duration_ms
-    }
-    automation_scripts {
-        int id PK
-        int test_case_id FK
-        text framework
-        text code
-    }
-    ai_logs {
-        int id PK
-        int story_id FK
-        text task
-        text provider
-        text model
-        text prompt_masked
-        text pii_found
-        int injection_flag
-        text raw_output
-        text status
-        int attempts
-        int duration_ms
-    }
-    sprints {
-        int id PK
-        int project_id FK
-        text name
-        text goal
-        text start_date
-        text end_date
-    }
-    parameters {
-        text key PK
-        text value
-        text data_type
-        text description
-    }
-    audit_logs {
-        int id PK
-        int user_id FK
-        text action
-        text entity
-        int entity_id
-        text detail
-        text ip
-    }
-```
+![Sơ đồ ERD – CSDL AI TestCase Manager](erd/ERD_CSDL.svg)
+
+**Đọc sơ đồ:**
+
+| Ký hiệu | Ý nghĩa |
+|---|---|
+| PK / FK / UK | Khóa chính / khóa ngoại / duy nhất. Kiểu có chữ `NULL` là cột cho phép rỗng |
+| `\|\|` (hai vạch) ở phía bảng cha | Mỗi dòng con **bắt buộc** thuộc đúng 1 dòng cha (FK `NOT NULL`) |
+| `\|o` (vạch + vòng) ở phía bảng cha | Dòng con có thể không thuộc dòng cha nào (FK cho phép `NULL`) |
+| `o{` (chân chim + vòng) ở phía bảng con | Một dòng cha có **0 hoặc nhiều** dòng con |
+| `o\|` ở phía bảng con | Một dòng cha có **0 hoặc 1** dòng con (FK có `UNIQUE`) |
+
+**Các quan hệ chính (13 bảng, 23 khóa ngoại):**
+
+| Bảng cha | Bảng con (khóa ngoại) | Bản số | Ghi chú |
+|---|---|---|---|
+| projects | modules, sprints, user_stories (`project_id`) | 1 – 0..n | Xóa dự án kéo theo module, sprint, user story (`CASCADE`) |
+| modules | user_stories (`module_id`) | 0..1 – 0..n | Story có thể chưa gán module |
+| sprints | user_stories (`sprint_id`) | 0..1 – 0..n | Story chưa thuộc sprint nằm trong Product backlog |
+| user_stories | test_cases (`story_id`) | 1 – 0..n | Tối đa `MAX_TC_PER_STORY` test case (QĐ2, kiểm tra ở tầng xử lý) |
+| user_stories | ai_logs (`story_id`) | 0..1 – 0..n | Mỗi lần gọi AI sinh test case |
+| ai_logs | test_cases, automation_scripts (`ai_log_id`) | 0..1 – 0..n | Truy vết bản AI sinh ra; test case viết tay có `ai_log_id` rỗng |
+| test_cases | test_case_versions, reviews, test_runs (`test_case_id`) | 1 – 0..n | Lịch sử phiên bản, phiếu duyệt, kết quả chạy |
+| test_cases | automation_scripts (`test_case_id`, `UNIQUE`) | 1 – 0..1 | Mỗi test case có tối đa 1 script |
+| users | reviews (`reviewer_id`) | 1 – 0..n | Phiếu duyệt bắt buộc có người duyệt |
+| users | user_stories, ai_logs, test_runs, audit_logs, parameters | 0..1 – 0..n | Người tạo, người gọi AI, người chạy, người thao tác, người sửa quy định |
+
+Để sơ đồ dễ đọc, 4 khóa ngoại chỉ ghi nhận người tạo/sửa không vẽ đường nối: `projects.created_by`, `test_cases.created_by`, `test_case_versions.changed_by`, `automation_scripts.created_by` (đều tham chiếu `users`). Cột `ai_logs.test_case_id` là tham chiếu logic (lần gọi AI sinh script cho test case nào), không khai báo khóa ngoại vì bản ghi nhật ký phải giữ lại kể cả khi test case bị xóa.
 
 ### Từ điển dữ liệu (các bảng chính)
 
