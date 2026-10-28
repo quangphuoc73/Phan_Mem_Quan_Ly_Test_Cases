@@ -1,16 +1,16 @@
-# Chương 9. Kết luận và hướng phát triển
+# Chương 8. Kết luận và hướng phát triển
 
-## 9.1. Kết quả đạt được
+## 8.1. Kết quả đạt được
 
 | Mục tiêu | Kết quả |
 |---|---|
-| Quy trình CNPM | Agile/Scrum, nhóm 4 người: 5 sprint × 1 tuần, Product Backlog 28 story, DoR/DoD, biên bản các sự kiện; mỗi sprint đi qua đủ 7 hoạt động của môn học |
+| Quy trình CNPM | Agile/Scrum, nhóm 4 người: 5 sprint × 1 tuần, Product Backlog 28 story, DoR/DoD, biên bản các sự kiện; mỗi sprint đi qua đủ các hoạt động của môn học |
 | Phần mềm chạy được | 12 yêu cầu nghiệp vụ (YC1–YC12), 14 màn hình, 40+ API; hỗ trợ đội làm Scrum (sprint, story point, burndown, velocity) |
 | Tích hợp AI đúng cách | AI Service tách riêng (Strategy pattern, 4 provider), che PII, chống prompt injection, schema + retry, rate limit, nhật ký AI |
 | Kiểm thử tự động | 55 unit/API test, 9 E2E Playwright, 8 test Playwright mẫu (POM), script AI sinh chạy được trên web thật |
 | Triển khai | Docker, docker-compose, GitHub Actions CI |
 
-## 9.2. Hạn chế
+## 8.2. Hạn chế
 
 - MockProvider dùng luật đơn giản; chất lượng thật phụ thuộc LLM được cấu hình.
 - Script Playwright do AI sinh còn dạng "phẳng", chưa tái sử dụng Page Object.
@@ -18,7 +18,7 @@
 - Hàng đợi chạy test đang đồng bộ (mỗi request chờ kết quả); chưa có hàng đợi job (BullMQ + Redis) cho chạy hàng loạt.
 - Chưa kiểm thử hiệu năng với dữ liệu lớn.
 
-## 9.3. Hướng phát triển cho phần mềm
+## 8.3. Hướng phát triển cho phần mềm
 
 1. Hàng đợi job (BullMQ + Redis) để sinh test case và chạy script nền, chạy hàng loạt theo bộ test (test suite).
 2. Tích hợp Jira: nhập user story trực tiếp, tạo bug tự động khi Fail.
@@ -27,7 +27,7 @@
 5. Quan sát LLM (Langfuse): theo dõi chi phí, độ trễ, chất lượng từng prompt.
 6. Chuyển sang PostgreSQL, thêm đăng nhập SSO.
 
-## 9.4. Hướng phát triển chung – nâng cao chất lượng AI
+## 8.4. Hướng phát triển chung – nâng cao chất lượng AI
 
 Hệ thống đã lưu sẵn dữ liệu để đo chất lượng AI: bảng `ai_logs` (prompt, model, kết quả gốc) và `test_case_versions` (bản AI sinh ra v1 và bản người dùng sửa cuối cùng). Dựa vào đó, các phiên bản sau có thể cải tiến phần AI theo hướng có số liệu:
 

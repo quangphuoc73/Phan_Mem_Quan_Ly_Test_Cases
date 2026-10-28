@@ -13,7 +13,7 @@ Mỗi lần chạy sinh ra (cạnh file này):
   - YCxx_*.drawio : mở bằng draw.io (app.diagrams.net hoặc draw.io Desktop) để xem, sửa
   - YCxx_*.svg    : hình chèn vào báo cáo
   - PhoiHop_CacCongViec.drawio/.svg : sơ đồ phối hợp giữa các công việc
-và cập nhật mục 3.4 của docs/03_PhanTich.md (giữa hai dấu <!-- DFD:BEGIN --> và <!-- DFD:END -->).
+và cập nhật mục 2.4 của docs/02_PhanTich.md (giữa hai dấu <!-- DFD:BEGIN --> và <!-- DFD:END -->).
 
 Chạy:  python3 docs/dfd/generate_dfd.py
 Sửa nội dung sơ đồ: sửa danh sách DFDS / PHOI_HOP bên dưới rồi chạy lại.
@@ -24,7 +24,7 @@ from pathlib import Path
 from xml.sax.saxutils import escape
 
 OUT = Path(__file__).parent
-CHAPTER = OUT.parent / '03_PhanTich.md'
+CHAPTER = OUT.parent / '02_PhanTich.md'
 
 BLUE = '#1046A8'
 OLIVE = '#8C9524'
@@ -428,13 +428,13 @@ def build_phoi_hop():
 
 
 # ---------------------------------------------------------------------------
-# MỤC 3.4 CỦA CHƯƠNG 3
+# MỤC 2.4 CỦA CHƯƠNG 2
 # ---------------------------------------------------------------------------
-INTRO = '''## 3.4. Sơ đồ luồng dữ liệu (DFD) cho từng yêu cầu
+INTRO = '''## 2.4. Sơ đồ luồng dữ liệu (DFD) cho từng yêu cầu
 
 Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagrams.net)**. File gốc `.drawio` nằm trong thư mục `docs/dfd/` (mở bằng [app.diagrams.net](https://app.diagrams.net) hoặc draw.io Desktop để xem, sửa); hình trong báo cáo được sinh từ cùng một nguồn bằng lệnh `python3 docs/dfd/generate_dfd.py`.
 
-### 3.4.1. Ký hiệu và quy ước
+### 2.4.1. Ký hiệu và quy ước
 
 | Ký hiệu | Ý nghĩa |
 |---|---|
@@ -467,14 +467,14 @@ def markdown():
     for i, spec in enumerate(DFDS, 2):
         d = spec['d']
         name = spec.get('svg', spec['file'])
-        parts.append(f'### 3.4.{i}. {spec["title"]}\n\n'
+        parts.append(f'### 2.4.{i}. {spec["title"]}\n\n'
                      f'![{spec["title"]}](dfd/{name}.svg)\n\n'
                      f'*Biểu mẫu:* {spec["bm"] or NONE} · *Quy định:* {spec["qd"] or NONE} · *File:* `docs/dfd/{spec["file"]}.drawio`\n\n'
                      '| Luồng | Mô tả |\n|---|---|\n'
                      + ''.join(f'| {k} | {d.get(k, NONE)} |\n' for k in ('D1', 'D2', 'D3', 'D4', 'D5', 'D6'))
                      + '\n**Thuật toán:**\n\n' + ''.join(f'- {s}\n' for s in algorithm(spec)) + '\n')
     n = len(DFDS) + 2
-    parts.append(f'### 3.4.{n}. Sơ đồ phối hợp giữa các công việc\n\n'
+    parts.append(f'### 2.4.{n}. Sơ đồ phối hợp giữa các công việc\n\n'
                  '![Sơ đồ phối hợp giữa các công việc](dfd/PhoiHop_CacCongViec.svg)\n\n'
                  '*File:* `docs/dfd/PhoiHop_CacCongViec.drawio`. Mỗi mũi tên là **thông tin** do công việc trước tạo ra '
                  '(ghi xuống bộ nhớ phụ ở D4) và công việc sau sử dụng (đọc lên ở D3).\n\n'
@@ -508,10 +508,10 @@ def main():
     block = f'<!-- DFD:BEGIN (sinh tự động bởi docs/dfd/generate_dfd.py, đừng sửa tay) -->\n{markdown()}<!-- DFD:END -->\n'
     if '<!-- DFD:BEGIN' in text:
         text = re.sub(r'<!-- DFD:BEGIN.*?<!-- DFD:END -->\n', lambda _: block, text, flags=re.S)
-    else:  # lần đầu: thay mục 3.4 cũ
+    else:  # lần đầu: thay mục 2.4 cũ
         text = re.sub(r'## 3\.4\. .*?(?=## 3\.5\. )', lambda _: block + '\n', text, flags=re.S)
     CHAPTER.write_text(text, encoding='utf-8')
-    print(f'Đã tạo {len(files) + 1} file .drawio, {len(DFDS) + 1} hình SVG và cập nhật mục 3.4 trong {CHAPTER.name}')
+    print(f'Đã tạo {len(files) + 1} file .drawio, {len(DFDS) + 1} hình SVG và cập nhật mục 2.4 trong {CHAPTER.name}')
 
 
 if __name__ == '__main__':

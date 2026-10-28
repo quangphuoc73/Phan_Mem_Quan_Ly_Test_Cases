@@ -1,6 +1,6 @@
-# Chương 7. Triển khai và hướng dẫn sử dụng
+# Chương 6. Triển khai và hướng dẫn sử dụng
 
-## 7.1. Yêu cầu hệ thống
+## 6.1. Yêu cầu hệ thống
 
 | Thành phần | Yêu cầu |
 |---|---|
@@ -9,7 +9,7 @@
 | Trình duyệt người dùng | Chrome, Edge, Firefox, Safari bản mới |
 | Mạng | Cần Internet khi dùng AI thật (Gemini/Claude/OpenAI) hoặc chạy test trên saucedemo.com; chế độ `mock` chạy offline |
 
-## 7.2. Cách 1 – Chạy trực tiếp trên máy (khuyến nghị khi demo)
+## 6.2. Cách 1 – Chạy trực tiếp trên máy (khuyến nghị khi demo)
 
 **Nhanh nhất trên macOS:** bấm đúp file `ChayDemo.command` ở thư mục gốc. Script tự cài thư viện (lần đầu), tạo dữ liệu mẫu, chạy server và mở trình duyệt.
 
@@ -30,7 +30,7 @@ npm install
 
 Mở `http://localhost:3000`.
 
-## 7.3. Cách 2 – Docker
+## 6.3. Cách 2 – Docker
 
 ```bash
 docker compose up --build
@@ -40,7 +40,7 @@ docker compose up --build
 - Container chạy bằng user không phải root, giới hạn 2 CPU và 2 GB RAM, bật `no-new-privileges`.
 - Khi đưa lên server thật: đặt `JWT_SECRET` ngẫu nhiên, đặt reverse proxy (Nginx/Caddy) có HTTPS phía trước, đổi mật khẩu các tài khoản mẫu.
 
-## 7.4. Cấu hình AI thật
+## 6.4. Cấu hình AI thật
 
 Mặc định hệ thống dùng `AI_PROVIDER=mock` (không cần mạng). Để dùng AI thật, sửa `app/.env`:
 
@@ -81,7 +81,7 @@ Máy phát triển đã có sẵn `automation/.env` (Chrome trên máy, chạy n
 
 Chưa khai báo thì CI dùng giá trị mặc định cho Sauce Demo. CI luôn đặt sẵn `PW_CHANNEL=chromium`, `RETRIES=1`, `WORKERS=2`.
 
-## 7.5. Tài khoản mẫu
+## 6.5. Tài khoản mẫu
 
 | Vai trò | Tên đăng nhập | Mật khẩu |
 |---|---|---|
@@ -92,7 +92,7 @@ Chưa khai báo thì CI dùng giá trị mặc định cho Sauce Demo. CI luôn 
 
 Dữ liệu mẫu: dự án **PETINS – App bảo hiểm thú cưng** (hư cấu, 3 module, 5 user story, 4 test case đã duyệt có lịch sử chạy; Sprint 1 đã kết thúc, Sprint 2 đang chạy tính từ ngày tạo dữ liệu, 1 story trong Product backlog) và **SAUCE – Sauce Demo Shop** (web thật `https://www.saucedemo.com/`, 2 user story, 4 test case đã duyệt dùng cho Playwright). Đặt lại dữ liệu: `npm run reset`.
 
-## 7.6. Hướng dẫn sử dụng theo vai trò
+## 6.6. Hướng dẫn sử dụng theo vai trò
 
 ### Tester
 
@@ -127,7 +127,7 @@ Xem *Tra cứu test case*, *Kết quả chạy test* (ghi chú có mã bug, log 
 
 *Người dùng* (thêm, khóa/mở khóa, xem ma trận phân quyền), *Dự án & module* (tạo dự án, khai báo URL ứng dụng cần test cho Playwright, thêm module), *Nhật ký hoạt động*, *Nhật ký AI*.
 
-## 7.7. Xử lý sự cố thường gặp
+## 6.7. Xử lý sự cố thường gặp
 
 | Hiện tượng | Nguyên nhân | Cách xử lý |
 |---|---|---|
@@ -139,7 +139,7 @@ Xem *Tra cứu test case*, *Kết quả chạy test* (ghi chú có mã bug, log 
 | Bị 429 khi gọi AI | Vượt hạn mức/giờ | Chờ, hoặc QA Lead tăng `AI_CALLS_PER_HOUR` |
 | Lỗi cài `better-sqlite3` | Thiếu công cụ biên dịch | macOS: `xcode-select --install`; hoặc dùng Docker |
 
-## 7.8. Giao diện thực tế
+## 6.8. Giao diện thực tế
 
 **Đăng nhập** – có nút điền nhanh tài khoản demo theo vai trò.
 

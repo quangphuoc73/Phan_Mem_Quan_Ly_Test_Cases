@@ -1,8 +1,8 @@
-# Chương 4. Thiết kế
+# Chương 3. Thiết kế
 
 > Sản phẩm của giai đoạn: **mô hình phần mềm** – kiến trúc, thiết kế dữ liệu, thiết kế xử lý (class, sequence), thiết kế giao diện, thiết kế API và bảo mật.
 
-## 4.1. Kiến trúc hệ thống
+## 3.1. Kiến trúc hệ thống
 
 Kiến trúc nhiều lớp, trong đó **AI Service là module riêng** – nơi duy nhất làm việc với LLM. Muốn đổi model chỉ cần sửa module này.
 
@@ -61,7 +61,7 @@ flowchart LR
     GH["GitHub Actions CI"] -- "build image" --> Docker
 ```
 
-## 4.2. Thiết kế dữ liệu
+## 3.2. Thiết kế dữ liệu
 
 Thiết kế theo 3 bước của môn học.
 
@@ -172,7 +172,7 @@ Sơ đồ được vẽ bằng **draw.io** theo ký hiệu chân chim (crow's fo
 
 Lược đồ đầy đủ: [`app/src/db/schema.sql`](../app/src/db/schema.sql).
 
-## 4.3. Thiết kế xử lý
+## 3.3. Thiết kế xử lý
 
 ### Sơ đồ lớp – AI Service (Strategy pattern)
 
@@ -346,7 +346,7 @@ sequenceDiagram
     S-->>T: Pass / Fail
 ```
 
-## 4.4. Thiết kế prompt và định dạng kết quả AI
+## 3.4. Thiết kế prompt và định dạng kết quả AI
 
 **Prompt hệ thống (rút gọn):**
 
@@ -389,7 +389,7 @@ Acceptance criteria: ...
 }
 ```
 
-## 4.5. Thiết kế giao diện
+## 3.5. Thiết kế giao diện
 
 | # | Màn hình | Vai trò | Chức năng chính |
 |---|---|---|---|
@@ -425,7 +425,7 @@ flowchart LR
 
 Nguyên tắc: menu hiển thị theo vai trò; nút thao tác chỉ hiện khi có quyền (backend vẫn kiểm tra lại); mọi thông báo lỗi bằng tiếng Việt và nêu rõ quy định bị vi phạm; thao tác AI có trạng thái chờ và kết quả rõ ràng.
 
-## 4.6. Thiết kế API
+## 3.6. Thiết kế API
 
 Tất cả API (trừ đăng nhập, health) yêu cầu header `Authorization: Bearer <JWT>`.
 
@@ -463,7 +463,7 @@ Tất cả API (trừ đăng nhập, health) yêu cầu header `Authorization: B
 
 Mã lỗi: `400` dữ liệu sai/vi phạm quy định · `401` chưa đăng nhập · `403` không có quyền · `404` không tìm thấy · `409` xung đột trạng thái/trùng mã · `429` vượt hạn mức · `502` AI trả kết quả không hợp lệ · `503` worker chưa sẵn sàng.
 
-## 4.7. Thiết kế bảo mật
+## 3.7. Thiết kế bảo mật
 
 ```mermaid
 flowchart LR

@@ -45,7 +45,7 @@ Mặc định AI chạy chế độ **mock** (offline, không cần API key). D�
 | `docs/SlideThuyetTrinh.html` | **Slide bảo vệ** (mở bằng trình duyệt, phím ← → để chuyển, có bản `.pdf`) |
 | `docs/00a_QuyTrinhAgile.md` | **Quy trình Agile/Scrum**: vai trò, Product Backlog, kế hoạch 5 sprint, phân công nhóm, DoR/DoD, các sự kiện Scrum, mẫu biên bản |
 | `docs/agile/ProductBacklog.csv` | Product Backlog để nhập vào Jira/Trello |
-| `docs/00…09_*.md` | Từng chương: kế hoạch, khảo sát, yêu cầu, phân tích, thiết kế, cài đặt, kiểm thử, triển khai, **kịch bản demo**, hướng phát triển |
+| `docs/00…08_*.md` | Từng chương: kế hoạch, yêu cầu, phân tích, thiết kế, cài đặt, kiểm thử, triển khai, **kịch bản demo**, hướng phát triển |
 | `docs/dfd/` | 13 sơ đồ DFD + sơ đồ phối hợp (draw.io), sinh bằng `python3 docs/dfd/generate_dfd.py` |
 | `docs/erd/` | Sơ đồ ERD (draw.io) sinh từ `app/src/db/schema.sql` bằng `python3 docs/erd/generate_erd.py` |
 | `docs/images/` | Ảnh chụp màn hình hệ thống |
