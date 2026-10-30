@@ -1,6 +1,6 @@
-# Chương 7. Kịch bản demo khi bảo vệ (8–10 phút)
+# Chương 8. Kịch bản demo khi bảo vệ (8–10 phút)
 
-## 7.1. Chuẩn bị trước buổi bảo vệ (checklist)
+## 8.1. Chuẩn bị trước buổi bảo vệ (checklist)
 
 - [ ] `cd app && npm run reset` để có dữ liệu mẫu sạch.
 - [ ] Bấm đúp `ChayDemo.command` (hoặc `npm start`), kiểm tra `http://localhost:3000` mở được.
@@ -12,11 +12,11 @@
 - [ ] Quay sẵn video toàn bộ kịch bản (QuickTime → File → New Screen Recording).
 - [ ] Phóng to trình duyệt (Cmd +) để hội đồng nhìn rõ.
 
-## 7.2. Kịch bản
+## 8.2. Kịch bản
 
 | # | Thời gian | Thao tác | Lời dẫn gợi ý | Điểm nhấn |
 |---|---|---|---|---|
-| 1 | 0:00 | Mở slide, trình bày vấn đề | "Viết test case thủ công mất 30–60 phút/story, dễ sót case lỗi, duyệt qua chat không lưu vết." | Lý do chọn đề tài |
+| 1 | 0:00 | Mở slide, trình bày vấn đề | "Viết test case thủ công mất 30–60 phút/story, dễ sót case lỗi, duyệt qua chat không lưu vết." | Khảo sát hiện trạng |
 | 2 | 1:00 | Đăng nhập **tester** → *Tổng quan* | "Hệ thống quản lý cả vòng đời test case, báo cáo tự động." | 4 chỉ số, biểu đồ |
 | 2b | 1:15 | Chọn dự án **PETINS** → *Sprint (Agile)*: Sprint Goal, bảng 4 cột, burndown, velocity | "Nhóm em làm đồ án theo Scrum, và hệ thống cũng hỗ trợ đội QA làm Scrum: story chỉ tính Hoàn thành khi mọi test case đã duyệt đều Pass." | **Agile** |
 | 3 | 1:30 | *User story* → *Lập user story* trực tiếp, ví dụ "Hủy hợp đồng bảo hiểm" với 3 acceptance criteria | "Đây là BM1, có QĐ1: mã không trùng, ít nhất 1 tiêu chí." | Biểu mẫu, quy định |
@@ -33,7 +33,7 @@
 
 **Dự phòng:** mạng hoặc API lỗi → chuyển `AI_PROVIDER=mock` (khởi động lại 3 giây) hoặc mở video đã quay.
 
-## 7.3. Câu hỏi hội đồng có thể hỏi
+## 8.3. Câu hỏi hội đồng có thể hỏi
 
 | Câu hỏi | Gợi ý trả lời |
 |---|---|

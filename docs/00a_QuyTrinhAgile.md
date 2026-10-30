@@ -1,6 +1,6 @@
 # Chương 0A. Quy trình phát triển Agile (Scrum)
 
-> Đồ án được **thực hiện theo Agile/Scrum**: chia thành 5 sprint, mỗi sprint 1 tuần, mỗi sprint giao một phần mềm chạy được. Báo cáo vẫn trình bày theo các hoạt động của môn học (xác định yêu cầu → triển khai), vì các hoạt động này diễn ra **lặp lại trong mỗi sprint** chứ không bị bỏ đi.
+> Đồ án được **thực hiện theo Agile/Scrum**: chia thành 5 sprint, mỗi sprint 1 tuần, mỗi sprint giao một phần mềm chạy được. Báo cáo vẫn trình bày theo 7 hoạt động của môn học (khảo sát → triển khai), vì các hoạt động này diễn ra **lặp lại trong mỗi sprint** chứ không bị bỏ đi.
 
 ## 0A.1. Vì sao chọn Agile thay cho thác nước thuần
 
@@ -41,11 +41,11 @@ Nhóm có **4 thành viên**, đúng quy mô Scrum (3–9 người). Product Own
 
 | Thành viên | Vai trò Scrum | Phụ trách chính | Chương báo cáo |
 |---|---|---|---|
-| [Thành viên 1] | Product Owner + Developer | Product Backlog, yêu cầu (BM, QĐ), phân tích (use case, DFD), nhập/xuất dữ liệu | Ch.0, 1, 2 |
-| [Thành viên 2] | Scrum Master + Developer | Kiến trúc, backend, CSDL, AI Service (prompt, che PII, chống injection); giữ nhịp sprint, tổ chức các buổi họp | Ch.0A, 3, 4 |
-| [Thành viên 3] | Developer | Giao diện web, các màn hình, báo cáo và biểu đồ, trang Sprint (Agile) | Ch.3 (giao diện), 6 |
-| [Thành viên 4] | Developer | Kiểm thử: unit, API, E2E Playwright; sinh và chạy script tự động; CI, Docker | Ch.5, 6 |
-| Giảng viên, bạn cùng lớp | Stakeholder / người dùng | Đóng vai đội QA, dùng thử bản demo trong Sprint Review, góp ý | – |
+| [Thành viên 1] | Product Owner + Developer | Khảo sát, Product Backlog, yêu cầu (BM, QĐ), phân tích (use case, DFD), nhập/xuất dữ liệu | Ch.0, 1, 2, 3 |
+| [Thành viên 2] | Scrum Master + Developer | Kiến trúc, backend, CSDL, AI Service (prompt, che PII, chống injection); giữ nhịp sprint, tổ chức các buổi họp | Ch.0A, 4, 5 |
+| [Thành viên 3] | Developer | Giao diện web, các màn hình, báo cáo và biểu đồ, trang Sprint (Agile) | Ch.4 (giao diện), 7 |
+| [Thành viên 4] | Developer | Kiểm thử: unit, API, E2E Playwright; sinh và chạy script tự động; CI, Docker | Ch.6, 7 |
+| Giảng viên, bạn cùng lớp | Stakeholder / người dùng | Tham gia khảo sát (đóng vai đội QA), dùng thử bản demo trong Sprint Review, góp ý | – |
 
 > Tên thành viên được cập nhật sau; phân công có thể đổi trong buổi Sprint Planning nhưng phải ghi vào biên bản.
 
@@ -90,7 +90,7 @@ Bản dạng CSV để nhập vào Jira/Trello: [`docs/agile/ProductBacklog.csv`
 
 ## 0A.5. Kế hoạch sprint (5 tuần)
 
-Sprint dài **1 tuần**. Velocity dự kiến khoảng **13–22 story point/sprint** (nhóm 4 người, vừa học vừa làm các môn khác). Sprint 1 cam kết ít vì phải dành đầu tuần cho lập backlog và dựng dự án. Sau mỗi sprint, velocity thực tế được dùng để điều chỉnh các sprint sau.
+Sprint dài **1 tuần**. Velocity dự kiến khoảng **13–22 story point/sprint** (nhóm 4 người, vừa học vừa làm các môn khác). Sprint 1 cam kết ít vì phải dành đầu tuần cho khảo sát, lập backlog và dựng dự án. Sau mỗi sprint, velocity thực tế được dùng để điều chỉnh các sprint sau.
 
 ```mermaid
 gantt
@@ -110,11 +110,11 @@ gantt
 
 | Sprint | Tuần | Sprint Goal | Story (SP) | Tổng SP | Tài liệu cập nhật |
 |---|---|---|---|---|---|
-| 1 | 1 | "Sẵn sàng phát triển; người dùng đăng nhập theo vai trò và lập được user story" | Product Backlog, kiến trúc sơ bộ, repo + CI; PB-01 (3), PB-02 (3), PB-03 (2), PB-04 (3), PB-05 (2) | 13 | Ch.0A, Ch.1 (bản đầu); UC01–UC04, DFD YC1, ERD v1, MH01–MH04 |
+| 1 | 1 | "Hiểu bài toán; người dùng đăng nhập theo vai trò và lập được user story" | Khảo sát, Product Backlog, kiến trúc sơ bộ, repo + CI; PB-01 (3), PB-02 (3), PB-03 (2), PB-04 (3), PB-05 (2) | 13 | Ch.0A, Ch.1, Ch.2 (bản đầu); UC01–UC04, DFD YC1, ERD v1, MH01–MH04 |
 | 2 | 2 | "AI sinh được test case an toàn từ user story; test case được sửa và lưu phiên bản" | PB-06 (8), PB-07 (3), PB-08 (3), PB-10 (3), PB-11 (5) | 22 | UC06, UC07, DFD YC2, YC3, sequence sinh test case, thiết kế prompt, class Strategy |
 | 3 | 3 | "Test case được duyệt, chạy thủ công và QA Lead xem được báo cáo" | PB-09 (2), PB-12 (2), PB-13 (3), PB-14 (3), PB-15 (3), PB-16 (5) | 18 | UC08–UC10, UC13, UC15, sơ đồ trạng thái, DFD YC4–YC7 |
 | 4 | 4 | "Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được" | PB-17 (3), PB-18 (5), PB-19 (8), PB-20 (3) | 19 | UC11, UC12, UC16, DFD YC9, YC10, sequence YC9, thiết kế sandbox, bảng tham số |
-| 5 | 5 | "Đội làm Scrum lập kế hoạch sprint ngay trong hệ thống; sẵn sàng bàn giao và bảo vệ" | PB-21 (5), PB-22 (3), PB-23 (3), PB-24 (2), PB-25 (3) | 16 | DFD YC8, YC11, YC12; Ch.5 tổng kết, Ch.6, slide, video demo; bảo vệ cuối tuần |
+| 5 | 5 | "Đội làm Scrum lập kế hoạch sprint ngay trong hệ thống; sẵn sàng bàn giao và bảo vệ" | PB-21 (5), PB-22 (3), PB-23 (3), PB-24 (2), PB-25 (3) | 16 | DFD YC8, YC11, YC12; Ch.6 tổng kết, Ch.7, slide, video demo; bảo vệ cuối tuần |
 
 ## 0A.6. Definition of Ready và Definition of Done
 
@@ -156,18 +156,19 @@ flowchart LR
 
 Giới hạn **WIP ≤ 2 mỗi người**: mỗi thành viên không làm quá 2 việc cùng lúc, hoàn thành dứt điểm trước khi bắt đầu việc mới.
 
-## 0A.8. Các hoạt động của SE104 diễn ra trong mỗi sprint
+## 0A.8. Bảy hoạt động của SE104 diễn ra trong mỗi sprint
 
 Agile không bỏ các hoạt động của thác nước mà **làm chúng cho từng lát mỏng chức năng**. Ma trận dưới cho thấy các chương của báo cáo được viết dần qua các sprint.
 
 | Hoạt động (chương) | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 | Sprint 5 |
 |---|---|---|---|---|---|
-| Yêu cầu (Ch.1) | ●● YC tổng quát, YC1, YC11 | ● YC2, YC3 | ● YC4, 5, 6, 7 | ● YC9, YC10 | ● YC8, YC12 |
-| Phân tích (Ch.2) | ● UC01–04 | ● UC06, 07 | ● UC08–10, 13, 15 | ● UC11, 12, 16 | ● UC05, 14, 19 |
-| Thiết kế (Ch.3) | ● kiến trúc, ERD v1 | ● AI Service, class | ● trạng thái | ● sandbox, bảng tham số | ● sprint |
-| Cài đặt (Ch.4) | ● khung dự án | ● | ● | ● | ● |
-| Kiểm chứng (Ch.5) | ● CI | ● | ● | ● | ●● tổng kết |
-| Triển khai (Ch.6) | ● bản demo | ● | ● | ● | ●● Docker |
+| Khảo sát (Ch.1) | ●●● | ● (Review) | ● | ● | ● |
+| Yêu cầu (Ch.2) | ●● YC tổng quát, YC1, YC11 | ● YC2, YC3 | ● YC4, 5, 6, 7 | ● YC9, YC10 | ● YC8, YC12 |
+| Phân tích (Ch.3) | ● UC01–04 | ● UC06, 07 | ● UC08–10, 13, 15 | ● UC11, 12, 16 | ● UC05, 14, 19 |
+| Thiết kế (Ch.4) | ● kiến trúc, ERD v1 | ● AI Service, class | ● trạng thái | ● sandbox, bảng tham số | ● sprint |
+| Cài đặt (Ch.5) | ● khung dự án | ● | ● | ● | ● |
+| Kiểm chứng (Ch.6) | ● CI | ● | ● | ● | ●● tổng kết |
+| Triển khai (Ch.7) | ● bản demo | ● | ● | ● | ●● Docker |
 
 (● = có làm trong sprint; ●●/●●● = làm nhiều)
 

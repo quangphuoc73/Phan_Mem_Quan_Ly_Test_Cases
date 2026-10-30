@@ -1,8 +1,8 @@
-# Chương 5. Kiểm chứng (kiểm thử)
+# Chương 6. Kiểm chứng (kiểm thử)
 
 > Sản phẩm của giai đoạn: **phần mềm chất lượng** – kế hoạch kiểm thử, bộ test case kiểm thử chính hệ thống, kiểm thử tự động nhiều tầng và kết quả.
 
-## 5.1. Chiến lược kiểm thử
+## 6.1. Chiến lược kiểm thử
 
 Áp dụng mô hình **kim tự tháp kiểm thử**: nhiều test nhanh ở tầng dưới, ít test chậm ở tầng trên.
 
@@ -19,7 +19,7 @@ flowchart TB
 | Unit test | `node:test` (có sẵn trong Node.js) | Hàm thuần: piiMasker, injectionGuard, staticCheck, MockProvider, schema | Mỗi lần lưu mã, CI |
 | API test | `node:test` + supertest, CSDL trong bộ nhớ | Toàn bộ route + service + CSDL | CI |
 | E2E test | **Playwright** | Giao diện thật trên Chrome, server riêng, dữ liệu mới | CI, trước khi demo |
-| Kiểm thử thủ công | Bộ test case hệ thống (mục 5.4) | Giao diện, trải nghiệm, trường hợp khó tự động hóa | Trước khi nộp |
+| Kiểm thử thủ công | Bộ test case hệ thống (mục 6.4) | Giao diện, trải nghiệm, trường hợp khó tự động hóa | Trước khi nộp |
 | Kiểm thử bảo mật | API test + thủ công | RBAC, XSS, SQL injection, prompt injection, PII, sandbox | CI + thủ công |
 | Kiểm thử chức năng YC9 | Playwright trên Sauce Demo | Script mẫu (POM) + script do AI sinh | Thủ công, demo |
 
@@ -27,7 +27,7 @@ flowchart TB
 
 **Kiểm thử trong Agile:** kiểm thử không phải một giai đoạn cuối mà là một phần của **Definition of Done** của mỗi story: story chỉ được tính hoàn thành khi có test tự động mới và CI xanh. Vì vậy bộ test dưới đây được viết dần qua 5 sprint (cột *Sprint* trong Product Backlog), không dồn về cuối kỳ.
 
-## 5.2. Kiểm thử tự động – Unit và API
+## 6.2. Kiểm thử tự động – Unit và API
 
 Chạy: `cd app && npm test`
 
@@ -91,7 +91,7 @@ Chạy: `cd app && npm test`
 
 **Kết quả:** `55 tests, 55 pass, 0 fail` (Node.js 21, macOS, 20/10/2026).
 
-## 5.3. Kiểm thử E2E bằng Playwright
+## 6.3. Kiểm thử E2E bằng Playwright
 
 Chạy: `cd app && npm run test:e2e` (Playwright tự khởi động server ở cổng 3100 với CSDL riêng `data/e2e.db`; xem báo cáo HTML: `npx playwright show-report e2e-report`).
 
@@ -117,7 +117,7 @@ Chạy: `cd app && npm run test:e2e` (Playwright tự khởi động server ở 
 
 **Kết quả:** `9 passed (10.1s)`.
 
-## 5.4. Bộ test case kiểm thử hệ thống (thủ công)
+## 6.4. Bộ test case kiểm thử hệ thống (thủ công)
 
 | Mã | Chức năng | Các bước | Kết quả mong đợi | Loại | Ưu tiên |
 |---|---|---|---|---|---|
@@ -149,7 +149,7 @@ Chạy: `cd app && npm run test:e2e` (Playwright tự khởi động server ở 
 | ST-26 | YC12 | Ghi Pass cho test case cuối cùng của một story trong sprint đang chạy | Story chuyển sang cột *Hoàn thành (DoD)*, burndown giảm đúng số story point | Positive | High |
 | ST-27 | YC12 | Tạo sprint 30 ngày khi `SPRINT_MAX_DAYS` = 28 | Báo lỗi QĐ12 | Edge | Medium |
 
-## 5.5. Kiểm thử chức năng YC9 với Playwright trên Sauce Demo
+## 6.5. Kiểm thử chức năng YC9 với Playwright trên Sauce Demo
 
 ### Bộ test mẫu viết tay (Page Object Model)
 
@@ -175,7 +175,7 @@ Chạy: `cd automation && npm run test:samples` → **8 passed (7.0s)**.
 
 **So sánh script AI với bộ viết tay:** script AI viết "phẳng" (mỗi bước một lệnh, locator CSS `[data-test=...]`), đủ để chạy nhưng chưa tái sử dụng được. Bộ viết tay dùng POM, data-driven, dễ bảo trì hơn. Đây là lý do hệ thống bắt buộc **Tester xem lại script** trước khi chạy và là hướng phát triển ở các phiên bản sau (AI sinh script theo POM, tự sửa locator).
 
-## 5.6. Tích hợp liên tục (CI)
+## 6.6. Tích hợp liên tục (CI)
 
 `.github/workflows/ci.yml` chạy tự động mỗi lần push lên `main` hoặc tạo Pull Request:
 
@@ -190,7 +190,7 @@ flowchart LR
 
 Pull Request chỉ được merge khi cả 4 job xanh.
 
-## 5.7. Tổng kết kiểm thử
+## 6.7. Tổng kết kiểm thử
 
 | Hạng mục | Số lượng | Pass | Fail |
 |---|---|---|---|

@@ -1,8 +1,8 @@
-# Chương 2. Phân tích
+# Chương 3. Phân tích
 
 > Sản phẩm của giai đoạn: **mô hình thế giới thực** – sơ đồ use case, đặc tả use case, sơ đồ luồng dữ liệu (DFD) cho từng yêu cầu, sơ đồ hoạt động và sơ đồ trạng thái.
 
-## 2.1. Sơ đồ use case tổng quát
+## 3.1. Sơ đồ use case tổng quát
 
 ```mermaid
 flowchart LR
@@ -49,7 +49,7 @@ flowchart LR
 
 > Mọi use case (trừ UC01) đều yêu cầu đã đăng nhập (`<<include>> UC01`). QA Lead có toàn bộ quyền của Tester và thêm quyền duyệt.
 
-## 2.2. Danh sách use case
+## 3.2. Danh sách use case
 
 | Mã | Tên use case | Tác nhân | Yêu cầu |
 |---|---|---|---|
@@ -73,7 +73,7 @@ flowchart LR
 | UC18 | Xem nhật ký hoạt động | Admin, QA Lead | Bảo mật |
 | UC19 | Quản lý sprint: tạo sprint, đưa story từ backlog vào sprint, xem bảng sprint, burndown, velocity | QA Lead, Admin (Tester: đưa story vào sprint, xem) | YC12 |
 
-## 2.3. Đặc tả các use case chính
+## 3.3. Đặc tả các use case chính
 
 ### UC06 – Sinh test case bằng AI
 
@@ -148,11 +148,11 @@ flowchart LR
 | Luồng ngoại lệ | Sai thông tin → thông báo chung "Tên đăng nhập hoặc mật khẩu không đúng" (không tiết lộ tài khoản có tồn tại), ghi `LOGIN_FAILED`. Sai quá 10 lần/15 phút → tạm khóa theo IP. Tài khoản bị khóa → từ chối. |
 
 <!-- DFD:BEGIN (sinh tự động bởi docs/dfd/generate_dfd.py, đừng sửa tay) -->
-## 2.4. Sơ đồ luồng dữ liệu (DFD) cho từng yêu cầu
+## 3.4. Sơ đồ luồng dữ liệu (DFD) cho từng yêu cầu
 
 Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagrams.net)**. File gốc `.drawio` nằm trong thư mục `docs/dfd/` (mở bằng [app.diagrams.net](https://app.diagrams.net) hoặc draw.io Desktop để xem, sửa); hình trong báo cáo được sinh từ cùng một nguồn bằng lệnh `python3 docs/dfd/generate_dfd.py`.
 
-### 2.4.1. Ký hiệu và quy ước
+### 3.4.1. Ký hiệu và quy ước
 
 | Ký hiệu | Ý nghĩa |
 |---|---|
@@ -177,7 +177,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - Người dùng không nhập những thông tin đã lưu hoặc tính được (VD: người tạo, ngày tạo, phiên bản, tỷ lệ pass do hệ thống tự lấy / tự tính).
 
 **Ba bước thực hiện cho mỗi yêu cầu:** (1) vẽ sơ đồ luồng dữ liệu; (2) mô tả các luồng D1–D6 (luồng không có ghi "Không có"); (3) viết thuật toán xử lý theo khuôn *Nhận D1 → Kết nối CSDL → Đọc D3 → kiểm tra quy định → Lưu D4 → Xuất D5 → Xuất D6 → Đóng kết nối → Kết thúc*. Ở mỗi bước kiểm tra, nếu không thỏa quy định thì ghi thông báo lỗi vào D6 và nhảy tới bước Xuất D6.
-### 2.4.2. DFD YC1 – Lập user story
+### 3.4.2. DFD YC1 – Lập user story
 
 ![DFD YC1 – Lập user story](dfd/YC01_LapUserStory.svg)
 
@@ -207,7 +207,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - B11: Đóng kết nối cơ sở dữ liệu.
 - B12: Kết thúc.
 
-### 2.4.3. DFD YC2 – Sinh test case bằng AI
+### 3.4.3. DFD YC2 – Sinh test case bằng AI
 
 ![DFD YC2 – Sinh test case bằng AI](dfd/YC02_SinhTestCaseBangAI.svg)
 
@@ -238,7 +238,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - B12: Đóng kết nối cơ sở dữ liệu.
 - B13: Kết thúc.
 
-### 2.4.4. DFD YC3 – Soạn thảo và gửi duyệt test case
+### 3.4.4. DFD YC3 – Soạn thảo và gửi duyệt test case
 
 ![DFD YC3 – Soạn thảo và gửi duyệt test case](dfd/YC03_SoanThaoGuiDuyet.svg)
 
@@ -266,7 +266,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - B9: Đóng kết nối cơ sở dữ liệu.
 - B10: Kết thúc.
 
-### 2.4.5. DFD YC4 – Duyệt test case
+### 3.4.5. DFD YC4 – Duyệt test case
 
 ![DFD YC4 – Duyệt test case](dfd/YC04_DuyetTestCase.svg)
 
@@ -294,7 +294,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - B9: Đóng kết nối cơ sở dữ liệu.
 - B10: Kết thúc.
 
-### 2.4.6. DFD YC5 – Ghi nhận kết quả chạy test
+### 3.4.6. DFD YC5 – Ghi nhận kết quả chạy test
 
 ![DFD YC5 – Ghi nhận kết quả chạy test](dfd/YC05_GhiKetQuaChayTest.svg)
 
@@ -321,7 +321,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - B8: Đóng kết nối cơ sở dữ liệu.
 - B9: Kết thúc.
 
-### 2.4.7. DFD YC6 – Lập báo cáo kiểm thử
+### 3.4.7. DFD YC6 – Lập báo cáo kiểm thử
 
 ![DFD YC6 – Lập báo cáo kiểm thử](dfd/YC06_LapBaoCao.svg)
 
@@ -350,7 +350,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - B10: Đóng kết nối cơ sở dữ liệu.
 - B11: Kết thúc.
 
-### 2.4.8. DFD YC7 – Tra cứu test case
+### 3.4.8. DFD YC7 – Tra cứu test case
 
 ![DFD YC7 – Tra cứu test case](dfd/YC07_TraCuuTestCase.svg)
 
@@ -375,7 +375,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - B6: Đóng kết nối cơ sở dữ liệu.
 - B7: Kết thúc.
 
-### 2.4.9. DFD YC8a – Nhập user story từ file
+### 3.4.9. DFD YC8a – Nhập user story từ file
 
 ![DFD YC8a – Nhập user story từ file](dfd/YC08a_NhapUserStory.svg)
 
@@ -403,7 +403,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - B9: Đóng kết nối cơ sở dữ liệu.
 - B10: Kết thúc.
 
-### 2.4.10. DFD YC8b – Xuất test case ra Excel
+### 3.4.10. DFD YC8b – Xuất test case ra Excel
 
 ![DFD YC8b – Xuất test case ra Excel](dfd/YC08b_XuatTestCase.svg)
 
@@ -429,7 +429,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - B7: Đóng kết nối cơ sở dữ liệu.
 - B8: Kết thúc.
 
-### 2.4.11. DFD YC9 – Sinh và chạy script kiểm thử tự động
+### 3.4.11. DFD YC9 – Sinh và chạy script kiểm thử tự động
 
 ![DFD YC9 – Sinh và chạy script kiểm thử tự động](dfd/YC09_SinhVaChayScript.svg)
 
@@ -459,7 +459,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - B11: Đóng kết nối cơ sở dữ liệu.
 - B12: Kết thúc.
 
-### 2.4.12. DFD YC10 – Thay đổi quy định
+### 3.4.12. DFD YC10 – Thay đổi quy định
 
 ![DFD YC10 – Thay đổi quy định](dfd/YC10_ThayDoiQuyDinh.svg)
 
@@ -486,7 +486,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - B8: Đóng kết nối cơ sở dữ liệu.
 - B9: Kết thúc.
 
-### 2.4.13. DFD YC11 – Quản lý người dùng, dự án
+### 3.4.13. DFD YC11 – Quản lý người dùng, dự án
 
 ![DFD YC11 – Quản lý người dùng, dự án](dfd/YC11_QuanLyNguoiDungDuAn.svg)
 
@@ -515,7 +515,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - B10: Đóng kết nối cơ sở dữ liệu.
 - B11: Kết thúc.
 
-### 2.4.14. DFD YC12 – Quản lý sprint (Agile/Scrum)
+### 3.4.14. DFD YC12 – Quản lý sprint (Agile/Scrum)
 
 ![DFD YC12 – Quản lý sprint (Agile/Scrum)](dfd/YC12_QuanLySprint.svg)
 
@@ -545,7 +545,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - B11: Đóng kết nối cơ sở dữ liệu.
 - B12: Kết thúc.
 
-### 2.4.15. Sơ đồ phối hợp giữa các công việc
+### 3.4.15. Sơ đồ phối hợp giữa các công việc
 
 ![Sơ đồ phối hợp giữa các công việc](dfd/PhoiHop_CacCongViec.svg)
 
@@ -572,7 +572,7 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 
 <!-- DFD:END -->
 
-## 2.5. Sơ đồ hoạt động – quy trình nghiệp vụ mới
+## 3.5. Sơ đồ hoạt động – quy trình nghiệp vụ mới
 
 ```mermaid
 flowchart TD
@@ -594,9 +594,9 @@ flowchart TD
     N --> X([Kết thúc])
 ```
 
-So với cách làm thủ công (viết trên Excel, duyệt qua chat): AI rút ngắn bước viết nháp; duyệt có lưu vết; không còn viết lại test case thành script bằng tay; báo cáo tự động.
+So với quy trình cũ (Chương 1): AI rút ngắn bước viết nháp; duyệt có lưu vết; không còn viết lại test case thành script bằng tay; báo cáo tự động.
 
-## 2.6. Sơ đồ trạng thái của test case
+## 3.6. Sơ đồ trạng thái của test case
 
 ```mermaid
 stateDiagram-v2

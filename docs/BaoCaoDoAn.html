@@ -45,7 +45,7 @@
         <tr><td colspan="3">Giảng viên hướng dẫn: [Tên giảng viên hướng dẫn]</td></tr></table></div>
     <div>TP. Hồ Chí Minh, tháng 10 năm 2026</div>
   </div>
-  <div class="toc"><h1>Mục lục</h1><ol><li><a href="#ch-00">Chương 0. Tổng quan đề tài và kế hoạch thực hiện</a></li><li><a href="#ch-00a">Chương 0A. Quy trình phát triển Agile (Scrum)</a></li><li><a href="#ch-01">Chương 1. Xác định và đặc tả yêu cầu</a></li><li><a href="#ch-02">Chương 2. Phân tích</a></li><li><a href="#ch-03">Chương 3. Thiết kế</a></li><li><a href="#ch-04">Chương 4. Cài đặt</a></li><li><a href="#ch-05">Chương 5. Kiểm chứng (kiểm thử)</a></li><li><a href="#ch-06">Chương 6. Triển khai và hướng dẫn sử dụng</a></li><li><a href="#ch-07">Chương 7. Kịch bản demo khi bảo vệ (8–10 phút)</a></li><li><a href="#ch-08">Chương 8. Kết luận và hướng phát triển</a></li></ol></div>
+  <div class="toc"><h1>Mục lục</h1><ol><li><a href="#ch-00">Chương 0. Tổng quan đề tài và kế hoạch thực hiện</a></li><li><a href="#ch-00a">Chương 0A. Quy trình phát triển Agile (Scrum)</a></li><li><a href="#ch-01">Chương 1. Khảo sát hiện trạng</a></li><li><a href="#ch-02">Chương 2. Xác định và đặc tả yêu cầu</a></li><li><a href="#ch-03">Chương 3. Phân tích</a></li><li><a href="#ch-04">Chương 4. Thiết kế</a></li><li><a href="#ch-05">Chương 5. Cài đặt</a></li><li><a href="#ch-06">Chương 6. Kiểm chứng (kiểm thử)</a></li><li><a href="#ch-07">Chương 7. Triển khai và hướng dẫn sử dụng</a></li><li><a href="#ch-08">Chương 8. Kịch bản demo khi bảo vệ (8–10 phút)</a></li><li><a href="#ch-09">Chương 9. Kết luận và hướng phát triển</a></li></ol></div>
   <section class="chapter" id="ch-00"><h1>Chương 0. Tổng quan đề tài và kế hoạch thực hiện</h1>
 <h2>0.1. Thông tin đồ án</h2>
 <table>
@@ -77,7 +77,7 @@
 </tr>
 <tr>
 <td>Mô hình phát triển</td>
-<td><strong>Agile – Scrum</strong> (5 sprint × 1 tuần), báo cáo trình bày theo các hoạt động của môn học</td>
+<td><strong>Agile – Scrum</strong> (5 sprint × 1 tuần), báo cáo trình bày theo 7 hoạt động của môn học</td>
 </tr>
 <tr>
 <td>Sản phẩm</td>
@@ -113,12 +113,12 @@
 <li>Thay đổi quy định (số test case tối đa, số lần gọi AI…) không cần sửa mã nguồn.</li>
 <li>Bảo mật: JWT, bcrypt, RBAC, audit log, che dữ liệu nhạy cảm trước khi gửi AI, chống prompt injection, sandbox khi chạy script.</li>
 </ul>
-<p><strong>Ngoài phạm vi (hướng phát triển):</strong> tích hợp Jira 2 chiều, RAG theo tài liệu nghiệp vụ, fine-tune model riêng, AI agent tự sửa script (self-healing) – xem <a href="#ch-08">Chương 8</a>.</p>
-<h2>0.5. Mô hình phát triển: Agile (Scrum) kết hợp các hoạt động của môn học</h2>
+<p><strong>Ngoài phạm vi (hướng phát triển):</strong> tích hợp Jira 2 chiều, RAG theo tài liệu nghiệp vụ, fine-tune model riêng, AI agent tự sửa script (self-healing) – xem <a href="#ch-09">Chương 9</a>.</p>
+<h2>0.5. Mô hình phát triển: Agile (Scrum) kết hợp 7 hoạt động của môn học</h2>
 <p>Đồ án <strong>thực hiện theo Agile/Scrum</strong> – 5 sprint, mỗi sprint 1 tuần, mỗi sprint giao một phần mềm chạy được – thay vì thác nước thuần (làm xong toàn bộ yêu cầu rồi mới thiết kế, xong thiết kế mới lập trình). Lý do: yêu cầu liên quan đến AI khó chốt từ đầu, cần demo sớm để lấy góp ý, và chức năng rủi ro (AI) phải được làm và kiểm chứng sớm. Chi tiết quy trình: <a href="#ch-00a">Chương 0A</a>.</p>
-<p>Báo cáo trình bày 6 hoạt động: xác định yêu cầu, phân tích, thiết kế, cài đặt, kiểm chứng, triển khai. Trong Agile, <strong>các hoạt động này lặp lại trong mỗi sprint</strong> cho từng nhóm chức năng nhỏ; báo cáo vẫn tổ chức theo từng chương để giảng viên dễ chấm, nội dung mỗi chương được bổ sung dần qua các sprint.</p>
+<p>Môn SE104 yêu cầu đi qua 7 hoạt động. Trong Agile, <strong>7 hoạt động này lặp lại trong mỗi sprint</strong> cho từng nhóm chức năng nhỏ; báo cáo vẫn tổ chức theo 7 chương để giảng viên dễ chấm, nội dung mỗi chương được bổ sung dần qua các sprint.</p>
 <pre class="mermaid">flowchart TB
-    S0["Đầu Sprint 1: Product Backlog, kiến trúc, CI"] --&gt; LOOP
+    S0["Đầu Sprint 1: Khảo sát, Product Backlog, kiến trúc, CI"] --&gt; LOOP
     subgraph LOOP["Mỗi sprint 1 tuần (Sprint 1 → 5)"]
         direction LR
         A["Yêu cầu"] --&gt; B["Phân tích"] --&gt; C["Thiết kế"]
@@ -141,46 +141,52 @@
 <td><a href="#ch-00a">00a_QuyTrinhAgile.md</a></td>
 </tr>
 <tr>
-<td>1. Xác định yêu cầu</td>
+<td>1. Khảo sát hiện trạng</td>
+<td>Quy trình QA hiện tại, vấn đề, nhu cầu</td>
+<td>Sprint 1; bổ sung qua Sprint Review</td>
+<td><a href="#ch-01">01_KhaoSatHienTrang.md</a></td>
+</tr>
+<tr>
+<td>2. Xác định yêu cầu</td>
 <td>YC1–YC12, BM, QĐ, yêu cầu phi chức năng</td>
 <td>Tổng quát ở Sprint 1, chi tiết theo từng sprint</td>
-<td><a href="#ch-01">01_DacTaYeuCau.md</a></td>
+<td><a href="#ch-02">02_DacTaYeuCau.md</a></td>
 </tr>
 <tr>
-<td>2. Phân tích</td>
+<td>3. Phân tích</td>
 <td>Use case, đặc tả, DFD, hoạt động, trạng thái</td>
 <td>Mỗi sprint cho các story của sprint</td>
-<td><a href="#ch-02">02_PhanTich.md</a></td>
+<td><a href="#ch-03">03_PhanTich.md</a></td>
 </tr>
 <tr>
-<td>3. Thiết kế</td>
+<td>4. Thiết kế</td>
 <td>Kiến trúc, ERD, class, sequence, giao diện, API, bảo mật</td>
 <td>Kiến trúc ở Sprint 1, chi tiết mỗi sprint</td>
-<td><a href="#ch-03">03_ThietKe.md</a></td>
+<td><a href="#ch-04">04_ThietKe.md</a></td>
 </tr>
 <tr>
-<td>4. Cài đặt</td>
+<td>5. Cài đặt</td>
 <td>Mã nguồn, Git flow</td>
 <td>Mỗi sprint</td>
-<td><a href="#ch-04">04_CaiDat.md</a></td>
+<td><a href="#ch-05">05_CaiDat.md</a></td>
 </tr>
 <tr>
-<td>5. Kiểm chứng</td>
+<td>6. Kiểm chứng</td>
 <td>Test tự động chạy trên CI mỗi lần push</td>
 <td>Mỗi sprint (thuộc Definition of Done)</td>
-<td><a href="#ch-05">05_KiemThu.md</a></td>
+<td><a href="#ch-06">06_KiemThu.md</a></td>
 </tr>
 <tr>
-<td>6. Triển khai</td>
+<td>7. Triển khai</td>
 <td>Bản demo mỗi sprint; Docker ở Sprint 5</td>
 <td>Cuối mỗi sprint</td>
-<td><a href="#ch-06">06_TrienKhai_HuongDanSuDung.md</a></td>
+<td><a href="#ch-07">07_TrienKhai_HuongDanSuDung.md</a></td>
 </tr>
 <tr>
 <td>Bảo vệ</td>
 <td>Kịch bản demo</td>
 <td>Cuối tuần 5</td>
-<td><a href="#ch-07">07_KichBanDemo.md</a></td>
+<td><a href="#ch-08">08_KichBanDemo.md</a></td>
 </tr>
 </tbody></table>
 <h2>0.6. Kế hoạch sprint (5 tuần, nhóm 4 người)</h2>
@@ -196,7 +202,7 @@
 <tbody><tr>
 <td>1</td>
 <td>1</td>
-<td>Sẵn sàng phát triển (backlog, kiến trúc, repo + CI); người dùng đăng nhập theo vai trò và lập được user story</td>
+<td>Hiểu bài toán, sẵn sàng phát triển (khảo sát, backlog, kiến trúc, repo + CI); người dùng đăng nhập theo vai trò và lập được user story</td>
 <td>13</td>
 </tr>
 <tr>
@@ -306,7 +312,7 @@
 </section>
 <section class="chapter" id="ch-00a"><h1>Chương 0A. Quy trình phát triển Agile (Scrum)</h1>
 <blockquote>
-<p>Đồ án được <strong>thực hiện theo Agile/Scrum</strong>: chia thành 5 sprint, mỗi sprint 1 tuần, mỗi sprint giao một phần mềm chạy được. Báo cáo vẫn trình bày theo các hoạt động của môn học (xác định yêu cầu → triển khai), vì các hoạt động này diễn ra <strong>lặp lại trong mỗi sprint</strong> chứ không bị bỏ đi.</p>
+<p>Đồ án được <strong>thực hiện theo Agile/Scrum</strong>: chia thành 5 sprint, mỗi sprint 1 tuần, mỗi sprint giao một phần mềm chạy được. Báo cáo vẫn trình bày theo 7 hoạt động của môn học (khảo sát → triển khai), vì các hoạt động này diễn ra <strong>lặp lại trong mỗi sprint</strong> chứ không bị bỏ đi.</p>
 </blockquote>
 <h2>0A.1. Vì sao chọn Agile thay cho thác nước thuần</h2>
 <table>
@@ -402,31 +408,31 @@
 <tbody><tr>
 <td>[Thành viên 1]</td>
 <td>Product Owner + Developer</td>
-<td>Product Backlog, yêu cầu (BM, QĐ), phân tích (use case, DFD), nhập/xuất dữ liệu</td>
-<td>Ch.0, 1, 2</td>
+<td>Khảo sát, Product Backlog, yêu cầu (BM, QĐ), phân tích (use case, DFD), nhập/xuất dữ liệu</td>
+<td>Ch.0, 1, 2, 3</td>
 </tr>
 <tr>
 <td>[Thành viên 2]</td>
 <td>Scrum Master + Developer</td>
 <td>Kiến trúc, backend, CSDL, AI Service (prompt, che PII, chống injection); giữ nhịp sprint, tổ chức các buổi họp</td>
-<td>Ch.0A, 3, 4</td>
+<td>Ch.0A, 4, 5</td>
 </tr>
 <tr>
 <td>[Thành viên 3]</td>
 <td>Developer</td>
 <td>Giao diện web, các màn hình, báo cáo và biểu đồ, trang Sprint (Agile)</td>
-<td>Ch.3 (giao diện), 6</td>
+<td>Ch.4 (giao diện), 7</td>
 </tr>
 <tr>
 <td>[Thành viên 4]</td>
 <td>Developer</td>
 <td>Kiểm thử: unit, API, E2E Playwright; sinh và chạy script tự động; CI, Docker</td>
-<td>Ch.5, 6</td>
+<td>Ch.6, 7</td>
 </tr>
 <tr>
 <td>Giảng viên, bạn cùng lớp</td>
 <td>Stakeholder / người dùng</td>
-<td>Đóng vai đội QA, dùng thử bản demo trong Sprint Review, góp ý</td>
+<td>Tham gia khảo sát (đóng vai đội QA), dùng thử bản demo trong Sprint Review, góp ý</td>
 <td>–</td>
 </tr>
 </tbody></table>
@@ -703,7 +709,7 @@
 </tbody></table>
 <p><strong>Hạng mục kỹ thuật</strong> (không phải user story, làm đầu Sprint 1 và duy trì suốt dự án): dựng repo Git, cấu trúc thư mục, CI trên GitHub Actions, khung test (unit, API, E2E Playwright), dữ liệu mẫu.</p>
 <h2>0A.5. Kế hoạch sprint (5 tuần)</h2>
-<p>Sprint dài <strong>1 tuần</strong>. Velocity dự kiến khoảng <strong>13–22 story point/sprint</strong> (nhóm 4 người, vừa học vừa làm các môn khác). Sprint 1 cam kết ít vì phải dành đầu tuần cho lập backlog và dựng dự án. Sau mỗi sprint, velocity thực tế được dùng để điều chỉnh các sprint sau.</p>
+<p>Sprint dài <strong>1 tuần</strong>. Velocity dự kiến khoảng <strong>13–22 story point/sprint</strong> (nhóm 4 người, vừa học vừa làm các môn khác). Sprint 1 cam kết ít vì phải dành đầu tuần cho khảo sát, lập backlog và dựng dự án. Sau mỗi sprint, velocity thực tế được dùng để điều chỉnh các sprint sau.</p>
 <pre class="mermaid">gantt
     title Kế hoạch sprint đồ án SE104 (5 tuần)
     todayMarker off
@@ -730,10 +736,10 @@
 <tbody><tr>
 <td>1</td>
 <td>1</td>
-<td>&quot;Sẵn sàng phát triển; người dùng đăng nhập theo vai trò và lập được user story&quot;</td>
-<td>Product Backlog, kiến trúc sơ bộ, repo + CI; PB-01 (3), PB-02 (3), PB-03 (2), PB-04 (3), PB-05 (2)</td>
+<td>&quot;Hiểu bài toán; người dùng đăng nhập theo vai trò và lập được user story&quot;</td>
+<td>Khảo sát, Product Backlog, kiến trúc sơ bộ, repo + CI; PB-01 (3), PB-02 (3), PB-03 (2), PB-04 (3), PB-05 (2)</td>
 <td>13</td>
-<td>Ch.0A, Ch.1 (bản đầu); UC01–UC04, DFD YC1, ERD v1, MH01–MH04</td>
+<td>Ch.0A, Ch.1, Ch.2 (bản đầu); UC01–UC04, DFD YC1, ERD v1, MH01–MH04</td>
 </tr>
 <tr>
 <td>2</td>
@@ -765,7 +771,7 @@
 <td>&quot;Đội làm Scrum lập kế hoạch sprint ngay trong hệ thống; sẵn sàng bàn giao và bảo vệ&quot;</td>
 <td>PB-21 (5), PB-22 (3), PB-23 (3), PB-24 (2), PB-25 (3)</td>
 <td>16</td>
-<td>DFD YC8, YC11, YC12; Ch.5 tổng kết, Ch.6, slide, video demo; bảo vệ cuối tuần</td>
+<td>DFD YC8, YC11, YC12; Ch.6 tổng kết, Ch.7, slide, video demo; bảo vệ cuối tuần</td>
 </tr>
 </tbody></table>
 <h2>0A.6. Definition of Ready và Definition of Done</h2>
@@ -839,7 +845,7 @@
 <p><strong>Bảng công việc (Jira/Trello):</strong></p>
 <pre class="mermaid">flowchart LR
     A["Backlog"] --&gt; B["To do&lt;br/&gt;(sprint này)"] --&gt; C["In progress&lt;br/&gt;WIP ≤ 2"] --&gt; D["Code review&lt;br/&gt;(Pull Request)"] --&gt; E["Testing&lt;br/&gt;CI + E2E"] --&gt; F["Done&lt;br/&gt;(đạt DoD)"]</pre><p>Giới hạn <strong>WIP ≤ 2 mỗi người</strong>: mỗi thành viên không làm quá 2 việc cùng lúc, hoàn thành dứt điểm trước khi bắt đầu việc mới.</p>
-<h2>0A.8. Các hoạt động của SE104 diễn ra trong mỗi sprint</h2>
+<h2>0A.8. Bảy hoạt động của SE104 diễn ra trong mỗi sprint</h2>
 <p>Agile không bỏ các hoạt động của thác nước mà <strong>làm chúng cho từng lát mỏng chức năng</strong>. Ma trận dưới cho thấy các chương của báo cáo được viết dần qua các sprint.</p>
 <table>
 <thead>
@@ -853,7 +859,15 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>Yêu cầu (Ch.1)</td>
+<td>Khảo sát (Ch.1)</td>
+<td>●●●</td>
+<td>● (Review)</td>
+<td>●</td>
+<td>●</td>
+<td>●</td>
+</tr>
+<tr>
+<td>Yêu cầu (Ch.2)</td>
 <td>●● YC tổng quát, YC1, YC11</td>
 <td>● YC2, YC3</td>
 <td>● YC4, 5, 6, 7</td>
@@ -861,7 +875,7 @@
 <td>● YC8, YC12</td>
 </tr>
 <tr>
-<td>Phân tích (Ch.2)</td>
+<td>Phân tích (Ch.3)</td>
 <td>● UC01–04</td>
 <td>● UC06, 07</td>
 <td>● UC08–10, 13, 15</td>
@@ -869,7 +883,7 @@
 <td>● UC05, 14, 19</td>
 </tr>
 <tr>
-<td>Thiết kế (Ch.3)</td>
+<td>Thiết kế (Ch.4)</td>
 <td>● kiến trúc, ERD v1</td>
 <td>● AI Service, class</td>
 <td>● trạng thái</td>
@@ -877,7 +891,7 @@
 <td>● sprint</td>
 </tr>
 <tr>
-<td>Cài đặt (Ch.4)</td>
+<td>Cài đặt (Ch.5)</td>
 <td>● khung dự án</td>
 <td>●</td>
 <td>●</td>
@@ -885,7 +899,7 @@
 <td>●</td>
 </tr>
 <tr>
-<td>Kiểm chứng (Ch.5)</td>
+<td>Kiểm chứng (Ch.6)</td>
 <td>● CI</td>
 <td>●</td>
 <td>●</td>
@@ -893,7 +907,7 @@
 <td>●● tổng kết</td>
 </tr>
 <tr>
-<td>Triển khai (Ch.6)</td>
+<td>Triển khai (Ch.7)</td>
 <td>● bản demo</td>
 <td>●</td>
 <td>●</td>
@@ -980,7 +994,472 @@ Velocity thực tế: __ SP
 </tr>
 </tbody></table>
 </section>
-<section class="chapter" id="ch-01"><h1>Chương 1. Xác định và đặc tả yêu cầu</h1>
+<section class="chapter" id="ch-01"><h1>Chương 1. Khảo sát hiện trạng</h1>
+<blockquote>
+<p><strong>Mục tiêu</strong> của khảo sát hiện trạng là tìm hiểu về <strong>thế giới thực liên quan đến phần mềm</strong>: tổ chức đang làm việc như thế nào, gặp vấn đề gì, cần gì. Theo môn học, cần khảo sát 3 hiện trạng: <strong>tổ chức, nghiệp vụ, tin học</strong>. Kết quả của chương này là đầu vào để lập danh sách yêu cầu (<a href="#ch-02">Chương 2</a>) và sơ đồ luồng dữ liệu (<a href="#ch-03">Chương 3</a>).</p>
+</blockquote>
+<pre class="mermaid">flowchart LR
+    A["Khảo sát&lt;br/&gt;hiện trạng"] --&gt; B["Lập danh sách các&lt;br/&gt;yêu cầu phần mềm"] --&gt; C["Lập sơ đồ&lt;br/&gt;luồng dữ liệu"]
+    C -. "bổ sung, điều chỉnh" .-&gt; B -. "bổ sung, điều chỉnh" .-&gt; A</pre><h2>1.1. Đối tượng khảo sát</h2>
+<table>
+<thead>
+<tr>
+<th>Hạng mục</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Đối tượng</td>
+<td>Đội kiểm thử (QA) của một công ty phát triển phần mềm quy mô vừa (mô phỏng): 1 QA Lead, 4 Tester, 1 Automation Tester, làm việc cùng 6 Developer và 1 Product Owner/BA</td>
+</tr>
+<tr>
+<td>Phạm vi</td>
+<td>Các công việc liên quan đến test case: nhận yêu cầu, viết, duyệt, chạy, tự động hóa, báo cáo</td>
+</tr>
+<tr>
+<td>Thời gian</td>
+<td>Đầu Sprint 1 (tuần 1) của kế hoạch; người thực hiện: Product Owner của nhóm, cả nhóm cùng phỏng vấn</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Lưu ý đạo đức và bảo mật:</strong> không sử dụng dữ liệu thật của công ty khi chưa được phép bằng văn bản. Toàn bộ dữ liệu minh họa trong đồ án (dự án &quot;App bảo hiểm thú cưng&quot;) là <strong>hư cấu</strong>. Dự án &quot;Sauce Demo&quot; là trang web công khai dành cho luyện kiểm thử tự động.</p>
+</blockquote>
+<h2>1.2. Phương pháp khảo sát</h2>
+<table>
+<thead>
+<tr>
+<th>Phương pháp</th>
+<th>Cách làm trong đồ án</th>
+<th>Ưu điểm</th>
+<th>Khuyết điểm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Phỏng vấn</strong></td>
+<td>Trao đổi trực tiếp 30 phút với QA Lead, 2 Tester, 1 Automation Tester theo bảng câu hỏi bên dưới</td>
+<td>Hiểu sâu, hỏi thêm được ngay chỗ chưa rõ; nắm được cả khó khăn không ghi trong tài liệu</td>
+<td>Tốn thời gian; phụ thuộc kỹ năng hỏi; người được hỏi có thể trả lời theo ý chủ quan</td>
+</tr>
+<tr>
+<td><strong>Quan sát</strong></td>
+<td>Theo dõi một Tester viết và chạy test case cho 1 user story trong một buổi làm việc</td>
+<td>Thấy cách làm thật, phát hiện thao tác thừa mà người làm không để ý</td>
+<td>Mất thời gian; người bị quan sát có thể làm khác bình thường; khó quan sát công việc định kỳ (báo cáo cuối sprint)</td>
+</tr>
+<tr>
+<td><strong>Dùng bảng câu hỏi</strong></td>
+<td>Phiếu khảo sát online 10 câu gửi cả đội QA</td>
+<td>Thu được nhiều ý kiến nhanh, dễ tổng hợp số liệu (thời gian viết test case, tỷ lệ dùng AI)</td>
+<td>Câu trả lời ngắn, thiếu chi tiết; không hỏi thêm được; tỷ lệ phản hồi có thể thấp</td>
+</tr>
+<tr>
+<td><strong>Thu thập thông tin, tài liệu</strong></td>
+<td>Thu thập file Excel test case, báo cáo kiểm thử, quy trình QA của đội</td>
+<td>Có biểu mẫu thật, chính xác; làm căn cứ để lập biểu mẫu (BM)</td>
+<td>Tài liệu có thể cũ, không phản ánh cách làm hiện tại; dữ liệu nhạy cảm phải được che trước khi dùng</td>
+</tr>
+</tbody></table>
+<h3>Bảng câu hỏi phỏng vấn (rút gọn)</h3>
+<ol>
+<li>Anh/chị nhận yêu cầu (user story) từ đâu, ở định dạng nào?</li>
+<li>Viết test case cho một user story mất bao lâu? Dùng công cụ gì?</li>
+<li>Ai duyệt test case? Duyệt như thế nào, lưu lại ra sao?</li>
+<li>Khi yêu cầu thay đổi, anh/chị cập nhật test case thế nào?</li>
+<li>Kết quả chạy test được ghi ở đâu? Báo cáo cho ai, bao lâu một lần?</li>
+<li>Đã dùng AI (ChatGPT, Gemini…) để viết test case chưa? Gặp khó khăn gì?</li>
+<li>Có tự động hóa kiểm thử không? Tự động hóa những phần nào?</li>
+</ol>
+<h2>1.3. Hiện trạng tổ chức</h2>
+<h3>Sơ đồ tổ chức</h3>
+<pre class="mermaid">flowchart TD
+    KH["Khách hàng&lt;br/&gt;(đối tác bên ngoài)"] &lt;--&gt;|"yêu cầu, nghiệm thu"| PM
+    PM["Product Owner / BA&lt;br/&gt;Viết user story"] --&gt; QAL["QA Lead&lt;br/&gt;Phân công, duyệt test case, báo cáo"]
+    PM --&gt; DEV["Developer&lt;br/&gt;Lập trình, sửa lỗi"]
+    QAL --&gt; T1["Tester&lt;br/&gt;Viết &amp; chạy test case"]
+    QAL --&gt; T2["Automation Tester&lt;br/&gt;Viết script tự động"]
+    QAL --&gt;|"báo cáo chất lượng"| KH
+    T1 --&gt;|Báo lỗi| DEV
+    T2 --&gt;|Báo lỗi| DEV
+    AI["Nhà cung cấp AI&lt;br/&gt;(đối tác bên ngoài)"] -. "dịch vụ LLM" .- T1
+    AI -. "dịch vụ LLM" .- T2</pre><h3>Các bộ phận và giao tiếp với bên ngoài</h3>
+<p>Theo môn học, cần <strong>chú trọng các bộ phận có giao tiếp với đối tác bên ngoài</strong>, vì dữ liệu đi ra hoặc đi vào tổ chức ở đó.</p>
+<table>
+<thead>
+<tr>
+<th>Bộ phận</th>
+<th>Chức năng</th>
+<th>Giao tiếp với bên ngoài</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Product Owner / BA</td>
+<td>Nhận yêu cầu từ khách hàng, viết user story và acceptance criteria</td>
+<td><strong>Có</strong> – với khách hàng: nhận yêu cầu, nghiệm thu</td>
+</tr>
+<tr>
+<td>QA Lead</td>
+<td>Phân công, duyệt test case, tổng hợp báo cáo chất lượng</td>
+<td><strong>Có</strong> – gửi báo cáo chất lượng cho khách hàng mỗi sprint</td>
+</tr>
+<tr>
+<td>Tester</td>
+<td>Viết test case, chạy test thủ công, ghi kết quả</td>
+<td><strong>Có</strong> – đang tự dùng dịch vụ AI bên ngoài (ChatGPT) để viết test case, có nguy cơ lộ dữ liệu</td>
+</tr>
+<tr>
+<td>Automation Tester</td>
+<td>Viết script kiểm thử tự động</td>
+<td><strong>Có</strong> – tự dùng ChatGPT / GitHub Copilot để viết, sửa script; có thể dán cả URL nội bộ, tài khoản test vào prompt</td>
+</tr>
+<tr>
+<td>Developer</td>
+<td>Lập trình, sửa lỗi theo bug Tester báo</td>
+<td>Không</td>
+</tr>
+</tbody></table>
+<h2>1.4. Hiện trạng nghiệp vụ</h2>
+<h3>Danh sách nghiệp vụ của từng bộ phận</h3>
+<table>
+<thead>
+<tr>
+<th>Bộ phận</th>
+<th>Nghiệp vụ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Product Owner / BA</td>
+<td>NV1. Lập user story</td>
+</tr>
+<tr>
+<td>Tester</td>
+<td>NV2. Viết test case · NV3. Cập nhật test case khi yêu cầu đổi · NV5. Chạy test và ghi kết quả · NV6. Báo lỗi</td>
+</tr>
+<tr>
+<td>QA Lead</td>
+<td>NV4. Duyệt test case · NV8. Lập báo cáo kiểm thử · NV9. Lập kế hoạch sprint kiểm thử · NV10. Quản lý thành viên, quy định của đội</td>
+</tr>
+<tr>
+<td>Automation Tester</td>
+<td>NV7. Viết và chạy script kiểm thử tự động</td>
+</tr>
+</tbody></table>
+<h3>Mô tả nghiệp vụ</h3>
+<table>
+<thead>
+<tr>
+<th>Mã</th>
+<th>Tên công việc</th>
+<th>Biểu mẫu liên quan</th>
+<th>Quy định liên quan</th>
+<th>Người thực hiện</th>
+<th>Tần suất</th>
+<th>Thời điểm</th>
+<th>Cách thức thực hiện hiện tại</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NV1</td>
+<td>Lập user story</td>
+<td>Ticket Jira (tiêu đề, mô tả, acceptance criteria)</td>
+<td>Mỗi story có ít nhất 1 acceptance criterion</td>
+<td>PO/BA</td>
+<td>10–20 story/sprint</td>
+<td>Đầu sprint</td>
+<td>Gõ trên Jira</td>
+</tr>
+<tr>
+<td>NV2</td>
+<td>Viết test case</td>
+<td>File Excel test case (mục 1.4)</td>
+<td>Mỗi acceptance criterion có ít nhất 1 test case; ưu tiên High/Medium/Low</td>
+<td>Tester</td>
+<td>5–15 test case/story</td>
+<td>Sau khi nhận story</td>
+<td>Viết tay trên Excel, mất 30–60 phút/story; một số người dán story vào ChatGPT</td>
+</tr>
+<tr>
+<td>NV3</td>
+<td>Cập nhật test case</td>
+<td>File Excel</td>
+<td>Không có quy định lưu phiên bản</td>
+<td>Tester</td>
+<td>Khi yêu cầu đổi</td>
+<td>Bất kỳ lúc nào</td>
+<td>Sửa đè trong file, đặt tên file <code>_v2</code>, <code>_final</code></td>
+</tr>
+<tr>
+<td>NV4</td>
+<td>Duyệt test case</td>
+<td>Không có (nhận xét qua chat)</td>
+<td>Chỉ QA Lead được duyệt</td>
+<td>QA Lead</td>
+<td>Mỗi story</td>
+<td>Trước khi chạy test</td>
+<td>Mở file, nhận xét qua chat/email; không lưu vết</td>
+</tr>
+<tr>
+<td>NV5</td>
+<td>Chạy test, ghi kết quả</td>
+<td>Cột &quot;Kết quả&quot; trong file Excel</td>
+<td>Fail phải ghi mã bug</td>
+<td>Tester</td>
+<td>Hằng ngày</td>
+<td>Trong sprint</td>
+<td>Chạy tay, tô màu ô kết quả</td>
+</tr>
+<tr>
+<td>NV6</td>
+<td>Báo lỗi</td>
+<td>Ticket bug trên Jira</td>
+<td>Có bước tái hiện, ảnh chụp</td>
+<td>Tester</td>
+<td>Khi Fail</td>
+<td>Ngay khi phát hiện</td>
+<td>Tạo ticket Jira, chụp màn hình thủ công</td>
+</tr>
+<tr>
+<td>NV7</td>
+<td>Viết, chạy script tự động</td>
+<td>File script (WebdriverIO/Playwright)</td>
+<td>Chỉ tự động hóa test case đã ổn định</td>
+<td>Automation Tester</td>
+<td>Cuối sprint</td>
+<td>Sau khi test case được duyệt</td>
+<td>Đọc test case trên Excel, viết lại thành script; đôi khi nhờ ChatGPT / Copilot viết hộ rồi sửa lại</td>
+</tr>
+<tr>
+<td>NV8</td>
+<td>Lập báo cáo kiểm thử</td>
+<td>File báo cáo (tỷ lệ pass, số bug)</td>
+<td>Báo cáo theo lần chạy gần nhất</td>
+<td>QA Lead</td>
+<td>1 lần/sprint</td>
+<td>Cuối sprint</td>
+<td>Tổng hợp bằng tay từ nhiều file Excel, mất 1–2 giờ</td>
+</tr>
+<tr>
+<td>NV9</td>
+<td>Lập kế hoạch sprint kiểm thử</td>
+<td>Bảng sprint trên Jira</td>
+<td>Sprint 2 tuần</td>
+<td>QA Lead</td>
+<td>1 lần/sprint</td>
+<td>Đầu sprint</td>
+<td>Họp, chọn story trên Jira</td>
+</tr>
+<tr>
+<td>NV10</td>
+<td>Quản lý thành viên, quy định</td>
+<td>Không có</td>
+<td>Không có</td>
+<td>QA Lead</td>
+<td>Khi có thay đổi</td>
+<td>Bất kỳ lúc nào</td>
+<td>Trao đổi miệng, không ghi nhận</td>
+</tr>
+</tbody></table>
+<h3>Quy trình hiện tại</h3>
+<pre class="mermaid">flowchart TD
+    S([Bắt đầu sprint]) --&gt; A["BA tạo user story trên Jira"]
+    A --&gt; B["Tester đọc user story, viết test case thủ công trên Excel"]
+    B --&gt; C["Gửi file Excel cho QA Lead qua chat/email"]
+    C --&gt; D{"QA Lead xem"}
+    D --&gt;|Chưa đạt| E["Ghi nhận xét vào file hoặc nhắn tin"] --&gt; B
+    D --&gt;|Đạt| F["Tester chạy test thủ công, tô màu kết quả trên Excel"]
+    F --&gt; G{"Có lỗi?"}
+    G --&gt;|Có| H["Tạo bug trên Jira"] --&gt; F
+    G --&gt;|Không| I["Automation Tester viết lại test case thành script"]
+    I --&gt; J["QA Lead tổng hợp báo cáo bằng tay"]
+    J --&gt; K([Kết thúc sprint])</pre><h3>Mẫu biểu đang dùng</h3>
+<p><strong>Mẫu test case Excel hiện tại:</strong></p>
+<table>
+<thead>
+<tr>
+<th>TC ID</th>
+<th>Tiêu đề</th>
+<th>Điều kiện</th>
+<th>Các bước</th>
+<th>Kết quả mong đợi</th>
+<th>Ưu tiên</th>
+<th>Kết quả</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TC_001</td>
+<td>Đăng nhập thành công</td>
+<td>Có tài khoản</td>
+<td>1. Mở trang…</td>
+<td>Vào trang chủ</td>
+<td>High</td>
+<td>Pass</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>Nhược điểm: không có trạng thái duyệt, không có lịch sử thay đổi, không liên kết với user story, mỗi người một phiên bản file.</p>
+<h2>1.5. Hiện trạng tin học</h2>
+<table>
+<thead>
+<tr>
+<th>Thành phần</th>
+<th>Hiện trạng</th>
+<th>Ảnh hưởng đến phần mềm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Hệ thống phần cứng</strong></td>
+<td>Mỗi người có 1 laptop (macOS hoặc Windows, RAM 8–16 GB); có 1 máy chủ nội bộ chạy Jira</td>
+<td>Phần mềm chạy trên trình duyệt, không cần máy mạnh; chạy script Playwright cần máy có ít nhất 8 GB RAM</td>
+</tr>
+<tr>
+<td><strong>Hệ thống phần mềm</strong></td>
+<td>Jira (yêu cầu, bug), Microsoft Excel / Google Sheets (test case), Chrome, VS Code, Node.js; một số Tester và Automation Tester dùng ChatGPT bản miễn phí, GitHub Copilot</td>
+<td>Cần nhập được user story từ file xuất của Jira (CSV), xuất test case ra Excel; chạy trên Chrome</td>
+</tr>
+<tr>
+<td><strong>Hệ thống mạng</strong></td>
+<td>Mạng LAN văn phòng, Internet ổn định; truy cập Jira qua VPN khi làm ở nhà</td>
+<td>Gọi dịch vụ LLM cần Internet; cần chế độ AI giả lập để vẫn làm được khi mất mạng</td>
+</tr>
+<tr>
+<td><strong>Con người</strong></td>
+<td>Đội QA thành thạo viết test case và Jira; 1 người biết viết script tự động; chưa ai được hướng dẫn dùng AI an toàn</td>
+<td>Giao diện tiếng Việt, dễ học; hệ thống phải tự che dữ liệu nhạy cảm thay vì trông chờ người dùng tự nhớ</td>
+</tr>
+</tbody></table>
+<h2>1.6. Vấn đề ghi nhận</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Vấn đề</th>
+<th>Hệ quả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>V1</td>
+<td>Viết test case thủ công mất 30–60 phút/user story</td>
+<td>Chậm tiến độ, Tester bị quá tải cuối sprint</td>
+</tr>
+<tr>
+<td>V2</td>
+<td>Dễ bỏ sót case lỗi (negative) và case biên (edge)</td>
+<td>Lỗi lọt ra môi trường production</td>
+</tr>
+<tr>
+<td>V3</td>
+<td>Duyệt test case qua chat/email, không lưu vết</td>
+<td>Không biết ai duyệt, khi nào, góp ý gì</td>
+</tr>
+<tr>
+<td>V4</td>
+<td>Nhiều phiên bản file Excel</td>
+<td>Chạy nhầm test case cũ</td>
+</tr>
+<tr>
+<td>V5</td>
+<td>Không biết user story nào chưa có test case</td>
+<td>Không đo được độ bao phủ yêu cầu</td>
+</tr>
+<tr>
+<td>V6</td>
+<td>Tổng hợp báo cáo bằng tay</td>
+<td>Mất 1–2 giờ mỗi lần, số liệu dễ sai</td>
+</tr>
+<tr>
+<td>V7</td>
+<td>Viết lại test case thành script tự động</td>
+<td>Làm 2 lần cùng một việc</td>
+</tr>
+<tr>
+<td>V8</td>
+<td>Tester và Automation Tester dùng AI tự phát (ChatGPT, Copilot), dán cả dữ liệu khách hàng, URL nội bộ, tài khoản test</td>
+<td><strong>Nguy cơ lộ dữ liệu nhạy cảm</strong>; kết quả không được kiểm soát</td>
+</tr>
+<tr>
+<td>V9</td>
+<td>Quy định của đội (số test case tối đa, ai được duyệt) chỉ trao đổi miệng</td>
+<td>Mỗi người hiểu một kiểu, không kiểm soát được</td>
+</tr>
+</tbody></table>
+<h2>1.7. Nhu cầu của người dùng</h2>
+<table>
+<thead>
+<tr>
+<th>Vai trò</th>
+<th>Nhu cầu</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tester</td>
+<td>Có bản nháp test case nhanh để chỉnh sửa; biết test case nào bị trả lại và vì sao; ghi kết quả nhanh; có script tự động sẵn</td>
+</tr>
+<tr>
+<td>QA Lead</td>
+<td>Có hàng đợi duyệt rõ ràng; trả lại kèm góp ý; xem báo cáo tỷ lệ pass, độ bao phủ ngay lập tức; tự điều chỉnh quy định của đội; lập kế hoạch sprint</td>
+</tr>
+<tr>
+<td>Developer</td>
+<td>Xem test case và kết quả để tái hiện lỗi</td>
+</tr>
+<tr>
+<td>Admin</td>
+<td>Quản lý tài khoản, phân quyền, dự án; kiểm soát việc dùng AI (chi phí, bảo mật)</td>
+</tr>
+</tbody></table>
+<h2>1.8. Kết luận khảo sát</h2>
+<p>Cần một hệ thống tập trung, quản lý toàn bộ vòng đời test case, trong đó AI giúp tăng tốc khâu viết nháp và chuyển thành script tự động, còn <strong>con người giữ quyền quyết định</strong> (chỉnh sửa, duyệt). Hệ thống phải lưu vết đầy đủ, báo cáo tự động và bảo vệ dữ liệu khi làm việc với AI bên ngoài.</p>
+<p>Các nghiệp vụ khảo sát được chuyển thành yêu cầu phần mềm ở <a href="#ch-02">Chương 2</a>:</p>
+<table>
+<thead>
+<tr>
+<th>Nghiệp vụ</th>
+<th>Yêu cầu phần mềm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NV1 Lập user story</td>
+<td>YC1 Lập user story, YC8 Nhập user story từ file</td>
+</tr>
+<tr>
+<td>NV2 Viết test case</td>
+<td>YC2 Sinh test case bằng AI, YC3 Soạn thảo test case</td>
+</tr>
+<tr>
+<td>NV3 Cập nhật test case</td>
+<td>YC3 Soạn thảo (lưu phiên bản)</td>
+</tr>
+<tr>
+<td>NV4 Duyệt test case</td>
+<td>YC4 Duyệt test case</td>
+</tr>
+<tr>
+<td>NV5 Chạy test, ghi kết quả</td>
+<td>YC5 Ghi nhận kết quả chạy test</td>
+</tr>
+<tr>
+<td>NV6 Báo lỗi</td>
+<td>Ngoài phạm vi (vẫn dùng Jira); hệ thống lưu mã bug trong ghi chú kết quả</td>
+</tr>
+<tr>
+<td>NV7 Viết, chạy script tự động</td>
+<td>YC9 Sinh và chạy script tự động</td>
+</tr>
+<tr>
+<td>NV8 Lập báo cáo</td>
+<td>YC6 Lập báo cáo, YC7 Tra cứu, YC8 Xuất Excel</td>
+</tr>
+<tr>
+<td>NV9 Lập kế hoạch sprint</td>
+<td>YC12 Quản lý sprint</td>
+</tr>
+<tr>
+<td>NV10 Quản lý thành viên, quy định</td>
+<td>YC10 Thay đổi quy định, YC11 Quản lý người dùng, dự án</td>
+</tr>
+</tbody></table>
+</section>
+<section class="chapter" id="ch-02"><h1>Chương 2. Xác định và đặc tả yêu cầu</h1>
 <blockquote>
 <p>Sản phẩm của giai đoạn: <strong>danh sách các yêu cầu phần mềm</strong> kèm biểu mẫu (BM) và quy định (QĐ), cùng bảng trách nhiệm. <strong>Yêu cầu phần mềm</strong> là các công việc, các nghiệp vụ được hỗ trợ thực hiện trên máy tính với phần mềm.</p>
 </blockquote>
@@ -998,28 +1477,28 @@ Velocity thực tế: __ SP
 <td><strong>Yêu cầu nghiệp vụ</strong></td>
 <td>Lưu trữ, tra cứu, tính toán, kết xuất</td>
 <td>Tính <strong>đúng đắn</strong></td>
-<td>1.2 – 1.4</td>
+<td>2.2 – 2.4</td>
 </tr>
 <tr>
 <td><strong>Yêu cầu chất lượng</strong></td>
 <td>Tính tiến hóa, tiện dụng, hiệu quả, tương thích</td>
 <td></td>
-<td>1.5</td>
+<td>2.5</td>
 </tr>
 <tr>
 <td><strong>Yêu cầu hệ thống</strong></td>
 <td>Tính an toàn, bảo mật</td>
 <td></td>
-<td>1.6</td>
+<td>2.6</td>
 </tr>
 <tr>
 <td>Yêu cầu khác</td>
 <td>Yêu cầu công nghệ (dễ sửa lỗi, bảo trì, tái sử dụng, mang chuyển)</td>
 <td></td>
-<td>1.7</td>
+<td>2.7</td>
 </tr>
 </tbody></table>
-<h2>1.1. Tác nhân (actor)</h2>
+<h2>2.1. Tác nhân (actor)</h2>
 <table>
 <thead>
 <tr>
@@ -1052,7 +1531,7 @@ Velocity thực tế: __ SP
 <td>Chạy script kiểm thử tự động trên trình duyệt, trả kết quả và ảnh chụp lỗi</td>
 </tr>
 </tbody></table>
-<h2>1.2. Danh sách yêu cầu nghiệp vụ</h2>
+<h2>2.2. Danh sách yêu cầu nghiệp vụ</h2>
 <table>
 <thead>
 <tr>
@@ -1168,7 +1647,7 @@ Velocity thực tế: __ SP
 <li><strong>Tính toán:</strong> tạo ra thông tin mới từ thông tin đã có theo quy định, công thức (tỷ lệ pass, số test case còn được thêm, velocity).</li>
 <li><strong>Kết xuất:</strong> đưa thông tin ra màn hình, máy in hoặc file theo biểu mẫu.</li>
 </ul>
-<h2>1.3. Biểu mẫu và quy định</h2>
+<h2>2.3. Biểu mẫu và quy định</h2>
 <h3>BM1 – User story</h3>
 <table>
 <thead>
@@ -1356,7 +1835,7 @@ Velocity thực tế: __ SP
 </tbody></table>
 <p><strong>QĐ12:</strong> Sprint dài tối đa <strong>28</strong> ngày (tham số <code>SPRINT_MAX_DAYS</code>, 7–42), ngày kết thúc không trước ngày bắt đầu, các sprint của cùng dự án không trùng thời gian. Chỉ Admin và QA Lead được tạo/sửa sprint. User story chỉ thuộc sprint của chính dự án; story chưa thuộc sprint nào nằm trong <strong>Product backlog</strong>. Story point thuộc dãy <strong>1, 2, 3, 5, 8, 13</strong>. Một user story đạt <strong>Definition of Done</strong> khi có ít nhất 1 test case <em>Đã duyệt</em> và mọi test case <em>Đã duyệt</em> có lần chạy gần nhất là <em>Pass</em>. Velocity = tổng story point của các story đạt DoD trong sprint.</p>
 <p><strong>QĐ11:</strong> Tên đăng nhập 3–30 ký tự <code>a-z 0-9 _ .</code>, không trùng. Mật khẩu tối thiểu 8 ký tự. Admin không được tự khóa hoặc tự hạ quyền chính mình.</p>
-<h2>1.4. Bảng trách nhiệm yêu cầu nghiệp vụ</h2>
+<h2>2.4. Bảng trách nhiệm yêu cầu nghiệp vụ</h2>
 <table>
 <thead>
 <tr>
@@ -1452,8 +1931,8 @@ Velocity thực tế: __ SP
 <td>Hỗ trợ đội làm Scrum</td>
 </tr>
 </tbody></table>
-<h2>1.5. Yêu cầu chất lượng</h2>
-<h3>1.5.1. Tính tiến hóa</h3>
+<h2>2.5. Yêu cầu chất lượng</h2>
+<h3>2.5.1. Tính tiến hóa</h3>
 <table>
 <thead>
 <tr>
@@ -1488,7 +1967,7 @@ Velocity thực tế: __ SP
 <td>Thang story point</td>
 </tr>
 </tbody></table>
-<h3>1.5.2. Tính tiện dụng</h3>
+<h3>2.5.2. Tính tiện dụng</h3>
 <table>
 <thead>
 <tr>
@@ -1517,7 +1996,7 @@ Velocity thực tế: __ SP
 <td>Thông báo lỗi bằng tiếng Việt, nêu rõ quy định bị vi phạm</td>
 </tr>
 </tbody></table>
-<h3>1.5.3. Tính hiệu quả</h3>
+<h3>2.5.3. Tính hiệu quả</h3>
 <table>
 <thead>
 <tr>
@@ -1552,7 +2031,7 @@ Velocity thực tế: __ SP
 <td>Ảnh chụp lỗi ~100 KB/lần</td>
 </tr>
 </tbody></table>
-<h3>1.5.4. Tính tương thích</h3>
+<h3>2.5.4. Tính tương thích</h3>
 <table>
 <thead>
 <tr>
@@ -1587,8 +2066,8 @@ Velocity thực tế: __ SP
 <td>Gemini API, Claude API, OpenAI API (cùng interface <code>LLMProvider</code>)</td>
 </tr>
 </tbody></table>
-<h2>1.6. Yêu cầu hệ thống</h2>
-<h3>1.6.1. Tính an toàn</h3>
+<h2>2.6. Yêu cầu hệ thống</h2>
+<h3>2.6.1. Tính an toàn</h3>
 <table>
 <thead>
 <tr>
@@ -1613,7 +2092,7 @@ Velocity thực tế: __ SP
 <td>Test case <em>Chờ duyệt</em>/<em>Đã duyệt</em>; tài khoản đang đăng nhập không tự khóa</td>
 </tr>
 </tbody></table>
-<h3>1.6.2. Tính bảo mật</h3>
+<h3>2.6.2. Tính bảo mật</h3>
 <table>
 <thead>
 <tr>
@@ -1779,7 +2258,7 @@ Velocity thực tế: __ SP
 <td>Ghi rõ chính sách dữ liệu của nhà cung cấp LLM (dùng gói API không dùng dữ liệu để huấn luyện)</td>
 </tr>
 </tbody></table>
-<h2>1.7. Yêu cầu khác – yêu cầu công nghệ</h2>
+<h2>2.7. Yêu cầu khác – yêu cầu công nghệ</h2>
 <table>
 <thead>
 <tr>
@@ -1815,11 +2294,11 @@ Velocity thực tế: __ SP
 </tr>
 </tbody></table>
 </section>
-<section class="chapter" id="ch-02"><h1>Chương 2. Phân tích</h1>
+<section class="chapter" id="ch-03"><h1>Chương 3. Phân tích</h1>
 <blockquote>
 <p>Sản phẩm của giai đoạn: <strong>mô hình thế giới thực</strong> – sơ đồ use case, đặc tả use case, sơ đồ luồng dữ liệu (DFD) cho từng yêu cầu, sơ đồ hoạt động và sơ đồ trạng thái.</p>
 </blockquote>
-<h2>2.1. Sơ đồ use case tổng quát</h2>
+<h2>3.1. Sơ đồ use case tổng quát</h2>
 <pre class="mermaid">flowchart LR
     Admin(["Admin"])
     QA(["QA Lead"])
@@ -1862,7 +2341,7 @@ Velocity thực tế: __ SP
     UC12 --- PW</pre><blockquote>
 <p>Mọi use case (trừ UC01) đều yêu cầu đã đăng nhập (<code>&lt;&lt;include&gt;&gt; UC01</code>). QA Lead có toàn bộ quyền của Tester và thêm quyền duyệt.</p>
 </blockquote>
-<h2>2.2. Danh sách use case</h2>
+<h2>3.2. Danh sách use case</h2>
 <table>
 <thead>
 <tr>
@@ -1987,7 +2466,7 @@ Velocity thực tế: __ SP
 <td>YC12</td>
 </tr>
 </tbody></table>
-<h2>2.3. Đặc tả các use case chính</h2>
+<h2>3.3. Đặc tả các use case chính</h2>
 <h3>UC06 – Sinh test case bằng AI</h3>
 <table>
 <thead>
@@ -2200,9 +2679,9 @@ Velocity thực tế: __ SP
 </tr>
 </tbody></table>
 <!-- DFD:BEGIN (sinh tự động bởi docs/dfd/generate_dfd.py, đừng sửa tay) -->
-<h2>2.4. Sơ đồ luồng dữ liệu (DFD) cho từng yêu cầu</h2>
+<h2>3.4. Sơ đồ luồng dữ liệu (DFD) cho từng yêu cầu</h2>
 <p>Các sơ đồ được vẽ bằng phần mềm chuyên dụng <strong>draw.io (diagrams.net)</strong>. File gốc <code>.drawio</code> nằm trong thư mục <code>docs/dfd/</code> (mở bằng <a href="https://app.diagrams.net">app.diagrams.net</a> hoặc draw.io Desktop để xem, sửa); hình trong báo cáo được sinh từ cùng một nguồn bằng lệnh <code>python3 docs/dfd/generate_dfd.py</code>.</p>
-<h3>2.4.1. Ký hiệu và quy ước</h3>
+<h3>3.4.1. Ký hiệu và quy ước</h3>
 <table>
 <thead>
 <tr>
@@ -2267,7 +2746,7 @@ Velocity thực tế: __ SP
 <li>Người dùng không nhập những thông tin đã lưu hoặc tính được (VD: người tạo, ngày tạo, phiên bản, tỷ lệ pass do hệ thống tự lấy / tự tính).</li>
 </ul>
 <p><strong>Ba bước thực hiện cho mỗi yêu cầu:</strong> (1) vẽ sơ đồ luồng dữ liệu; (2) mô tả các luồng D1–D6 (luồng không có ghi &quot;Không có&quot;); (3) viết thuật toán xử lý theo khuôn <em>Nhận D1 → Kết nối CSDL → Đọc D3 → kiểm tra quy định → Lưu D4 → Xuất D5 → Xuất D6 → Đóng kết nối → Kết thúc</em>. Ở mỗi bước kiểm tra, nếu không thỏa quy định thì ghi thông báo lỗi vào D6 và nhảy tới bước Xuất D6.</p>
-<h3>2.4.2. DFD YC1 – Lập user story</h3>
+<h3>3.4.2. DFD YC1 – Lập user story</h3>
 <p><img src="dfd/YC01_LapUserStory.svg" alt="DFD YC1 – Lập user story"></p>
 <p><em>Biểu mẫu:</em> BM1 · <em>Quy định:</em> QĐ1 · <em>File:</em> <code>docs/dfd/YC01_LapUserStory.drawio</code></p>
 <table>
@@ -2317,7 +2796,7 @@ Velocity thực tế: __ SP
 <li>B11: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B12: Kết thúc.</li>
 </ul>
-<h3>2.4.3. DFD YC2 – Sinh test case bằng AI</h3>
+<h3>3.4.3. DFD YC2 – Sinh test case bằng AI</h3>
 <p><img src="dfd/YC02_SinhTestCaseBangAI.svg" alt="DFD YC2 – Sinh test case bằng AI"></p>
 <p><em>Biểu mẫu:</em> BM2 · <em>Quy định:</em> QĐ2 · <em>File:</em> <code>docs/dfd/YC02_SinhTestCaseBangAI.drawio</code></p>
 <table>
@@ -2368,7 +2847,7 @@ Velocity thực tế: __ SP
 <li>B12: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B13: Kết thúc.</li>
 </ul>
-<h3>2.4.4. DFD YC3 – Soạn thảo và gửi duyệt test case</h3>
+<h3>3.4.4. DFD YC3 – Soạn thảo và gửi duyệt test case</h3>
 <p><img src="dfd/YC03_SoanThaoGuiDuyet.svg" alt="DFD YC3 – Soạn thảo và gửi duyệt test case"></p>
 <p><em>Biểu mẫu:</em> BM2 · <em>Quy định:</em> QĐ2, QĐ3 · <em>File:</em> <code>docs/dfd/YC03_SoanThaoGuiDuyet.drawio</code></p>
 <table>
@@ -2416,7 +2895,7 @@ Velocity thực tế: __ SP
 <li>B9: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B10: Kết thúc.</li>
 </ul>
-<h3>2.4.5. DFD YC4 – Duyệt test case</h3>
+<h3>3.4.5. DFD YC4 – Duyệt test case</h3>
 <p><img src="dfd/YC04_DuyetTestCase.svg" alt="DFD YC4 – Duyệt test case"></p>
 <p><em>Biểu mẫu:</em> BM3 · <em>Quy định:</em> QĐ4 · <em>File:</em> <code>docs/dfd/YC04_DuyetTestCase.drawio</code></p>
 <table>
@@ -2464,7 +2943,7 @@ Velocity thực tế: __ SP
 <li>B9: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B10: Kết thúc.</li>
 </ul>
-<h3>2.4.6. DFD YC5 – Ghi nhận kết quả chạy test</h3>
+<h3>3.4.6. DFD YC5 – Ghi nhận kết quả chạy test</h3>
 <p><img src="dfd/YC05_GhiKetQuaChayTest.svg" alt="DFD YC5 – Ghi nhận kết quả chạy test"></p>
 <p><em>Biểu mẫu:</em> BM4 · <em>Quy định:</em> QĐ5 · <em>File:</em> <code>docs/dfd/YC05_GhiKetQuaChayTest.drawio</code></p>
 <table>
@@ -2511,7 +2990,7 @@ Velocity thực tế: __ SP
 <li>B8: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B9: Kết thúc.</li>
 </ul>
-<h3>2.4.7. DFD YC6 – Lập báo cáo kiểm thử</h3>
+<h3>3.4.7. DFD YC6 – Lập báo cáo kiểm thử</h3>
 <p><img src="dfd/YC06_LapBaoCao.svg" alt="DFD YC6 – Lập báo cáo kiểm thử"></p>
 <p><em>Biểu mẫu:</em> BM5 · <em>Quy định:</em> QĐ5 · <em>File:</em> <code>docs/dfd/YC06_LapBaoCao.drawio</code></p>
 <table>
@@ -2560,7 +3039,7 @@ Velocity thực tế: __ SP
 <li>B10: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B11: Kết thúc.</li>
 </ul>
-<h3>2.4.8. DFD YC7 – Tra cứu test case</h3>
+<h3>3.4.8. DFD YC7 – Tra cứu test case</h3>
 <p><img src="dfd/YC07_TraCuuTestCase.svg" alt="DFD YC7 – Tra cứu test case"></p>
 <p><em>Biểu mẫu:</em> BM6 · <em>Quy định:</em> Không có · <em>File:</em> <code>docs/dfd/YC07_TraCuuTestCase.drawio</code></p>
 <table>
@@ -2605,7 +3084,7 @@ Velocity thực tế: __ SP
 <li>B6: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B7: Kết thúc.</li>
 </ul>
-<h3>2.4.9. DFD YC8a – Nhập user story từ file</h3>
+<h3>3.4.9. DFD YC8a – Nhập user story từ file</h3>
 <p><img src="dfd/YC08a_NhapUserStory.svg" alt="DFD YC8a – Nhập user story từ file"></p>
 <p><em>Biểu mẫu:</em> BM7 · <em>Quy định:</em> QĐ1, QĐ8 · <em>File:</em> <code>docs/dfd/YC08_NhapXuatDuLieu.drawio</code></p>
 <table>
@@ -2653,7 +3132,7 @@ Velocity thực tế: __ SP
 <li>B9: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B10: Kết thúc.</li>
 </ul>
-<h3>2.4.10. DFD YC8b – Xuất test case ra Excel</h3>
+<h3>3.4.10. DFD YC8b – Xuất test case ra Excel</h3>
 <p><img src="dfd/YC08b_XuatTestCase.svg" alt="DFD YC8b – Xuất test case ra Excel"></p>
 <p><em>Biểu mẫu:</em> BM8 · <em>Quy định:</em> Không có · <em>File:</em> <code>docs/dfd/YC08_NhapXuatDuLieu.drawio</code></p>
 <table>
@@ -2699,7 +3178,7 @@ Velocity thực tế: __ SP
 <li>B7: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B8: Kết thúc.</li>
 </ul>
-<h3>2.4.11. DFD YC9 – Sinh và chạy script kiểm thử tự động</h3>
+<h3>3.4.11. DFD YC9 – Sinh và chạy script kiểm thử tự động</h3>
 <p><img src="dfd/YC09_SinhVaChayScript.svg" alt="DFD YC9 – Sinh và chạy script kiểm thử tự động"></p>
 <p><em>Biểu mẫu:</em> BM9 · <em>Quy định:</em> QĐ9 · <em>File:</em> <code>docs/dfd/YC09_SinhVaChayScript.drawio</code></p>
 <table>
@@ -2749,7 +3228,7 @@ Velocity thực tế: __ SP
 <li>B11: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B12: Kết thúc.</li>
 </ul>
-<h3>2.4.12. DFD YC10 – Thay đổi quy định</h3>
+<h3>3.4.12. DFD YC10 – Thay đổi quy định</h3>
 <p><img src="dfd/YC10_ThayDoiQuyDinh.svg" alt="DFD YC10 – Thay đổi quy định"></p>
 <p><em>Biểu mẫu:</em> Không có · <em>Quy định:</em> QĐ10 · <em>File:</em> <code>docs/dfd/YC10_ThayDoiQuyDinh.drawio</code></p>
 <table>
@@ -2796,7 +3275,7 @@ Velocity thực tế: __ SP
 <li>B8: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B9: Kết thúc.</li>
 </ul>
-<h3>2.4.13. DFD YC11 – Quản lý người dùng, dự án</h3>
+<h3>3.4.13. DFD YC11 – Quản lý người dùng, dự án</h3>
 <p><img src="dfd/YC11_QuanLyNguoiDungDuAn.svg" alt="DFD YC11 – Quản lý người dùng, dự án"></p>
 <p><em>Biểu mẫu:</em> Không có · <em>Quy định:</em> QĐ11 · <em>File:</em> <code>docs/dfd/YC11_QuanLyNguoiDungDuAn.drawio</code></p>
 <table>
@@ -2845,7 +3324,7 @@ Velocity thực tế: __ SP
 <li>B10: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B11: Kết thúc.</li>
 </ul>
-<h3>2.4.14. DFD YC12 – Quản lý sprint (Agile/Scrum)</h3>
+<h3>3.4.14. DFD YC12 – Quản lý sprint (Agile/Scrum)</h3>
 <p><img src="dfd/YC12_QuanLySprint.svg" alt="DFD YC12 – Quản lý sprint (Agile/Scrum)"></p>
 <p><em>Biểu mẫu:</em> BM10 · <em>Quy định:</em> QĐ12 · <em>File:</em> <code>docs/dfd/YC12_QuanLySprint.drawio</code></p>
 <table>
@@ -2895,7 +3374,7 @@ Velocity thực tế: __ SP
 <li>B11: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B12: Kết thúc.</li>
 </ul>
-<h3>2.4.15. Sơ đồ phối hợp giữa các công việc</h3>
+<h3>3.4.15. Sơ đồ phối hợp giữa các công việc</h3>
 <p><img src="dfd/PhoiHop_CacCongViec.svg" alt="Sơ đồ phối hợp giữa các công việc"></p>
 <p><em>File:</em> <code>docs/dfd/PhoiHop_CacCongViec.drawio</code>. Mỗi mũi tên là <strong>thông tin</strong> do công việc trước tạo ra (ghi xuống bộ nhớ phụ ở D4) và công việc sau sử dụng (đọc lên ở D3).</p>
 <table>
@@ -2989,7 +3468,7 @@ Velocity thực tế: __ SP
 </tbody></table>
 <!-- DFD:END -->
 
-<h2>2.5. Sơ đồ hoạt động – quy trình nghiệp vụ mới</h2>
+<h2>3.5. Sơ đồ hoạt động – quy trình nghiệp vụ mới</h2>
 <pre class="mermaid">flowchart TD
     S([Bắt đầu]) --&gt; A["Tester lập / nhập user story"]
     A --&gt; B["Bấm Sinh test case bằng AI"]
@@ -3006,8 +3485,8 @@ Velocity thực tế: __ SP
     K --&gt; L
     L --&gt;|Có| M["Tạo bug, ghi mã bug vào ghi chú"] --&gt; N
     L --&gt;|Không| N["Báo cáo tự động cập nhật"]
-    N --&gt; X([Kết thúc])</pre><p>So với cách làm thủ công (viết trên Excel, duyệt qua chat): AI rút ngắn bước viết nháp; duyệt có lưu vết; không còn viết lại test case thành script bằng tay; báo cáo tự động.</p>
-<h2>2.6. Sơ đồ trạng thái của test case</h2>
+    N --&gt; X([Kết thúc])</pre><p>So với quy trình cũ (Chương 1): AI rút ngắn bước viết nháp; duyệt có lưu vết; không còn viết lại test case thành script bằng tay; báo cáo tự động.</p>
+<h2>3.6. Sơ đồ trạng thái của test case</h2>
 <pre class="mermaid">stateDiagram-v2
     [*] --&gt; DRAFT: AI sinh / thêm thủ công
     DRAFT --&gt; DRAFT: Sửa (phiên bản +1)
@@ -3024,11 +3503,11 @@ Velocity thực tế: __ SP
         Chỉ trạng thái này mới được
         ghi kết quả, sinh và chạy script
     end note</pre></section>
-<section class="chapter" id="ch-03"><h1>Chương 3. Thiết kế</h1>
+<section class="chapter" id="ch-04"><h1>Chương 4. Thiết kế</h1>
 <blockquote>
 <p>Sản phẩm của giai đoạn: <strong>mô hình phần mềm</strong> – kiến trúc, thiết kế dữ liệu, thiết kế xử lý (class, sequence), thiết kế giao diện, thiết kế API và bảo mật.</p>
 </blockquote>
-<h2>3.1. Kiến trúc hệ thống</h2>
+<h2>4.1. Kiến trúc hệ thống</h2>
 <p>Kiến trúc nhiều lớp, trong đó <strong>AI Service là module riêng</strong> – nơi duy nhất làm việc với LLM. Muốn đổi model chỉ cần sửa module này.</p>
 <pre class="mermaid">flowchart TB
     subgraph Client["Frontend (trình duyệt)"]
@@ -3110,7 +3589,7 @@ Velocity thực tế: __ SP
     end
     APP -- "HTTPS" --&gt; LLM[["LLM API"]]
     APP -- "HTTPS" --&gt; AUT[["Web cần test"]]
-    GH["GitHub Actions CI"] -- "build image" --&gt; Docker</pre><h2>3.2. Thiết kế dữ liệu</h2>
+    GH["GitHub Actions CI"] -- "build image" --&gt; Docker</pre><h2>4.2. Thiết kế dữ liệu</h2>
 <p>Thiết kế theo 3 bước của môn học.</p>
 <h3>Bước 1 – Đúng đắn (đáp ứng yêu cầu)</h3>
 <p>Xét lần lượt từng yêu cầu, xác định thuộc tính cần lưu:</p>
@@ -3459,7 +3938,7 @@ Velocity thực tế: __ SP
 </tr>
 </tbody></table>
 <p>Lược đồ đầy đủ: <code>`app/src/db/schema.sql`</code>.</p>
-<h2>3.3. Thiết kế xử lý</h2>
+<h2>4.3. Thiết kế xử lý</h2>
 <h3>Sơ đồ lớp – AI Service (Strategy pattern)</h3>
 <pre class="mermaid">classDiagram
     class LLMProvider {
@@ -3611,7 +4090,7 @@ Velocity thực tế: __ SP
     W--&gt;&gt;S: báo cáo JSON (+ ảnh chụp nếu lỗi)
     S-&gt;&gt;FS: xóa file tạm
     S-&gt;&gt;DB: INSERT test_runs (AUTO, log, ảnh, thời gian)
-    S--&gt;&gt;T: Pass / Fail</pre><h2>3.4. Thiết kế prompt và định dạng kết quả AI</h2>
+    S--&gt;&gt;T: Pass / Fail</pre><h2>4.4. Thiết kế prompt và định dạng kết quả AI</h2>
 <p><strong>Prompt hệ thống (rút gọn):</strong></p>
 <pre><code class="language-text">Bạn là một QA senior có 10 năm kinh nghiệm viết test case.
 Nhiệm vụ: từ user story và acceptance criteria, sinh danh sách test case.
@@ -3644,7 +4123,7 @@ Acceptance criteria: ...
   ]
 }
 </code></pre>
-<h2>3.5. Thiết kế giao diện</h2>
+<h2>4.5. Thiết kế giao diện</h2>
 <table>
 <thead>
 <tr>
@@ -3750,7 +4229,7 @@ Acceptance criteria: ...
     MH02 --&gt; MH09[MH09 Quy định]
     MH02 --&gt; MH10[MH10 Nhật ký AI]
     MH02 --&gt; MH11[MH11 Dự án] &amp; MH12[MH12 Người dùng] &amp; MH13[MH13 Audit log]</pre><p>Nguyên tắc: menu hiển thị theo vai trò; nút thao tác chỉ hiện khi có quyền (backend vẫn kiểm tra lại); mọi thông báo lỗi bằng tiếng Việt và nêu rõ quy định bị vi phạm; thao tác AI có trạng thái chờ và kết quả rõ ràng.</p>
-<h2>3.6. Thiết kế API</h2>
+<h2>4.6. Thiết kế API</h2>
 <p>Tất cả API (trừ đăng nhập, health) yêu cầu header <code>Authorization: Bearer &lt;JWT&gt;</code>.</p>
 <table>
 <thead>
@@ -3937,7 +4416,7 @@ Acceptance criteria: ...
 </tr>
 </tbody></table>
 <p>Mã lỗi: <code>400</code> dữ liệu sai/vi phạm quy định · <code>401</code> chưa đăng nhập · <code>403</code> không có quyền · <code>404</code> không tìm thấy · <code>409</code> xung đột trạng thái/trùng mã · <code>429</code> vượt hạn mức · <code>502</code> AI trả kết quả không hợp lệ · <code>503</code> worker chưa sẵn sàng.</p>
-<h2>3.7. Thiết kế bảo mật</h2>
+<h2>4.7. Thiết kế bảo mật</h2>
 <pre class="mermaid">flowchart LR
     R["Request"] --&gt; H["helmet: CSP, nosniff,&lt;br/&gt;ẩn X-Powered-By"] --&gt; J["Giới hạn body 1 MB"] --&gt; A["JWT + tài khoản còn hoạt động"] --&gt; P["RBAC theo quyền"] --&gt; Q["Hạn mức AI / giờ"] --&gt; V["Zod schema"] --&gt; S["Service: quy định nghiệp vụ"] --&gt; D["Prepared statement"]
     S --&gt; L["Audit log"]
@@ -3999,11 +4478,11 @@ Acceptance criteria: ...
 </tr>
 </tbody></table>
 </section>
-<section class="chapter" id="ch-04"><h1>Chương 4. Cài đặt</h1>
+<section class="chapter" id="ch-05"><h1>Chương 5. Cài đặt</h1>
 <blockquote>
-<p>Sản phẩm của giai đoạn: <strong>phần mềm</strong> chạy được, mã nguồn theo đúng thiết kế ở Chương 3.</p>
+<p>Sản phẩm của giai đoạn: <strong>phần mềm</strong> chạy được, mã nguồn theo đúng thiết kế ở Chương 4.</p>
 </blockquote>
-<h2>4.1. Công nghệ sử dụng</h2>
+<h2>5.1. Công nghệ sử dụng</h2>
 <table>
 <thead>
 <tr>
@@ -4068,7 +4547,7 @@ Acceptance criteria: ...
 <td>Tự động test và build mỗi lần push</td>
 </tr>
 </tbody></table>
-<h2>4.2. Cấu trúc thư mục</h2>
+<h2>5.2. Cấu trúc thư mục</h2>
 <pre><code class="language-text">NhapMonCongNghePhanMem/
 ├── app/                          # Hệ thống chính
 │   ├── src/
@@ -4094,12 +4573,12 @@ Acceptance criteria: ...
 │   └── specs/
 │       ├── samples/              # Bộ test viết tay mẫu cho Sauce Demo
 │       └── generated/            # File tạm khi hệ thống chạy script do AI sinh
-├── docs/                         # Tài liệu đồ án (chương 0–8), báo cáo HTML, slide
+├── docs/                         # Tài liệu đồ án (chương 0–9), báo cáo HTML, slide
 ├── .github/workflows/ci.yml      # CI/CD
 ├── Dockerfile, docker-compose.yml
 └── README.md
 </code></pre>
-<h2>4.3. Ánh xạ yêu cầu – mã nguồn</h2>
+<h2>5.3. Ánh xạ yêu cầu – mã nguồn</h2>
 <table>
 <thead>
 <tr>
@@ -4182,7 +4661,7 @@ Acceptance criteria: ...
 <td><code>pages/sprints.js</code></td>
 </tr>
 </tbody></table>
-<h2>4.4. Một số điểm cài đặt đáng chú ý</h2>
+<h2>5.4. Một số điểm cài đặt đáng chú ý</h2>
 <p><strong>Strategy pattern cho LLM</strong> – <code>src/services/ai/providers/</code>:</p>
 <pre><code class="language-js">class LLMProvider {
   async complete(req) { throw new Error(&#39;complete() chưa được hiện thực&#39;); }
@@ -4203,7 +4682,7 @@ class GeminiProvider extends LLMProvider { /* gọi Gemini REST API */ }
 <p><strong>Giao dịch khi lưu kết quả AI</strong> – xóa test case AI Nháp cũ, kiểm tra QĐ2 và thêm mới trong <strong>một transaction</strong>, tránh dữ liệu dở dang.</p>
 <p><strong>Chạy script do AI sinh an toàn</strong> – <code>scriptService.run</code>: kiểm tra tĩnh → ghi file tên ngẫu nhiên → <code>spawn(&#39;playwright test --reporter=json&#39;)</code> với <code>env</code> chỉ gồm <code>PATH, HOME, CI</code> → <code>SIGKILL</code> khi quá <code>RUN_TIMEOUT_SEC</code> → xóa file tạm → lưu kết quả và ảnh chụp lỗi.</p>
 <p><strong>MockProvider</strong> – sinh test case theo luật (mỗi acceptance criterion một case Positive; tiêu chí có từ khóa &quot;bắt buộc/tối đa/hết hạn…&quot; sinh thêm case Negative; tiêu chí có số + đơn vị như &quot;10 MB&quot; sinh case biên). Giúp demo chạy được khi không có mạng hoặc API key, và giúp test tự động ổn định.</p>
-<h2>4.5. Quy ước và quản lý mã nguồn</h2>
+<h2>5.5. Quy ước và quản lý mã nguồn</h2>
 <ul>
 <li>Đặt tên: <code>camelCase</code> cho biến/hàm, <code>PascalCase</code> cho lớp, <code>snake_case</code> cho cột CSDL, <code>UPPER_CASE</code> cho tham số quy định.</li>
 <li>Comment tiếng Việt, ghi rõ YC/QĐ liên quan ngay tại chỗ hiện thực.</li>
@@ -4211,7 +4690,7 @@ class GeminiProvider extends LLMProvider { /* gọi Gemini REST API */ }
 <li>Commit theo dạng: <code>feat(yc2): sinh test case bằng AI</code>, <code>fix(qd4): bắt buộc ghi chú khi trả lại</code>, <code>test(e2e): luồng duyệt</code>.</li>
 <li>Không commit <code>.env</code>, CSDL, báo cáo test (<code>.gitignore</code>).</li>
 </ul>
-<h2>4.6. Hướng dẫn cài đặt môi trường phát triển</h2>
+<h2>5.6. Hướng dẫn cài đặt môi trường phát triển</h2>
 <pre><code class="language-bash">cd app
 npm install
 cp .env.example .env      # chỉnh AI_PROVIDER, API key nếu muốn dùng AI thật
@@ -4222,11 +4701,11 @@ npm run dev               # chạy và tự khởi động lại khi sửa mã
 npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </code></pre>
 </section>
-<section class="chapter" id="ch-05"><h1>Chương 5. Kiểm chứng (kiểm thử)</h1>
+<section class="chapter" id="ch-06"><h1>Chương 6. Kiểm chứng (kiểm thử)</h1>
 <blockquote>
 <p>Sản phẩm của giai đoạn: <strong>phần mềm chất lượng</strong> – kế hoạch kiểm thử, bộ test case kiểm thử chính hệ thống, kiểm thử tự động nhiều tầng và kết quả.</p>
 </blockquote>
-<h2>5.1. Chiến lược kiểm thử</h2>
+<h2>6.1. Chiến lược kiểm thử</h2>
 <p>Áp dụng mô hình <strong>kim tự tháp kiểm thử</strong>: nhiều test nhanh ở tầng dưới, ít test chậm ở tầng trên.</p>
 <pre class="mermaid">flowchart TB
     E2E["E2E – Playwright (9 kịch bản)&lt;br/&gt;Toàn bộ luồng qua giao diện thật"]
@@ -4261,7 +4740,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>Kiểm thử thủ công</td>
-<td>Bộ test case hệ thống (mục 5.4)</td>
+<td>Bộ test case hệ thống (mục 6.4)</td>
 <td>Giao diện, trải nghiệm, trường hợp khó tự động hóa</td>
 <td>Trước khi nộp</td>
 </tr>
@@ -4280,7 +4759,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tbody></table>
 <p><strong>Tiêu chí hoàn thành:</strong> 100% test tự động pass; không còn lỗi mức High; mỗi YC1–YC12 có ít nhất 1 test case kiểm thử.</p>
 <p><strong>Kiểm thử trong Agile:</strong> kiểm thử không phải một giai đoạn cuối mà là một phần của <strong>Definition of Done</strong> của mỗi story: story chỉ được tính hoàn thành khi có test tự động mới và CI xanh. Vì vậy bộ test dưới đây được viết dần qua 5 sprint (cột <em>Sprint</em> trong Product Backlog), không dồn về cuối kỳ.</p>
-<h2>5.2. Kiểm thử tự động – Unit và API</h2>
+<h2>6.2. Kiểm thử tự động – Unit và API</h2>
 <p>Chạy: <code>cd app &amp;&amp; npm test</code></p>
 <table>
 <thead>
@@ -4567,7 +5046,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 </tbody></table>
 <p><strong>Kết quả:</strong> <code>55 tests, 55 pass, 0 fail</code> (Node.js 21, macOS, 20/10/2026).</p>
-<h2>5.3. Kiểm thử E2E bằng Playwright</h2>
+<h2>6.3. Kiểm thử E2E bằng Playwright</h2>
 <p>Chạy: <code>cd app &amp;&amp; npm run test:e2e</code> (Playwright tự khởi động server ở cổng 3100 với CSDL riêng <code>data/e2e.db</code>; xem báo cáo HTML: <code>npx playwright show-report e2e-report</code>).</p>
 <p><strong>Kỹ thuật áp dụng:</strong></p>
 <ul>
@@ -4632,7 +5111,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 </tbody></table>
 <p><strong>Kết quả:</strong> <code>9 passed (10.1s)</code>.</p>
-<h2>5.4. Bộ test case kiểm thử hệ thống (thủ công)</h2>
+<h2>6.4. Bộ test case kiểm thử hệ thống (thủ công)</h2>
 <table>
 <thead>
 <tr>
@@ -4861,7 +5340,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <td>Medium</td>
 </tr>
 </tbody></table>
-<h2>5.5. Kiểm thử chức năng YC9 với Playwright trên Sauce Demo</h2>
+<h2>6.5. Kiểm thử chức năng YC9 với Playwright trên Sauce Demo</h2>
 <h3>Bộ test mẫu viết tay (Page Object Model)</h3>
 <p><code>automation/specs/samples/</code> – 8 test cho US-SAU-001 (đăng nhập) và US-SAU-002 (giỏ hàng). Áp dụng:</p>
 <ul>
@@ -4912,7 +5391,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 </tbody></table>
 <p><strong>So sánh script AI với bộ viết tay:</strong> script AI viết &quot;phẳng&quot; (mỗi bước một lệnh, locator CSS <code>[data-test=...]</code>), đủ để chạy nhưng chưa tái sử dụng được. Bộ viết tay dùng POM, data-driven, dễ bảo trì hơn. Đây là lý do hệ thống bắt buộc <strong>Tester xem lại script</strong> trước khi chạy và là hướng phát triển ở các phiên bản sau (AI sinh script theo POM, tự sửa locator).</p>
-<h2>5.6. Tích hợp liên tục (CI)</h2>
+<h2>6.6. Tích hợp liên tục (CI)</h2>
 <p><code>.github/workflows/ci.yml</code> chạy tự động mỗi lần push lên <code>main</code> hoặc tạo Pull Request:</p>
 <pre class="mermaid">flowchart LR
     P["git push / PR"] --&gt; U["Job 1: Unit &amp; API test&lt;br/&gt;npm ci → npm test"]
@@ -4920,7 +5399,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
     U --&gt; A["Job 3: Playwright mẫu Sauce Demo&lt;br/&gt;biến từ GitHub Secrets/Variables"]
     E --&gt; D["Job 4: Build Docker image"]
     A --&gt; D</pre><p>Pull Request chỉ được merge khi cả 4 job xanh.</p>
-<h2>5.7. Tổng kết kiểm thử</h2>
+<h2>6.7. Tổng kết kiểm thử</h2>
 <table>
 <thead>
 <tr>
@@ -4969,8 +5448,8 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tbody></table>
 <p><strong>Hạn chế đã biết:</strong> MockProvider sinh câu chữ theo khuôn mẫu, chất lượng thấp hơn LLM thật; kiểm tra tĩnh dựa trên mẫu (regex) nên chỉ là một lớp bảo vệ, lớp chính khi triển khai là container cô lập; chưa kiểm thử hiệu năng với dữ liệu lớn.</p>
 </section>
-<section class="chapter" id="ch-06"><h1>Chương 6. Triển khai và hướng dẫn sử dụng</h1>
-<h2>6.1. Yêu cầu hệ thống</h2>
+<section class="chapter" id="ch-07"><h1>Chương 7. Triển khai và hướng dẫn sử dụng</h1>
+<h2>7.1. Yêu cầu hệ thống</h2>
 <table>
 <thead>
 <tr>
@@ -4995,7 +5474,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <td>Cần Internet khi dùng AI thật (Gemini/Claude/OpenAI) hoặc chạy test trên saucedemo.com; chế độ <code>mock</code> chạy offline</td>
 </tr>
 </tbody></table>
-<h2>6.2. Cách 1 – Chạy trực tiếp trên máy (khuyến nghị khi demo)</h2>
+<h2>7.2. Cách 1 – Chạy trực tiếp trên máy (khuyến nghị khi demo)</h2>
 <p><strong>Nhanh nhất trên macOS:</strong> bấm đúp file <code>ChayDemo.command</code> ở thư mục gốc. Script tự cài thư viện (lần đầu), tạo dữ liệu mẫu, chạy server và mở trình duyệt.</p>
 <p><strong>Hoặc chạy bằng lệnh:</strong></p>
 <pre><code class="language-bash">cd app
@@ -5008,7 +5487,7 @@ npm start
 npm install
 </code></pre>
 <p>Mở <code>http://localhost:3000</code>.</p>
-<h2>6.3. Cách 2 – Docker</h2>
+<h2>7.3. Cách 2 – Docker</h2>
 <pre><code class="language-bash">docker compose up --build
 </code></pre>
 <ul>
@@ -5016,7 +5495,7 @@ npm install
 <li>Container chạy bằng user không phải root, giới hạn 2 CPU và 2 GB RAM, bật <code>no-new-privileges</code>.</li>
 <li>Khi đưa lên server thật: đặt <code>JWT_SECRET</code> ngẫu nhiên, đặt reverse proxy (Nginx/Caddy) có HTTPS phía trước, đổi mật khẩu các tài khoản mẫu.</li>
 </ul>
-<h2>6.4. Cấu hình AI thật</h2>
+<h2>7.4. Cấu hình AI thật</h2>
 <p>Mặc định hệ thống dùng <code>AI_PROVIDER=mock</code> (không cần mạng). Để dùng AI thật, sửa <code>app/.env</code>:</p>
 <table>
 <thead>
@@ -5129,7 +5608,7 @@ npm install
 </tr>
 </tbody></table>
 <p>Chưa khai báo thì CI dùng giá trị mặc định cho Sauce Demo. CI luôn đặt sẵn <code>PW_CHANNEL=chromium</code>, <code>RETRIES=1</code>, <code>WORKERS=2</code>.</p>
-<h2>6.5. Tài khoản mẫu</h2>
+<h2>7.5. Tài khoản mẫu</h2>
 <table>
 <thead>
 <tr>
@@ -5160,7 +5639,7 @@ npm install
 </tr>
 </tbody></table>
 <p>Dữ liệu mẫu: dự án <strong>PETINS – App bảo hiểm thú cưng</strong> (hư cấu, 3 module, 5 user story, 4 test case đã duyệt có lịch sử chạy; Sprint 1 đã kết thúc, Sprint 2 đang chạy tính từ ngày tạo dữ liệu, 1 story trong Product backlog) và <strong>SAUCE – Sauce Demo Shop</strong> (web thật <code>https://www.saucedemo.com/</code>, 2 user story, 4 test case đã duyệt dùng cho Playwright). Đặt lại dữ liệu: <code>npm run reset</code>.</p>
-<h2>6.6. Hướng dẫn sử dụng theo vai trò</h2>
+<h2>7.6. Hướng dẫn sử dụng theo vai trò</h2>
 <h3>Tester</h3>
 <ol>
 <li><strong>Lập user story:</strong> menu <em>User story</em> → <em>＋ Lập user story</em> → nhập mã (<code>US-...</code>), tiêu đề, mô tả &quot;Là…, tôi muốn…, để…&quot;, mỗi acceptance criterion một dòng → <em>Lưu</em>. Có thể <em>⬆️ Nhập từ file</em> CSV/JSON (mẫu ở <code>app/samples/</code>).</li>
@@ -5190,7 +5669,7 @@ npm install
 <p>Xem <em>Tra cứu test case</em>, <em>Kết quả chạy test</em> (ghi chú có mã bug, log và ảnh chụp lỗi để tái hiện) và <em>Tổng quan &amp; báo cáo</em>.</p>
 <h3>Admin</h3>
 <p><em>Người dùng</em> (thêm, khóa/mở khóa, xem ma trận phân quyền), <em>Dự án &amp; module</em> (tạo dự án, khai báo URL ứng dụng cần test cho Playwright, thêm module), <em>Nhật ký hoạt động</em>, <em>Nhật ký AI</em>.</p>
-<h2>6.7. Xử lý sự cố thường gặp</h2>
+<h2>7.7. Xử lý sự cố thường gặp</h2>
 <table>
 <thead>
 <tr>
@@ -5235,7 +5714,7 @@ npm install
 <td>macOS: <code>xcode-select --install</code>; hoặc dùng Docker</td>
 </tr>
 </tbody></table>
-<h2>6.8. Giao diện thực tế</h2>
+<h2>7.8. Giao diện thực tế</h2>
 <p><strong>Đăng nhập</strong> – có nút điền nhanh tài khoản demo theo vai trò.</p>
 <p><img src="images/01_dang_nhap.png" alt="Đăng nhập"></p>
 <p><strong>Tổng quan &amp; báo cáo (YC6)</strong> – tỷ lệ pass, độ bao phủ, tiến độ, biểu đồ, story chưa bao phủ, hiệu quả AI.</p>
@@ -5257,8 +5736,8 @@ npm install
 <p><strong>Thay đổi quy định (YC10)</strong></p>
 <p><img src="images/09_thay_doi_quy_dinh.png" alt="Quy định"></p>
 </section>
-<section class="chapter" id="ch-07"><h1>Chương 7. Kịch bản demo khi bảo vệ (8–10 phút)</h1>
-<h2>7.1. Chuẩn bị trước buổi bảo vệ (checklist)</h2>
+<section class="chapter" id="ch-08"><h1>Chương 8. Kịch bản demo khi bảo vệ (8–10 phút)</h1>
+<h2>8.1. Chuẩn bị trước buổi bảo vệ (checklist)</h2>
 <ul>
 <li><input disabled="" type="checkbox"> <code>cd app &amp;&amp; npm run reset</code> để có dữ liệu mẫu sạch.</li>
 <li><input disabled="" type="checkbox"> Bấm đúp <code>ChayDemo.command</code> (hoặc <code>npm start</code>), kiểm tra <code>http://localhost:3000</code> mở được.</li>
@@ -5270,7 +5749,7 @@ npm install
 <li><input disabled="" type="checkbox"> Quay sẵn video toàn bộ kịch bản (QuickTime → File → New Screen Recording).</li>
 <li><input disabled="" type="checkbox"> Phóng to trình duyệt (Cmd +) để hội đồng nhìn rõ.</li>
 </ul>
-<h2>7.2. Kịch bản</h2>
+<h2>8.2. Kịch bản</h2>
 <table>
 <thead>
 <tr>
@@ -5286,7 +5765,7 @@ npm install
 <td>0:00</td>
 <td>Mở slide, trình bày vấn đề</td>
 <td>&quot;Viết test case thủ công mất 30–60 phút/story, dễ sót case lỗi, duyệt qua chat không lưu vết.&quot;</td>
-<td>Lý do chọn đề tài</td>
+<td>Khảo sát hiện trạng</td>
 </tr>
 <tr>
 <td>2</td>
@@ -5381,7 +5860,7 @@ npm install
 </tr>
 </tbody></table>
 <p><strong>Dự phòng:</strong> mạng hoặc API lỗi → chuyển <code>AI_PROVIDER=mock</code> (khởi động lại 3 giây) hoặc mở video đã quay.</p>
-<h2>7.3. Câu hỏi hội đồng có thể hỏi</h2>
+<h2>8.3. Câu hỏi hội đồng có thể hỏi</h2>
 <table>
 <thead>
 <tr>
@@ -5447,8 +5926,8 @@ npm install
 </tr>
 </tbody></table>
 </section>
-<section class="chapter" id="ch-08"><h1>Chương 8. Kết luận và hướng phát triển</h1>
-<h2>8.1. Kết quả đạt được</h2>
+<section class="chapter" id="ch-09"><h1>Chương 9. Kết luận và hướng phát triển</h1>
+<h2>9.1. Kết quả đạt được</h2>
 <table>
 <thead>
 <tr>
@@ -5458,7 +5937,7 @@ npm install
 </thead>
 <tbody><tr>
 <td>Quy trình CNPM</td>
-<td>Agile/Scrum, nhóm 4 người: 5 sprint × 1 tuần, Product Backlog 28 story, DoR/DoD, biên bản các sự kiện; mỗi sprint đi qua đủ các hoạt động của môn học</td>
+<td>Agile/Scrum, nhóm 4 người: 5 sprint × 1 tuần, Product Backlog 28 story, DoR/DoD, biên bản các sự kiện; mỗi sprint đi qua đủ 7 hoạt động của môn học</td>
 </tr>
 <tr>
 <td>Phần mềm chạy được</td>
@@ -5477,7 +5956,7 @@ npm install
 <td>Docker, docker-compose, GitHub Actions CI</td>
 </tr>
 </tbody></table>
-<h2>8.2. Hạn chế</h2>
+<h2>9.2. Hạn chế</h2>
 <ul>
 <li>MockProvider dùng luật đơn giản; chất lượng thật phụ thuộc LLM được cấu hình.</li>
 <li>Script Playwright do AI sinh còn dạng &quot;phẳng&quot;, chưa tái sử dụng Page Object.</li>
@@ -5485,7 +5964,7 @@ npm install
 <li>Hàng đợi chạy test đang đồng bộ (mỗi request chờ kết quả); chưa có hàng đợi job (BullMQ + Redis) cho chạy hàng loạt.</li>
 <li>Chưa kiểm thử hiệu năng với dữ liệu lớn.</li>
 </ul>
-<h2>8.3. Hướng phát triển cho phần mềm</h2>
+<h2>9.3. Hướng phát triển cho phần mềm</h2>
 <ol>
 <li>Hàng đợi job (BullMQ + Redis) để sinh test case và chạy script nền, chạy hàng loạt theo bộ test (test suite).</li>
 <li>Tích hợp Jira: nhập user story trực tiếp, tạo bug tự động khi Fail.</li>
@@ -5494,7 +5973,7 @@ npm install
 <li>Quan sát LLM (Langfuse): theo dõi chi phí, độ trễ, chất lượng từng prompt.</li>
 <li>Chuyển sang PostgreSQL, thêm đăng nhập SSO.</li>
 </ol>
-<h2>8.4. Hướng phát triển chung – nâng cao chất lượng AI</h2>
+<h2>9.4. Hướng phát triển chung – nâng cao chất lượng AI</h2>
 <p>Hệ thống đã lưu sẵn dữ liệu để đo chất lượng AI: bảng <code>ai_logs</code> (prompt, model, kết quả gốc) và <code>test_case_versions</code> (bản AI sinh ra v1 và bản người dùng sửa cuối cùng). Dựa vào đó, các phiên bản sau có thể cải tiến phần AI theo hướng có số liệu:</p>
 <table>
 <thead>

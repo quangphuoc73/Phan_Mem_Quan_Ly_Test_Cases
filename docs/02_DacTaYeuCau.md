@@ -1,4 +1,4 @@
-# Chương 1. Xác định và đặc tả yêu cầu
+# Chương 2. Xác định và đặc tả yêu cầu
 
 > Sản phẩm của giai đoạn: **danh sách các yêu cầu phần mềm** kèm biểu mẫu (BM) và quy định (QĐ), cùng bảng trách nhiệm. **Yêu cầu phần mềm** là các công việc, các nghiệp vụ được hỗ trợ thực hiện trên máy tính với phần mềm.
 
@@ -6,12 +6,12 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 
 | Nhóm | Gồm | Đảm bảo | Mục trong chương |
 |---|---|---|---|
-| **Yêu cầu nghiệp vụ** | Lưu trữ, tra cứu, tính toán, kết xuất | Tính **đúng đắn** | 1.2 – 1.4 |
-| **Yêu cầu chất lượng** | Tính tiến hóa, tiện dụng, hiệu quả, tương thích | | 1.5 |
-| **Yêu cầu hệ thống** | Tính an toàn, bảo mật | | 1.6 |
-| Yêu cầu khác | Yêu cầu công nghệ (dễ sửa lỗi, bảo trì, tái sử dụng, mang chuyển) | | 1.7 |
+| **Yêu cầu nghiệp vụ** | Lưu trữ, tra cứu, tính toán, kết xuất | Tính **đúng đắn** | 2.2 – 2.4 |
+| **Yêu cầu chất lượng** | Tính tiến hóa, tiện dụng, hiệu quả, tương thích | | 2.5 |
+| **Yêu cầu hệ thống** | Tính an toàn, bảo mật | | 2.6 |
+| Yêu cầu khác | Yêu cầu công nghệ (dễ sửa lỗi, bảo trì, tái sử dụng, mang chuyển) | | 2.7 |
 
-## 1.1. Tác nhân (actor)
+## 2.1. Tác nhân (actor)
 
 | Tác nhân | Mô tả |
 |---|---|
@@ -22,7 +22,7 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 | Dịch vụ LLM (hệ thống ngoài) | Gemini / Claude / OpenAI: nhận prompt đã che dữ liệu nhạy cảm, trả JSON |
 | Playwright Worker (hệ thống ngoài) | Chạy script kiểm thử tự động trên trình duyệt, trả kết quả và ảnh chụp lỗi |
 
-## 1.2. Danh sách yêu cầu nghiệp vụ
+## 2.2. Danh sách yêu cầu nghiệp vụ
 
 | STT | Tên yêu cầu | Loại yêu cầu | Biểu mẫu | Quy định | Ghi chú |
 |---|---|---|---|---|---|
@@ -45,7 +45,7 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 - **Tính toán:** tạo ra thông tin mới từ thông tin đã có theo quy định, công thức (tỷ lệ pass, số test case còn được thêm, velocity).
 - **Kết xuất:** đưa thông tin ra màn hình, máy in hoặc file theo biểu mẫu.
 
-## 1.3. Biểu mẫu và quy định
+## 2.3. Biểu mẫu và quy định
 
 ### BM1 – User story
 
@@ -137,7 +137,7 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 
 **QĐ11:** Tên đăng nhập 3–30 ký tự `a-z 0-9 _ .`, không trùng. Mật khẩu tối thiểu 8 ký tự. Admin không được tự khóa hoặc tự hạ quyền chính mình.
 
-## 1.4. Bảng trách nhiệm yêu cầu nghiệp vụ
+## 2.4. Bảng trách nhiệm yêu cầu nghiệp vụ
 
 | STT | Nghiệp vụ | Người dùng | Phần mềm | Ghi chú |
 |---|---|---|---|---|
@@ -154,9 +154,9 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 | 11 | YC11 Quản lý người dùng | Nhập thông tin, khóa/mở khóa | Băm mật khẩu, kiểm tra QĐ11 | |
 | 12 | YC12 Quản lý sprint | Tạo sprint (tên, mục tiêu, ngày); đưa story từ backlog vào sprint; ước lượng story point | Kiểm tra QĐ12; tự tính trạng thái DoD của story, velocity, burndown | Hỗ trợ đội làm Scrum |
 
-## 1.5. Yêu cầu chất lượng
+## 2.5. Yêu cầu chất lượng
 
-### 1.5.1. Tính tiến hóa
+### 2.5.1. Tính tiến hóa
 
 | STT | Nghiệp vụ | Tham số cần thay đổi | Miền giá trị cần thay đổi |
 |---|---|---|---|
@@ -165,7 +165,7 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 | 3 | Chạy script tự động | Thời gian chạy tối đa | Framework kiểm thử (thiết kế mở cho WebdriverIO, Cypress) |
 | 4 | Quản lý sprint | Độ dài tối đa sprint | Thang story point |
 
-### 1.5.2. Tính tiện dụng
+### 2.5.2. Tính tiện dụng
 
 | STT | Nghiệp vụ | Mức độ dễ học | Mức độ dễ sử dụng |
 |---|---|---|---|
@@ -173,7 +173,7 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 | 2 | Duyệt | Không cần hướng dẫn | Hàng đợi duyệt, duyệt hàng loạt, huy hiệu số lượng chờ duyệt |
 | 3 | Toàn hệ thống | Giao diện tiếng Việt | Thông báo lỗi bằng tiếng Việt, nêu rõ quy định bị vi phạm |
 
-### 1.5.3. Tính hiệu quả
+### 2.5.3. Tính hiệu quả
 
 | STT | Nghiệp vụ | Tốc độ xử lý | Dung lượng lưu trữ |
 |---|---|---|---|
@@ -182,7 +182,7 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 | 3 | Lập báo cáo | < 2 giây với 10.000 test case | |
 | 4 | Chạy một script tự động | ≤ 60 giây | Ảnh chụp lỗi ~100 KB/lần |
 
-### 1.5.4. Tính tương thích
+### 2.5.4. Tính tương thích
 
 | STT | Nghiệp vụ | Đối tượng liên quan |
 |---|---|---|
@@ -192,9 +192,9 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 | 4 | Trình duyệt | Chrome, Edge, Firefox, Safari bản mới |
 | 5 | LLM | Gemini API, Claude API, OpenAI API (cùng interface `LLMProvider`) |
 
-## 1.6. Yêu cầu hệ thống
+## 2.6. Yêu cầu hệ thống
 
-### 1.6.1. Tính an toàn
+### 2.6.1. Tính an toàn
 
 | STT | Nghiệp vụ | Đối tượng |
 |---|---|---|
@@ -202,7 +202,7 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 | 2 | Hủy thật sự | Xóa user story xóa kèm test case (có xác nhận 2 bước) |
 | 3 | Không cho phép xóa | Test case *Chờ duyệt*/*Đã duyệt*; tài khoản đang đăng nhập không tự khóa |
 
-### 1.6.2. Tính bảo mật
+### 2.6.2. Tính bảo mật
 
 | STT | Nghiệp vụ | Admin | QA Lead | Tester | Developer |
 |---|---|---|---|---|---|
@@ -237,7 +237,7 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 | BM-13 | Nhật ký hoạt động (audit log) cho mọi thao tác ghi: ai, làm gì, đối tượng nào, lúc nào, IP |
 | BM-14 | Ghi rõ chính sách dữ liệu của nhà cung cấp LLM (dùng gói API không dùng dữ liệu để huấn luyện) |
 
-## 1.7. Yêu cầu khác – yêu cầu công nghệ
+## 2.7. Yêu cầu khác – yêu cầu công nghệ
 
 | STT | Yêu cầu | Mô tả chi tiết |
 |---|---|---|

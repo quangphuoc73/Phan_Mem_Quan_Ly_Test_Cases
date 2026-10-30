@@ -73,7 +73,32 @@
 
   <!-- 2 -->
   <section class="slide">
-    <h2>1. Giải pháp: quy trình khép kín, con người kiểm soát AI</h2>
+    <h2>1. Khảo sát hiện trạng: đội QA đang gặp vấn đề gì?</h2>
+    <div class="grid g2" style="flex:1">
+      <div>
+        <ul>
+          <li>Viết test case thủ công trên Excel: <b>30–60 phút / user story</b></li>
+          <li>Dễ sót case lỗi (negative) và case biên (edge)</li>
+          <li>Duyệt qua chat/email, <b>không lưu vết</b> ai duyệt, góp ý gì</li>
+          <li>Nhiều phiên bản file, chạy nhầm test case cũ</li>
+          <li>Không biết user story nào chưa có test case</li>
+          <li>Tổng hợp báo cáo bằng tay mất 1–2 giờ</li>
+          <li>Viết lại test case thành script tự động: <b>làm 2 lần</b></li>
+          <li>Dán dữ liệu khách hàng vào ChatGPT: <b style="color:var(--red)">nguy cơ lộ dữ liệu</b></li>
+        </ul>
+      </div>
+      <div class="card" style="align-self:center">
+        <h3>Mục tiêu</h3>
+        <p>Một hệ thống tập trung quản lý <b>toàn bộ vòng đời test case</b>, trong đó AI tăng tốc khâu viết nháp và tự động hóa, còn <b>con người giữ quyền quyết định</b>.</p>
+        <span class="tag">Quy trình CNPM đầy đủ</span><span class="tag">AI có kiểm soát</span><span class="tag">Bảo mật dữ liệu</span><span class="tag">Kiểm thử tự động</span>
+      </div>
+    </div>
+    <div class="footer"><span>Chương 1 – Khảo sát hiện trạng</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide">
+    <h2>2. Giải pháp: quy trình khép kín, con người kiểm soát AI</h2>
     <div class="flow">
       <div class="step">📝 User story<br><span class="muted" style="font-weight:400">BM1 · QĐ1</span></div><div class="arrow">→</div>
       <div class="step ai">🤖 AI sinh test case<br><span style="font-weight:400">Nháp</span></div><div class="arrow">→</div>
@@ -91,9 +116,9 @@
     <div class="footer"><span>Tổng quan giải pháp</span><span class="pg"></span></div>
   </section>
 
-  <!-- 3 -->
+  <!-- 4 -->
   <section class="slide">
-    <h2>2. Quy trình thực hiện: Agile – Scrum</h2>
+    <h2>3. Quy trình thực hiện: Agile – Scrum</h2>
     <div class="grid g2" style="flex:1">
       <div>
         <div class="flow" style="flex-wrap:wrap">
@@ -103,7 +128,7 @@
           <div class="step">👀 Review + 🔁 Retro</div>
         </div>
         <ul style="margin-top:.6em">
-          <li><b>Mỗi sprint</b> đi qua đủ các hoạt động của môn: yêu cầu → phân tích → thiết kế → cài đặt → kiểm chứng → triển khai</li>
+          <li><b>Mỗi sprint</b> đi qua đủ 7 hoạt động của môn: yêu cầu → phân tích → thiết kế → cài đặt → kiểm chứng → triển khai</li>
           <li>Nhóm 4 người: <b>1 Product Owner, 1 Scrum Master, 4 Developer</b>; Daily Scrum 15 phút mỗi tối; giảng viên dự Sprint Review</li>
           <li><b>Definition of Done</b>: merge qua PR, có test tự động, CI xanh, tài liệu cập nhật, demo được</li>
           <li>Minh chứng: biên bản Planning / Review / Retro, daily log, lịch sử commit</li>
@@ -111,7 +136,7 @@
       </div>
       <table>
         <tr><th>Sprint</th><th>Tuần</th><th>Sprint Goal</th><th>SP</th></tr>
-        <tr><td>1</td><td>1</td><td>Backlog, kiến trúc, CI; đăng nhập, lập user story</td><td>13</td></tr>
+        <tr><td>1</td><td>1</td><td>Khảo sát, backlog, kiến trúc, CI; đăng nhập, lập user story</td><td>13</td></tr>
         <tr><td>2</td><td>2</td><td><b>AI sinh test case an toàn</b> (rủi ro cao nhất, làm sớm); sửa, phiên bản</td><td>22</td></tr>
         <tr><td>3</td><td>3</td><td>Duyệt, chạy test, tra cứu, báo cáo</td><td>18</td></tr>
         <tr><td>4</td><td>4</td><td>Tự động hóa bằng Playwright, quy định</td><td>19</td></tr>
@@ -122,9 +147,9 @@
     <div class="footer"><span>Chương 0A – Quy trình Agile</span><span class="pg"></span></div>
   </section>
 
-  <!-- 4 -->
+  <!-- 5 -->
   <section class="slide">
-    <h2>3. Yêu cầu nghiệp vụ và quy định</h2>
+    <h2>4. Yêu cầu nghiệp vụ và quy định</h2>
     <div class="grid g2" style="flex:1">
       <table>
         <tr><th>Yêu cầu</th><th>BM</th><th>QĐ</th></tr>
@@ -146,12 +171,12 @@
         <div class="card"><b>Tính tiến hóa:</b> mọi con số trên nằm trong bảng <code>parameters</code>, đổi trên giao diện, không sửa mã nguồn</div>
       </div>
     </div>
-    <div class="footer"><span>Chương 1 – Xác định yêu cầu</span><span class="pg"></span></div>
+    <div class="footer"><span>Chương 2 – Xác định yêu cầu</span><span class="pg"></span></div>
   </section>
 
-  <!-- 5 -->
+  <!-- 6 -->
   <section class="slide">
-    <h2>4. Kiến trúc: AI Service là module riêng</h2>
+    <h2>5. Kiến trúc: AI Service là module riêng</h2>
     <pre class="mermaid">
 flowchart LR
     UI["Frontend<br/>HTML/JS"] -- "HTTPS + JWT" --> MW["Middleware<br/>CSP · JWT · RBAC<br/>rate limit · schema"]
@@ -166,12 +191,12 @@ flowchart LR
     SV -- "script đã kiểm tra" --> W[["Playwright Worker<br/>tiến trình cô lập"]]
     W --> AUT[["Web cần test"]]
     </pre>
-    <div class="footer"><span>Chương 3 – Thiết kế</span><span class="pg"></span></div>
+    <div class="footer"><span>Chương 4 – Thiết kế</span><span class="pg"></span></div>
   </section>
 
-  <!-- 6 -->
+  <!-- 7 -->
   <section class="slide">
-    <h2>5. AI sinh test case trong vài giây</h2>
+    <h2>6. AI sinh test case trong vài giây</h2>
     <div class="two">
       <div>
         <ul>
@@ -187,9 +212,9 @@ flowchart LR
     <div class="footer"><span>YC2 – Sinh test case bằng AI</span><span class="pg"></span></div>
   </section>
 
-  <!-- 7 -->
+  <!-- 8 -->
   <section class="slide">
-    <h2>6. Bảo mật khi làm việc với AI</h2>
+    <h2>7. Bảo mật khi làm việc với AI</h2>
     <div class="two">
       <div>
         <ul>
@@ -206,9 +231,9 @@ flowchart LR
     <div class="footer"><span>Yêu cầu bảo mật BM-01 → BM-14</span><span class="pg"></span></div>
   </section>
 
-  <!-- 8 -->
+  <!-- 9 -->
   <section class="slide">
-    <h2>7. Con người kiểm soát: phiên bản và duyệt</h2>
+    <h2>8. Con người kiểm soát: phiên bản và duyệt</h2>
     <div class="grid g2" style="flex:1; align-items:center">
       <img class="shot" src="images/06_lich_su_phien_ban.png" alt="Lịch sử phiên bản">
       <img class="shot" src="images/07_hang_doi_duyet.png" alt="Hàng đợi duyệt">
@@ -217,9 +242,9 @@ flowchart LR
     <div class="footer"><span>YC3, YC4</span><span class="pg"></span></div>
   </section>
 
-  <!-- 9 -->
+  <!-- 10 -->
   <section class="slide">
-    <h2>8. Kiểm thử tự động với Playwright</h2>
+    <h2>9. Kiểm thử tự động với Playwright</h2>
     <div class="two">
       <div>
         <ul>
@@ -236,9 +261,9 @@ flowchart LR
     <div class="footer"><span>YC9 – Sinh và chạy script tự động</span><span class="pg"></span></div>
   </section>
 
-  <!-- 10 -->
+  <!-- 11 -->
   <section class="slide">
-    <h2>9. Báo cáo tự động</h2>
+    <h2>10. Báo cáo tự động</h2>
     <div class="two">
       <div>
         <ul>
@@ -257,7 +282,7 @@ flowchart LR
 
   <!-- 11b -->
   <section class="slide">
-    <h2>10. Hệ thống hỗ trợ đội QA làm Scrum (YC12)</h2>
+    <h2>11. Hệ thống hỗ trợ đội QA làm Scrum (YC12)</h2>
     <div class="two">
       <div>
         <ul>
@@ -274,9 +299,9 @@ flowchart LR
     <div class="footer"><span>YC12 – Agile trong sản phẩm</span><span class="pg"></span></div>
   </section>
 
-  <!-- 11 -->
+  <!-- 12 -->
   <section class="slide">
-    <h2>11. Kiểm chứng: kiểm thử 3 tầng + CI/CD</h2>
+    <h2>12. Kiểm chứng: kiểm thử 3 tầng + CI/CD</h2>
     <div class="grid g2" style="flex:1; align-items:center">
       <div class="pyramid">
         <div style="width:40%;background:#6d28d9">E2E Playwright<br>9/9 pass</div>
@@ -294,17 +319,17 @@ flowchart LR
         </ul>
       </div>
     </div>
-    <div class="footer"><span>Chương 5 – Kiểm chứng</span><span class="pg"></span></div>
+    <div class="footer"><span>Chương 6 – Kiểm chứng</span><span class="pg"></span></div>
   </section>
 
-  <!-- 12 -->
+  <!-- 13 -->
   <section class="slide">
-    <h2>12. Kết luận và hướng phát triển</h2>
+    <h2>13. Kết luận và hướng phát triển</h2>
     <div class="grid g2" style="flex:1">
       <div class="card">
         <h3>Đạt được</h3>
         <ul>
-          <li>Làm theo Scrum: nhóm 4 người, 5 sprint × 1 tuần, mỗi sprint đủ các hoạt động</li>
+          <li>Làm theo Scrum: nhóm 4 người, 5 sprint × 1 tuần, mỗi sprint đủ 7 hoạt động</li>
           <li>Phần mềm chạy được: 12 YC, 14 màn hình, hỗ trợ Scrum</li>
           <li>AI tích hợp bài bản: Strategy, PII, injection, schema, retry, sandbox</li>
           <li>Kiểm thử tự động 3 tầng, Docker, CI</li>
@@ -321,10 +346,10 @@ flowchart LR
         </ul>
       </div>
     </div>
-    <div class="footer"><span>Chương 8</span><span class="pg"></span></div>
+    <div class="footer"><span>Chương 9</span><span class="pg"></span></div>
   </section>
 
-  <!-- 13 -->
+  <!-- 14 -->
   <section class="slide title-slide" style="text-align:center;align-items:center">
     <h1>Cảm ơn thầy cô và các bạn!</h1>
     <p style="font-size:1.3em">Demo trực tiếp · Hỏi đáp</p>

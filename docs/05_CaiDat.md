@@ -1,8 +1,8 @@
-# Chương 4. Cài đặt
+# Chương 5. Cài đặt
 
-> Sản phẩm của giai đoạn: **phần mềm** chạy được, mã nguồn theo đúng thiết kế ở Chương 3.
+> Sản phẩm của giai đoạn: **phần mềm** chạy được, mã nguồn theo đúng thiết kế ở Chương 4.
 
-## 4.1. Công nghệ sử dụng
+## 5.1. Công nghệ sử dụng
 
 | Thành phần | Công nghệ | Lý do chọn |
 |---|---|---|
@@ -18,7 +18,7 @@
 | Triển khai | Docker (image chính thức của Playwright), docker-compose | Môi trường đồng nhất, có sẵn trình duyệt |
 | CI/CD | GitHub Actions | Tự động test và build mỗi lần push |
 
-## 4.2. Cấu trúc thư mục
+## 5.2. Cấu trúc thư mục
 
 ```text
 NhapMonCongNghePhanMem/
@@ -46,13 +46,13 @@ NhapMonCongNghePhanMem/
 │   └── specs/
 │       ├── samples/              # Bộ test viết tay mẫu cho Sauce Demo
 │       └── generated/            # File tạm khi hệ thống chạy script do AI sinh
-├── docs/                         # Tài liệu đồ án (chương 0–8), báo cáo HTML, slide
+├── docs/                         # Tài liệu đồ án (chương 0–9), báo cáo HTML, slide
 ├── .github/workflows/ci.yml      # CI/CD
 ├── Dockerfile, docker-compose.yml
 └── README.md
 ```
 
-## 4.3. Ánh xạ yêu cầu – mã nguồn
+## 5.3. Ánh xạ yêu cầu – mã nguồn
 
 | Yêu cầu | Service / module | Route | Màn hình |
 |---|---|---|---|
@@ -69,7 +69,7 @@ NhapMonCongNghePhanMem/
 | YC11 | `routes/admin.js` | `/api/users`, `/api/projects` | Người dùng, Dự án |
 | YC12 | `sprintService.list/create/update/burndown/storyProgress` | `/api/projects/:id/sprints`, `/api/sprints/:id/*` | `pages/sprints.js` |
 
-## 4.4. Một số điểm cài đặt đáng chú ý
+## 5.4. Một số điểm cài đặt đáng chú ý
 
 **Strategy pattern cho LLM** – `src/services/ai/providers/`:
 
@@ -100,7 +100,7 @@ while (attempts <= maxRetry) {
 
 **MockProvider** – sinh test case theo luật (mỗi acceptance criterion một case Positive; tiêu chí có từ khóa "bắt buộc/tối đa/hết hạn…" sinh thêm case Negative; tiêu chí có số + đơn vị như "10 MB" sinh case biên). Giúp demo chạy được khi không có mạng hoặc API key, và giúp test tự động ổn định.
 
-## 4.5. Quy ước và quản lý mã nguồn
+## 5.5. Quy ước và quản lý mã nguồn
 
 - Đặt tên: `camelCase` cho biến/hàm, `PascalCase` cho lớp, `snake_case` cho cột CSDL, `UPPER_CASE` cho tham số quy định.
 - Comment tiếng Việt, ghi rõ YC/QĐ liên quan ngay tại chỗ hiện thực.
@@ -108,7 +108,7 @@ while (attempts <= maxRetry) {
 - Commit theo dạng: `feat(yc2): sinh test case bằng AI`, `fix(qd4): bắt buộc ghi chú khi trả lại`, `test(e2e): luồng duyệt`.
 - Không commit `.env`, CSDL, báo cáo test (`.gitignore`).
 
-## 4.6. Hướng dẫn cài đặt môi trường phát triển
+## 5.6. Hướng dẫn cài đặt môi trường phát triển
 
 ```bash
 cd app
