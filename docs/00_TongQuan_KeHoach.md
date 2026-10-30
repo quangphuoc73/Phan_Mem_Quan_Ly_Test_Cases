@@ -14,14 +14,23 @@
 
 ## 0.2. Lý do chọn đề tài
 
-Trong các đội kiểm thử phần mềm hiện nay, test case vẫn chủ yếu được viết thủ công trên Excel/Google Sheets:
+Đề tài xuất phát từ công việc thường ngày của một đội kiểm thử, đặc biệt ở khâu kiểm thử tự động:
 
-- Tốn thời gian: một user story trung bình cần 30–60 phút để viết đủ test case.
-- Dễ bỏ sót case lỗi và case biên, nhất là khi deadline gấp.
-- Khó theo dõi ai đã duyệt, phiên bản nào là bản mới nhất, test case nào đã chạy.
-- Việc chuyển test case thủ công thành script tự động tiếp tục tốn thêm thời gian.
+- **Một kịch bản kiểm thử được viết hai lần.** Test case được viết bằng chữ trong file Excel, sau đó Automation Tester đọc lại từng dòng và viết lại chính các bước, kết quả mong đợi đó bằng code. Hai bản nằm ở hai nơi nên dễ lệch nhau.
+- **Script vẫn báo Pass trong khi chức năng đã sai.** Khi yêu cầu thay đổi, file Excel được sửa nhưng script thì không, vì không có gì nối hai thứ này với nhau.
+- **Dùng AI không có kiểm soát.** Để kịp tiến độ, nhiều người dán cả dữ liệu nội bộ (user story, URL, tài khoản test) vào ChatGPT. Không ai biết dữ liệu đã gửi đi đâu; còn nếu cấm hẳn AI thì đội lại chậm như cũ.
+- **Báo cáo phải đối chiếu bằng tay.** Muốn biết test case nào đã có script, tỷ lệ pass bao nhiêu, phải so từng file Excel với thư mục code.
 
-Các mô hình ngôn ngữ lớn (LLM) có thể sinh bản nháp test case trong vài giây. Tuy vậy AI có thể sinh sai, nên cần **một quy trình có con người kiểm soát**: AI sinh, Tester sửa, QA Lead duyệt, có lưu vết. Đề tài xây dựng hệ thống quản lý test case khép kín theo đúng quy trình đó.
+Vấn đề không nằm ở công cụ automation. Vấn đề là **test case, script và kết quả chạy nằm ở ba nơi, không nối với nhau**. Vì vậy nhóm xây dựng hệ thống quản lý test case, trong đó:
+
+- **AI viết nháp** test case và script, **con người sửa và duyệt**, mọi thay đổi đều được lưu vết;
+- script được sinh từ **đúng test case đã duyệt**;
+- dữ liệu nhạy cảm **được che trước khi gửi AI**;
+- báo cáo **tự động**, không cần đối chiếu tay.
+
+> **AI giúp làm nhanh hơn, còn phần mềm giúp làm đúng và an toàn.**
+
+Ở đồ án môn học này, AI chỉ được dùng ở mức **gọi API** của nhà cung cấp (hoặc chế độ giả lập khi không có mạng). AI chỉ hỗ trợ 2 trong 12 yêu cầu (YC2, YC9); các yêu cầu còn lại là nghiệp vụ quản lý, vẫn chạy đủ khi tắt AI. Hệ thống đã lưu bản AI gốc, bản người sửa, quyết định duyệt và kết quả chạy, nên là nền móng để phát triển AI chuyên sâu ở các môn học sau ([Chương 9](09_HuongPhatTrien.md)).
 
 ## 0.3. Mục tiêu
 
