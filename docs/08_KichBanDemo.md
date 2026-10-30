@@ -16,7 +16,7 @@
 
 | # | Thời gian | Thao tác | Lời dẫn gợi ý | Điểm nhấn |
 |---|---|---|---|---|
-| 1 | 0:00 | Mở slide, trình bày vấn đề | "Một kịch bản kiểm thử được viết hai lần: bằng chữ trong Excel và bằng code trong script, hai bản nằm ở hai nơi. Yêu cầu đổi, Excel sửa nhưng script không, nên script vẫn báo Pass trong khi chức năng đã sai. Nhiều người dán dữ liệu nội bộ vào ChatGPT. Vấn đề là test case, script và kết quả chạy nằm ở ba nơi, không nối với nhau. AI giúp làm nhanh hơn, còn phần mềm giúp làm đúng và an toàn." | Lý do chọn đề tài |
+| 1 | 0:00 | Mở slide, trình bày vấn đề | "Viết test case thủ công mất 30–60 phút/story, dễ sót case lỗi, duyệt qua chat không lưu vết." | Khảo sát hiện trạng |
 | 2 | 1:00 | Đăng nhập **tester** → *Tổng quan* | "Hệ thống quản lý cả vòng đời test case, báo cáo tự động." | 4 chỉ số, biểu đồ |
 | 2b | 1:15 | Chọn dự án **PETINS** → *Sprint (Agile)*: Sprint Goal, bảng 4 cột, burndown, velocity | "Nhóm em làm đồ án theo Scrum, và hệ thống cũng hỗ trợ đội QA làm Scrum: story chỉ tính Hoàn thành khi mọi test case đã duyệt đều Pass." | **Agile** |
 | 3 | 1:30 | *User story* → *Lập user story* trực tiếp, ví dụ "Hủy hợp đồng bảo hiểm" với 3 acceptance criteria | "Đây là BM1, có QĐ1: mã không trùng, ít nhất 1 tiêu chí." | Biểu mẫu, quy định |

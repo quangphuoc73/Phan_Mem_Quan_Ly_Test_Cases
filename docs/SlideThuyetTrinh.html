@@ -73,29 +73,27 @@
 
   <!-- 2 -->
   <section class="slide">
-    <h2>1. Vì sao chọn đề tài: test case, script và kết quả nằm ở ba nơi</h2>
+    <h2>1. Khảo sát hiện trạng: đội QA đang gặp vấn đề gì?</h2>
     <div class="grid g2" style="flex:1">
       <div>
         <ul>
-          <li>Một kịch bản kiểm thử được <b>viết hai lần</b>: bằng chữ trong Excel, bằng code trong script, <b>nằm ở hai nơi</b></li>
-          <li>Yêu cầu đổi, Excel sửa nhưng script không: <b>script vẫn Pass, chức năng đã sai</b></li>
-          <li>Dán dữ liệu nội bộ vào ChatGPT cho nhanh: <b style="color:var(--red)">không ai kiểm soát</b>; cấm AI thì lại chậm</li>
-          <li>Muốn biết test case nào có script, tỷ lệ pass bao nhiêu: <b>đối chiếu bằng tay</b></li>
+          <li>Viết test case thủ công trên Excel: <b>30–60 phút / user story</b></li>
+          <li>Dễ sót case lỗi (negative) và case biên (edge)</li>
+          <li>Duyệt qua chat/email, <b>không lưu vết</b> ai duyệt, góp ý gì</li>
+          <li>Nhiều phiên bản file, chạy nhầm test case cũ</li>
+          <li>Không biết user story nào chưa có test case</li>
+          <li>Tổng hợp báo cáo bằng tay mất 1–2 giờ</li>
+          <li>Viết lại test case thành script tự động: <b>làm 2 lần</b></li>
+          <li>Dán dữ liệu khách hàng vào ChatGPT: <b style="color:var(--red)">nguy cơ lộ dữ liệu</b></li>
         </ul>
-        <p class="muted" style="margin-top:.6em">Vấn đề không nằm ở công cụ automation, mà ở chỗ <b>không có gì nối test case, script và kết quả chạy</b>.</p>
       </div>
       <div class="card" style="align-self:center">
-        <h3>Giải pháp của nhóm</h3>
-        <ul>
-          <li><b>AI viết nháp</b> test case và script, <b>con người sửa và duyệt</b></li>
-          <li>Script sinh từ <b>đúng test case đã duyệt</b></li>
-          <li>Che dữ liệu nhạy cảm <b>trước khi gửi AI</b></li>
-          <li>Báo cáo <b>tự động</b></li>
-        </ul>
-        <p style="margin-top:.6em;font-size:1.1em"><b>AI giúp làm nhanh hơn, phần mềm giúp làm đúng và an toàn.</b></p>
+        <h3>Mục tiêu</h3>
+        <p>Một hệ thống tập trung quản lý <b>toàn bộ vòng đời test case</b>, trong đó AI tăng tốc khâu viết nháp và tự động hóa, còn <b>con người giữ quyền quyết định</b>.</p>
+        <span class="tag">Quy trình CNPM đầy đủ</span><span class="tag">AI có kiểm soát</span><span class="tag">Bảo mật dữ liệu</span><span class="tag">Kiểm thử tự động</span>
       </div>
     </div>
-    <div class="footer"><span>Chương 0 – Lý do chọn đề tài</span><span class="pg"></span></div>
+    <div class="footer"><span>Chương 1 – Khảo sát hiện trạng</span><span class="pg"></span></div>
   </section>
 
   <!-- 3 -->

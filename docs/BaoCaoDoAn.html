@@ -85,24 +85,14 @@
 </tr>
 </tbody></table>
 <h2>0.2. Lý do chọn đề tài</h2>
-<p>Đề tài xuất phát từ công việc thường ngày của một đội kiểm thử, đặc biệt ở khâu kiểm thử tự động:</p>
+<p>Trong các đội kiểm thử phần mềm hiện nay, test case vẫn chủ yếu được viết thủ công trên Excel/Google Sheets:</p>
 <ul>
-<li><strong>Một kịch bản kiểm thử được viết hai lần.</strong> Test case được viết bằng chữ trong file Excel, sau đó Automation Tester đọc lại từng dòng và viết lại chính các bước, kết quả mong đợi đó bằng code. Hai bản nằm ở hai nơi nên dễ lệch nhau.</li>
-<li><strong>Script vẫn báo Pass trong khi chức năng đã sai.</strong> Khi yêu cầu thay đổi, file Excel được sửa nhưng script thì không, vì không có gì nối hai thứ này với nhau.</li>
-<li><strong>Dùng AI không có kiểm soát.</strong> Để kịp tiến độ, nhiều người dán cả dữ liệu nội bộ (user story, URL, tài khoản test) vào ChatGPT. Không ai biết dữ liệu đã gửi đi đâu; còn nếu cấm hẳn AI thì đội lại chậm như cũ.</li>
-<li><strong>Báo cáo phải đối chiếu bằng tay.</strong> Muốn biết test case nào đã có script, tỷ lệ pass bao nhiêu, phải so từng file Excel với thư mục code.</li>
+<li>Tốn thời gian: một user story trung bình cần 30–60 phút để viết đủ test case.</li>
+<li>Dễ bỏ sót case lỗi và case biên, nhất là khi deadline gấp.</li>
+<li>Khó theo dõi ai đã duyệt, phiên bản nào là bản mới nhất, test case nào đã chạy.</li>
+<li>Việc chuyển test case thủ công thành script tự động tiếp tục tốn thêm thời gian.</li>
 </ul>
-<p>Vấn đề không nằm ở công cụ automation. Vấn đề là <strong>test case, script và kết quả chạy nằm ở ba nơi, không nối với nhau</strong>. Vì vậy nhóm xây dựng hệ thống quản lý test case, trong đó:</p>
-<ul>
-<li><strong>AI viết nháp</strong> test case và script, <strong>con người sửa và duyệt</strong>, mọi thay đổi đều được lưu vết;</li>
-<li>script được sinh từ <strong>đúng test case đã duyệt</strong>;</li>
-<li>dữ liệu nhạy cảm <strong>được che trước khi gửi AI</strong>;</li>
-<li>báo cáo <strong>tự động</strong>, không cần đối chiếu tay.</li>
-</ul>
-<blockquote>
-<p><strong>AI giúp làm nhanh hơn, còn phần mềm giúp làm đúng và an toàn.</strong></p>
-</blockquote>
-<p>Ở đồ án môn học này, AI chỉ được dùng ở mức <strong>gọi API</strong> của nhà cung cấp (hoặc chế độ giả lập khi không có mạng). AI chỉ hỗ trợ 2 trong 12 yêu cầu (YC2, YC9); các yêu cầu còn lại là nghiệp vụ quản lý, vẫn chạy đủ khi tắt AI. Hệ thống đã lưu bản AI gốc, bản người sửa, quyết định duyệt và kết quả chạy, nên là nền móng để phát triển AI chuyên sâu ở các môn học sau (<a href="#ch-09">Chương 9</a>).</p>
+<p>Các mô hình ngôn ngữ lớn (LLM) có thể sinh bản nháp test case trong vài giây. Tuy vậy AI có thể sinh sai, nên cần <strong>một quy trình có con người kiểm soát</strong>: AI sinh, Tester sửa, QA Lead duyệt, có lưu vết. Đề tài xây dựng hệ thống quản lý test case khép kín theo đúng quy trình đó.</p>
 <h2>0.3. Mục tiêu</h2>
 <ol>
 <li>Xây dựng phần mềm quản lý vòng đời test case: <strong>User story → AI sinh test case → Tester chỉnh sửa → QA Lead duyệt → Chạy test (thủ công/tự động bằng Playwright) → Báo cáo</strong>.</li>
@@ -5775,8 +5765,8 @@ npm install
 <td>1</td>
 <td>0:00</td>
 <td>Mở slide, trình bày vấn đề</td>
-<td>&quot;Một kịch bản kiểm thử được viết hai lần: bằng chữ trong Excel và bằng code trong script, hai bản nằm ở hai nơi. Yêu cầu đổi, Excel sửa nhưng script không, nên script vẫn báo Pass trong khi chức năng đã sai. Nhiều người dán dữ liệu nội bộ vào ChatGPT. Vấn đề là test case, script và kết quả chạy nằm ở ba nơi, không nối với nhau. AI giúp làm nhanh hơn, còn phần mềm giúp làm đúng và an toàn.&quot;</td>
-<td>Lý do chọn đề tài</td>
+<td>&quot;Viết test case thủ công mất 30–60 phút/story, dễ sót case lỗi, duyệt qua chat không lưu vết.&quot;</td>
+<td>Khảo sát hiện trạng</td>
 </tr>
 <tr>
 <td>2</td>
