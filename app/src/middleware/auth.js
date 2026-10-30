@@ -24,6 +24,7 @@ const PERMISSIONS = {
   'testcase:review': ['QA_LEAD'], // QĐ4: chỉ QA Lead được duyệt
   'ai:use': ['QA_LEAD', 'TESTER'],
   'run:write': ['QA_LEAD', 'TESTER'],
+  'bug:fix': ['DEVELOPER'], // YC13: báo đã sửa lỗi để Tester kiểm thử lại
   'ailog:view': ['ADMIN', 'QA_LEAD', 'TESTER'],
 };
 

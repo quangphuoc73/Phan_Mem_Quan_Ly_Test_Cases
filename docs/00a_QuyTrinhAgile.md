@@ -82,9 +82,10 @@ Bản dạng CSV để nhập vào Jira/Trello: [`docs/agile/ProductBacklog.csv`
 | PB-23 | User story | Là Tester, tôi muốn nhập user story từ file CSV, để không gõ lại từ Jira | 3 | Should | 5 | YC8 |
 | PB-24 | Thực thi & báo cáo | Là QA Lead, tôi muốn xuất test case ra Excel, để gửi cho khách hàng | 2 | Should | 5 | YC8 |
 | PB-25 | Triển khai | Là Admin, tôi muốn triển khai bằng Docker, để cài đặt nhanh và đồng nhất | 3 | Should | 5 | – |
-| PB-26 | Tích hợp | Là Tester, tôi muốn đồng bộ 2 chiều với Jira, để không nhập tay | 8 | Won't (bản này) | – | – |
-| PB-27 | AI nâng cao | Là Tester, tôi muốn AI dùng tài liệu nghiệp vụ (RAG), để test case sát thực tế hơn | 13 | Won't (bản này) | – | – |
-| PB-28 | AI nâng cao | Là Tester, tôi muốn script tự sửa locator khi giao diện đổi (self-healing) | 13 | Won't (bản này) | – | – |
+| PB-26 | Thực thi & báo cáo | Là Developer, tôi muốn báo đã sửa lỗi kèm bản build, để Tester biết test case nào cần kiểm thử lại | 3 | Should | 4 | YC13 |
+| PB-27 | Tích hợp | Là Tester, tôi muốn đồng bộ 2 chiều với Jira, để không nhập tay | 8 | Won't (bản này) | – | – |
+| PB-28 | AI nâng cao | Là Tester, tôi muốn AI dùng tài liệu nghiệp vụ (RAG), để test case sát thực tế hơn | 13 | Won't (bản này) | – | – |
+| PB-29 | AI nâng cao | Là Tester, tôi muốn script tự sửa locator khi giao diện đổi (self-healing) | 13 | Won't (bản này) | – | – |
 
 **Hạng mục kỹ thuật** (không phải user story, làm đầu Sprint 1 và duy trì suốt dự án): dựng repo Git, cấu trúc thư mục, CI trên GitHub Actions, khung test (unit, API, E2E Playwright), dữ liệu mẫu.
 
@@ -113,7 +114,7 @@ gantt
 | 1 | 1 | "Hiểu bài toán; người dùng đăng nhập theo vai trò và lập được user story" | Khảo sát, Product Backlog, kiến trúc sơ bộ, repo + CI; PB-01 (3), PB-02 (3), PB-03 (2), PB-04 (3), PB-05 (2) | 13 | Ch.0A, Ch.1, Ch.2 (bản đầu); UC01–UC04, DFD YC1, ERD v1, MH01–MH04 |
 | 2 | 2 | "AI sinh được test case an toàn từ user story; test case được sửa và lưu phiên bản" | PB-06 (8), PB-07 (3), PB-08 (3), PB-10 (3), PB-11 (5) | 22 | UC06, UC07, DFD YC2, YC3, sequence sinh test case, thiết kế prompt, class Strategy |
 | 3 | 3 | "Test case được duyệt, chạy thủ công và QA Lead xem được báo cáo" | PB-09 (2), PB-12 (2), PB-13 (3), PB-14 (3), PB-15 (3), PB-16 (5) | 18 | UC08–UC10, UC13, UC15, sơ đồ trạng thái, DFD YC4–YC7 |
-| 4 | 4 | "Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được" | PB-17 (3), PB-18 (5), PB-19 (8), PB-20 (3) | 19 | UC11, UC12, UC16, DFD YC9, YC10, sequence YC9, thiết kế sandbox, bảng tham số |
+| 4 | 4 | "Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được; Developer báo đã sửa lỗi" | PB-17 (3), PB-18 (5), PB-19 (8), PB-20 (3), PB-26 (3) | 22 | UC11, UC12, UC16, DFD YC9, YC10, sequence YC9, thiết kế sandbox, bảng tham số |
 | 5 | 5 | "Đội làm Scrum lập kế hoạch sprint ngay trong hệ thống; sẵn sàng bàn giao và bảo vệ" | PB-21 (5), PB-22 (3), PB-23 (3), PB-24 (2), PB-25 (3) | 16 | DFD YC8, YC11, YC12; Ch.6 tổng kết, Ch.7, slide, video demo; bảo vệ cuối tuần |
 
 ## 0A.6. Definition of Ready và Definition of Done
@@ -163,7 +164,7 @@ Agile không bỏ các hoạt động của thác nước mà **làm chúng cho 
 | Hoạt động (chương) | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 | Sprint 5 |
 |---|---|---|---|---|---|
 | Khảo sát (Ch.1) | ●●● | ● (Review) | ● | ● | ● |
-| Yêu cầu (Ch.2) | ●● YC tổng quát, YC1, YC11 | ● YC2, YC3 | ● YC4, 5, 6, 7 | ● YC9, YC10 | ● YC8, YC12 |
+| Yêu cầu (Ch.2) | ●● YC tổng quát, YC1, YC11 | ● YC2, YC3 | ● YC4, 5, 6, 7 | ● YC9, YC10, YC13 | ● YC8, YC12 |
 | Phân tích (Ch.3) | ● UC01–04 | ● UC06, 07 | ● UC08–10, 13, 15 | ● UC11, 12, 16 | ● UC05, 14, 19 |
 | Thiết kế (Ch.4) | ● kiến trúc, ERD v1 | ● AI Service, class | ● trạng thái | ● sandbox, bảng tham số | ● sprint |
 | Cài đặt (Ch.5) | ● khung dự án | ● | ● | ● | ● |

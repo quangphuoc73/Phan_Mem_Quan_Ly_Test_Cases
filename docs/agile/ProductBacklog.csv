@@ -24,6 +24,7 @@ PB-22,Story,Agile,"Là QA Lead, tôi muốn xem burndown và velocity, để bi�
 PB-23,Story,User story,"Là Tester, tôi muốn nhập user story từ file CSV, để không gõ lại từ Jira",3,Should,Sprint 5,YC8
 PB-24,Story,Thực thi & báo cáo,"Là QA Lead, tôi muốn xuất test case ra Excel, để gửi cho khách hàng",2,Should,Sprint 5,YC8
 PB-25,Story,Triển khai,"Là Admin, tôi muốn triển khai bằng Docker, để cài đặt nhanh và đồng nhất",3,Should,Sprint 5,–
-PB-26,Story,Tích hợp,"Là Tester, tôi muốn đồng bộ 2 chiều với Jira, để không nhập tay",8,Won't (bản này),,–
-PB-27,Story,AI nâng cao,"Là Tester, tôi muốn AI dùng tài liệu nghiệp vụ (RAG), để test case sát thực tế hơn",13,Won't (bản này),,–
-PB-28,Story,AI nâng cao,"Là Tester, tôi muốn script tự sửa locator khi giao diện đổi (self-healing)",13,Won't (bản này),,–
+PB-26,Story,Thực thi & báo cáo,"Là Developer, tôi muốn báo đã sửa lỗi kèm bản build, để Tester biết test case nào cần kiểm thử lại",3,Should,Sprint 4,YC13
+PB-27,Story,Tích hợp,"Là Tester, tôi muốn đồng bộ 2 chiều với Jira, để không nhập tay",8,Won't (bản này),,–
+PB-28,Story,AI nâng cao,"Là Tester, tôi muốn AI dùng tài liệu nghiệp vụ (RAG), để test case sát thực tế hơn",13,Won't (bản này),,–
+PB-29,Story,AI nâng cao,"Là Tester, tôi muốn script tự sửa locator khi giao diện đổi (self-healing)",13,Won't (bản này),,–

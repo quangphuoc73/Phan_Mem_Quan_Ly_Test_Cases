@@ -1,20 +1,22 @@
 // Kết quả chạy test, thay đổi quy định (YC10), nhật ký AI, quản trị người dùng/dự án, audit log.
 import { state, api, esc, can, pill, fmtDate, toast, toastError, modal, bind, busy, formData, options, LABEL } from '../core.js';
-import { openTestCase } from './testcases.js';
+import { openTestCase, fixCell, openFixForm } from './testcases.js';
 import { refreshProjects } from '../main.js';
 
 export async function renderRuns(page) {
   const list = await api(`/runs${state.projectId ? `?project_id=${state.projectId}` : ''}`);
   page.innerHTML = `
-    <div class="page-head"><div><h1>Kết quả chạy test</h1><p>100 lần chạy gần nhất (thủ công và tự động)</p></div></div>
+    <div class="page-head"><div><h1>Kết quả chạy test</h1><p>100 lần chạy gần nhất (thủ công và tự động)${can('bug:fix') ? '. Sửa xong lỗi thì bấm <b>🔧 Báo đã sửa</b> để Tester kiểm thử lại' : ''}</p></div></div>
     <div class="table-wrap"><table>
-      <thead><tr><th>Thời gian</th><th>Test case</th><th>User story</th><th>Kết quả</th><th>Hình thức</th><th>Ghi chú</th><th>Người chạy</th></tr></thead>
+      <thead><tr><th>Thời gian</th><th>Test case</th><th>User story</th><th>Kết quả</th><th>Hình thức</th><th>Ghi chú</th><th>Người chạy</th><th>Sửa lỗi</th></tr></thead>
       <tbody>${list.map((r) => `<tr class="clickable" data-tc="${r.test_case_id}"><td class="small">${fmtDate(r.executed_at)}</td>
         <td><span class="mono">${esc(r.tc_code)}</span><div class="small muted">${esc(r.tc_title)}</div></td><td>${esc(r.story_code)}</td>
-        <td>${pill(r.result)}</td><td>${pill(r.run_type)}</td><td class="small">${esc(r.note || '')}</td><td>${esc(r.executed_by_name || '')}</td></tr>`).join('')
-        || '<tr><td colspan="7" class="empty">Chưa có lần chạy nào</td></tr>'}</tbody>
+        <td>${pill(r.result)}</td><td>${pill(r.run_type)}</td><td class="small">${esc(r.note || '')}</td><td>${esc(r.executed_by_name || '')}</td>
+        <td data-nocl>${fixCell(r)}</td></tr>`).join('')
+        || '<tr><td colspan="8" class="empty">Chưa có lần chạy nào</td></tr>'}</tbody>
     </table></div>`;
-  bind(page, 'tr[data-tc]', 'click', (_e, tr) => openTestCase(Number(tr.dataset.tc), () => renderRuns(page)));
+  bind(page, 'tr[data-tc]', 'click', (e, tr) => !e.target.closest('[data-nocl]') && openTestCase(Number(tr.dataset.tc), () => renderRuns(page)));
+  bind(page, '[data-fix]', 'click', (_e, b) => openFixForm(list.find((r) => r.id === Number(b.dataset.fix)), () => renderRuns(page)));
 }
 
 export async function renderParams(page) {

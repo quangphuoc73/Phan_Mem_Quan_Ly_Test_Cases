@@ -154,7 +154,12 @@ CREATE TABLE IF NOT EXISTS test_runs (
   screenshot   TEXT,
   duration_ms  INTEGER,
   executed_by  INTEGER REFERENCES users(id),
-  executed_at  TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
+  executed_at  TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
+  -- BM11: Developer báo đã sửa lỗi của lần chạy Fail này (YC13); lần chạy mới hơn thì hết cần kiểm thử lại
+  fix_build    TEXT,
+  fix_note     TEXT,
+  fixed_by     INTEGER REFERENCES users(id),
+  fixed_at     TEXT
 );
 
 -- Bảng THAM SỐ: lưu quy định để thay đổi được (tính tiến hóa – YC10)

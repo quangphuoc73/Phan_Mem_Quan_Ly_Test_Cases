@@ -16,7 +16,8 @@ Sơ đồ được vẽ bằng **draw.io** theo ký hiệu UML (file gốc: `doc
 | Đường thẳng | Tác nhân thực hiện use case |
 | Mũi tên tam giác rỗng | **Tổng quát hóa**: tác nhân con có mọi use case của tác nhân cha |
 
-- **Người dùng** là tác nhân chung: mọi vai trò đều đăng nhập, tra cứu test case, xuất Excel và xem báo cáo. Admin, PO/BA, Developer, Tester tổng quát hóa thành Người dùng; Developer chỉ có các use case này.
+- **Người dùng** là tác nhân chung: mọi vai trò đều đăng nhập, tra cứu test case, xuất Excel, xem báo cáo và xem kết quả chạy test. Admin, PO/BA, Developer, Tester tổng quát hóa thành Người dùng.
+- **Developer** xem kết quả chạy (log, ảnh chụp lỗi) để tái hiện lỗi, sửa xong thì **báo đã sửa lỗi** (UC21) kèm bản build; test case chuyển sang *Cần kiểm thử lại* cho Tester.
 - **PO / BA** lập, nhập user story (UC04, UC05) và lập kế hoạch sprint (UC19); không viết, duyệt, chạy test case và không gọi AI.
 - **QA Lead** tổng quát hóa thành **Tester**: có toàn bộ quyền của Tester, thêm quyền duyệt test case (UC09), thay đổi quy định (UC16), xem nhật ký hoạt động (UC18) và quản lý sprint (UC19).
 - Ở UC19, Tester chỉ đưa story vào sprint và xem bảng sprint; tạo, sửa sprint do PO/BA, QA Lead, Admin thực hiện.
@@ -46,6 +47,8 @@ Sơ đồ được vẽ bằng **draw.io** theo ký hiệu UML (file gốc: `doc
 | UC17 | Xem nhật ký AI | Tester, QA Lead, Admin | Truy vết |
 | UC18 | Xem nhật ký hoạt động | Admin, QA Lead | Bảo mật |
 | UC19 | Quản lý sprint: tạo sprint, đưa story từ backlog vào sprint, xem bảng sprint, burndown, velocity | PO/BA, QA Lead, Admin (Tester: đưa story vào sprint, xem) | YC12 |
+| UC20 | Xem kết quả chạy test (log, ảnh chụp lỗi, ghi chú mã bug) | Tất cả | YC5 |
+| UC21 | Báo đã sửa lỗi kèm bản build để Tester kiểm thử lại | Developer | YC13 |
 
 ## 3.3. Đặc tả các use case chính
 
@@ -113,6 +116,17 @@ Sơ đồ được vẽ bằng **draw.io** theo ký hiệu UML (file gốc: `doc
 | Luồng chính | 1. Mở **Sprint (Agile)**, bấm **Tạo sprint**, nhập tên, Sprint Goal, ngày bắt đầu/kết thúc.<br>2. Hệ thống kiểm tra QĐ12 (độ dài, không trùng thời gian) và lưu.<br>3. Trong mục **Product backlog**, chọn sprint cho từng story và bấm **Đưa vào**.<br>4. Hệ thống kiểm tra story và sprint cùng dự án, cập nhật.<br>5. Bảng sprint hiển thị story theo 4 cột: *Cần viết test case → Đang soạn/chờ duyệt → Đang kiểm thử → Hoàn thành (DoD)*, cùng burndown và velocity. |
 | Luồng ngoại lệ | 2a. Sprint dài quá giới hạn hoặc trùng thời gian → báo lỗi.<br>1a. Tester không có nút Tạo sprint; gọi trực tiếp API → 403. |
 | Quy định | QĐ12 |
+
+### UC21 – Báo đã sửa lỗi
+
+| Mục | Nội dung |
+|---|---|
+| Tác nhân | Developer |
+| Tiền điều kiện | Đã đăng nhập, có quyền `bug:fix`; test case có lần chạy gần nhất là *Fail* |
+| Hậu điều kiện | Lần chạy được ghi bản build, ghi chú, người báo, ngày báo (BM11); test case ở trạng thái *Cần kiểm thử lại*; ghi audit log `REPORT_FIX` |
+| Luồng chính | 1. Mở **Kết quả chạy test** (hoặc tab *Chạy test* của test case), xem ghi chú, log, ảnh chụp lỗi để tái hiện.<br>2. Sửa lỗi, bấm **🔧 Báo đã sửa** ở lần chạy Fail, nhập bản build và ghi chú.<br>3. Hệ thống kiểm tra QĐ13, lưu, báo thành công.<br>4. Tester lọc **Cần kiểm thử lại** ở *Tra cứu test case*, chạy lại trên bản build mới; lần chạy mới làm test case hết trạng thái này. |
+| Luồng ngoại lệ | 3a. Thiếu bản build → báo lỗi.<br>3b. Lần chạy không phải *Fail*, không phải lần gần nhất hoặc đã được báo sửa → báo lỗi.<br>2a. Vai trò khác không có nút; gọi trực tiếp API → 403. |
+| Quy định | QĐ13 |
 
 ### UC01 – Đăng nhập
 
@@ -519,7 +533,37 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 - B11: Đóng kết nối cơ sở dữ liệu.
 - B12: Kết thúc.
 
-### 3.4.15. Sơ đồ phối hợp giữa các công việc
+### 3.4.15. DFD YC13 – Báo đã sửa lỗi và kiểm thử lại
+
+![DFD YC13 – Báo đã sửa lỗi và kiểm thử lại](dfd/YC13_BaoDaSuaLoi.svg)
+
+*Biểu mẫu:* BM11 · *Quy định:* QĐ13 · *File:* `docs/dfd/YC13_BaoDaSuaLoi.drawio`
+
+| Luồng | Mô tả |
+|---|---|
+| D1 | Lần chạy Fail được chọn, bản build đã sửa, ghi chú cho Tester (BM11). |
+| D2 | Không có |
+| D3 | Kết quả của lần chạy; lần chạy gần nhất của test case; thông tin đã báo sửa trước đó. |
+| D4 | Bản build, ghi chú, người báo, thời điểm báo sửa của lần chạy; nhật ký hoạt động. |
+| D5 | Không có |
+| D6 | Thông báo đã báo sửa, test case chuyển sang Cần kiểm thử lại; hoặc thông báo lỗi vi phạm QĐ13. |
+
+**Thuật toán:**
+
+- B1: Nhận D1 từ người dùng.
+- B2: Kết nối cơ sở dữ liệu.
+- B3: Đọc D3 từ bộ nhớ phụ.
+- B4: Kiểm tra người báo có vai trò Developer? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B5: Kiểm tra bản build được nhập (1–50 ký tự)? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B6: Kiểm tra lần chạy có kết quả Fail? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B7: Kiểm tra đây là lần chạy gần nhất của test case? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B8: Kiểm tra lần chạy chưa được báo sửa? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.
+- B9: Lưu D4 xuống bộ nhớ phụ.
+- B10: Xuất D6 cho người dùng.
+- B11: Đóng kết nối cơ sở dữ liệu.
+- B12: Kết thúc.
+
+### 3.4.16. Sơ đồ phối hợp giữa các công việc
 
 ![Sơ đồ phối hợp giữa các công việc](dfd/PhoiHop_CacCongViec.svg)
 
@@ -535,6 +579,8 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 | YC4 – Duyệt test case | test case Bị trả lại + ghi chú | YC3 – Soạn thảo, gửi duyệt |
 | YC4 – Duyệt test case | test case Đã duyệt | YC5 – Ghi nhận kết quả |
 | YC4 – Duyệt test case | test case Đã duyệt | YC9 – Sinh và chạy script |
+| YC5 – Ghi nhận kết quả | lần chạy Fail | YC13 – Báo đã sửa lỗi |
+| YC13 – Báo đã sửa lỗi | bản build đã sửa (cần kiểm thử lại) | YC5 – Ghi nhận kết quả |
 | YC5 – Ghi nhận kết quả | kết quả chạy gần nhất (xét DoD) | YC12 – Quản lý sprint |
 | YC5 – Ghi nhận kết quả | kết quả gần nhất | YC7 – Tra cứu test case |
 | YC5 – Ghi nhận kết quả | kết quả chạy thủ công | YC6 – Lập báo cáo |
@@ -550,25 +596,26 @@ Các sơ đồ được vẽ bằng phần mềm chuyên dụng **draw.io (diagr
 
 ```mermaid
 flowchart TD
-    S([Bắt đầu]) --> A["Tester lập / nhập user story"]
+    S([Bắt đầu]) --> A["PO/BA (hoặc Tester) lập / nhập user story"]
     A --> B["Bấm Sinh test case bằng AI"]
     B --> C{"AI trả kết quả hợp lệ?"}
     C -->|Không, sau khi thử lại| C2["Viết test case thủ công"] --> D
     C -->|Có| D["Tester xem lại, sửa, xóa, thêm"]
     D --> E["Gửi duyệt"]
-    E --> F{"QA Lead duyệt"}
+    E --> F{"QA Lead duyệt: đạt?"}
     F -->|Trả lại + ghi chú| D
     F -->|Duyệt| G{"Tự động hóa?"}
     G -->|Không| H["Chạy thủ công, ghi kết quả"]
     G -->|Có| I["AI sinh script Playwright"] --> J["Tester xem lại script"] --> K["Chạy tự động"]
     H --> L{"Fail?"}
     K --> L
-    L -->|Có| M["Tạo bug, ghi mã bug vào ghi chú"] --> N
+    L -->|Có| M["Tạo bug, ghi mã bug vào ghi chú"] --> M2["Developer sửa lỗi, báo đã sửa kèm bản build"]
+    M2 -->|"Cần kiểm thử lại"| G
     L -->|Không| N["Báo cáo tự động cập nhật"]
     N --> X([Kết thúc])
 ```
 
-So với quy trình cũ (Chương 1): AI rút ngắn bước viết nháp; duyệt có lưu vết; không còn viết lại test case thành script bằng tay; báo cáo tự động.
+So với quy trình cũ (Chương 1): AI rút ngắn bước viết nháp; duyệt có lưu vết; không còn viết lại test case thành script bằng tay; Developer báo đã sửa kèm bản build nên Tester biết ngay test case nào cần kiểm thử lại; báo cáo tự động.
 
 ## 3.6. Sơ đồ trạng thái của test case
 

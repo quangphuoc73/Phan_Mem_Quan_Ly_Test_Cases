@@ -107,7 +107,7 @@
 <li>Quản lý dự án, module, user story (nhập tay hoặc nhập từ file CSV/JSON).</li>
 <li>AI sinh test case từ user story và acceptance criteria.</li>
 <li>Soạn thảo, lưu lịch sử phiên bản, gửi duyệt, duyệt/trả lại test case.</li>
-<li>Ghi nhận kết quả chạy test thủ công (Pass/Fail/Blocked).</li>
+<li>Ghi nhận kết quả chạy test thủ công (Pass/Fail/Blocked); Developer báo đã sửa lỗi kèm bản build để Tester kiểm thử lại.</li>
 <li>AI sinh script Playwright từ test case đã duyệt và chạy tự động, lưu ảnh chụp lỗi.</li>
 <li>Báo cáo: tỷ lệ pass, độ bao phủ yêu cầu, tiến độ thực thi, hiệu quả AI.</li>
 <li>Thay đổi quy định (số test case tối đa, số lần gọi AI…) không cần sửa mã nguồn.</li>
@@ -148,7 +148,7 @@
 </tr>
 <tr>
 <td>2. Xác định yêu cầu</td>
-<td>YC1–YC12, BM, QĐ, yêu cầu phi chức năng</td>
+<td>YC1–YC13, BM, QĐ, yêu cầu phi chức năng</td>
 <td>Tổng quát ở Sprint 1, chi tiết theo từng sprint</td>
 <td><a href="#ch-02">02_DacTaYeuCau.md</a></td>
 </tr>
@@ -220,8 +220,8 @@
 <tr>
 <td>4</td>
 <td>4</td>
-<td>Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được</td>
-<td>19</td>
+<td>Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được; Developer báo đã sửa lỗi</td>
+<td>22</td>
 </tr>
 <tr>
 <td>5</td>
@@ -681,6 +681,15 @@
 </tr>
 <tr>
 <td>PB-26</td>
+<td>Thực thi &amp; báo cáo</td>
+<td>Là Developer, tôi muốn báo đã sửa lỗi kèm bản build, để Tester biết test case nào cần kiểm thử lại</td>
+<td>3</td>
+<td>Should</td>
+<td>4</td>
+<td>YC13</td>
+</tr>
+<tr>
+<td>PB-27</td>
 <td>Tích hợp</td>
 <td>Là Tester, tôi muốn đồng bộ 2 chiều với Jira, để không nhập tay</td>
 <td>8</td>
@@ -689,7 +698,7 @@
 <td>–</td>
 </tr>
 <tr>
-<td>PB-27</td>
+<td>PB-28</td>
 <td>AI nâng cao</td>
 <td>Là Tester, tôi muốn AI dùng tài liệu nghiệp vụ (RAG), để test case sát thực tế hơn</td>
 <td>13</td>
@@ -698,7 +707,7 @@
 <td>–</td>
 </tr>
 <tr>
-<td>PB-28</td>
+<td>PB-29</td>
 <td>AI nâng cao</td>
 <td>Là Tester, tôi muốn script tự sửa locator khi giao diện đổi (self-healing)</td>
 <td>13</td>
@@ -760,9 +769,9 @@
 <tr>
 <td>4</td>
 <td>4</td>
-<td>&quot;Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được&quot;</td>
-<td>PB-17 (3), PB-18 (5), PB-19 (8), PB-20 (3)</td>
-<td>19</td>
+<td>&quot;Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được; Developer báo đã sửa lỗi&quot;</td>
+<td>PB-17 (3), PB-18 (5), PB-19 (8), PB-20 (3), PB-26 (3)</td>
+<td>22</td>
 <td>UC11, UC12, UC16, DFD YC9, YC10, sequence YC9, thiết kế sandbox, bảng tham số</td>
 </tr>
 <tr>
@@ -871,7 +880,7 @@
 <td>●● YC tổng quát, YC1, YC11</td>
 <td>● YC2, YC3</td>
 <td>● YC4, 5, 6, 7</td>
-<td>● YC9, YC10</td>
+<td>● YC9, YC10, YC13</td>
 <td>● YC8, YC12</td>
 </tr>
 <tr>
@@ -1440,7 +1449,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>NV6 Báo lỗi</td>
-<td>Ngoài phạm vi (vẫn dùng Jira); hệ thống lưu mã bug trong ghi chú kết quả</td>
+<td>Tạo ticket bug vẫn dùng Jira (ngoài phạm vi); hệ thống lưu mã bug trong ghi chú kết quả, YC13 Báo đã sửa lỗi và kiểm thử lại</td>
 </tr>
 <tr>
 <td>NV7 Viết, chạy script tự động</td>
@@ -1525,7 +1534,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>Developer</td>
-<td>Chỉ xem test case, kết quả và báo cáo để tái hiện và sửa lỗi</td>
+<td>Xem test case, kết quả chạy (log, ảnh chụp lỗi) và báo cáo để tái hiện lỗi; báo đã sửa lỗi kèm bản build để Tester kiểm thử lại</td>
 </tr>
 <tr>
 <td>Dịch vụ LLM (hệ thống ngoài)</td>
@@ -1643,6 +1652,14 @@ Velocity thực tế: __ SP
 <td>BM10</td>
 <td>QĐ12</td>
 <td>Velocity, burndown được tính, không nhập</td>
+</tr>
+<tr>
+<td>13</td>
+<td>YC13 – Báo đã sửa lỗi và kiểm thử lại</td>
+<td>Lưu trữ, tra cứu</td>
+<td>BM11</td>
+<td>QĐ13</td>
+<td>Developer báo, Tester lọc được test case cần kiểm thử lại</td>
 </tr>
 </tbody></table>
 <p><strong>Ý nghĩa loại yêu cầu:</strong></p>
@@ -1838,7 +1855,29 @@ Velocity thực tế: __ SP
 <td>Story point cam kết / hoàn thành (velocity) · Burndown chart</td>
 </tr>
 </tbody></table>
-<p><strong>QĐ12:</strong> Sprint dài tối đa <strong>28</strong> ngày (tham số <code>SPRINT_MAX_DAYS</code>, 7–42), ngày kết thúc không trước ngày bắt đầu, các sprint của cùng dự án không trùng thời gian. Chỉ Admin và QA Lead được tạo/sửa sprint. User story chỉ thuộc sprint của chính dự án; story chưa thuộc sprint nào nằm trong <strong>Product backlog</strong>. Story point thuộc dãy <strong>1, 2, 3, 5, 8, 13</strong>. Một user story đạt <strong>Definition of Done</strong> khi có ít nhất 1 test case <em>Đã duyệt</em> và mọi test case <em>Đã duyệt</em> có lần chạy gần nhất là <em>Pass</em>. Velocity = tổng story point của các story đạt DoD trong sprint.</p>
+<p><strong>QĐ12:</strong> Sprint dài tối đa <strong>28</strong> ngày (tham số <code>SPRINT_MAX_DAYS</code>, 7–42), ngày kết thúc không trước ngày bắt đầu, các sprint của cùng dự án không trùng thời gian. Chỉ Admin, QA Lead và PO/BA được tạo/sửa sprint. User story chỉ thuộc sprint của chính dự án; story chưa thuộc sprint nào nằm trong <strong>Product backlog</strong>. Story point thuộc dãy <strong>1, 2, 3, 5, 8, 13</strong>. Một user story đạt <strong>Definition of Done</strong> khi có ít nhất 1 test case <em>Đã duyệt</em> và mọi test case <em>Đã duyệt</em> có lần chạy gần nhất là <em>Pass</em>. Velocity = tổng story point của các story đạt DoD trong sprint.</p>
+<h3>BM11 – Phiếu báo đã sửa lỗi</h3>
+<table>
+<thead>
+<tr>
+<th>BM11</th>
+<th><strong>Phiếu báo đã sửa lỗi</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mã test case: ............</td>
+<td>Lần chạy Fail (ngày, ghi chú mã bug): ............</td>
+</tr>
+<tr>
+<td>Bản build đã sửa: ............</td>
+<td>Ghi chú cho Tester: ............</td>
+</tr>
+<tr>
+<td>Người báo (Developer): ............</td>
+<td>Ngày báo: ............</td>
+</tr>
+</tbody></table>
+<p><strong>QĐ13:</strong> Chỉ <strong>Developer</strong> được báo đã sửa. Chỉ báo cho <strong>lần chạy gần nhất</strong> của test case và lần chạy đó có kết quả <em>Fail</em>; mỗi lần chạy chỉ báo một lần. <strong>Bắt buộc</strong> nhập bản build (1–50 ký tự). Test case <strong>cần kiểm thử lại</strong> khi lần chạy gần nhất là <em>Fail</em> và đã được báo sửa; khi Tester ghi một lần chạy mới, test case tự hết trạng thái này.</p>
 <p><strong>QĐ11:</strong> Tên đăng nhập 3–30 ký tự <code>a-z 0-9 _ .</code>, không trùng. Mật khẩu tối thiểu 8 ký tự. Admin không được tự khóa hoặc tự hạ quyền chính mình.</p>
 <h2>2.4. Bảng trách nhiệm yêu cầu nghiệp vụ</h2>
 <table>
@@ -1934,6 +1973,13 @@ Velocity thực tế: __ SP
 <td>Tạo sprint (tên, mục tiêu, ngày); đưa story từ backlog vào sprint; ước lượng story point</td>
 <td>Kiểm tra QĐ12; tự tính trạng thái DoD của story, velocity, burndown</td>
 <td>Hỗ trợ đội làm Scrum</td>
+</tr>
+<tr>
+<td>13</td>
+<td>YC13 Báo đã sửa lỗi</td>
+<td>Developer chọn lần chạy Fail, nhập bản build, ghi chú; Tester lọc <em>Cần kiểm thử lại</em> rồi chạy lại</td>
+<td>Kiểm tra QĐ13, lưu phiếu báo sửa, ghi audit log; tự xác định test case cần kiểm thử lại</td>
+<td>Khép kín vòng báo lỗi – sửa – kiểm thử lại</td>
 </tr>
 </tbody></table>
 <h2>2.5. Yêu cầu chất lượng</h2>
@@ -2335,7 +2381,8 @@ Velocity thực tế: __ SP
 </tr>
 </tbody></table>
 <ul>
-<li><strong>Người dùng</strong> là tác nhân chung: mọi vai trò đều đăng nhập, tra cứu test case, xuất Excel và xem báo cáo. Admin, PO/BA, Developer, Tester tổng quát hóa thành Người dùng; Developer chỉ có các use case này.</li>
+<li><strong>Người dùng</strong> là tác nhân chung: mọi vai trò đều đăng nhập, tra cứu test case, xuất Excel, xem báo cáo và xem kết quả chạy test. Admin, PO/BA, Developer, Tester tổng quát hóa thành Người dùng.</li>
+<li><strong>Developer</strong> xem kết quả chạy (log, ảnh chụp lỗi) để tái hiện lỗi, sửa xong thì <strong>báo đã sửa lỗi</strong> (UC21) kèm bản build; test case chuyển sang <em>Cần kiểm thử lại</em> cho Tester.</li>
 <li><strong>PO / BA</strong> lập, nhập user story (UC04, UC05) và lập kế hoạch sprint (UC19); không viết, duyệt, chạy test case và không gọi AI.</li>
 <li><strong>QA Lead</strong> tổng quát hóa thành <strong>Tester</strong>: có toàn bộ quyền của Tester, thêm quyền duyệt test case (UC09), thay đổi quy định (UC16), xem nhật ký hoạt động (UC18) và quản lý sprint (UC19).</li>
 <li>Ở UC19, Tester chỉ đưa story vào sprint và xem bảng sprint; tạo, sửa sprint do PO/BA, QA Lead, Admin thực hiện.</li>
@@ -2466,6 +2513,18 @@ Velocity thực tế: __ SP
 <td>Quản lý sprint: tạo sprint, đưa story từ backlog vào sprint, xem bảng sprint, burndown, velocity</td>
 <td>PO/BA, QA Lead, Admin (Tester: đưa story vào sprint, xem)</td>
 <td>YC12</td>
+</tr>
+<tr>
+<td>UC20</td>
+<td>Xem kết quả chạy test (log, ảnh chụp lỗi, ghi chú mã bug)</td>
+<td>Tất cả</td>
+<td>YC5</td>
+</tr>
+<tr>
+<td>UC21</td>
+<td>Báo đã sửa lỗi kèm bản build để Tester kiểm thử lại</td>
+<td>Developer</td>
+<td>YC13</td>
 </tr>
 </tbody></table>
 <h2>3.3. Đặc tả các use case chính</h2>
@@ -2661,6 +2720,39 @@ Velocity thực tế: __ SP
 <tr>
 <td>Quy định</td>
 <td>QĐ12</td>
+</tr>
+</tbody></table>
+<h3>UC21 – Báo đã sửa lỗi</h3>
+<table>
+<thead>
+<tr>
+<th>Mục</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tác nhân</td>
+<td>Developer</td>
+</tr>
+<tr>
+<td>Tiền điều kiện</td>
+<td>Đã đăng nhập, có quyền <code>bug:fix</code>; test case có lần chạy gần nhất là <em>Fail</em></td>
+</tr>
+<tr>
+<td>Hậu điều kiện</td>
+<td>Lần chạy được ghi bản build, ghi chú, người báo, ngày báo (BM11); test case ở trạng thái <em>Cần kiểm thử lại</em>; ghi audit log <code>REPORT_FIX</code></td>
+</tr>
+<tr>
+<td>Luồng chính</td>
+<td>1. Mở <strong>Kết quả chạy test</strong> (hoặc tab <em>Chạy test</em> của test case), xem ghi chú, log, ảnh chụp lỗi để tái hiện.<br>2. Sửa lỗi, bấm <strong>🔧 Báo đã sửa</strong> ở lần chạy Fail, nhập bản build và ghi chú.<br>3. Hệ thống kiểm tra QĐ13, lưu, báo thành công.<br>4. Tester lọc <strong>Cần kiểm thử lại</strong> ở <em>Tra cứu test case</em>, chạy lại trên bản build mới; lần chạy mới làm test case hết trạng thái này.</td>
+</tr>
+<tr>
+<td>Luồng ngoại lệ</td>
+<td>3a. Thiếu bản build → báo lỗi.<br>3b. Lần chạy không phải <em>Fail</em>, không phải lần gần nhất hoặc đã được báo sửa → báo lỗi.<br>2a. Vai trò khác không có nút; gọi trực tiếp API → 403.</td>
+</tr>
+<tr>
+<td>Quy định</td>
+<td>QĐ13</td>
 </tr>
 </tbody></table>
 <h3>UC01 – Đăng nhập</h3>
@@ -3376,7 +3468,57 @@ Velocity thực tế: __ SP
 <li>B11: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B12: Kết thúc.</li>
 </ul>
-<h3>3.4.15. Sơ đồ phối hợp giữa các công việc</h3>
+<h3>3.4.15. DFD YC13 – Báo đã sửa lỗi và kiểm thử lại</h3>
+<p><img src="dfd/YC13_BaoDaSuaLoi.svg" alt="DFD YC13 – Báo đã sửa lỗi và kiểm thử lại"></p>
+<p><em>Biểu mẫu:</em> BM11 · <em>Quy định:</em> QĐ13 · <em>File:</em> <code>docs/dfd/YC13_BaoDaSuaLoi.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Lần chạy Fail được chọn, bản build đã sửa, ghi chú cho Tester (BM11).</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Kết quả của lần chạy; lần chạy gần nhất của test case; thông tin đã báo sửa trước đó.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Bản build, ghi chú, người báo, thời điểm báo sửa của lần chạy; nhật ký hoạt động.</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Thông báo đã báo sửa, test case chuyển sang Cần kiểm thử lại; hoặc thông báo lỗi vi phạm QĐ13.</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Kết nối cơ sở dữ liệu.</li>
+<li>B3: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B4: Kiểm tra người báo có vai trò Developer? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B5: Kiểm tra bản build được nhập (1–50 ký tự)? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B6: Kiểm tra lần chạy có kết quả Fail? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B7: Kiểm tra đây là lần chạy gần nhất của test case? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B8: Kiểm tra lần chạy chưa được báo sửa? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B9: Lưu D4 xuống bộ nhớ phụ.</li>
+<li>B10: Xuất D6 cho người dùng.</li>
+<li>B11: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B12: Kết thúc.</li>
+</ul>
+<h3>3.4.16. Sơ đồ phối hợp giữa các công việc</h3>
 <p><img src="dfd/PhoiHop_CacCongViec.svg" alt="Sơ đồ phối hợp giữa các công việc"></p>
 <p><em>File:</em> <code>docs/dfd/PhoiHop_CacCongViec.drawio</code>. Mỗi mũi tên là <strong>thông tin</strong> do công việc trước tạo ra (ghi xuống bộ nhớ phụ ở D4) và công việc sau sử dụng (đọc lên ở D3).</p>
 <table>
@@ -3429,6 +3571,16 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>YC5 – Ghi nhận kết quả</td>
+<td>lần chạy Fail</td>
+<td>YC13 – Báo đã sửa lỗi</td>
+</tr>
+<tr>
+<td>YC13 – Báo đã sửa lỗi</td>
+<td>bản build đã sửa (cần kiểm thử lại)</td>
+<td>YC5 – Ghi nhận kết quả</td>
+</tr>
+<tr>
+<td>YC5 – Ghi nhận kết quả</td>
 <td>kết quả chạy gần nhất (xét DoD)</td>
 <td>YC12 – Quản lý sprint</td>
 </tr>
@@ -3472,22 +3624,23 @@ Velocity thực tế: __ SP
 
 <h2>3.5. Sơ đồ hoạt động – quy trình nghiệp vụ mới</h2>
 <pre class="mermaid">flowchart TD
-    S([Bắt đầu]) --&gt; A["Tester lập / nhập user story"]
+    S([Bắt đầu]) --&gt; A["PO/BA (hoặc Tester) lập / nhập user story"]
     A --&gt; B["Bấm Sinh test case bằng AI"]
     B --&gt; C{"AI trả kết quả hợp lệ?"}
     C --&gt;|Không, sau khi thử lại| C2["Viết test case thủ công"] --&gt; D
     C --&gt;|Có| D["Tester xem lại, sửa, xóa, thêm"]
     D --&gt; E["Gửi duyệt"]
-    E --&gt; F{"QA Lead duyệt"}
+    E --&gt; F{"QA Lead duyệt: đạt?"}
     F --&gt;|Trả lại + ghi chú| D
     F --&gt;|Duyệt| G{"Tự động hóa?"}
     G --&gt;|Không| H["Chạy thủ công, ghi kết quả"]
     G --&gt;|Có| I["AI sinh script Playwright"] --&gt; J["Tester xem lại script"] --&gt; K["Chạy tự động"]
     H --&gt; L{"Fail?"}
     K --&gt; L
-    L --&gt;|Có| M["Tạo bug, ghi mã bug vào ghi chú"] --&gt; N
+    L --&gt;|Có| M["Tạo bug, ghi mã bug vào ghi chú"] --&gt; M2["Developer sửa lỗi, báo đã sửa kèm bản build"]
+    M2 --&gt;|"Cần kiểm thử lại"| G
     L --&gt;|Không| N["Báo cáo tự động cập nhật"]
-    N --&gt; X([Kết thúc])</pre><p>So với quy trình cũ (Chương 1): AI rút ngắn bước viết nháp; duyệt có lưu vết; không còn viết lại test case thành script bằng tay; báo cáo tự động.</p>
+    N --&gt; X([Kết thúc])</pre><p>So với quy trình cũ (Chương 1): AI rút ngắn bước viết nháp; duyệt có lưu vết; không còn viết lại test case thành script bằng tay; Developer báo đã sửa kèm bản build nên Tester biết ngay test case nào cần kiểm thử lại; báo cáo tự động.</p>
 <h2>3.6. Sơ đồ trạng thái của test case</h2>
 <pre class="mermaid">stateDiagram-v2
     [*] --&gt; DRAFT: AI sinh / thêm thủ công
@@ -3644,6 +3797,11 @@ Velocity thực tế: __ SP
 <td>name, goal, start_date, end_date; story_points</td>
 </tr>
 <tr>
+<td>YC13</td>
+<td><code>test_runs</code> (+ cột báo sửa lỗi)</td>
+<td>fix_build, fix_note, fixed_by, fixed_at</td>
+</tr>
+<tr>
 <td>Bảo mật</td>
 <td><code>audit_logs</code></td>
 <td>action, entity, detail, ip</td>
@@ -3690,7 +3848,7 @@ Velocity thực tế: __ SP
 <td>Một dòng cha có <strong>0 hoặc 1</strong> dòng con (FK có <code>UNIQUE</code>)</td>
 </tr>
 </tbody></table>
-<p><strong>Các quan hệ chính (13 bảng, 23 khóa ngoại):</strong></p>
+<p><strong>Các quan hệ chính (13 bảng, 24 khóa ngoại):</strong></p>
 <table>
 <thead>
 <tr>
@@ -3761,7 +3919,7 @@ Velocity thực tế: __ SP
 <td>Người tạo, người gọi AI, người chạy, người thao tác, người sửa quy định</td>
 </tr>
 </tbody></table>
-<p>Để sơ đồ dễ đọc, 4 khóa ngoại chỉ ghi nhận người tạo/sửa không vẽ đường nối: <code>projects.created_by</code>, <code>test_cases.created_by</code>, <code>test_case_versions.changed_by</code>, <code>automation_scripts.created_by</code> (đều tham chiếu <code>users</code>). Cột <code>ai_logs.test_case_id</code> là tham chiếu logic (lần gọi AI sinh script cho test case nào), không khai báo khóa ngoại vì bản ghi nhật ký phải giữ lại kể cả khi test case bị xóa.</p>
+<p>Để sơ đồ dễ đọc, 5 khóa ngoại chỉ ghi nhận người tạo/sửa không vẽ đường nối: <code>projects.created_by</code>, <code>test_cases.created_by</code>, <code>test_case_versions.changed_by</code>, <code>automation_scripts.created_by</code>, <code>test_runs.fixed_by</code> (người báo đã sửa lỗi) (đều tham chiếu <code>users</code>). Cột <code>ai_logs.test_case_id</code> là tham chiếu logic (lần gọi AI sinh script cho test case nào), không khai báo khóa ngoại vì bản ghi nhật ký phải giữ lại kể cả khi test case bị xóa.</p>
 <h3>Từ điển dữ liệu (các bảng chính)</h3>
 <p><strong>test_cases</strong></p>
 <table>
@@ -4180,8 +4338,8 @@ Acceptance criteria: ...
 <tr>
 <td>MH08</td>
 <td>Kết quả chạy test</td>
-<td>Tất cả</td>
-<td>100 lần chạy gần nhất</td>
+<td>Tất cả (báo đã sửa: Developer)</td>
+<td>100 lần chạy gần nhất; cột <em>Sửa lỗi</em>, nút <strong>🔧 Báo đã sửa</strong></td>
 </tr>
 <tr>
 <td>MH09</td>
@@ -4336,7 +4494,13 @@ Acceptance criteria: ...
 <td>GET</td>
 <td><code>/api/runs</code></td>
 <td>xem</td>
-<td>Danh sách kết quả</td>
+<td>Danh sách kết quả (kèm thông tin đã sửa)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/runs/:id/fix</code></td>
+<td><code>bug:fix</code></td>
+<td>Báo đã sửa lỗi kèm bản build (YC13)</td>
 </tr>
 <tr>
 <td>POST</td>
@@ -4662,6 +4826,12 @@ Acceptance criteria: ...
 <td><code>/api/projects/:id/sprints</code>, <code>/api/sprints/:id/*</code></td>
 <td><code>pages/sprints.js</code></td>
 </tr>
+<tr>
+<td>YC13</td>
+<td><code>runService.reportFix</code>, <code>testCaseService.list</code> (lọc <code>needs_retest</code>)</td>
+<td><code>/api/runs/:id/fix</code>, <code>/api/testcases?needs_retest=1</code></td>
+<td>Kết quả chạy test, tab Chạy test, Tra cứu</td>
+</tr>
 </tbody></table>
 <h2>5.4. Một số điểm cài đặt đáng chú ý</h2>
 <p><strong>Strategy pattern cho LLM</strong> – <code>src/services/ai/providers/</code>:</p>
@@ -4759,7 +4929,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <td>Thủ công, demo</td>
 </tr>
 </tbody></table>
-<p><strong>Tiêu chí hoàn thành:</strong> 100% test tự động pass; không còn lỗi mức High; mỗi YC1–YC12 có ít nhất 1 test case kiểm thử.</p>
+<p><strong>Tiêu chí hoàn thành:</strong> 100% test tự động pass; không còn lỗi mức High; mỗi YC1–YC13 có ít nhất 1 test case kiểm thử.</p>
 <p><strong>Kiểm thử trong Agile:</strong> kiểm thử không phải một giai đoạn cuối mà là một phần của <strong>Definition of Done</strong> của mỗi story: story chỉ được tính hoàn thành khi có test tự động mới và CI xanh. Vì vậy bộ test dưới đây được viết dần qua 5 sprint (cột <em>Sprint</em> trong Product Backlog), không dồn về cuối kỳ.</p>
 <h2>6.2. Kiểm thử tự động – Unit và API</h2>
 <p>Chạy: <code>cd app &amp;&amp; npm test</code></p>
@@ -5061,8 +5231,28 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <td>PO/BA xem được test case, báo cáo; Admin tạo được tài khoản PO/BA</td>
 <td>Pass</td>
 </tr>
+<tr>
+<td>IT-46</td>
+<td>YC13: Developer báo đã sửa lần chạy Fail → test case cần kiểm thử lại</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>IT-47</td>
+<td>YC13: Tester chạy lại thì test case hết cần kiểm thử lại</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>IT-48</td>
+<td>QĐ13: thiếu bản build → 400; lần chạy Pass, đã chạy lại hoặc đã báo rồi → 409</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>IT-49</td>
+<td>Chỉ Developer được báo đã sửa lỗi (vai trò khác → 403)</td>
+<td>Pass</td>
+</tr>
 </tbody></table>
-<p><strong>Kết quả:</strong> <code>58 tests, 58 pass, 0 fail</code> (Node.js 21, macOS, 30/10/2026).</p>
+<p><strong>Kết quả:</strong> <code>62 tests, 62 pass, 0 fail</code> (Node.js 21, macOS, 31/10/2026).</p>
 <h2>6.3. Kiểm thử E2E bằng Playwright</h2>
 <p>Chạy: <code>cd app &amp;&amp; npm run test:e2e</code> (Playwright tự khởi động server ở cổng 3100 với CSDL riêng <code>data/e2e.db</code>; xem báo cáo HTML: <code>npx playwright show-report e2e-report</code>).</p>
 <p><strong>Kỹ thuật áp dụng:</strong></p>
@@ -5355,6 +5545,14 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <td>Báo lỗi QĐ12</td>
 <td>Edge</td>
 <td>Medium</td>
+</tr>
+<tr>
+<td>ST-28</td>
+<td>YC13</td>
+<td>Tester ghi Fail; Developer bấm <em>Báo đã sửa</em>, nhập bản 1.0.2; Tester lọc <em>Cần kiểm thử lại</em> và chạy lại Pass</td>
+<td>Test case hiện trong bộ lọc kèm cảnh báo bản build; sau khi chạy lại thì biến mất</td>
+<td>Positive</td>
+<td>High</td>
 </tr>
 </tbody></table>
 <h2>6.5. Kiểm thử chức năng YC9 với Playwright trên Sauce Demo</h2>
@@ -5689,7 +5887,11 @@ npm install
 <li>Xem <em>Burndown chart</em> (story point còn lại theo ngày) và <em>Velocity các sprint</em>. Chọn sprint ở ô thứ hai trên thanh trên cùng để lọc toàn bộ hệ thống (báo cáo, user story, tra cứu, duyệt) theo sprint đó.</li>
 </ol>
 <h3>Developer</h3>
-<p>Xem <em>Tra cứu test case</em>, <em>Kết quả chạy test</em> (ghi chú có mã bug, log và ảnh chụp lỗi để tái hiện) và <em>Tổng quan &amp; báo cáo</em>.</p>
+<ol>
+<li>Xem <em>Kết quả chạy test</em> (ghi chú có mã bug, log và ảnh chụp lỗi) để tái hiện lỗi; <em>Tra cứu test case</em> và <em>Tổng quan &amp; báo cáo</em> để nắm tình hình.</li>
+<li>Sửa xong lỗi, ở lần chạy <em>Fail</em> bấm <strong>🔧 Báo đã sửa</strong> → nhập bản build (VD <code>1.0.2</code>) và ghi chú cho Tester → <em>Báo đã sửa</em>.</li>
+<li>Test case chuyển sang <strong>🔁 Cần kiểm thử lại</strong>. Tester lọc <em>Cần kiểm thử lại</em> ở <em>Tra cứu test case</em>, chạy lại trên bản build mới; lần chạy mới làm test case hết trạng thái này.</li>
+</ol>
 <h3>Admin</h3>
 <p><em>Người dùng</em> (thêm, khóa/mở khóa, xem ma trận phân quyền), <em>Dự án &amp; module</em> (tạo dự án, khai báo URL ứng dụng cần test cho Playwright, thêm module), <em>Nhật ký hoạt động</em>, <em>Nhật ký AI</em>.</p>
 <h2>7.7. Xử lý sự cố thường gặp</h2>
@@ -5870,7 +6072,7 @@ npm install
 <tr>
 <td>12</td>
 <td>8:45</td>
-<td>Terminal: <code>npm test</code> (58 pass) và <code>npm run test:e2e</code> (Playwright mở Chrome, 9 pass)</td>
+<td>Terminal: <code>npm test</code> (62 pass) và <code>npm run test:e2e</code> (Playwright mở Chrome, 9 pass)</td>
 <td>&quot;Kiểm thử tự động 3 tầng, chạy trên GitHub Actions mỗi lần push.&quot;</td>
 <td>Chất lượng</td>
 </tr>
@@ -5960,11 +6162,11 @@ npm install
 </thead>
 <tbody><tr>
 <td>Quy trình CNPM</td>
-<td>Agile/Scrum, nhóm 4 người: 5 sprint × 1 tuần, Product Backlog 28 story, DoR/DoD, biên bản các sự kiện; mỗi sprint đi qua đủ 7 hoạt động của môn học</td>
+<td>Agile/Scrum, nhóm 4 người: 5 sprint × 1 tuần, Product Backlog 29 story, DoR/DoD, biên bản các sự kiện; mỗi sprint đi qua đủ 7 hoạt động của môn học</td>
 </tr>
 <tr>
 <td>Phần mềm chạy được</td>
-<td>12 yêu cầu nghiệp vụ (YC1–YC12), 14 màn hình, 40+ API; hỗ trợ đội làm Scrum (sprint, story point, burndown, velocity)</td>
+<td>13 yêu cầu nghiệp vụ (YC1–YC13), 14 màn hình, 40+ API; hỗ trợ đội làm Scrum (sprint, story point, burndown, velocity)</td>
 </tr>
 <tr>
 <td>Tích hợp AI đúng cách</td>
@@ -5972,7 +6174,7 @@ npm install
 </tr>
 <tr>
 <td>Kiểm thử tự động</td>
-<td>58 unit/API test, 9 E2E Playwright, 8 test Playwright mẫu (POM), script AI sinh chạy được trên web thật</td>
+<td>62 unit/API test, 9 E2E Playwright, 8 test Playwright mẫu (POM), script AI sinh chạy được trên web thật</td>
 </tr>
 <tr>
 <td>Triển khai</td>

@@ -32,6 +32,10 @@ function nextCode(story) {
   return (offset) => `${story.code}-TC${String(max + offset).padStart(2, '0')}`;
 }
 
+// YC13: lần chạy gần nhất là Fail và Developer đã báo sửa → Tester cần kiểm thử lại
+const NEEDS_RETEST = `EXISTS (SELECT 1 FROM test_runs r WHERE r.id = (SELECT MAX(x.id) FROM test_runs x WHERE x.test_case_id = t.id)
+  AND r.result = 'FAIL' AND r.fixed_at IS NOT NULL)`;
+
 function list(f = {}) {
   const where = [];
   const args = [];
@@ -44,6 +48,7 @@ function list(f = {}) {
   if (f.priority) add('t.priority = ?', f.priority);
   if (f.type) add('t.type = ?', f.type);
   if (f.source) add('t.source = ?', f.source);
+  if (f.needs_retest) where.push(NEEDS_RETEST);
   if (f.q) {
     where.push('(t.code LIKE ? OR t.title LIKE ?)');
     args.push(`%${f.q}%`, `%${f.q}%`);
@@ -52,6 +57,7 @@ function list(f = {}) {
     .prepare(
       `SELECT t.*, s.code story_code, s.title story_title, s.project_id, p.name project_name,
         (SELECT r.result FROM test_runs r WHERE r.test_case_id = t.id ORDER BY r.id DESC LIMIT 1) last_result,
+        ${NEEDS_RETEST} needs_retest,
         (SELECT COUNT(*) FROM automation_scripts a WHERE a.test_case_id = t.id) has_script
        FROM test_cases t JOIN user_stories s ON s.id = t.story_id JOIN projects p ON p.id = s.project_id
        ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
@@ -181,7 +187,8 @@ function history(id) {
       .all(id),
     runs: db
       .prepare(
-        `SELECT r.*, u.full_name executed_by_name FROM test_runs r LEFT JOIN users u ON u.id = r.executed_by
+        `SELECT r.*, u.full_name executed_by_name, fu.full_name fixed_by_name FROM test_runs r
+         LEFT JOIN users u ON u.id = r.executed_by LEFT JOIN users fu ON fu.id = r.fixed_by
          WHERE test_case_id = ? ORDER BY r.id DESC`
       )
       .all(id),

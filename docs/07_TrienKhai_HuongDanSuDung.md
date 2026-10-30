@@ -124,7 +124,9 @@ PO/BA lập user story (menu *User story* → *＋ Lập user story* hoặc *⬆
 
 ### Developer
 
-Xem *Tra cứu test case*, *Kết quả chạy test* (ghi chú có mã bug, log và ảnh chụp lỗi để tái hiện) và *Tổng quan & báo cáo*.
+1. Xem *Kết quả chạy test* (ghi chú có mã bug, log và ảnh chụp lỗi) để tái hiện lỗi; *Tra cứu test case* và *Tổng quan & báo cáo* để nắm tình hình.
+2. Sửa xong lỗi, ở lần chạy *Fail* bấm **🔧 Báo đã sửa** → nhập bản build (VD `1.0.2`) và ghi chú cho Tester → *Báo đã sửa*.
+3. Test case chuyển sang **🔁 Cần kiểm thử lại**. Tester lọc *Cần kiểm thử lại* ở *Tra cứu test case*, chạy lại trên bản build mới; lần chạy mới làm test case hết trạng thái này.
 
 ### Admin
 

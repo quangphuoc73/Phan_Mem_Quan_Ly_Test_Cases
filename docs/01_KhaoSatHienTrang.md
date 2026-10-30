@@ -162,7 +162,7 @@ Các nghiệp vụ khảo sát được chuyển thành yêu cầu phần mềm 
 | NV3 Cập nhật test case | YC3 Soạn thảo (lưu phiên bản) |
 | NV4 Duyệt test case | YC4 Duyệt test case |
 | NV5 Chạy test, ghi kết quả | YC5 Ghi nhận kết quả chạy test |
-| NV6 Báo lỗi | Ngoài phạm vi (vẫn dùng Jira); hệ thống lưu mã bug trong ghi chú kết quả |
+| NV6 Báo lỗi | Tạo ticket bug vẫn dùng Jira (ngoài phạm vi); hệ thống lưu mã bug trong ghi chú kết quả, YC13 Báo đã sửa lỗi và kiểm thử lại |
 | NV7 Viết, chạy script tự động | YC9 Sinh và chạy script tự động |
 | NV8 Lập báo cáo | YC6 Lập báo cáo, YC7 Tra cứu, YC8 Xuất Excel |
 | NV9 Lập kế hoạch sprint | YC12 Quản lý sprint |

@@ -79,6 +79,7 @@ Xét lần lượt từng yêu cầu, xác định thuộc tính cần lưu:
 | YC9 | `automation_scripts` | code, framework |
 | YC11 | `users`, `projects`, `modules` | username, password_hash, role; code, name, base_url |
 | YC12 | `sprints` (+ cột `sprint_id`, `story_points` trong `user_stories`) | name, goal, start_date, end_date; story_points |
+| YC13 | `test_runs` (+ cột báo sửa lỗi) | fix_build, fix_note, fixed_by, fixed_at |
 | Bảo mật | `audit_logs` | action, entity, detail, ip |
 
 ### Bước 2 – Tiến hóa
@@ -108,7 +109,7 @@ Sơ đồ được vẽ bằng **draw.io** theo ký hiệu chân chim (crow's fo
 | `o{` (chân chim + vòng) ở phía bảng con | Một dòng cha có **0 hoặc nhiều** dòng con |
 | `o\|` ở phía bảng con | Một dòng cha có **0 hoặc 1** dòng con (FK có `UNIQUE`) |
 
-**Các quan hệ chính (13 bảng, 23 khóa ngoại):**
+**Các quan hệ chính (13 bảng, 24 khóa ngoại):**
 
 | Bảng cha | Bảng con (khóa ngoại) | Bản số | Ghi chú |
 |---|---|---|---|
@@ -123,7 +124,7 @@ Sơ đồ được vẽ bằng **draw.io** theo ký hiệu chân chim (crow's fo
 | users | reviews (`reviewer_id`) | 1 – 0..n | Phiếu duyệt bắt buộc có người duyệt |
 | users | user_stories, ai_logs, test_runs, audit_logs, parameters | 0..1 – 0..n | Người tạo, người gọi AI, người chạy, người thao tác, người sửa quy định |
 
-Để sơ đồ dễ đọc, 4 khóa ngoại chỉ ghi nhận người tạo/sửa không vẽ đường nối: `projects.created_by`, `test_cases.created_by`, `test_case_versions.changed_by`, `automation_scripts.created_by` (đều tham chiếu `users`). Cột `ai_logs.test_case_id` là tham chiếu logic (lần gọi AI sinh script cho test case nào), không khai báo khóa ngoại vì bản ghi nhật ký phải giữ lại kể cả khi test case bị xóa.
+Để sơ đồ dễ đọc, 5 khóa ngoại chỉ ghi nhận người tạo/sửa không vẽ đường nối: `projects.created_by`, `test_cases.created_by`, `test_case_versions.changed_by`, `automation_scripts.created_by`, `test_runs.fixed_by` (người báo đã sửa lỗi) (đều tham chiếu `users`). Cột `ai_logs.test_case_id` là tham chiếu logic (lần gọi AI sinh script cho test case nào), không khai báo khóa ngoại vì bản ghi nhật ký phải giữ lại kể cả khi test case bị xóa.
 
 ### Từ điển dữ liệu (các bảng chính)
 
@@ -400,7 +401,7 @@ Acceptance criteria: ...
 | MH05 | Chi tiết test case (hộp thoại 4 tab) | Tất cả | Chi tiết/sửa/duyệt · Lịch sử (so sánh AI gốc – bản sửa) · Chạy test · Script Playwright |
 | MH06 | Tra cứu test case | Tất cả | Lọc 5 tiêu chí, xuất Excel |
 | MH07 | Duyệt test case | QA Lead | Hàng đợi, duyệt hàng loạt |
-| MH08 | Kết quả chạy test | Tất cả | 100 lần chạy gần nhất |
+| MH08 | Kết quả chạy test | Tất cả (báo đã sửa: Developer) | 100 lần chạy gần nhất; cột *Sửa lỗi*, nút **🔧 Báo đã sửa** |
 | MH09 | Thay đổi quy định | Admin, QA Lead | Sửa tham số |
 | MH10 | Nhật ký AI | Tester trở lên | Prompt đã gửi, kết quả gốc, PII đã che, cờ injection |
 | MH11 | Dự án & module | Admin | Tạo dự án, khai báo URL cần test, thêm module |
@@ -446,7 +447,8 @@ Tất cả API (trừ đăng nhập, health) yêu cầu header `Authorization: B
 | POST | `/api/testcases/submit` | `testcase:write` | Gửi duyệt |
 | POST | `/api/testcases/:id/review` | `testcase:review` | Duyệt/trả lại (YC4) |
 | POST | `/api/testcases/:id/runs` | `run:write` | Ghi kết quả (YC5) |
-| GET | `/api/runs` | xem | Danh sách kết quả |
+| GET | `/api/runs` | xem | Danh sách kết quả (kèm thông tin đã sửa) |
+| POST | `/api/runs/:id/fix` | `bug:fix` | Báo đã sửa lỗi kèm bản build (YC13) |
 | POST | `/api/testcases/:id/script/generate` | `ai:use` + hạn mức | **AI sinh script Playwright (YC9)** |
 | GET/PUT | `/api/testcases/:id/script` | xem / `testcase:write` | Xem/sửa script |
 | POST | `/api/testcases/:id/script/run` | `run:write` | **Chạy tự động (YC9)** |

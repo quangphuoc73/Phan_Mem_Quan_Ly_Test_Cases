@@ -28,7 +28,7 @@
 | 9 | 7:00 | Sửa script cho sai (`toHaveText('2')`) → chạy | "Khi Fail, hệ thống lưu log và ảnh chụp màn hình cho Developer." | Ảnh chụp lỗi |
 | 10 | 7:30 | *Thay đổi quy định* → `MAX_TC_PER_STORY` = 5 → quay lại story mới → sinh lại | "Quy định nằm trong bảng tham số, đổi không cần sửa mã nguồn – tính tiến hóa." | AI tuân thủ quy định mới |
 | 11 | 8:15 | Đăng nhập **qalead** → *Sprint (Agile)* → đưa **US-PET-005** từ Product backlog vào Sprint 2; mở *Tổng quan* → bảng tiến độ theo sprint | "Đây là bước Sprint Planning. Báo cáo lọc được theo sprint, tính theo lần chạy gần nhất." | YC6, YC12 |
-| 12 | 8:45 | Terminal: `npm test` (58 pass) và `npm run test:e2e` (Playwright mở Chrome, 9 pass) | "Kiểm thử tự động 3 tầng, chạy trên GitHub Actions mỗi lần push." | Chất lượng |
+| 12 | 8:45 | Terminal: `npm test` (62 pass) và `npm run test:e2e` (Playwright mở Chrome, 9 pass) | "Kiểm thử tự động 3 tầng, chạy trên GitHub Actions mỗi lần push." | Chất lượng |
 | 13 | 9:30 | Slide kết luận, hướng phát triển | | |
 
 **Dự phòng:** mạng hoặc API lỗi → chuyển `AI_PROVIDER=mock` (khởi động lại 3 giây) hoặc mở video đã quay.

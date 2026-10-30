@@ -19,7 +19,7 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 | QA Lead | Trưởng nhóm kiểm thử: duyệt/trả lại test case, xem báo cáo, thay đổi quy định, lập kế hoạch sprint (vai trò Scrum Master); có toàn bộ quyền của Tester |
 | PO / BA | Product Owner / Business Analyst: lập và nhập user story kèm acceptance criteria (NV1), lập kế hoạch sprint, xem test case và báo cáo để nghiệm thu; không viết, duyệt hay chạy test case, không gọi AI |
 | Tester | Lập user story (khi đội không có BA), dùng AI sinh test case, chỉnh sửa, gửi duyệt, chạy test, sinh và chạy script tự động |
-| Developer | Chỉ xem test case, kết quả và báo cáo để tái hiện và sửa lỗi |
+| Developer | Xem test case, kết quả chạy (log, ảnh chụp lỗi) và báo cáo để tái hiện lỗi; báo đã sửa lỗi kèm bản build để Tester kiểm thử lại |
 | Dịch vụ LLM (hệ thống ngoài) | Gemini / Claude / OpenAI: nhận prompt đã che dữ liệu nhạy cảm, trả JSON |
 | Playwright Worker (hệ thống ngoài) | Chạy script kiểm thử tự động trên trình duyệt, trả kết quả và ảnh chụp lỗi |
 
@@ -39,6 +39,7 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 | 10 | YC10 – Thay đổi quy định | Lưu trữ | | QĐ10 | Tính tiến hóa |
 | 11 | YC11 – Quản lý người dùng, dự án | Lưu trữ | | QĐ11 | Admin |
 | 12 | YC12 – Quản lý sprint (Agile/Scrum) | Lưu trữ, tính toán | BM10 | QĐ12 | Velocity, burndown được tính, không nhập |
+| 13 | YC13 – Báo đã sửa lỗi và kiểm thử lại | Lưu trữ, tra cứu | BM11 | QĐ13 | Developer báo, Tester lọc được test case cần kiểm thử lại |
 
 **Ý nghĩa loại yêu cầu:**
 - **Lưu trữ:** ghi thông tin mới hoặc thay đổi xuống bộ nhớ phụ.
@@ -134,7 +135,17 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 | Ngày bắt đầu: ............ | Ngày kết thúc: ............ |
 | Các user story trong sprint (mã, story point, trạng thái) | Story point cam kết / hoàn thành (velocity) · Burndown chart |
 
-**QĐ12:** Sprint dài tối đa **28** ngày (tham số `SPRINT_MAX_DAYS`, 7–42), ngày kết thúc không trước ngày bắt đầu, các sprint của cùng dự án không trùng thời gian. Chỉ Admin và QA Lead được tạo/sửa sprint. User story chỉ thuộc sprint của chính dự án; story chưa thuộc sprint nào nằm trong **Product backlog**. Story point thuộc dãy **1, 2, 3, 5, 8, 13**. Một user story đạt **Definition of Done** khi có ít nhất 1 test case *Đã duyệt* và mọi test case *Đã duyệt* có lần chạy gần nhất là *Pass*. Velocity = tổng story point của các story đạt DoD trong sprint.
+**QĐ12:** Sprint dài tối đa **28** ngày (tham số `SPRINT_MAX_DAYS`, 7–42), ngày kết thúc không trước ngày bắt đầu, các sprint của cùng dự án không trùng thời gian. Chỉ Admin, QA Lead và PO/BA được tạo/sửa sprint. User story chỉ thuộc sprint của chính dự án; story chưa thuộc sprint nào nằm trong **Product backlog**. Story point thuộc dãy **1, 2, 3, 5, 8, 13**. Một user story đạt **Definition of Done** khi có ít nhất 1 test case *Đã duyệt* và mọi test case *Đã duyệt* có lần chạy gần nhất là *Pass*. Velocity = tổng story point của các story đạt DoD trong sprint.
+
+### BM11 – Phiếu báo đã sửa lỗi
+
+| BM11 | **Phiếu báo đã sửa lỗi** |
+|---|---|
+| Mã test case: ............ | Lần chạy Fail (ngày, ghi chú mã bug): ............ |
+| Bản build đã sửa: ............ | Ghi chú cho Tester: ............ |
+| Người báo (Developer): ............ | Ngày báo: ............ |
+
+**QĐ13:** Chỉ **Developer** được báo đã sửa. Chỉ báo cho **lần chạy gần nhất** của test case và lần chạy đó có kết quả *Fail*; mỗi lần chạy chỉ báo một lần. **Bắt buộc** nhập bản build (1–50 ký tự). Test case **cần kiểm thử lại** khi lần chạy gần nhất là *Fail* và đã được báo sửa; khi Tester ghi một lần chạy mới, test case tự hết trạng thái này.
 
 **QĐ11:** Tên đăng nhập 3–30 ký tự `a-z 0-9 _ .`, không trùng. Mật khẩu tối thiểu 8 ký tự. Admin không được tự khóa hoặc tự hạ quyền chính mình.
 
@@ -154,6 +165,7 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 | 10 | YC10 Thay đổi quy định | Nhập giá trị mới | Kiểm tra miền giá trị, lưu vào bảng tham số | |
 | 11 | YC11 Quản lý người dùng | Nhập thông tin, khóa/mở khóa | Băm mật khẩu, kiểm tra QĐ11 | |
 | 12 | YC12 Quản lý sprint | Tạo sprint (tên, mục tiêu, ngày); đưa story từ backlog vào sprint; ước lượng story point | Kiểm tra QĐ12; tự tính trạng thái DoD của story, velocity, burndown | Hỗ trợ đội làm Scrum |
+| 13 | YC13 Báo đã sửa lỗi | Developer chọn lần chạy Fail, nhập bản build, ghi chú; Tester lọc *Cần kiểm thử lại* rồi chạy lại | Kiểm tra QĐ13, lưu phiếu báo sửa, ghi audit log; tự xác định test case cần kiểm thử lại | Khép kín vòng báo lỗi – sửa – kiểm thử lại |
 
 ## 2.5. Yêu cầu chất lượng
 

@@ -68,6 +68,7 @@ NhapMonCongNghePhanMem/
 | YC10 | `parameterService.update` | `/api/parameters/:key` | `pages/admin.js → renderParams` |
 | YC11 | `routes/admin.js` | `/api/users`, `/api/projects` | Người dùng, Dự án |
 | YC12 | `sprintService.list/create/update/burndown/storyProgress` | `/api/projects/:id/sprints`, `/api/sprints/:id/*` | `pages/sprints.js` |
+| YC13 | `runService.reportFix`, `testCaseService.list` (lọc `needs_retest`) | `/api/runs/:id/fix`, `/api/testcases?needs_retest=1` | Kết quả chạy test, tab Chạy test, Tra cứu |
 
 ## 5.4. Một số điểm cài đặt đáng chú ý
 

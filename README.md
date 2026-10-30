@@ -61,7 +61,7 @@ Mặc định AI chạy chế độ **mock** (offline, không cần API key). D�
 ## Kiểm thử
 
 ```bash
-cd app && npm test             # 58 unit + API test
+cd app && npm test             # 62 unit + API test
 cd app && npm run test:e2e     # 9 kịch bản E2E bằng Playwright
 cd automation && npm run test:samples   # 8 test Playwright mẫu trên saucedemo.com
 ```

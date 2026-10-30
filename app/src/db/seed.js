@@ -89,9 +89,13 @@ function seed() {
     insVer.run(tcId, 1, JSON.stringify({ title, steps, expected_result: exp, priority: pri, type }), i < 3 ? 'Bản gốc do AI sinh' : 'Tạo thủ công', uid.TESTER);
     if (i === 2) insVer.run(tcId, 2, JSON.stringify({ title, steps, expected_result: exp, priority: pri, type }), 'Sửa dữ liệu biên cho chính xác', uid.TESTER);
     insReview.run(tcId, uid.QA_LEAD, 'APPROVED', 'Đạt');
-    insRun.run(tcId, result, 'MANUAL', result === 'FAIL' ? 'Hệ thống chấp nhận mật khẩu 7 ký tự – đã báo bug BUG-12' : null, uid.TESTER, '-10 days');
-    // Kiểm thử lại (retest) sau khi Developer sửa lỗi → story đạt Definition of Done
-    if (result === 'FAIL') insRun.run(tcId, 'PASS', 'MANUAL', 'Kiểm thử lại sau khi sửa BUG-12', uid.TESTER, '-3 days');
+    const runId = insRun.run(tcId, result, 'MANUAL', result === 'FAIL' ? 'Hệ thống chấp nhận mật khẩu 7 ký tự – đã báo bug BUG-12' : null, uid.TESTER, '-10 days').lastInsertRowid;
+    if (result === 'FAIL') {
+      // YC13: Developer báo đã sửa ở bản build mới → Tester kiểm thử lại → story đạt Definition of Done
+      db.prepare(`UPDATE test_runs SET fix_build = '1.0.1', fix_note = 'Thêm kiểm tra độ dài mật khẩu ở backend', fixed_by = ?,
+        fixed_at = datetime('now','localtime','-5 days') WHERE id = ?`).run(uid.DEVELOPER, runId);
+      insRun.run(tcId, 'PASS', 'MANUAL', 'Kiểm thử lại trên bản 1.0.1 sau khi sửa BUG-12', uid.TESTER, '-3 days');
+    }
   });
 
   // ===== Dự án 2: Sauce Demo (web thật để chạy Playwright – YC9) =====

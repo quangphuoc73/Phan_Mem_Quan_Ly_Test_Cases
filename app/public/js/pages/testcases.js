@@ -1,5 +1,5 @@
-// YC3: Soạn thảo test case · YC4: Duyệt · YC5: Ghi kết quả · YC7: Tra cứu · YC8: Xuất Excel · YC9: Script Playwright
-import { state, api, esc, can, pill, fmtDate, toast, toastError, modal, confirmBox, bind, busy, options, download, LABEL, linkLabels } from '../core.js';
+// YC3: Soạn thảo test case · YC4: Duyệt · YC5: Ghi kết quả · YC7: Tra cứu · YC8: Xuất Excel · YC9: Script Playwright · YC13: Báo đã sửa lỗi
+import { state, api, esc, can, pill, fmtDate, toast, toastError, modal, confirmBox, bind, busy, formData, options, download, LABEL, linkLabels } from '../core.js';
 import { updateReviewBadge } from '../main.js';
 
 export function testCaseForm(t, { withNote = false } = {}) {
@@ -72,14 +72,49 @@ function historyView(h) {
     <tbody>${h.reviews.map((r) => `<tr><td>${pill(r.decision)}</td><td>${esc(r.note || '')}</td><td>${esc(r.reviewer_name)}</td><td class="small">${fmtDate(r.created_at)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">Chưa được duyệt lần nào.</p>'}`;
 }
 
+// YC13: cột Sửa lỗi – Developer báo đã sửa lần chạy Fail gần nhất (QĐ13)
+export function fixCell(r) {
+  if (r.fixed_at) return `<span class="pill PASS">🔧 Đã sửa · bản ${esc(r.fix_build)}</span><div class="small muted">${esc(r.fixed_by_name || '')} · ${fmtDate(r.fixed_at)}</div>`;
+  if (r.result === 'FAIL' && r.is_latest && can('bug:fix')) return `<button class="btn sm" data-fix="${r.id}">🔧 Báo đã sửa</button>`;
+  return '';
+}
+
+export function openFixForm(run, onSaved) {
+  const m = modal({
+    title: `Báo đã sửa lỗi – ${run.tc_code || 'test case'}`,
+    body: `<form id="fix-form">
+      <p class="small muted">Lần chạy Fail: ${esc(run.note || '')}</p>
+      <div class="field"><label>Bản build đã sửa (bắt buộc, QĐ13)</label><input name="build" required maxlength="50" placeholder="VD: 1.4.2"></div>
+      <div class="field"><label>Ghi chú cho Tester</label><textarea name="note" rows="3" maxlength="2000" placeholder="Đã sửa gì, cần chú ý gì khi kiểm thử lại"></textarea></div>
+    </form>`,
+    foot: '<button class="btn" data-close>Hủy</button><button class="btn primary" id="fix-save">Báo đã sửa</button>',
+  });
+  m.el.querySelector('#fix-save').addEventListener('click', async (e) => {
+    const f = m.el.querySelector('#fix-form');
+    if (!f.reportValidity()) return;
+    try {
+      await busy(e.currentTarget, () => api(`/runs/${run.id}/fix`, { method: 'POST', body: formData(f) }));
+      m.close();
+      toast('Đã báo sửa lỗi – test case chuyển sang Cần kiểm thử lại', 'success');
+      onSaved();
+    } catch (err) {
+      toastError(err);
+    }
+  });
+}
+
 function runsTable(runs) {
   if (!runs.length) return '<p class="muted">Chưa có lần chạy nào.</p>';
-  return `<div class="table-wrap"><table><thead><tr><th>Kết quả</th><th>Hình thức</th><th>Ghi chú / log</th><th>Người chạy</th><th>Thời gian</th></tr></thead>
+  return `<div class="table-wrap"><table><thead><tr><th>Kết quả</th><th>Hình thức</th><th>Ghi chú / log</th><th>Người chạy</th><th>Thời gian</th><th>Sửa lỗi</th></tr></thead>
     <tbody>${runs.map((r) => `<tr><td>${pill(r.result)}</td><td>${pill(r.run_type)}${r.duration_ms ? `<div class="small muted">${(r.duration_ms / 1000).toFixed(1)}s</div>` : ''}</td>
       <td>${esc(r.note || '')}${r.log ? `<pre class="block small" style="margin:6px 0 0;max-height:160px">${esc(r.log)}</pre>` : ''}
       ${r.screenshot ? `<a href="${esc(r.screenshot)}" target="_blank" rel="noopener"><img src="${esc(r.screenshot)}" alt="Ảnh chụp lỗi" style="max-width:260px;border:1px solid var(--border);border-radius:6px;margin-top:6px"></a>` : ''}</td>
-      <td>${esc(r.executed_by_name || '')}</td><td class="small">${fmtDate(r.executed_at)}</td></tr>`).join('')}</tbody></table></div>`;
+      <td>${esc(r.executed_by_name || '')}</td><td class="small">${fmtDate(r.executed_at)}</td>
+      <td>${fixCell({ ...r, is_latest: r.id === runs[0].id })}${r.fix_note ? `<div class="small">${esc(r.fix_note)}</div>` : ''}</td></tr>`).join('')}</tbody></table></div>`;
 }
+
+// YC13: lần chạy gần nhất là Fail và Developer đã báo sửa
+const retestOf = (runs) => (runs[0]?.result === 'FAIL' && runs[0].fixed_at ? runs[0] : null);
 
 export async function openTestCase(id, onChange = () => {}) {
   const m = modal({ title: 'Test case', wide: true, body: '<div class="empty"><span class="spinner dark"></span></div>' });
@@ -110,6 +145,8 @@ export async function openTestCase(id, onChange = () => {}) {
     } else if (tab === 'history') {
       body += historyView(h);
     } else if (tab === 'runs') {
+      const fixed = retestOf(h.runs);
+      if (fixed) body += `<div class="alert warn">🔁 <b>Cần kiểm thử lại:</b> ${esc(fixed.fixed_by_name || 'Developer')} đã sửa lỗi ở bản build <b>${esc(fixed.fix_build)}</b>${fixed.fix_note ? ` – ${esc(fixed.fix_note)}` : ''}. Chạy lại test case trên bản build này.</div>`;
       body += t.status !== 'APPROVED'
         ? '<div class="alert warn">QĐ5: chỉ ghi nhận kết quả cho test case đã được duyệt.</div>'
         : can('run:write') ? `
@@ -188,6 +225,8 @@ export async function openTestCase(id, onChange = () => {}) {
     };
     act('#rv-approve', review('APPROVED'));
     act('#rv-return', review('RETURNED'));
+    bind(el, '[data-fix]', 'click', (_e, b) => openFixForm({ ...h.runs.find((r) => r.id === Number(b.dataset.fix)), tc_code: t.code },
+      () => (onChange(), draw().catch(toastError))));
     act('#run-save', async (b) => {
       await busy(b, () => api(`/testcases/${id}/runs`, { method: 'POST', body: { result: el.querySelector('#run-result').value, note: el.querySelector('#run-note').value } }));
       await changed('Đã ghi nhận kết quả');
@@ -235,6 +274,7 @@ export async function renderTestCases(page) {
       <select name="priority">${options(['High', 'Medium', 'Low'], '', { empty: 'Mọi độ ưu tiên' })}</select>
       <select name="type">${options(['Positive', 'Negative', 'Edge'], '', { empty: 'Mọi loại' })}</select>
       <select name="source">${options(['AI', 'MANUAL'], '', { empty: 'Mọi nguồn' })}</select>
+      <select name="needs_retest" aria-label="Kiểm thử lại"><option value="">Mọi kết quả</option><option value="1">🔁 Cần kiểm thử lại</option></select>
     </form>
     <div class="table-wrap"><table>
       <thead><tr><th>Mã</th><th>Tiêu đề</th><th>User story</th><th>Loại</th><th>Ưu tiên</th><th>Nguồn</th><th>Trạng thái</th><th>KQ gần nhất</th><th>Script</th></tr></thead>
@@ -254,7 +294,7 @@ export async function renderTestCases(page) {
     const tbody = page.querySelector('#tc-rows');
     tbody.innerHTML = list.map((t) => `
       <tr class="clickable" data-id="${t.id}"><td class="mono">${esc(t.code)}</td><td>${esc(t.title)}</td><td>${esc(t.story_code)}</td>
-      <td>${esc(t.type)}</td><td>${pill(t.priority)}</td><td>${pill(t.source)}</td><td>${pill(t.status)}</td><td>${pill(t.last_result)}</td>
+      <td>${esc(t.type)}</td><td>${pill(t.priority)}</td><td>${pill(t.source)}</td><td>${pill(t.status)}</td><td>${pill(t.last_result)}${t.needs_retest ? '<div class="small" title="Developer đã báo sửa lỗi">🔁 Cần kiểm thử lại</div>' : ''}</td>
       <td>${t.has_script ? '🎭' : ''}</td></tr>`).join('') || '<tr><td colspan="9" class="empty">Không có test case phù hợp</td></tr>';
     page.querySelector('#tc-count').textContent = `${list.length} test case`;
     bind(tbody, 'tr[data-id]', 'click', (_e, tr) => openTestCase(Number(tr.dataset.id), load));

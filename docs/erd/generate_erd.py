@@ -59,7 +59,7 @@ REL = [
 ]
 # Các FK tới users chỉ để ghi nhận người tạo/sửa: không vẽ cho sơ đồ dễ đọc, có ghi chú dưới sơ đồ.
 OMITTED = {('projects', 'created_by'), ('test_cases', 'created_by'), ('test_case_versions', 'changed_by'),
-           ('automation_scripts', 'created_by')}
+           ('automation_scripts', 'created_by'), ('test_runs', 'fixed_by')}
 
 
 def attr(s):
@@ -215,7 +215,7 @@ def build():
                      f'<text x="{mx:.1f}" y="{my + 4:.1f}" font-size="12" font-style="italic" text-anchor="middle">{escape(label)}</text>')
 
     note = ('Ký hiệu: PK khóa chính · FK khóa ngoại · UK duy nhất · NULL cho phép rỗng. Bản số: || đúng một · |o không hoặc một · '
-            'o{ không hoặc nhiều. Các cột created_by, changed_by cũng là FK tới users (không vẽ cho dễ đọc).')
+            'o{ không hoặc nhiều. Các cột created_by, changed_by, fixed_by cũng là FK tới users (không vẽ cho dễ đọc).')
     o.svg.append(f'<text x="40" y="1300" font-size="12" fill="#333">{escape(note)}</text>')
     o.cells.append(f'<mxCell id="note" value="{attr(note)}" style="text;html=1;align=left;whiteSpace=wrap;fontFamily={FONT};fontSize=12;" vertex="1" parent="1"><mxGeometry x="40" y="1285" width="1320" height="30" as="geometry"/></mxCell>')
     return o, tables

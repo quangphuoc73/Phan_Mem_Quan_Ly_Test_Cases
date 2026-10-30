@@ -6,7 +6,8 @@ Chạy:  python3 docs/usecase/generate_usecase.py
 Kết quả: docs/usecase/UseCaseTongQuat.drawio (mở bằng draw.io để sửa) và UseCaseTongQuat.svg (chèn vào báo cáo).
 
 Quyền của từng tác nhân lấy theo ma trận PERMISSIONS trong app/src/middleware/auth.js và bảng 3.2:
-- "Người dùng" là tác nhân trừu tượng: mọi vai trò đều đăng nhập, tra cứu, xuất Excel, xem báo cáo.
+- "Người dùng" là tác nhân trừu tượng: mọi vai trò đều đăng nhập, tra cứu, xuất Excel, xem báo cáo, xem kết quả chạy.
+- Developer báo đã sửa lỗi (UC21, YC13) để Tester kiểm thử lại.
 - Admin, PO/BA, Developer, Tester tổng quát hóa thành Người dùng; QA Lead tổng quát hóa thành Tester
   (có toàn bộ quyền của Tester và thêm quyền duyệt).
 """
@@ -110,6 +111,7 @@ def build():
     for code, name, col, y in [
         ('UC01', 'Đăng nhập', 'L', 240), ('UC13', 'Tra cứu test case', 'L', 310),
         ('UC14', 'Xuất Excel', 'L', 380), ('UC15', 'Xem báo cáo', 'L', 450),
+        ('UC20', 'Xem kết quả chạy test', 'L', 520), ('UC21', 'Báo đã sửa lỗi', 'L', 600),
         ('UC02', 'Quản lý người dùng', 'L', 1110), ('UC03', 'Quản lý dự án, module', 'L', 1180),
         ('UC06', 'Sinh test case bằng AI', 'R', 240), ('UC11', 'Sinh script Playwright', 'R', 310),
         ('UC12', 'Chạy script tự động', 'R', 380), ('UC07', 'Soạn thảo test case', 'R', 450),
@@ -130,8 +132,9 @@ def build():
     llm = c.external(['«hệ thống ngoài»', 'Dịch vụ LLM'], 1130, 220, 190, 64)
     pw = c.external(['«hệ thống ngoài»', 'Playwright Worker'], 1130, 350, 190, 64)
 
-    for code in ['UC01', 'UC13', 'UC14', 'UC15']:
+    for code in ['UC01', 'UC13', 'UC14', 'UC15', 'UC20']:
         c.assoc(user, uc[code])
+    c.assoc(dev, uc['UC21'])
     for code in ['UC02', 'UC03', 'UC04', 'UC05', 'UC17', 'UC19', 'UC16', 'UC18']:
         c.assoc(admin, uc[code])
     for code in ['UC04', 'UC05', 'UC19']:

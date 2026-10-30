@@ -38,7 +38,7 @@ Các mô hình ngôn ngữ lớn (LLM) có thể sinh bản nháp test case tron
 - Quản lý dự án, module, user story (nhập tay hoặc nhập từ file CSV/JSON).
 - AI sinh test case từ user story và acceptance criteria.
 - Soạn thảo, lưu lịch sử phiên bản, gửi duyệt, duyệt/trả lại test case.
-- Ghi nhận kết quả chạy test thủ công (Pass/Fail/Blocked).
+- Ghi nhận kết quả chạy test thủ công (Pass/Fail/Blocked); Developer báo đã sửa lỗi kèm bản build để Tester kiểm thử lại.
 - AI sinh script Playwright từ test case đã duyệt và chạy tự động, lưu ảnh chụp lỗi.
 - Báo cáo: tỷ lệ pass, độ bao phủ yêu cầu, tiến độ thực thi, hiệu quả AI.
 - Thay đổi quy định (số test case tối đa, số lần gọi AI…) không cần sửa mã nguồn.
@@ -68,7 +68,7 @@ flowchart TB
 |---|---|---|---|
 | Quy trình Agile | Product Backlog, kế hoạch sprint, DoR/DoD, biên bản | Sprint 1, cập nhật mỗi sprint | [00a_QuyTrinhAgile.md](00a_QuyTrinhAgile.md) |
 | 1. Khảo sát hiện trạng | Quy trình QA hiện tại, vấn đề, nhu cầu | Sprint 1; bổ sung qua Sprint Review | [01_KhaoSatHienTrang.md](01_KhaoSatHienTrang.md) |
-| 2. Xác định yêu cầu | YC1–YC12, BM, QĐ, yêu cầu phi chức năng | Tổng quát ở Sprint 1, chi tiết theo từng sprint | [02_DacTaYeuCau.md](02_DacTaYeuCau.md) |
+| 2. Xác định yêu cầu | YC1–YC13, BM, QĐ, yêu cầu phi chức năng | Tổng quát ở Sprint 1, chi tiết theo từng sprint | [02_DacTaYeuCau.md](02_DacTaYeuCau.md) |
 | 3. Phân tích | Use case, đặc tả, DFD, hoạt động, trạng thái | Mỗi sprint cho các story của sprint | [03_PhanTich.md](03_PhanTich.md) |
 | 4. Thiết kế | Kiến trúc, ERD, class, sequence, giao diện, API, bảo mật | Kiến trúc ở Sprint 1, chi tiết mỗi sprint | [04_ThietKe.md](04_ThietKe.md) |
 | 5. Cài đặt | Mã nguồn, Git flow | Mỗi sprint | [05_CaiDat.md](05_CaiDat.md) |
@@ -83,7 +83,7 @@ flowchart TB
 | 1 | 1 | Hiểu bài toán, sẵn sàng phát triển (khảo sát, backlog, kiến trúc, repo + CI); người dùng đăng nhập theo vai trò và lập được user story | 13 |
 | 2 | 2 | AI sinh được test case an toàn từ user story *(rủi ro cao nhất, làm sớm)*; test case được sửa và lưu phiên bản | 22 |
 | 3 | 3 | Test case được duyệt, chạy thủ công, tra cứu và xem được báo cáo | 18 |
-| 4 | 4 | Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được | 19 |
+| 4 | 4 | Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được; Developer báo đã sửa lỗi | 22 |
 | 5 | 5 | Quản lý sprint trong hệ thống, nhập/xuất, Docker; hoàn thiện tài liệu, slide; bảo vệ cuối tuần (Sprint Review cuối cùng) | 16 |
 
 Danh sách story của từng sprint, ước lượng và Definition of Done: [Chương 0A](00a_QuyTrinhAgile.md). Mỗi sprint có biên bản Planning, Review, Retrospective và Daily log làm minh chứng.
