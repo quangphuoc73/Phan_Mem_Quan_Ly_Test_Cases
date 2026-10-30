@@ -41,20 +41,19 @@ flowchart LR
 
 ### Sơ đồ tổ chức
 
-Sơ đồ được vẽ bằng **draw.io** (file gốc: `docs/hientrang/SoDoToChuc.drawio`, sinh bằng `python3 docs/hientrang/generate_hientrang.py`). Các luồng được đánh số theo thứ tự công việc; luồng nét đứt là việc Tester, Automation Tester đang tự dùng AI bên ngoài.
-
-![Sơ đồ tổ chức đội QA (hiện trạng)](hientrang/SoDoToChuc.svg)
-
-Thứ tự luồng công việc trong một sprint:
-
-1. Khách hàng gửi yêu cầu cho Product Owner / BA.
-2. Product Owner / BA viết user story, chuyển cho QA Lead và Developer.
-3. QA Lead phân công: Tester viết test case, Automation Tester viết script tự động. Developer lập trình song song.
-4. Developer bàn giao bản build lên môi trường test.
-5. Tester chạy test case, Automation Tester chạy script trên bản build; gặp lỗi thì báo lỗi cho Developer. Developer sửa lỗi rồi quay lại bước (4) với bản build mới; vòng (4) ↔ (5) lặp lại đến khi hết lỗi nghiêm trọng.
-6. Tester, Automation Tester gửi kết quả cho QA Lead.
-7. QA Lead tổng hợp báo cáo chất lượng gửi khách hàng.
-8. Product Owner / BA bàn giao sản phẩm, khách hàng nghiệm thu.
+```mermaid
+flowchart TD
+    KH["Khách hàng<br/>(đối tác bên ngoài)"] <-->|"yêu cầu, nghiệm thu"| PM
+    PM["Product Owner / BA<br/>Viết user story"] --> QAL["QA Lead<br/>Phân công, duyệt test case, báo cáo"]
+    PM --> DEV["Developer<br/>Lập trình, sửa lỗi"]
+    QAL --> T1["Tester<br/>Viết & chạy test case"]
+    QAL --> T2["Automation Tester<br/>Viết script tự động"]
+    QAL -->|"báo cáo chất lượng"| KH
+    T1 -->|Báo lỗi| DEV
+    T2 -->|Báo lỗi| DEV
+    AI["Nhà cung cấp AI<br/>(đối tác bên ngoài)"] -. "dịch vụ LLM" .- T1
+    AI -. "dịch vụ LLM" .- T2
+```
 
 ### Các bộ phận và giao tiếp với bên ngoài
 
@@ -66,7 +65,7 @@ Theo môn học, cần **chú trọng các bộ phận có giao tiếp với đ�
 | QA Lead | Phân công, duyệt test case, tổng hợp báo cáo chất lượng | **Có** – gửi báo cáo chất lượng cho khách hàng mỗi sprint |
 | Tester | Viết test case, chạy test thủ công, ghi kết quả | **Có** – đang tự dùng dịch vụ AI bên ngoài (ChatGPT) để viết test case, có nguy cơ lộ dữ liệu |
 | Automation Tester | Viết script kiểm thử tự động | **Có** – tự dùng ChatGPT / GitHub Copilot để viết, sửa script; có thể dán cả URL nội bộ, tài khoản test vào prompt |
-| Developer | Lập trình, sửa lỗi theo bug Tester báo; bàn giao bản build mới cho Tester, Automation Tester kiểm thử lại | Không |
+| Developer | Lập trình, sửa lỗi theo bug Tester báo | Không |
 
 ## 1.4. Hiện trạng nghiệp vụ
 
@@ -96,16 +95,20 @@ Theo môn học, cần **chú trọng các bộ phận có giao tiếp với đ�
 
 ### Quy trình hiện tại
 
-Sơ đồ hoạt động chia làn theo bộ phận, vẽ bằng **draw.io** (file gốc: `docs/hientrang/QuyTrinhHienTai.drawio`). Mỗi hoạt động ghi mã nghiệp vụ tương ứng ở bảng trên; thanh đen là chỗ các bộ phận làm song song hoặc chờ nhau.
-
-![Quy trình kiểm thử hiện tại của đội QA](hientrang/QuyTrinhHienTai.svg)
-
-Một sprint diễn ra như sau:
-
-- **Đầu sprint:** PO/BA tạo user story trên Jira; QA Lead lập kế hoạch và phân công. Sau đó Tester viết test case, còn Developer lập trình song song.
-- **Duyệt test case:** Tester gửi file Excel qua chat/email. Nếu chưa đạt, QA Lead nhận xét qua chat (không lưu vết) và Tester sửa đè file rồi gửi lại.
-- **Kiểm thử:** cần đủ hai điều kiện là test case đã được duyệt và Developer đã bàn giao bản build. Khi đó Tester chạy test thủ công, còn Automation Tester đọc lại test case trên Excel để viết script (làm hai lần cùng một việc). Gặp lỗi thì Tester tạo bug trên Jira, Developer sửa và bàn giao bản build mới để chạy lại.
-- **Cuối sprint:** khi Tester hết lỗi và script đã chạy xong, QA Lead tổng hợp báo cáo bằng tay từ nhiều file Excel và gửi khách hàng.
+```mermaid
+flowchart TD
+    S([Bắt đầu sprint]) --> A["BA tạo user story trên Jira"]
+    A --> B["Tester đọc user story, viết test case thủ công trên Excel"]
+    B --> C["Gửi file Excel cho QA Lead qua chat/email"]
+    C --> D{"QA Lead xem"}
+    D -->|Chưa đạt| E["Ghi nhận xét vào file hoặc nhắn tin"] --> B
+    D -->|Đạt| F["Tester chạy test thủ công, tô màu kết quả trên Excel"]
+    F --> G{"Có lỗi?"}
+    G -->|Có| H["Tạo bug trên Jira"] --> F
+    G -->|Không| I["Automation Tester viết lại test case thành script"]
+    I --> J["QA Lead tổng hợp báo cáo bằng tay"]
+    J --> K([Kết thúc sprint])
+```
 
 ### Mẫu biểu đang dùng
 
