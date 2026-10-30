@@ -34,7 +34,7 @@ Các mô hình ngôn ngữ lớn (LLM) có thể sinh bản nháp test case tron
 
 **Trong phạm vi:**
 
-- Quản lý người dùng, phân quyền 4 vai trò: Admin, QA Lead, Tester, Developer.
+- Quản lý người dùng, phân quyền 5 vai trò: Admin, QA Lead, PO/BA, Tester, Developer.
 - Quản lý dự án, module, user story (nhập tay hoặc nhập từ file CSV/JSON).
 - AI sinh test case từ user story và acceptance criteria.
 - Soạn thảo, lưu lịch sử phiên bản, gửi duyệt, duyệt/trả lại test case.

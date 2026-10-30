@@ -7,6 +7,7 @@ const { AppError, forbidden } = require('../utils/errors');
 const ROLES = {
   ADMIN: 'ADMIN',
   QA_LEAD: 'QA_LEAD',
+  PO_BA: 'PO_BA', // Product Owner / Business Analyst: viết user story, lập kế hoạch sprint
   TESTER: 'TESTER',
   DEVELOPER: 'DEVELOPER',
 };
@@ -15,10 +16,10 @@ const ROLES = {
 const PERMISSIONS = {
   'user:manage': ['ADMIN'],
   'project:manage': ['ADMIN'],
-  'sprint:manage': ['ADMIN', 'QA_LEAD'], // lập kế hoạch sprint (vai trò Product Owner / Scrum Master)
+  'sprint:manage': ['ADMIN', 'QA_LEAD', 'PO_BA'], // lập kế hoạch sprint (Product Owner, Scrum Master)
   'param:update': ['ADMIN', 'QA_LEAD'],
   'audit:view': ['ADMIN', 'QA_LEAD'],
-  'story:write': ['ADMIN', 'QA_LEAD', 'TESTER'],
+  'story:write': ['ADMIN', 'QA_LEAD', 'TESTER', 'PO_BA'],
   'testcase:write': ['QA_LEAD', 'TESTER'],
   'testcase:review': ['QA_LEAD'], // QĐ4: chỉ QA Lead được duyệt
   'ai:use': ['QA_LEAD', 'TESTER'],

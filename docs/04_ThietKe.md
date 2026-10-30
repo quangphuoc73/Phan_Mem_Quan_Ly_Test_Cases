@@ -406,7 +406,7 @@ Acceptance criteria: ...
 | MH11 | Dự án & module | Admin | Tạo dự án, khai báo URL cần test, thêm module |
 | MH12 | Người dùng | Admin | Thêm, khóa/mở khóa, ma trận phân quyền |
 | MH13 | Nhật ký hoạt động | Admin, QA Lead | Audit log |
-| MH14 | Sprint (Agile) | Tất cả (tạo sprint: Admin, QA Lead) | Chọn sprint, Sprint Goal, bảng 4 cột theo DoD, burndown, velocity, Product backlog và đưa story vào sprint |
+| MH14 | Sprint (Agile) | Tất cả (tạo sprint: Admin, QA Lead, PO/BA) | Chọn sprint, Sprint Goal, bảng 4 cột theo DoD, burndown, velocity, Product backlog và đưa story vào sprint |
 
 **Sơ đồ chuyển màn hình:**
 

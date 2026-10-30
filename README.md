@@ -32,6 +32,7 @@ docker compose up --build
 |---|---|---|
 | Admin | `admin` | `Admin@123` |
 | QA Lead | `qalead` | `QaLead@123` |
+| PO / BA | `poba` | `PoBa@1234` |
 | Tester | `tester` | `Tester@123` |
 | Developer | `dev` | `Dev@123456` |
 
@@ -47,6 +48,7 @@ Mặc định AI chạy chế độ **mock** (offline, không cần API key). D�
 | `docs/agile/ProductBacklog.csv` | Product Backlog để nhập vào Jira/Trello |
 | `docs/00…09_*.md` | Từng chương: kế hoạch, khảo sát, yêu cầu, phân tích, thiết kế, cài đặt, kiểm thử, triển khai, **kịch bản demo**, hướng phát triển |
 | `docs/hientrang/` | Sơ đồ tổ chức và quy trình hiện tại (draw.io), sinh bằng `python3 docs/hientrang/generate_hientrang.py` |
+| `docs/usecase/` | Sơ đồ use case tổng quát (draw.io), sinh bằng `python3 docs/usecase/generate_usecase.py` |
 | `docs/dfd/` | 13 sơ đồ DFD + sơ đồ phối hợp (draw.io), sinh bằng `python3 docs/dfd/generate_dfd.py` |
 | `docs/erd/` | Sơ đồ ERD (draw.io) sinh từ `app/src/db/schema.sql` bằng `python3 docs/erd/generate_erd.py` |
 | `docs/images/` | Ảnh chụp màn hình hệ thống |
@@ -59,7 +61,7 @@ Mặc định AI chạy chế độ **mock** (offline, không cần API key). D�
 ## Kiểm thử
 
 ```bash
-cd app && npm test             # 55 unit + API test
+cd app && npm test             # 58 unit + API test
 cd app && npm run test:e2e     # 9 kịch bản E2E bằng Playwright
 cd automation && npm run test:samples   # 8 test Playwright mẫu trên saucedemo.com
 ```

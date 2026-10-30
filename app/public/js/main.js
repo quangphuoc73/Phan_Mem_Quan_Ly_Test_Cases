@@ -92,7 +92,7 @@ function renderLogin() {
         <button class="btn primary" style="width:100%;justify-content:center" type="submit" id="login-btn">Đăng nhập</button>
         <p class="hint mt">Tài khoản demo (bấm để điền nhanh):</p>
         <div class="demo-accounts">
-          ${[['admin', 'Admin@123', 'Admin'], ['qalead', 'QaLead@123', 'QA Lead'], ['tester', 'Tester@123', 'Tester'], ['dev', 'Dev@123456', 'Developer']]
+          ${[['admin', 'Admin@123', 'Admin'], ['qalead', 'QaLead@123', 'QA Lead'], ['poba', 'PoBa@1234', 'PO / BA'], ['tester', 'Tester@123', 'Tester'], ['dev', 'Dev@123456', 'Developer']]
             .map(([u, p, r]) => `<button type="button" class="btn sm" data-u="${u}" data-p="${p}"><b>${r}</b>&nbsp;<span class="muted">${u}</span></button>`).join('')}
         </div>
       </form>

@@ -17,7 +17,7 @@ const userSchema = z.object({
   username: z.string().trim().regex(/^[a-z0-9_.]{3,30}$/, 'Tên đăng nhập 3–30 ký tự: a-z, 0-9, _ .'),
   full_name: z.string().trim().min(2).max(100),
   email: z.string().trim().email('Email không hợp lệ').optional().or(z.literal('')),
-  role: z.enum(['ADMIN', 'QA_LEAD', 'TESTER', 'DEVELOPER']),
+  role: z.enum(['ADMIN', 'QA_LEAD', 'PO_BA', 'TESTER', 'DEVELOPER']),
   password: z.string().min(8, 'Mật khẩu tối thiểu 8 ký tự').max(100),
 });
 

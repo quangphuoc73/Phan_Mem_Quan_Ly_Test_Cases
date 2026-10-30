@@ -3,6 +3,7 @@ const { expect } = require('@playwright/test');
 const ACCOUNTS = {
   admin: 'Admin@123',
   qalead: 'QaLead@123',
+  poba: 'PoBa@1234',
   tester: 'Tester@123',
   dev: 'Dev@123456',
 };

@@ -87,6 +87,7 @@ Chưa khai báo thì CI dùng giá trị mặc định cho Sauce Demo. CI luôn 
 |---|---|---|
 | Admin | `admin` | `Admin@123` |
 | QA Lead | `qalead` | `QaLead@123` |
+| PO / BA | `poba` | `PoBa@1234` |
 | Tester | `tester` | `Tester@123` |
 | Developer | `dev` | `Dev@123456` |
 
@@ -111,7 +112,9 @@ Dữ liệu mẫu: dự án **PETINS – App bảo hiểm thú cưng** (hư cấ
 4. *Thay đổi quy định*: sửa số test case tối đa, số lần gọi AI/giờ… → *Lưu*. Có hiệu lực ngay.
 5. *Tổng quan & báo cáo*: theo dõi tỷ lệ pass, độ bao phủ, story chưa có test case, hiệu quả AI.
 
-### QA Lead – lập kế hoạch sprint (Agile/Scrum)
+### PO / BA, QA Lead – lập user story và kế hoạch sprint (Agile/Scrum)
+
+PO/BA lập user story (menu *User story* → *＋ Lập user story* hoặc *⬆️ Nhập từ file*) với acceptance criteria rõ ràng, rồi cùng QA Lead lập kế hoạch sprint:
 
 1. Chọn dự án ở thanh trên cùng → menu *Sprint (Agile)*.
 2. *＋ Tạo sprint*: nhập tên, Sprint Goal, ngày bắt đầu/kết thúc (tối đa 28 ngày, không trùng sprint khác).

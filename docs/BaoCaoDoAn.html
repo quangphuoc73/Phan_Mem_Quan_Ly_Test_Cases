@@ -103,7 +103,7 @@
 <h2>0.4. Phạm vi</h2>
 <p><strong>Trong phạm vi:</strong></p>
 <ul>
-<li>Quản lý người dùng, phân quyền 4 vai trò: Admin, QA Lead, Tester, Developer.</li>
+<li>Quản lý người dùng, phân quyền 5 vai trò: Admin, QA Lead, PO/BA, Tester, Developer.</li>
 <li>Quản lý dự án, module, user story (nhập tay hoặc nhập từ file CSV/JSON).</li>
 <li>AI sinh test case từ user story và acceptance criteria.</li>
 <li>Soạn thảo, lưu lịch sử phiên bản, gửi duyệt, duyệt/trả lại test case.</li>
@@ -1513,11 +1513,15 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>QA Lead</td>
-<td>Trưởng nhóm kiểm thử: duyệt/trả lại test case, xem báo cáo, thay đổi quy định, lập kế hoạch sprint (đóng vai Product Owner/Scrum Master của đội QA); có toàn bộ quyền của Tester</td>
+<td>Trưởng nhóm kiểm thử: duyệt/trả lại test case, xem báo cáo, thay đổi quy định, lập kế hoạch sprint (vai trò Scrum Master); có toàn bộ quyền của Tester</td>
+</tr>
+<tr>
+<td>PO / BA</td>
+<td>Product Owner / Business Analyst: lập và nhập user story kèm acceptance criteria (NV1), lập kế hoạch sprint, xem test case và báo cáo để nghiệm thu; không viết, duyệt hay chạy test case, không gọi AI</td>
 </tr>
 <tr>
 <td>Tester</td>
-<td>Lập user story, dùng AI sinh test case, chỉnh sửa, gửi duyệt, chạy test, sinh và chạy script tự động</td>
+<td>Lập user story (khi đội không có BA), dùng AI sinh test case, chỉnh sửa, gửi duyệt, chạy test, sinh và chạy script tự động</td>
 </tr>
 <tr>
 <td>Developer</td>
@@ -2300,47 +2304,44 @@ Velocity thực tế: __ SP
 <p>Sản phẩm của giai đoạn: <strong>mô hình thế giới thực</strong> – sơ đồ use case, đặc tả use case, sơ đồ luồng dữ liệu (DFD) cho từng yêu cầu, sơ đồ hoạt động và sơ đồ trạng thái.</p>
 </blockquote>
 <h2>3.1. Sơ đồ use case tổng quát</h2>
-<pre class="mermaid">flowchart LR
-    Admin(["Admin"])
-    QA(["QA Lead"])
-    T(["Tester"])
-    Dev(["Developer"])
-    LLM[["Dịch vụ LLM"]]
-    PW[["Playwright Worker"]]
-
-    subgraph SYS["AI TestCase Manager"]
-        direction TB
-        UC01([UC01 Đăng nhập])
-        UC02([UC02 Quản lý người dùng])
-        UC03([UC03 Quản lý dự án, module])
-        UC04([UC04 Lập user story])
-        UC05([UC05 Nhập user story từ file])
-        UC06([UC06 Sinh test case bằng AI])
-        UC07([UC07 Soạn thảo test case])
-        UC08([UC08 Gửi duyệt])
-        UC09([UC09 Duyệt / trả lại])
-        UC10([UC10 Ghi kết quả chạy test])
-        UC11([UC11 Sinh script Playwright])
-        UC12([UC12 Chạy script tự động])
-        UC13([UC13 Tra cứu test case])
-        UC14([UC14 Xuất Excel])
-        UC15([UC15 Xem báo cáo])
-        UC16([UC16 Thay đổi quy định])
-        UC17([UC17 Xem nhật ký AI])
-        UC18([UC18 Xem nhật ký hoạt động])
-        UC19([UC19 Quản lý sprint, Sprint Planning])
-    end
-
-    Admin --- UC02 &amp; UC03 &amp; UC16 &amp; UC18
-    T --- UC04 &amp; UC05 &amp; UC06 &amp; UC07 &amp; UC08 &amp; UC10 &amp; UC11 &amp; UC12 &amp; UC17
-    QA --- UC09 &amp; UC16 &amp; UC18 &amp; UC19
-    QA -. kế thừa quyền .-&gt; T
-    Dev --- UC13 &amp; UC15
-    T --- UC13 &amp; UC14 &amp; UC15
-    UC06 --- LLM
-    UC11 --- LLM
-    UC12 --- PW</pre><blockquote>
-<p>Mọi use case (trừ UC01) đều yêu cầu đã đăng nhập (<code>&lt;&lt;include&gt;&gt; UC01</code>). QA Lead có toàn bộ quyền của Tester và thêm quyền duyệt.</p>
+<p>Sơ đồ được vẽ bằng <strong>draw.io</strong> theo ký hiệu UML (file gốc: <code>docs/usecase/UseCaseTongQuat.drawio</code>, sinh bằng <code>python3 docs/usecase/generate_usecase.py</code>). Quyền của từng tác nhân khớp với bảng 3.2 và ma trận phân quyền trong code (<code>app/src/middleware/auth.js</code>).</p>
+<p><img src="usecase/UseCaseTongQuat.svg" alt="Sơ đồ use case tổng quát – AI TestCase Manager"></p>
+<table>
+<thead>
+<tr>
+<th>Ký hiệu</th>
+<th>Ý nghĩa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hình người</td>
+<td>Tác nhân (người dùng theo vai trò)</td>
+</tr>
+<tr>
+<td>Hình elip</td>
+<td>Use case (chức năng của hệ thống)</td>
+</tr>
+<tr>
+<td>Hình chữ nhật «hệ thống ngoài»</td>
+<td>Hệ thống bên ngoài mà use case gọi tới</td>
+</tr>
+<tr>
+<td>Đường thẳng</td>
+<td>Tác nhân thực hiện use case</td>
+</tr>
+<tr>
+<td>Mũi tên tam giác rỗng</td>
+<td><strong>Tổng quát hóa</strong>: tác nhân con có mọi use case của tác nhân cha</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Người dùng</strong> là tác nhân chung: mọi vai trò đều đăng nhập, tra cứu test case, xuất Excel và xem báo cáo. Admin, PO/BA, Developer, Tester tổng quát hóa thành Người dùng; Developer chỉ có các use case này.</li>
+<li><strong>PO / BA</strong> lập, nhập user story (UC04, UC05) và lập kế hoạch sprint (UC19); không viết, duyệt, chạy test case và không gọi AI.</li>
+<li><strong>QA Lead</strong> tổng quát hóa thành <strong>Tester</strong>: có toàn bộ quyền của Tester, thêm quyền duyệt test case (UC09), thay đổi quy định (UC16), xem nhật ký hoạt động (UC18) và quản lý sprint (UC19).</li>
+<li>Ở UC19, Tester chỉ đưa story vào sprint và xem bảng sprint; tạo, sửa sprint do PO/BA, QA Lead, Admin thực hiện.</li>
+</ul>
+<blockquote>
+<p>Mọi use case (trừ UC01) đều yêu cầu đã đăng nhập (<code>&lt;&lt;include&gt;&gt; UC01</code>).</p>
 </blockquote>
 <h2>3.2. Danh sách use case</h2>
 <table>
@@ -2373,13 +2374,13 @@ Velocity thực tế: __ SP
 <tr>
 <td>UC04</td>
 <td>Lập, sửa, xóa user story</td>
-<td>Tester, QA Lead, Admin</td>
+<td>PO/BA, Tester, QA Lead, Admin</td>
 <td>YC1</td>
 </tr>
 <tr>
 <td>UC05</td>
 <td>Nhập user story từ file CSV/JSON</td>
-<td>Tester, QA Lead, Admin</td>
+<td>PO/BA, Tester, QA Lead, Admin</td>
 <td>YC8</td>
 </tr>
 <tr>
@@ -2463,7 +2464,7 @@ Velocity thực tế: __ SP
 <tr>
 <td>UC19</td>
 <td>Quản lý sprint: tạo sprint, đưa story từ backlog vào sprint, xem bảng sprint, burndown, velocity</td>
-<td>QA Lead, Admin (Tester: đưa story vào sprint, xem)</td>
+<td>PO/BA, QA Lead, Admin (Tester: đưa story vào sprint, xem)</td>
 <td>YC12</td>
 </tr>
 </tbody></table>
@@ -2639,7 +2640,7 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>Tác nhân</td>
-<td>QA Lead (vai trò Product Owner / Scrum Master của đội QA)</td>
+<td>PO/BA (Product Owner), QA Lead (Scrum Master), Admin</td>
 </tr>
 <tr>
 <td>Tiền điều kiện</td>
@@ -4215,7 +4216,7 @@ Acceptance criteria: ...
 <tr>
 <td>MH14</td>
 <td>Sprint (Agile)</td>
-<td>Tất cả (tạo sprint: Admin, QA Lead)</td>
+<td>Tất cả (tạo sprint: Admin, QA Lead, PO/BA)</td>
 <td>Chọn sprint, Sprint Goal, bảng 4 cột theo DoD, burndown, velocity, Product backlog và đưa story vào sprint</td>
 </tr>
 </tbody></table>
@@ -5045,8 +5046,23 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <td>Báo cáo lọc theo sprint, trả velocity các sprint</td>
 <td>Pass</td>
 </tr>
+<tr>
+<td>IT-43</td>
+<td>PO/BA lập được user story và tạo sprint</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>IT-44</td>
+<td>PO/BA không viết, duyệt, chạy test case, không gọi AI, không đổi quy định → 403</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>IT-45</td>
+<td>PO/BA xem được test case, báo cáo; Admin tạo được tài khoản PO/BA</td>
+<td>Pass</td>
+</tr>
 </tbody></table>
-<p><strong>Kết quả:</strong> <code>55 tests, 55 pass, 0 fail</code> (Node.js 21, macOS, 20/10/2026).</p>
+<p><strong>Kết quả:</strong> <code>58 tests, 58 pass, 0 fail</code> (Node.js 21, macOS, 30/10/2026).</p>
 <h2>6.3. Kiểm thử E2E bằng Playwright</h2>
 <p>Chạy: <code>cd app &amp;&amp; npm run test:e2e</code> (Playwright tự khởi động server ở cổng 3100 với CSDL riêng <code>data/e2e.db</code>; xem báo cáo HTML: <code>npx playwright show-report e2e-report</code>).</p>
 <p><strong>Kỹ thuật áp dụng:</strong></p>
@@ -5629,6 +5645,11 @@ npm install
 <td><code>QaLead@123</code></td>
 </tr>
 <tr>
+<td>PO / BA</td>
+<td><code>poba</code></td>
+<td><code>PoBa@1234</code></td>
+</tr>
+<tr>
 <td>Tester</td>
 <td><code>tester</code></td>
 <td><code>Tester@123</code></td>
@@ -5658,7 +5679,8 @@ npm install
 <li><em>Thay đổi quy định</em>: sửa số test case tối đa, số lần gọi AI/giờ… → <em>Lưu</em>. Có hiệu lực ngay.</li>
 <li><em>Tổng quan &amp; báo cáo</em>: theo dõi tỷ lệ pass, độ bao phủ, story chưa có test case, hiệu quả AI.</li>
 </ol>
-<h3>QA Lead – lập kế hoạch sprint (Agile/Scrum)</h3>
+<h3>PO / BA, QA Lead – lập user story và kế hoạch sprint (Agile/Scrum)</h3>
+<p>PO/BA lập user story (menu <em>User story</em> → <em>＋ Lập user story</em> hoặc <em>⬆️ Nhập từ file</em>) với acceptance criteria rõ ràng, rồi cùng QA Lead lập kế hoạch sprint:</p>
 <ol>
 <li>Chọn dự án ở thanh trên cùng → menu <em>Sprint (Agile)</em>.</li>
 <li><em>＋ Tạo sprint</em>: nhập tên, Sprint Goal, ngày bắt đầu/kết thúc (tối đa 28 ngày, không trùng sprint khác).</li>
@@ -5848,7 +5870,7 @@ npm install
 <tr>
 <td>12</td>
 <td>8:45</td>
-<td>Terminal: <code>npm test</code> (55 pass) và <code>npm run test:e2e</code> (Playwright mở Chrome, 9 pass)</td>
+<td>Terminal: <code>npm test</code> (58 pass) và <code>npm run test:e2e</code> (Playwright mở Chrome, 9 pass)</td>
 <td>&quot;Kiểm thử tự động 3 tầng, chạy trên GitHub Actions mỗi lần push.&quot;</td>
 <td>Chất lượng</td>
 </tr>
@@ -5950,7 +5972,7 @@ npm install
 </tr>
 <tr>
 <td>Kiểm thử tự động</td>
-<td>55 unit/API test, 9 E2E Playwright, 8 test Playwright mẫu (POM), script AI sinh chạy được trên web thật</td>
+<td>58 unit/API test, 9 E2E Playwright, 8 test Playwright mẫu (POM), script AI sinh chạy được trên web thật</td>
 </tr>
 <tr>
 <td>Triển khai</td>

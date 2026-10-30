@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash TEXT    NOT NULL,
   full_name     TEXT    NOT NULL,
   email         TEXT,
-  role          TEXT    NOT NULL CHECK (role IN ('ADMIN','QA_LEAD','TESTER','DEVELOPER')),
+  role          TEXT    NOT NULL CHECK (role IN ('ADMIN','QA_LEAD','PO_BA','TESTER','DEVELOPER')),
   active        INTEGER NOT NULL DEFAULT 1,
   created_at    TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
 );

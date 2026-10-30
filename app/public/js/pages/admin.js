@@ -85,9 +85,10 @@ export async function renderUsers(page) {
         <td>${u.id !== state.user.id ? `<button class="btn sm" data-toggle="${u.id}" data-active="${u.active}">${u.active ? 'Khóa' : 'Mở khóa'}</button>` : ''}</td></tr>`).join('')}</tbody>
     </table></div>
     <div class="card mt"><h3>Ma trận phân quyền</h3>
-      <div class="table-wrap"><table><thead><tr><th>Chức năng</th><th>Admin</th><th>QA Lead</th><th>Tester</th><th>Developer</th></tr></thead><tbody>
-      ${[['Quản lý người dùng, dự án', 1, 0, 0, 0], ['Lập user story', 1, 1, 1, 0], ['Sinh test case / script bằng AI', 0, 1, 1, 0], ['Sửa, gửi duyệt test case', 0, 1, 1, 0],
-         ['Duyệt test case (QĐ4)', 0, 1, 0, 0], ['Ghi kết quả, chạy tự động', 0, 1, 1, 0], ['Thay đổi quy định', 1, 1, 0, 0], ['Xem báo cáo, tra cứu', 1, 1, 1, 1]]
+      <div class="table-wrap"><table><thead><tr><th>Chức năng</th><th>Admin</th><th>QA Lead</th><th>PO / BA</th><th>Tester</th><th>Developer</th></tr></thead><tbody>
+      ${[['Quản lý người dùng, dự án', 1, 0, 0, 0, 0], ['Lập user story', 1, 1, 1, 1, 0], ['Lập kế hoạch sprint', 1, 1, 1, 0, 0],
+         ['Sinh test case / script bằng AI', 0, 1, 0, 1, 0], ['Sửa, gửi duyệt test case', 0, 1, 0, 1, 0], ['Duyệt test case (QĐ4)', 0, 1, 0, 0, 0],
+         ['Ghi kết quả, chạy tự động', 0, 1, 0, 1, 0], ['Thay đổi quy định', 1, 1, 0, 0, 0], ['Xem báo cáo, tra cứu', 1, 1, 1, 1, 1]]
         .map(([n, ...r]) => `<tr><td>${n}</td>${r.map((x) => `<td>${x ? '✅' : '—'}</td>`).join('')}</tr>`).join('')}
       </tbody></table></div></div>`;
   bind(page, '[data-toggle]', 'click', async (_e, b) => {
@@ -105,7 +106,7 @@ export async function renderUsers(page) {
         <div class="field"><label>Tên đăng nhập *</label><input name="username" required></div>
         <div class="field"><label>Họ tên *</label><input name="full_name" required></div>
         <div class="field"><label>Email</label><input name="email" type="email"></div>
-        <div class="field"><label>Vai trò</label><select name="role">${options(['TESTER', 'QA_LEAD', 'DEVELOPER', 'ADMIN'], 'TESTER')}</select></div>
+        <div class="field"><label>Vai trò</label><select name="role">${options(['TESTER', 'QA_LEAD', 'PO_BA', 'DEVELOPER', 'ADMIN'], 'TESTER')}</select></div>
         <div class="field"><label>Mật khẩu * <span class="hint">(tối thiểu 8 ký tự)</span></label><input name="password" type="password" minlength="8" required autocomplete="new-password"></div></form>`,
       foot: '<button class="btn" data-close>Hủy</button><button class="btn primary" id="u-save">Tạo</button>',
     });

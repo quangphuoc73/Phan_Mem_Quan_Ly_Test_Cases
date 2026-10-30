@@ -16,8 +16,9 @@ Theo môn học, yêu cầu phần mềm được lập theo thứ tự **nghi�
 | Tác nhân | Mô tả |
 |---|---|
 | Admin | Quản trị hệ thống: tài khoản, phân quyền, dự án, module, quy định |
-| QA Lead | Trưởng nhóm kiểm thử: duyệt/trả lại test case, xem báo cáo, thay đổi quy định, lập kế hoạch sprint (đóng vai Product Owner/Scrum Master của đội QA); có toàn bộ quyền của Tester |
-| Tester | Lập user story, dùng AI sinh test case, chỉnh sửa, gửi duyệt, chạy test, sinh và chạy script tự động |
+| QA Lead | Trưởng nhóm kiểm thử: duyệt/trả lại test case, xem báo cáo, thay đổi quy định, lập kế hoạch sprint (vai trò Scrum Master); có toàn bộ quyền của Tester |
+| PO / BA | Product Owner / Business Analyst: lập và nhập user story kèm acceptance criteria (NV1), lập kế hoạch sprint, xem test case và báo cáo để nghiệm thu; không viết, duyệt hay chạy test case, không gọi AI |
+| Tester | Lập user story (khi đội không có BA), dùng AI sinh test case, chỉnh sửa, gửi duyệt, chạy test, sinh và chạy script tự động |
 | Developer | Chỉ xem test case, kết quả và báo cáo để tái hiện và sửa lỗi |
 | Dịch vụ LLM (hệ thống ngoài) | Gemini / Claude / OpenAI: nhận prompt đã che dữ liệu nhạy cảm, trả JSON |
 | Playwright Worker (hệ thống ngoài) | Chạy script kiểm thử tự động trên trình duyệt, trả kết quả và ảnh chụp lỗi |

@@ -88,8 +88,11 @@ Chạy: `cd app && npm test`
 | IT-40 | Definition of Done và velocity: Sprint 1 hoàn thành 5/13 SP | Pass |
 | IT-41 | Burndown: 1 điểm/ngày, đường lý tưởng giảm về 0 | Pass |
 | IT-42 | Báo cáo lọc theo sprint, trả velocity các sprint | Pass |
+| IT-43 | PO/BA lập được user story và tạo sprint | Pass |
+| IT-44 | PO/BA không viết, duyệt, chạy test case, không gọi AI, không đổi quy định → 403 | Pass |
+| IT-45 | PO/BA xem được test case, báo cáo; Admin tạo được tài khoản PO/BA | Pass |
 
-**Kết quả:** `55 tests, 55 pass, 0 fail` (Node.js 21, macOS, 20/10/2026).
+**Kết quả:** `58 tests, 58 pass, 0 fail` (Node.js 21, macOS, 30/10/2026).
 
 ## 6.3. Kiểm thử E2E bằng Playwright
 

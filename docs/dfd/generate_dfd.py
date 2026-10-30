@@ -43,7 +43,7 @@ NONE = 'Không có'
 # ---------------------------------------------------------------------------
 DFDS = [
     dict(file='YC01_LapUserStory', title='DFD YC1 – Lập user story', process='Lập user story',
-         user='Tester', bm='BM1', qd='QĐ1',
+         user='PO/BA, Tester', bm='BM1', qd='QĐ1',
          d={'D1': 'Mã user story, dự án, module, tiêu đề, mô tả, các acceptance criteria, độ ưu tiên.',
             'D3': 'Danh sách mã user story đã có; danh sách dự án, module; tham số MIN_AC_PER_STORY, PRIORITIES.',
             'D4': 'D1 + người tạo, ngày tạo.',
@@ -114,7 +114,7 @@ DFDS = [
             'D6': 'Danh sách test case thỏa điều kiện (BM6), hoặc thông báo không tìm thấy.'},
          check=['Ghép điều kiện D1 thành câu truy vấn có tham số (không nối chuỗi SQL) trước khi đọc D3.']),
     dict(file='YC08_NhapXuatDuLieu', svg='YC08a_NhapUserStory', title='DFD YC8a – Nhập user story từ file',
-         process='Nhập user story từ file', user='Tester', inp='File CSV / JSON', bm='BM7', qd='QĐ1, QĐ8', d2_first=True,
+         process='Nhập user story từ file', user='PO/BA, Tester', inp='File CSV / JSON', bm='BM7', qd='QĐ1, QĐ8', d2_first=True,
          d={'D1': 'Dự án nhận dữ liệu; lệnh chọn file.',
             'D2': 'Các dòng user story trong file (BM7).',
             'D3': 'Danh sách mã user story đã có; module của dự án; tham số MIN_AC_PER_STORY, PRIORITIES.',
@@ -162,7 +162,7 @@ DFDS = [
                 'Kiểm tra Admin không tự khóa hoặc tự hạ quyền chính mình?',
                 'Băm mật khẩu bằng bcrypt.']),
     dict(file='YC12_QuanLySprint', title='DFD YC12 – Quản lý sprint (Agile/Scrum)', process='Quản lý sprint',
-         user='QA Lead', bm='BM10', qd='QĐ12',
+         user='PO/BA, QA Lead', bm='BM10', qd='QĐ12',
          d={'D1': 'Tên, mục tiêu, ngày bắt đầu, ngày kết thúc sprint (BM10); user story đưa vào sprint và story point.',
             'D3': 'Các sprint hiện có của dự án; tham số SPRINT_MAX_DAYS; user story, test case Đã duyệt và kết quả chạy gần nhất.',
             'D4': 'Sprint mới / đã sửa; sprint_id, story_points của user story.',

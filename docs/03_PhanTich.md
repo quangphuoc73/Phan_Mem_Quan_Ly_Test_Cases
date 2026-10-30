@@ -4,50 +4,24 @@
 
 ## 3.1. Sơ đồ use case tổng quát
 
-```mermaid
-flowchart LR
-    Admin(["Admin"])
-    QA(["QA Lead"])
-    T(["Tester"])
-    Dev(["Developer"])
-    LLM[["Dịch vụ LLM"]]
-    PW[["Playwright Worker"]]
+Sơ đồ được vẽ bằng **draw.io** theo ký hiệu UML (file gốc: `docs/usecase/UseCaseTongQuat.drawio`, sinh bằng `python3 docs/usecase/generate_usecase.py`). Quyền của từng tác nhân khớp với bảng 3.2 và ma trận phân quyền trong code (`app/src/middleware/auth.js`).
 
-    subgraph SYS["AI TestCase Manager"]
-        direction TB
-        UC01([UC01 Đăng nhập])
-        UC02([UC02 Quản lý người dùng])
-        UC03([UC03 Quản lý dự án, module])
-        UC04([UC04 Lập user story])
-        UC05([UC05 Nhập user story từ file])
-        UC06([UC06 Sinh test case bằng AI])
-        UC07([UC07 Soạn thảo test case])
-        UC08([UC08 Gửi duyệt])
-        UC09([UC09 Duyệt / trả lại])
-        UC10([UC10 Ghi kết quả chạy test])
-        UC11([UC11 Sinh script Playwright])
-        UC12([UC12 Chạy script tự động])
-        UC13([UC13 Tra cứu test case])
-        UC14([UC14 Xuất Excel])
-        UC15([UC15 Xem báo cáo])
-        UC16([UC16 Thay đổi quy định])
-        UC17([UC17 Xem nhật ký AI])
-        UC18([UC18 Xem nhật ký hoạt động])
-        UC19([UC19 Quản lý sprint, Sprint Planning])
-    end
+![Sơ đồ use case tổng quát – AI TestCase Manager](usecase/UseCaseTongQuat.svg)
 
-    Admin --- UC02 & UC03 & UC16 & UC18
-    T --- UC04 & UC05 & UC06 & UC07 & UC08 & UC10 & UC11 & UC12 & UC17
-    QA --- UC09 & UC16 & UC18 & UC19
-    QA -. kế thừa quyền .-> T
-    Dev --- UC13 & UC15
-    T --- UC13 & UC14 & UC15
-    UC06 --- LLM
-    UC11 --- LLM
-    UC12 --- PW
-```
+| Ký hiệu | Ý nghĩa |
+|---|---|
+| Hình người | Tác nhân (người dùng theo vai trò) |
+| Hình elip | Use case (chức năng của hệ thống) |
+| Hình chữ nhật «hệ thống ngoài» | Hệ thống bên ngoài mà use case gọi tới |
+| Đường thẳng | Tác nhân thực hiện use case |
+| Mũi tên tam giác rỗng | **Tổng quát hóa**: tác nhân con có mọi use case của tác nhân cha |
 
-> Mọi use case (trừ UC01) đều yêu cầu đã đăng nhập (`<<include>> UC01`). QA Lead có toàn bộ quyền của Tester và thêm quyền duyệt.
+- **Người dùng** là tác nhân chung: mọi vai trò đều đăng nhập, tra cứu test case, xuất Excel và xem báo cáo. Admin, PO/BA, Developer, Tester tổng quát hóa thành Người dùng; Developer chỉ có các use case này.
+- **PO / BA** lập, nhập user story (UC04, UC05) và lập kế hoạch sprint (UC19); không viết, duyệt, chạy test case và không gọi AI.
+- **QA Lead** tổng quát hóa thành **Tester**: có toàn bộ quyền của Tester, thêm quyền duyệt test case (UC09), thay đổi quy định (UC16), xem nhật ký hoạt động (UC18) và quản lý sprint (UC19).
+- Ở UC19, Tester chỉ đưa story vào sprint và xem bảng sprint; tạo, sửa sprint do PO/BA, QA Lead, Admin thực hiện.
+
+> Mọi use case (trừ UC01) đều yêu cầu đã đăng nhập (`<<include>> UC01`).
 
 ## 3.2. Danh sách use case
 
@@ -56,8 +30,8 @@ flowchart LR
 | UC01 | Đăng nhập / đăng xuất / đổi mật khẩu | Tất cả | Bảo mật |
 | UC02 | Quản lý người dùng (thêm, khóa/mở khóa, phân vai trò) | Admin | YC11 |
 | UC03 | Quản lý dự án, module | Admin | YC11 |
-| UC04 | Lập, sửa, xóa user story | Tester, QA Lead, Admin | YC1 |
-| UC05 | Nhập user story từ file CSV/JSON | Tester, QA Lead, Admin | YC8 |
+| UC04 | Lập, sửa, xóa user story | PO/BA, Tester, QA Lead, Admin | YC1 |
+| UC05 | Nhập user story từ file CSV/JSON | PO/BA, Tester, QA Lead, Admin | YC8 |
 | UC06 | Sinh test case bằng AI | Tester, QA Lead | YC2 |
 | UC07 | Soạn thảo test case (thêm, sửa, xóa, xem lịch sử phiên bản) | Tester, QA Lead | YC3 |
 | UC08 | Gửi duyệt test case (đơn lẻ hoặc hàng loạt) | Tester, QA Lead | YC3 |
@@ -71,7 +45,7 @@ flowchart LR
 | UC16 | Thay đổi quy định | Admin, QA Lead | YC10 |
 | UC17 | Xem nhật ký AI | Tester, QA Lead, Admin | Truy vết |
 | UC18 | Xem nhật ký hoạt động | Admin, QA Lead | Bảo mật |
-| UC19 | Quản lý sprint: tạo sprint, đưa story từ backlog vào sprint, xem bảng sprint, burndown, velocity | QA Lead, Admin (Tester: đưa story vào sprint, xem) | YC12 |
+| UC19 | Quản lý sprint: tạo sprint, đưa story từ backlog vào sprint, xem bảng sprint, burndown, velocity | PO/BA, QA Lead, Admin (Tester: đưa story vào sprint, xem) | YC12 |
 
 ## 3.3. Đặc tả các use case chính
 
@@ -133,7 +107,7 @@ flowchart LR
 
 | Mục | Nội dung |
 |---|---|
-| Tác nhân | QA Lead (vai trò Product Owner / Scrum Master của đội QA) |
+| Tác nhân | PO/BA (Product Owner), QA Lead (Scrum Master), Admin |
 | Tiền điều kiện | Đã chọn dự án; có quyền `sprint:manage` |
 | Hậu điều kiện | Sprint mới được lưu; các user story được chọn chuyển từ Product backlog vào sprint |
 | Luồng chính | 1. Mở **Sprint (Agile)**, bấm **Tạo sprint**, nhập tên, Sprint Goal, ngày bắt đầu/kết thúc.<br>2. Hệ thống kiểm tra QĐ12 (độ dài, không trùng thời gian) và lưu.<br>3. Trong mục **Product backlog**, chọn sprint cho từng story và bấm **Đưa vào**.<br>4. Hệ thống kiểm tra story và sprint cùng dự án, cập nhật.<br>5. Bảng sprint hiển thị story theo 4 cột: *Cần viết test case → Đang soạn/chờ duyệt → Đang kiểm thử → Hoàn thành (DoD)*, cùng burndown và velocity. |
