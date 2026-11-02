@@ -1,4 +1,4 @@
-// UT-13 → UT-20: MockProvider, prompt, schema kết quả AI
+// UT-13 → UT-23: MockProvider, prompt, schema kết quả AI
 process.env.NODE_ENV = 'test';
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -76,4 +76,32 @@ test('UT-21 sinh script Playwright có locator data-test từ các bước', asy
   assert.match(code, /page\.goto\("https:\/\/www\.saucedemo\.com\/"\)/);
   assert.match(code, /\[data-test="username"\]'\)\.fill\("standard_user"\)/);
   assert.match(code, /toHaveURL\(\/inventory\/\)/);
+});
+
+const genScript = async (testCase, baseUrl) =>
+  JSON.parse(await new MockProvider().complete({ task: 'GENERATE_SCRIPT', context: { testCase, baseUrl } })).code;
+
+test('UT-22 script luôn mở URL cần test trước tiên dù bước test case viết chung chung', async () => {
+  const code = await genScript({
+    code: 'TC2', title: 'Xem báo cáo',
+    steps: ['Đăng nhập hệ thống bằng tài khoản hợp lệ', 'Mở chức năng "Báo cáo"', 'Xác nhận thao tác'],
+    expected_result: 'Hiển thị báo cáo',
+  }, 'https://app.example.test/');
+  const first = code.split('\n').find((l) => l.trim().startsWith('await'));
+  assert.equal(first.trim(), 'await page.goto("https://app.example.test/");');
+  assert.doesNotMatch(code, /TODO: bổ sung thao tác/);
+});
+
+test('UT-23 Sauce Demo: tiêu chí đăng xuất sinh thao tác menu Logout và kiểm tra về trang đăng nhập', async () => {
+  const code = await genScript({
+    code: 'TC3', title: 'Đăng xuất',
+    steps: ['Đăng nhập hệ thống bằng tài khoản hợp lệ', 'Mở chức năng "Đăng xuất"',
+      'Nhập dữ liệu hợp lệ theo tiêu chí: Mở menu bên trái và chọn Logout thì quay về trang đăng nhập', 'Xác nhận thao tác'],
+    expected_result: 'Hệ thống xử lý thành công, đáp ứng tiêu chí: Mở menu bên trái và chọn Logout thì quay về trang đăng nhập',
+  }, 'https://www.saucedemo.com/');
+  assert.match(code, /\[data-test="login-button"\]'\)\.click\(\)/);
+  assert.match(code, /#react-burger-menu-btn/);
+  assert.match(code, /logout-sidebar-link/);
+  assert.match(code, /login-button"\]'\)\)\.toBeVisible\(\)/);
+  assert.doesNotMatch(code, /TODO/);
 });

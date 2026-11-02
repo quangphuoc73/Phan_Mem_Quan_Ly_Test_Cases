@@ -11,7 +11,7 @@ getDb();
 seed();
 const app = createApp();
 
-const PASSWORDS = { admin: 'Admin@123', qalead: 'QaLead@123', tester: 'Tester@123', dev: 'Dev@123456' };
+const PASSWORDS = { admin: 'Admin@123', qalead: 'QaLead@123', poba: 'PoBa@1234', tester: 'Tester@123', dev: 'Dev@123456' };
 
 async function login(username) {
   const res = await request(app).post('/api/auth/login').send({ username, password: PASSWORDS[username] });

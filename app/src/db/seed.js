@@ -19,6 +19,7 @@ const PARAMETERS = [
 const USERS = [
   ['admin', 'Admin@123', 'Nguyễn Quản Trị', 'admin@demo.local', 'ADMIN'],
   ['qalead', 'QaLead@123', 'Trần Trưởng Nhóm QA', 'qalead@demo.local', 'QA_LEAD'],
+  ['poba', 'PoBa@1234', 'Võ Phân Tích', 'poba@demo.local', 'PO_BA'],
   ['tester', 'Tester@123', 'Lê Kiểm Thử', 'tester@demo.local', 'TESTER'],
   ['dev', 'Dev@123456', 'Phạm Lập Trình', 'dev@demo.local', 'DEVELOPER'],
 ];
@@ -58,23 +59,23 @@ function seed() {
   const s1 = insStory.run('US-PET-001', pet, mAcc, 'Đăng ký tài khoản chủ thú cưng',
     'Là chủ thú cưng, tôi muốn đăng ký tài khoản bằng email, để mua bảo hiểm và theo dõi hợp đồng.',
     '- Email phải đúng định dạng và chưa được đăng ký\n- Mật khẩu tối thiểu 8 ký tự, có chữ hoa và số\n- Đăng ký thành công thì gửi email xác nhận\n- Không cho đăng ký nếu chưa đồng ý điều khoản',
-    'High', uid.TESTER, '-6 days').lastInsertRowid;
+    'High', uid.PO_BA, '-6 days').lastInsertRowid;
   insStory.run('US-PET-002', pet, mPol, 'Mua hợp đồng bảo hiểm cho thú cưng',
     'Là chủ thú cưng, tôi muốn chọn gói bảo hiểm và thanh toán online, để thú cưng được bảo vệ ngay.',
     '- Bắt buộc khai báo loài, giống, ngày sinh của thú cưng\n- Thú cưng trên 10 tuổi không được mua gói Cơ bản\n- Thanh toán thành công thì hợp đồng có hiệu lực sau 1 ngày\n- Hiển thị tóm tắt quyền lợi trước khi thanh toán',
-    'High', uid.TESTER, '-5 days');
+    'High', uid.PO_BA, '-5 days');
   insStory.run('US-PET-003', pet, mClaim, 'Gửi yêu cầu bồi thường',
     'Là chủ thú cưng, tôi muốn gửi yêu cầu bồi thường kèm hóa đơn thú y, để được hoàn tiền nhanh chóng.',
     '- Tải lên được hóa đơn dạng PDF hoặc ảnh, tối đa 10 MB\n- Bắt buộc chọn thú cưng và ngày khám\n- Gửi thành công thì hiển thị mã yêu cầu bồi thường\n- Hợp đồng hết hạn thì không cho gửi và báo lỗi',
-    'High', uid.TESTER, '-4 days');
+    'High', uid.PO_BA, '-4 days');
   insStory.run('US-PET-004', pet, mClaim, 'Theo dõi trạng thái bồi thường',
     'Là chủ thú cưng, tôi muốn xem trạng thái yêu cầu bồi thường, để biết khi nào được hoàn tiền. Liên hệ hỗ trợ: nguyenvana@gmail.com hoặc 0912345678.',
     '- Hiển thị danh sách yêu cầu theo thời gian mới nhất\n- Mỗi yêu cầu có trạng thái: Đã gửi, Đang xét duyệt, Đã duyệt, Từ chối\n- Bị từ chối thì hiển thị lý do',
-    'Medium', uid.TESTER, '-3 days');
+    'Medium', uid.PO_BA, '-3 days');
   insStory.run('US-PET-005', pet, mPol, 'Đổi gói bảo hiểm',
     'Là chủ thú cưng, tôi muốn nâng hoặc hạ gói bảo hiểm, để phù hợp nhu cầu và chi phí.',
     '- Chỉ đổi gói khi hợp đồng đang hiệu lực\n- Hiển thị chênh lệch phí trước khi xác nhận\n- Gói mới có hiệu lực từ kỳ thanh toán tiếp theo',
-    'Low', uid.TESTER, '-1 days');
+    'Low', uid.PO_BA, '-1 days');
 
   // Test case mẫu đã duyệt cho US-PET-001 (có lịch sử chạy để báo cáo có số liệu)
   const petTcs = [
@@ -88,9 +89,13 @@ function seed() {
     insVer.run(tcId, 1, JSON.stringify({ title, steps, expected_result: exp, priority: pri, type }), i < 3 ? 'Bản gốc do AI sinh' : 'Tạo thủ công', uid.TESTER);
     if (i === 2) insVer.run(tcId, 2, JSON.stringify({ title, steps, expected_result: exp, priority: pri, type }), 'Sửa dữ liệu biên cho chính xác', uid.TESTER);
     insReview.run(tcId, uid.QA_LEAD, 'APPROVED', 'Đạt');
-    insRun.run(tcId, result, 'MANUAL', result === 'FAIL' ? 'Hệ thống chấp nhận mật khẩu 7 ký tự – đã báo bug BUG-12' : null, uid.TESTER, '-10 days');
-    // Kiểm thử lại (retest) sau khi Developer sửa lỗi → story đạt Definition of Done
-    if (result === 'FAIL') insRun.run(tcId, 'PASS', 'MANUAL', 'Kiểm thử lại sau khi sửa BUG-12', uid.TESTER, '-3 days');
+    const runId = insRun.run(tcId, result, 'MANUAL', result === 'FAIL' ? 'Hệ thống chấp nhận mật khẩu 7 ký tự – đã báo bug BUG-12' : null, uid.TESTER, '-10 days').lastInsertRowid;
+    if (result === 'FAIL') {
+      // YC13: Developer báo đã sửa ở bản build mới → Tester kiểm thử lại → story đạt Definition of Done
+      db.prepare(`UPDATE test_runs SET fix_build = '1.0.1', fix_note = 'Thêm kiểm tra độ dài mật khẩu ở backend', fixed_by = ?,
+        fixed_at = datetime('now','localtime','-5 days') WHERE id = ?`).run(uid.DEVELOPER, runId);
+      insRun.run(tcId, 'PASS', 'MANUAL', 'Kiểm thử lại trên bản 1.0.1 sau khi sửa BUG-12', uid.TESTER, '-3 days');
+    }
   });
 
   // ===== Dự án 2: Sauce Demo (web thật để chạy Playwright – YC9) =====
@@ -100,11 +105,11 @@ function seed() {
   const sl = insStory.run('US-SAU-001', sauce, mLogin, 'Đăng nhập vào cửa hàng',
     'Là khách hàng, tôi muốn đăng nhập bằng username và mật khẩu, để mua sắm.',
     '- Đăng nhập đúng thì chuyển tới trang Products\n- Sai mật khẩu thì hiển thị thông báo lỗi\n- Tài khoản bị khóa thì không cho đăng nhập',
-    'High', uid.TESTER, '-2 days').lastInsertRowid;
+    'High', uid.PO_BA, '-2 days').lastInsertRowid;
   const sc = insStory.run('US-SAU-002', sauce, mCart, 'Thêm sản phẩm vào giỏ hàng',
     'Là khách hàng, tôi muốn thêm sản phẩm vào giỏ, để thanh toán một lần.',
     '- Nhấn Add to cart thì biểu tượng giỏ hàng tăng số lượng\n- Giỏ hàng hiển thị đúng sản phẩm đã chọn',
-    'Medium', uid.TESTER, '-2 days').lastInsertRowid;
+    'Medium', uid.PO_BA, '-2 days').lastInsertRowid;
 
   const sauceTcs = [
     [sl, 'US-SAU-001-TC01', 'Đăng nhập thành công với tài khoản chuẩn', ['Mở trang đăng nhập', 'Nhập tên đăng nhập "standard_user"', 'Nhập mật khẩu "secret_sauce"', 'Nhấn nút Login'], 'Chuyển tới trang Products', 'High', 'Positive'],
@@ -150,13 +155,23 @@ function seedIfEmpty() {
   }
 }
 
+// CSDL tạo từ bản cũ thiếu tài khoản demo mới (VD poba): chỉ thêm khi chạy `npm run seed`, không tự chạy lúc khởi động server
+function addMissingDemoUsers() {
+  const db = getDb();
+  const exists = db.prepare('SELECT 1 FROM users WHERE username = ?');
+  const ins = db.prepare('INSERT INTO users (username, password_hash, full_name, email, role) VALUES (?, ?, ?, ?, ?)');
+  const added = USERS.filter(([u]) => !exists.get(u)).map(([u, p, n, e, r]) => (ins.run(u, bcrypt.hashSync(p, 10), n, e, r), u));
+  if (added.length) console.log(`  Đã thêm tài khoản demo còn thiếu: ${added.join(', ')}`);
+}
+
 if (require.main === module) {
   if (process.argv.includes('--reset') && config.dbFile !== ':memory:') {
     for (const f of [config.dbFile, `${config.dbFile}-wal`, `${config.dbFile}-shm`]) fs.rmSync(f, { force: true });
   }
   seedIfEmpty();
+  addMissingDemoUsers();
   closeDb();
-  console.log('  Xong. Tài khoản demo: admin/Admin@123, qalead/QaLead@123, tester/Tester@123, dev/Dev@123456');
+  console.log('  Xong. Tài khoản demo: admin/Admin@123, qalead/QaLead@123, poba/PoBa@1234, tester/Tester@123, dev/Dev@123456');
 }
 
 module.exports = { seed, seedIfEmpty, PARAMETERS };

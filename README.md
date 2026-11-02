@@ -32,6 +32,7 @@ docker compose up --build
 |---|---|---|
 | Admin | `admin` | `Admin@123` |
 | QA Lead | `qalead` | `QaLead@123` |
+| PO / BA | `poba` | `PoBa@1234` |
 | Tester | `tester` | `Tester@123` |
 | Developer | `dev` | `Dev@123456` |
 
@@ -44,9 +45,11 @@ Mặc định AI chạy chế độ **mock** (offline, không cần API key). D�
 | `docs/BaoCaoDoAn.pdf` | **Báo cáo đồ án** đầy đủ (bản Word để chỉnh sửa: `docs/BaoCaoDoAn.docx`; bản HTML: `docs/BaoCaoDoAn.html`) |
 | `docs/SlideThuyetTrinh.html` | **Slide bảo vệ** (mở bằng trình duyệt, phím ← → để chuyển, có bản `.pdf`) |
 | `docs/00a_QuyTrinhAgile.md` | **Quy trình Agile/Scrum**: vai trò, Product Backlog, kế hoạch 5 sprint, phân công nhóm, DoR/DoD, các sự kiện Scrum, mẫu biên bản |
-| `docs/agile/ProductBacklog.csv` | Product Backlog để nhập vào Jira/Trello |
+| `docs/agile/ProductBacklog.csv` | Product Backlog để nhập vào Jira/Trello (phân cách bằng dấu phẩy) |
+| `docs/agile/ProductBacklog.xlsx` | Cùng Product Backlog, dạng Excel để đọc và in (tổng story point theo sprint); sinh từ file CSV bằng `cd docs/tools && npm run backlog` |
 | `docs/00…09_*.md` | Từng chương: kế hoạch, khảo sát, yêu cầu, phân tích, thiết kế, cài đặt, kiểm thử, triển khai, **kịch bản demo**, hướng phát triển |
 | `docs/hientrang/` | Sơ đồ tổ chức và quy trình hiện tại (draw.io), sinh bằng `python3 docs/hientrang/generate_hientrang.py` |
+| `docs/usecase/` | Sơ đồ use case tổng quát (draw.io), sinh bằng `python3 docs/usecase/generate_usecase.py` |
 | `docs/dfd/` | 13 sơ đồ DFD + sơ đồ phối hợp (draw.io), sinh bằng `python3 docs/dfd/generate_dfd.py` |
 | `docs/erd/` | Sơ đồ ERD (draw.io) sinh từ `app/src/db/schema.sql` bằng `python3 docs/erd/generate_erd.py` |
 | `docs/images/` | Ảnh chụp màn hình hệ thống |
@@ -59,7 +62,7 @@ Mặc định AI chạy chế độ **mock** (offline, không cần API key). D�
 ## Kiểm thử
 
 ```bash
-cd app && npm test             # 55 unit + API test
+cd app && npm test             # 64 unit + API test
 cd app && npm run test:e2e     # 9 kịch bản E2E bằng Playwright
 cd automation && npm run test:samples   # 8 test Playwright mẫu trên saucedemo.com
 ```

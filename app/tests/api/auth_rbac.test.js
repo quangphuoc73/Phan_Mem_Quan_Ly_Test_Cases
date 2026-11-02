@@ -1,4 +1,4 @@
-// IT-01 → IT-10: Đăng nhập, xác thực, phân quyền (RBAC)
+// IT-01 → IT-10, IT-43 → IT-45: Đăng nhập, xác thực, phân quyền (RBAC)
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { app, request, as, newStory } = require('../helpers');
@@ -69,4 +69,33 @@ test('IT-10 header bảo mật (helmet) và CSP được bật', async () => {
   assert.match(res.headers['content-security-policy'], /script-src 'self'/);
   assert.equal(res.headers['x-powered-by'], undefined);
   assert.equal(res.headers['x-content-type-options'], 'nosniff');
+});
+
+test('IT-43 PO/BA lập user story và lập kế hoạch sprint (NV1, NV9)', async () => {
+  const po = await as('poba');
+  assert.equal((await po.post('/api/stories').send(newStory())).status, 201);
+  const day = (o) => new Date(Date.now() + o * 86400000).toLocaleDateString('sv-SE');
+  const sprint = await po.post('/api/projects/1/sprints').send({ name: 'Sprint PO', start_date: day(200), end_date: day(210) });
+  assert.equal(sprint.status, 201);
+});
+
+test('IT-44 PO/BA không viết, duyệt, chạy test case và không gọi AI', async () => {
+  const po = await as('poba');
+  assert.equal((await po.post('/api/testcases').send({})).status, 403);
+  assert.equal((await po.post('/api/stories/1/generate')).status, 403);
+  assert.equal((await po.post('/api/testcases/1/review').send({ decision: 'APPROVED' })).status, 403);
+  assert.equal((await po.post('/api/testcases/1/runs').send({ result: 'PASS' })).status, 403);
+  assert.equal((await po.post('/api/testcases/1/script/generate')).status, 403);
+  assert.equal((await po.put('/api/parameters/MAX_TC_PER_STORY').send({ value: 5 })).status, 403);
+  assert.equal((await po.get('/api/users')).status, 403);
+  assert.equal((await po.get('/api/ai-logs')).status, 403);
+});
+
+test('IT-45 PO/BA xem được test case, báo cáo; Admin tạo được tài khoản PO/BA', async () => {
+  const po = await as('poba');
+  assert.equal((await po.get('/api/testcases')).status, 200);
+  assert.equal((await po.get('/api/reports/summary')).status, 200);
+  const admin = await as('admin');
+  const created = await admin.post('/api/users').send({ username: 'ba.moi', full_name: 'BA mới', role: 'PO_BA', password: 'Matkhau123' });
+  assert.equal(created.status, 201);
 });

@@ -109,6 +109,13 @@ router.post('/testcases/:id/runs', requirePermission('run:write'), (req, res) =>
   res.status(201).json(r);
 });
 
+// ---------- YC13: Báo đã sửa lỗi ----------
+router.post('/runs/:id/fix', requirePermission('bug:fix'), (req, res) => {
+  const r = runs.reportFix(id(req), req.body, req.user.id);
+  audit.log(req, 'REPORT_FIX', 'test_run', r.id, { build: r.fix_build });
+  res.json(r);
+});
+
 // ---------- YC9: Script Playwright ----------
 router.get('/testcases/:id/script', (req, res) => {
   const s = scripts.getByTestCase(id(req));

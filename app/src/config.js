@@ -15,7 +15,7 @@ module.exports = {
     // mock | gemini | claude | openai
     provider: process.env.AI_PROVIDER || 'mock',
     geminiKey: process.env.GEMINI_API_KEY,
-    geminiModel: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+    geminiModel: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
     claudeKey: process.env.ANTHROPIC_API_KEY,
     claudeModel: process.env.CLAUDE_MODEL || 'claude-sonnet-5-5',
     openaiKey: process.env.OPENAI_API_KEY,

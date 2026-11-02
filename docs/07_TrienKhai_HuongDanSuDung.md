@@ -87,6 +87,7 @@ Chưa khai báo thì CI dùng giá trị mặc định cho Sauce Demo. CI luôn 
 |---|---|---|
 | Admin | `admin` | `Admin@123` |
 | QA Lead | `qalead` | `QaLead@123` |
+| PO / BA | `poba` | `PoBa@1234` |
 | Tester | `tester` | `Tester@123` |
 | Developer | `dev` | `Dev@123456` |
 
@@ -111,7 +112,9 @@ Dữ liệu mẫu: dự án **PETINS – App bảo hiểm thú cưng** (hư cấ
 4. *Thay đổi quy định*: sửa số test case tối đa, số lần gọi AI/giờ… → *Lưu*. Có hiệu lực ngay.
 5. *Tổng quan & báo cáo*: theo dõi tỷ lệ pass, độ bao phủ, story chưa có test case, hiệu quả AI.
 
-### QA Lead – lập kế hoạch sprint (Agile/Scrum)
+### PO / BA, QA Lead – lập user story và kế hoạch sprint (Agile/Scrum)
+
+PO/BA lập user story (menu *User story* → *＋ Lập user story* hoặc *⬆️ Nhập từ file*) với acceptance criteria rõ ràng, rồi cùng QA Lead lập kế hoạch sprint:
 
 1. Chọn dự án ở thanh trên cùng → menu *Sprint (Agile)*.
 2. *＋ Tạo sprint*: nhập tên, Sprint Goal, ngày bắt đầu/kết thúc (tối đa 28 ngày, không trùng sprint khác).
@@ -121,7 +124,9 @@ Dữ liệu mẫu: dự án **PETINS – App bảo hiểm thú cưng** (hư cấ
 
 ### Developer
 
-Xem *Tra cứu test case*, *Kết quả chạy test* (ghi chú có mã bug, log và ảnh chụp lỗi để tái hiện) và *Tổng quan & báo cáo*.
+1. Xem *Kết quả chạy test* (ghi chú có mã bug, log và ảnh chụp lỗi) để tái hiện lỗi; *Tra cứu test case* và *Tổng quan & báo cáo* để nắm tình hình.
+2. Sửa xong lỗi, ở lần chạy *Fail* bấm **🔧 Báo đã sửa** → nhập bản build (VD `1.0.2`) và ghi chú cho Tester → *Báo đã sửa*.
+3. Test case chuyển sang **🔁 Cần kiểm thử lại**. Tester lọc *Cần kiểm thử lại* ở *Tra cứu test case*, chạy lại trên bản build mới; lần chạy mới làm test case hết trạng thái này.
 
 ### Admin
 

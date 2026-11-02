@@ -1,20 +1,22 @@
 // Kết quả chạy test, thay đổi quy định (YC10), nhật ký AI, quản trị người dùng/dự án, audit log.
 import { state, api, esc, can, pill, fmtDate, toast, toastError, modal, bind, busy, formData, options, LABEL } from '../core.js';
-import { openTestCase } from './testcases.js';
+import { openTestCase, fixCell, openFixForm } from './testcases.js';
 import { refreshProjects } from '../main.js';
 
 export async function renderRuns(page) {
   const list = await api(`/runs${state.projectId ? `?project_id=${state.projectId}` : ''}`);
   page.innerHTML = `
-    <div class="page-head"><div><h1>Kết quả chạy test</h1><p>100 lần chạy gần nhất (thủ công và tự động)</p></div></div>
+    <div class="page-head"><div><h1>Kết quả chạy test</h1><p>100 lần chạy gần nhất (thủ công và tự động)${can('bug:fix') ? '. Sửa xong lỗi thì bấm <b>🔧 Báo đã sửa</b> để Tester kiểm thử lại' : ''}</p></div></div>
     <div class="table-wrap"><table>
-      <thead><tr><th>Thời gian</th><th>Test case</th><th>User story</th><th>Kết quả</th><th>Hình thức</th><th>Ghi chú</th><th>Người chạy</th></tr></thead>
+      <thead><tr><th>Thời gian</th><th>Test case</th><th>User story</th><th>Kết quả</th><th>Hình thức</th><th>Ghi chú</th><th>Người chạy</th><th>Sửa lỗi</th></tr></thead>
       <tbody>${list.map((r) => `<tr class="clickable" data-tc="${r.test_case_id}"><td class="small">${fmtDate(r.executed_at)}</td>
         <td><span class="mono">${esc(r.tc_code)}</span><div class="small muted">${esc(r.tc_title)}</div></td><td>${esc(r.story_code)}</td>
-        <td>${pill(r.result)}</td><td>${pill(r.run_type)}</td><td class="small">${esc(r.note || '')}</td><td>${esc(r.executed_by_name || '')}</td></tr>`).join('')
-        || '<tr><td colspan="7" class="empty">Chưa có lần chạy nào</td></tr>'}</tbody>
+        <td>${pill(r.result)}</td><td>${pill(r.run_type)}</td><td class="small">${esc(r.note || '')}</td><td>${esc(r.executed_by_name || '')}</td>
+        <td data-nocl>${fixCell(r)}</td></tr>`).join('')
+        || '<tr><td colspan="8" class="empty">Chưa có lần chạy nào</td></tr>'}</tbody>
     </table></div>`;
-  bind(page, 'tr[data-tc]', 'click', (_e, tr) => openTestCase(Number(tr.dataset.tc), () => renderRuns(page)));
+  bind(page, 'tr[data-tc]', 'click', (e, tr) => !e.target.closest('[data-nocl]') && openTestCase(Number(tr.dataset.tc), () => renderRuns(page)));
+  bind(page, '[data-fix]', 'click', (_e, b) => openFixForm(list.find((r) => r.id === Number(b.dataset.fix)), () => renderRuns(page)));
 }
 
 export async function renderParams(page) {
@@ -85,9 +87,10 @@ export async function renderUsers(page) {
         <td>${u.id !== state.user.id ? `<button class="btn sm" data-toggle="${u.id}" data-active="${u.active}">${u.active ? 'Khóa' : 'Mở khóa'}</button>` : ''}</td></tr>`).join('')}</tbody>
     </table></div>
     <div class="card mt"><h3>Ma trận phân quyền</h3>
-      <div class="table-wrap"><table><thead><tr><th>Chức năng</th><th>Admin</th><th>QA Lead</th><th>Tester</th><th>Developer</th></tr></thead><tbody>
-      ${[['Quản lý người dùng, dự án', 1, 0, 0, 0], ['Lập user story', 1, 1, 1, 0], ['Sinh test case / script bằng AI', 0, 1, 1, 0], ['Sửa, gửi duyệt test case', 0, 1, 1, 0],
-         ['Duyệt test case (QĐ4)', 0, 1, 0, 0], ['Ghi kết quả, chạy tự động', 0, 1, 1, 0], ['Thay đổi quy định', 1, 1, 0, 0], ['Xem báo cáo, tra cứu', 1, 1, 1, 1]]
+      <div class="table-wrap"><table><thead><tr><th>Chức năng</th><th>Admin</th><th>QA Lead</th><th>PO / BA</th><th>Tester</th><th>Developer</th></tr></thead><tbody>
+      ${[['Quản lý người dùng, dự án', 1, 0, 0, 0, 0], ['Lập user story', 1, 1, 1, 1, 0], ['Lập kế hoạch sprint', 1, 1, 1, 0, 0],
+         ['Sinh test case / script bằng AI', 0, 1, 0, 1, 0], ['Sửa, gửi duyệt test case', 0, 1, 0, 1, 0], ['Duyệt test case (QĐ4)', 0, 1, 0, 0, 0],
+         ['Ghi kết quả, chạy tự động', 0, 1, 0, 1, 0], ['Thay đổi quy định', 1, 1, 0, 0, 0], ['Xem báo cáo, tra cứu', 1, 1, 1, 1, 1]]
         .map(([n, ...r]) => `<tr><td>${n}</td>${r.map((x) => `<td>${x ? '✅' : '—'}</td>`).join('')}</tr>`).join('')}
       </tbody></table></div></div>`;
   bind(page, '[data-toggle]', 'click', async (_e, b) => {
@@ -105,7 +108,7 @@ export async function renderUsers(page) {
         <div class="field"><label>Tên đăng nhập *</label><input name="username" required></div>
         <div class="field"><label>Họ tên *</label><input name="full_name" required></div>
         <div class="field"><label>Email</label><input name="email" type="email"></div>
-        <div class="field"><label>Vai trò</label><select name="role">${options(['TESTER', 'QA_LEAD', 'DEVELOPER', 'ADMIN'], 'TESTER')}</select></div>
+        <div class="field"><label>Vai trò</label><select name="role">${options(['TESTER', 'QA_LEAD', 'PO_BA', 'DEVELOPER', 'ADMIN'], 'TESTER')}</select></div>
         <div class="field"><label>Mật khẩu * <span class="hint">(tối thiểu 8 ký tự)</span></label><input name="password" type="password" minlength="8" required autocomplete="new-password"></div></form>`,
       foot: '<button class="btn" data-close>Hủy</button><button class="btn primary" id="u-save">Tạo</button>',
     });

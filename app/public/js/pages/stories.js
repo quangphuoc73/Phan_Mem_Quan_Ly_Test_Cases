@@ -97,6 +97,7 @@ function openImport(onDone) {
     foot: '<button class="btn" data-close>Đóng</button><button class="btn primary" id="imp-go">Nhập</button>',
   });
   m.el.querySelector('#imp-go').addEventListener('click', async (e) => {
+    const btn = e.currentTarget; // lấy trước await file.text()
     const file = m.el.querySelector('#imp-file').files[0];
     if (!file) return toast('Chưa chọn file', 'error');
     const projectId = Number(m.el.querySelector('#imp-project').value);
@@ -115,7 +116,7 @@ function openImport(onDone) {
         sprint_id: project.sprints.find((x) => x.name.toLowerCase() === String(r.sprint || '').toLowerCase())?.id || null,
         story_points: r.story_points ? Number(r.story_points) : null,
       }));
-      const res = await busy(e.currentTarget, () => api('/stories/import', { method: 'POST', body: { rows } }));
+      const res = await busy(btn, () => api('/stories/import', { method: 'POST', body: { rows } }));
       m.el.querySelector('#imp-result').innerHTML = `
         <div class="alert ${res.errors.length ? 'warn' : 'success'}">Đã nhập <b>${res.created.length}</b> user story${res.created.length ? `: ${esc(res.created.join(', '))}` : ''}.
         ${res.errors.length ? `<br>Lỗi ${res.errors.length} dòng:<ul>${res.errors.map((x) => `<li>Dòng ${x.row} (${esc(x.code)}): ${esc(x.error)}</li>`).join('')}</ul>` : ''}</div>`;
@@ -235,12 +236,13 @@ export async function renderStoryDetail(page, id) {
   });
 
   page.querySelector('#gen-btn')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget; // lấy trước mọi await: sau await, e.currentTarget đã là null
     if (tcs.some((t) => t.source === 'AI' && t.status === 'DRAFT') &&
       !(await confirmBox('Sinh lại sẽ thay thế các test case AI đang ở trạng thái Nháp. Tiếp tục?'))) return;
     const banner = page.querySelector('#ai-banner');
     banner.innerHTML = `<div class="alert ai"><span class="spinner dark"></span> AI đang phân tích ${acs.length} acceptance criteria và sinh test case...</div>`;
     try {
-      const r = await busy(e.currentTarget, () => api(`/stories/${id}/generate`, { method: 'POST' }), 'AI đang sinh...');
+      const r = await busy(btn, () => api(`/stories/${id}/generate`, { method: 'POST' }), 'AI đang sinh...');
       await reload();
       const pii = Object.entries(r.piiFound || {}).map(([k, v]) => `${v} ${k}`).join(', ');
       page.querySelector('#ai-banner').innerHTML = `

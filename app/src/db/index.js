@@ -29,6 +29,23 @@ function migrate(conn) {
   if (cols.length && !cols.includes('story_points')) {
     conn.exec('ALTER TABLE user_stories ADD COLUMN story_points INTEGER');
   }
+  const runCols = conn.prepare("SELECT name FROM pragma_table_info('test_runs')").all().map((c) => c.name);
+  if (runCols.length && !runCols.includes('fix_build')) {
+    conn.exec(`ALTER TABLE test_runs ADD COLUMN fix_build TEXT;
+      ALTER TABLE test_runs ADD COLUMN fix_note TEXT;
+      ALTER TABLE test_runs ADD COLUMN fixed_by INTEGER REFERENCES users(id);
+      ALTER TABLE test_runs ADD COLUMN fixed_at TEXT`);
+  }
+  // CSDL tạo trước khi có vai trò PO_BA: SQLite không sửa được CHECK nên tạo lại bảng users, giữ nguyên id
+  const users = conn.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'users'").get();
+  if (users && !users.sql.includes("'PO_BA'")) {
+    conn.pragma('foreign_keys = OFF');
+    conn.transaction(() => {
+      conn.exec(users.sql.replace('CREATE TABLE users', 'CREATE TABLE users_new').replace("'QA_LEAD',", "'QA_LEAD','PO_BA',"));
+      conn.exec('INSERT INTO users_new SELECT * FROM users; DROP TABLE users; ALTER TABLE users_new RENAME TO users');
+    })();
+    conn.pragma('foreign_keys = ON');
+  }
 }
 
 function closeDb() {

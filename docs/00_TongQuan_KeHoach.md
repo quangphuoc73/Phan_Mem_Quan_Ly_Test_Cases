@@ -14,23 +14,14 @@
 
 ## 0.2. Lý do chọn đề tài
 
-Đề tài xuất phát từ công việc thường ngày của một đội kiểm thử, đặc biệt ở khâu kiểm thử tự động:
+Trong các đội kiểm thử phần mềm hiện nay, test case vẫn chủ yếu được viết thủ công trên Excel/Google Sheets:
 
-- **Một kịch bản kiểm thử được viết hai lần.** Test case được viết bằng chữ trong file Excel, sau đó Automation Tester đọc lại từng dòng và viết lại chính các bước, kết quả mong đợi đó bằng code. Hai bản nằm ở hai nơi nên dễ lệch nhau.
-- **Script vẫn báo Pass trong khi chức năng đã sai.** Khi yêu cầu thay đổi, file Excel được sửa nhưng script thì không, vì không có gì nối hai thứ này với nhau.
-- **Dùng AI không có kiểm soát.** Để kịp tiến độ, nhiều người dán cả dữ liệu nội bộ (user story, URL, tài khoản test) vào ChatGPT. Không ai biết dữ liệu đã gửi đi đâu; còn nếu cấm hẳn AI thì đội lại chậm như cũ.
-- **Báo cáo phải đối chiếu bằng tay.** Muốn biết test case nào đã có script, tỷ lệ pass bao nhiêu, phải so từng file Excel với thư mục code.
+- Tốn thời gian: một user story trung bình cần 30–60 phút để viết đủ test case.
+- Dễ bỏ sót case lỗi và case biên, nhất là khi deadline gấp.
+- Khó theo dõi ai đã duyệt, phiên bản nào là bản mới nhất, test case nào đã chạy.
+- Việc chuyển test case thủ công thành script tự động tiếp tục tốn thêm thời gian.
 
-Vấn đề không nằm ở công cụ automation. Vấn đề là **test case, script và kết quả chạy nằm ở ba nơi, không nối với nhau**. Vì vậy nhóm xây dựng hệ thống quản lý test case, trong đó:
-
-- **AI viết nháp** test case và script, **con người sửa và duyệt**, mọi thay đổi đều được lưu vết;
-- script được sinh từ **đúng test case đã duyệt**;
-- dữ liệu nhạy cảm **được che trước khi gửi AI**;
-- báo cáo **tự động**, không cần đối chiếu tay.
-
-> **AI giúp làm nhanh hơn, còn phần mềm giúp làm đúng và an toàn.**
-
-Ở đồ án môn học này, AI chỉ được dùng ở mức **gọi API** của nhà cung cấp (hoặc chế độ giả lập khi không có mạng). AI chỉ hỗ trợ 2 trong 12 yêu cầu (YC2, YC9); các yêu cầu còn lại là nghiệp vụ quản lý, vẫn chạy đủ khi tắt AI. Hệ thống đã lưu bản AI gốc, bản người sửa, quyết định duyệt và kết quả chạy, nên là nền móng để phát triển AI chuyên sâu ở các môn học sau ([Chương 9](09_HuongPhatTrien.md)).
+Các mô hình ngôn ngữ lớn (LLM) có thể sinh bản nháp test case trong vài giây. Tuy vậy AI có thể sinh sai, nên cần **một quy trình có con người kiểm soát**: AI sinh, Tester sửa, QA Lead duyệt, có lưu vết. Đề tài xây dựng hệ thống quản lý test case khép kín theo đúng quy trình đó.
 
 ## 0.3. Mục tiêu
 
@@ -43,11 +34,11 @@ Vấn đề không nằm ở công cụ automation. Vấn đề là **test case,
 
 **Trong phạm vi:**
 
-- Quản lý người dùng, phân quyền 4 vai trò: Admin, QA Lead, Tester, Developer.
+- Quản lý người dùng, phân quyền 5 vai trò: Admin, QA Lead, PO/BA, Tester, Developer.
 - Quản lý dự án, module, user story (nhập tay hoặc nhập từ file CSV/JSON).
 - AI sinh test case từ user story và acceptance criteria.
 - Soạn thảo, lưu lịch sử phiên bản, gửi duyệt, duyệt/trả lại test case.
-- Ghi nhận kết quả chạy test thủ công (Pass/Fail/Blocked).
+- Ghi nhận kết quả chạy test thủ công (Pass/Fail/Blocked); Developer báo đã sửa lỗi kèm bản build để Tester kiểm thử lại.
 - AI sinh script Playwright từ test case đã duyệt và chạy tự động, lưu ảnh chụp lỗi.
 - Báo cáo: tỷ lệ pass, độ bao phủ yêu cầu, tiến độ thực thi, hiệu quả AI.
 - Thay đổi quy định (số test case tối đa, số lần gọi AI…) không cần sửa mã nguồn.
@@ -77,7 +68,7 @@ flowchart TB
 |---|---|---|---|
 | Quy trình Agile | Product Backlog, kế hoạch sprint, DoR/DoD, biên bản | Sprint 1, cập nhật mỗi sprint | [00a_QuyTrinhAgile.md](00a_QuyTrinhAgile.md) |
 | 1. Khảo sát hiện trạng | Quy trình QA hiện tại, vấn đề, nhu cầu | Sprint 1; bổ sung qua Sprint Review | [01_KhaoSatHienTrang.md](01_KhaoSatHienTrang.md) |
-| 2. Xác định yêu cầu | YC1–YC12, BM, QĐ, yêu cầu phi chức năng | Tổng quát ở Sprint 1, chi tiết theo từng sprint | [02_DacTaYeuCau.md](02_DacTaYeuCau.md) |
+| 2. Xác định yêu cầu | YC1–YC13, BM, QĐ, yêu cầu phi chức năng | Tổng quát ở Sprint 1, chi tiết theo từng sprint | [02_DacTaYeuCau.md](02_DacTaYeuCau.md) |
 | 3. Phân tích | Use case, đặc tả, DFD, hoạt động, trạng thái | Mỗi sprint cho các story của sprint | [03_PhanTich.md](03_PhanTich.md) |
 | 4. Thiết kế | Kiến trúc, ERD, class, sequence, giao diện, API, bảo mật | Kiến trúc ở Sprint 1, chi tiết mỗi sprint | [04_ThietKe.md](04_ThietKe.md) |
 | 5. Cài đặt | Mã nguồn, Git flow | Mỗi sprint | [05_CaiDat.md](05_CaiDat.md) |
@@ -92,7 +83,7 @@ flowchart TB
 | 1 | 1 | Hiểu bài toán, sẵn sàng phát triển (khảo sát, backlog, kiến trúc, repo + CI); người dùng đăng nhập theo vai trò và lập được user story | 13 |
 | 2 | 2 | AI sinh được test case an toàn từ user story *(rủi ro cao nhất, làm sớm)*; test case được sửa và lưu phiên bản | 22 |
 | 3 | 3 | Test case được duyệt, chạy thủ công, tra cứu và xem được báo cáo | 18 |
-| 4 | 4 | Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được | 19 |
+| 4 | 4 | Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được; Developer báo đã sửa lỗi | 22 |
 | 5 | 5 | Quản lý sprint trong hệ thống, nhập/xuất, Docker; hoàn thiện tài liệu, slide; bảo vệ cuối tuần (Sprint Review cuối cùng) | 16 |
 
 Danh sách story của từng sprint, ước lượng và Definition of Done: [Chương 0A](00a_QuyTrinhAgile.md). Mỗi sprint có biên bản Planning, Review, Retrospective và Daily log làm minh chứng.

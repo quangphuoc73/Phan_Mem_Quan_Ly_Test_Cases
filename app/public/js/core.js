@@ -56,7 +56,7 @@ export const LABEL = {
   DRAFT: 'Nháp', PENDING_REVIEW: 'Chờ duyệt', APPROVED: 'Đã duyệt', RETURNED: 'Bị trả lại',
   PASS: 'Pass', FAIL: 'Fail', BLOCKED: 'Blocked', AI: 'AI', MANUAL: 'Thủ công', AUTO: 'Tự động',
   SUCCESS: 'Thành công', FAILED: 'Thất bại',
-  ADMIN: 'Admin', QA_LEAD: 'QA Lead', TESTER: 'Tester', DEVELOPER: 'Developer',
+  ADMIN: 'Admin', QA_LEAD: 'QA Lead', PO_BA: 'PO / BA', TESTER: 'Tester', DEVELOPER: 'Developer',
   High: 'High', Medium: 'Medium', Low: 'Low', Positive: 'Positive', Negative: 'Negative', Edge: 'Edge',
 };
 

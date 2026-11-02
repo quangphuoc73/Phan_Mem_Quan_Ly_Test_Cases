@@ -3,10 +3,12 @@
   "private": true,
   "scripts": {
     "build": "node build.js",
-    "docx": "node build_docx.js"
+    "docx": "node build_docx.js",
+    "backlog": "node build_backlog.js"
   },
   "dependencies": {
     "docx": "^9.6.1",
+    "exceljs": "^4.4.0",
     "marked": "^15.0.12",
     "mermaid": "^11.4.1"
   }

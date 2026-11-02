@@ -23,7 +23,7 @@ flowchart TB
 | Kiểm thử bảo mật | API test + thủ công | RBAC, XSS, SQL injection, prompt injection, PII, sandbox | CI + thủ công |
 | Kiểm thử chức năng YC9 | Playwright trên Sauce Demo | Script mẫu (POM) + script do AI sinh | Thủ công, demo |
 
-**Tiêu chí hoàn thành:** 100% test tự động pass; không còn lỗi mức High; mỗi YC1–YC12 có ít nhất 1 test case kiểm thử.
+**Tiêu chí hoàn thành:** 100% test tự động pass; không còn lỗi mức High; mỗi YC1–YC13 có ít nhất 1 test case kiểm thử.
 
 **Kiểm thử trong Agile:** kiểm thử không phải một giai đoạn cuối mà là một phần của **Definition of Done** của mỗi story: story chỉ được tính hoàn thành khi có test tự động mới và CI xanh. Vì vậy bộ test dưới đây được viết dần qua 5 sprint (cột *Sprint* trong Product Backlog), không dồn về cuối kỳ.
 
@@ -54,6 +54,8 @@ Chạy: `cd app && npm test`
 | UT-19 | Schema từ chối priority sai, steps rỗng | Pass |
 | UT-20 | Bỏ code fence ```json | Pass |
 | UT-21 | Sinh script Playwright có locator `data-test` | Pass |
+| UT-22 | Script luôn mở URL cần test (`page.goto`) trước tiên, không còn bước TODO | Pass |
+| UT-23 | Sauce Demo: tiêu chí đăng xuất sinh thao tác menu Logout và kiểm tra về trang đăng nhập | Pass |
 | IT-01 | Đăng nhập đúng trả JWT, không trả mật khẩu băm | Pass |
 | IT-02 | Sai mật khẩu → 401, thông báo chung | Pass |
 | IT-03 | Không có token → 401 | Pass |
@@ -88,8 +90,15 @@ Chạy: `cd app && npm test`
 | IT-40 | Definition of Done và velocity: Sprint 1 hoàn thành 5/13 SP | Pass |
 | IT-41 | Burndown: 1 điểm/ngày, đường lý tưởng giảm về 0 | Pass |
 | IT-42 | Báo cáo lọc theo sprint, trả velocity các sprint | Pass |
+| IT-43 | PO/BA lập được user story và tạo sprint | Pass |
+| IT-44 | PO/BA không viết, duyệt, chạy test case, không gọi AI, không đổi quy định → 403 | Pass |
+| IT-45 | PO/BA xem được test case, báo cáo; Admin tạo được tài khoản PO/BA | Pass |
+| IT-46 | YC13: Developer báo đã sửa lần chạy Fail → test case cần kiểm thử lại | Pass |
+| IT-47 | YC13: Tester chạy lại thì test case hết cần kiểm thử lại | Pass |
+| IT-48 | QĐ13: thiếu bản build → 400; lần chạy Pass, đã chạy lại hoặc đã báo rồi → 409 | Pass |
+| IT-49 | Chỉ Developer được báo đã sửa lỗi (vai trò khác → 403) | Pass |
 
-**Kết quả:** `55 tests, 55 pass, 0 fail` (Node.js 21, macOS, 20/10/2026).
+**Kết quả:** `64 tests, 64 pass, 0 fail` (Node.js 21, macOS, 01/11/2026).
 
 ## 6.3. Kiểm thử E2E bằng Playwright
 
@@ -148,6 +157,7 @@ Chạy: `cd app && npm run test:e2e` (Playwright tự khởi động server ở 
 | ST-25 | RBAC | Developer gọi trực tiếp `POST /api/stories` bằng Postman | 403 | Negative | High |
 | ST-26 | YC12 | Ghi Pass cho test case cuối cùng của một story trong sprint đang chạy | Story chuyển sang cột *Hoàn thành (DoD)*, burndown giảm đúng số story point | Positive | High |
 | ST-27 | YC12 | Tạo sprint 30 ngày khi `SPRINT_MAX_DAYS` = 28 | Báo lỗi QĐ12 | Edge | Medium |
+| ST-28 | YC13 | Tester ghi Fail; Developer bấm *Báo đã sửa*, nhập bản 1.0.2; Tester lọc *Cần kiểm thử lại* và chạy lại Pass | Test case hiện trong bộ lọc kèm cảnh báo bản build; sau khi chạy lại thì biến mất | Positive | High |
 
 ## 6.5. Kiểm thử chức năng YC9 với Playwright trên Sauce Demo
 

@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash TEXT    NOT NULL,
   full_name     TEXT    NOT NULL,
   email         TEXT,
-  role          TEXT    NOT NULL CHECK (role IN ('ADMIN','QA_LEAD','TESTER','DEVELOPER')),
+  role          TEXT    NOT NULL CHECK (role IN ('ADMIN','QA_LEAD','PO_BA','TESTER','DEVELOPER')),
   active        INTEGER NOT NULL DEFAULT 1,
   created_at    TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
 );
@@ -154,7 +154,12 @@ CREATE TABLE IF NOT EXISTS test_runs (
   screenshot   TEXT,
   duration_ms  INTEGER,
   executed_by  INTEGER REFERENCES users(id),
-  executed_at  TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
+  executed_at  TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
+  -- BM11: Developer báo đã sửa lỗi của lần chạy Fail này (YC13); lần chạy mới hơn thì hết cần kiểm thử lại
+  fix_build    TEXT,
+  fix_note     TEXT,
+  fixed_by     INTEGER REFERENCES users(id),
+  fixed_at     TEXT
 );
 
 -- Bảng THAM SỐ: lưu quy định để thay đổi được (tính tiến hóa – YC10)
