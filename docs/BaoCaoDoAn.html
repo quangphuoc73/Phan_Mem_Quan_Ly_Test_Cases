@@ -85,14 +85,24 @@
 </tr>
 </tbody></table>
 <h2>0.2. Lý do chọn đề tài</h2>
-<p>Trong các đội kiểm thử phần mềm hiện nay, test case vẫn chủ yếu được viết thủ công trên Excel/Google Sheets:</p>
+<p>Đề tài xuất phát từ công việc thường ngày của một đội kiểm thử, đặc biệt ở khâu kiểm thử tự động:</p>
 <ul>
-<li>Tốn thời gian: một user story trung bình cần 30–60 phút để viết đủ test case.</li>
-<li>Dễ bỏ sót case lỗi và case biên, nhất là khi deadline gấp.</li>
-<li>Khó theo dõi ai đã duyệt, phiên bản nào là bản mới nhất, test case nào đã chạy.</li>
-<li>Việc chuyển test case thủ công thành script tự động tiếp tục tốn thêm thời gian.</li>
+<li><strong>Một kịch bản kiểm thử được viết hai lần.</strong> Test case được viết bằng chữ trong file Excel, sau đó Automation Tester đọc lại từng dòng và viết lại chính các bước, kết quả mong đợi đó bằng code. Hai bản nằm ở hai nơi nên dễ lệch nhau.</li>
+<li><strong>Script vẫn báo Pass trong khi chức năng đã sai.</strong> Khi yêu cầu thay đổi, file Excel được sửa nhưng script thì không, vì không có gì nối hai thứ này với nhau.</li>
+<li><strong>Dùng AI không có kiểm soát.</strong> Để kịp tiến độ, nhiều người dán cả dữ liệu nội bộ (user story, URL, tài khoản test) vào ChatGPT. Không ai biết dữ liệu đã gửi đi đâu; còn nếu cấm hẳn AI thì đội lại chậm như cũ.</li>
+<li><strong>Báo cáo phải đối chiếu bằng tay.</strong> Muốn biết test case nào đã có script, tỷ lệ pass bao nhiêu, phải so từng file Excel với thư mục code.</li>
 </ul>
-<p>Các mô hình ngôn ngữ lớn (LLM) có thể sinh bản nháp test case trong vài giây. Tuy vậy AI có thể sinh sai, nên cần <strong>một quy trình có con người kiểm soát</strong>: AI sinh, Tester sửa, QA Lead duyệt, có lưu vết. Đề tài xây dựng hệ thống quản lý test case khép kín theo đúng quy trình đó.</p>
+<p>Vấn đề không nằm ở công cụ automation. Vấn đề là <strong>test case, script và kết quả chạy nằm ở ba nơi, không nối với nhau</strong>. Vì vậy nhóm xây dựng hệ thống quản lý test case, trong đó:</p>
+<ul>
+<li><strong>AI viết nháp</strong> test case và script, <strong>con người sửa và duyệt</strong>, mọi thay đổi đều được lưu vết;</li>
+<li>script được sinh từ <strong>đúng test case đã duyệt</strong>;</li>
+<li>dữ liệu nhạy cảm <strong>được che trước khi gửi AI</strong>;</li>
+<li>báo cáo <strong>tự động</strong>, không cần đối chiếu tay.</li>
+</ul>
+<blockquote>
+<p><strong>AI giúp làm nhanh hơn, còn phần mềm giúp làm đúng và an toàn.</strong></p>
+</blockquote>
+<p>Ở đồ án môn học này, AI chỉ được dùng ở mức <strong>gọi API</strong> của nhà cung cấp (hoặc chế độ giả lập khi không có mạng). AI chỉ hỗ trợ 2 trong 12 yêu cầu (YC2, YC9); các yêu cầu còn lại là nghiệp vụ quản lý, vẫn chạy đủ khi tắt AI. Hệ thống đã lưu bản AI gốc, bản người sửa, quyết định duyệt và kết quả chạy, nên là nền móng để phát triển AI chuyên sâu ở các môn học sau (<a href="#ch-09">Chương 9</a>).</p>
 <h2>0.3. Mục tiêu</h2>
 <ol>
 <li>Xây dựng phần mềm quản lý vòng đời test case: <strong>User story → AI sinh test case → Tester chỉnh sửa → QA Lead duyệt → Chạy test (thủ công/tự động bằng Playwright) → Báo cáo</strong>.</li>
@@ -1071,17 +1081,20 @@ Velocity thực tế: __ SP
 </ol>
 <h2>1.3. Hiện trạng tổ chức</h2>
 <h3>Sơ đồ tổ chức</h3>
-<pre class="mermaid">flowchart TD
-    KH["Khách hàng&lt;br/&gt;(đối tác bên ngoài)"] &lt;--&gt;|"yêu cầu, nghiệm thu"| PM
-    PM["Product Owner / BA&lt;br/&gt;Viết user story"] --&gt; QAL["QA Lead&lt;br/&gt;Phân công, duyệt test case, báo cáo"]
-    PM --&gt; DEV["Developer&lt;br/&gt;Lập trình, sửa lỗi"]
-    QAL --&gt; T1["Tester&lt;br/&gt;Viết &amp; chạy test case"]
-    QAL --&gt; T2["Automation Tester&lt;br/&gt;Viết script tự động"]
-    QAL --&gt;|"báo cáo chất lượng"| KH
-    T1 --&gt;|Báo lỗi| DEV
-    T2 --&gt;|Báo lỗi| DEV
-    AI["Nhà cung cấp AI&lt;br/&gt;(đối tác bên ngoài)"] -. "dịch vụ LLM" .- T1
-    AI -. "dịch vụ LLM" .- T2</pre><h3>Các bộ phận và giao tiếp với bên ngoài</h3>
+<p>Sơ đồ được vẽ bằng <strong>draw.io</strong> (file gốc: <code>docs/hientrang/SoDoToChuc.drawio</code>, sinh bằng <code>python3 docs/hientrang/generate_hientrang.py</code>). Các luồng được đánh số theo thứ tự công việc; luồng nét đứt là việc Tester, Automation Tester đang tự dùng AI bên ngoài.</p>
+<p><img src="hientrang/SoDoToChuc.svg" alt="Sơ đồ tổ chức đội QA (hiện trạng)"></p>
+<p>Thứ tự luồng công việc trong một sprint:</p>
+<ol>
+<li>Khách hàng gửi yêu cầu cho Product Owner / BA.</li>
+<li>Product Owner / BA viết user story, chuyển cho QA Lead và Developer.</li>
+<li>QA Lead phân công: Tester viết test case, Automation Tester viết script tự động. Developer lập trình song song.</li>
+<li>Developer bàn giao bản build lên môi trường test.</li>
+<li>Tester chạy test case, Automation Tester chạy script trên bản build; gặp lỗi thì báo lỗi cho Developer. Developer sửa lỗi rồi quay lại bước (4) với bản build mới; vòng (4) ↔ (5) lặp lại đến khi hết lỗi nghiêm trọng.</li>
+<li>Tester, Automation Tester gửi kết quả cho QA Lead.</li>
+<li>QA Lead tổng hợp báo cáo chất lượng gửi khách hàng.</li>
+<li>Product Owner / BA bàn giao sản phẩm, khách hàng nghiệm thu.</li>
+</ol>
+<h3>Các bộ phận và giao tiếp với bên ngoài</h3>
 <p>Theo môn học, cần <strong>chú trọng các bộ phận có giao tiếp với đối tác bên ngoài</strong>, vì dữ liệu đi ra hoặc đi vào tổ chức ở đó.</p>
 <table>
 <thead>
@@ -1113,7 +1126,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>Developer</td>
-<td>Lập trình, sửa lỗi theo bug Tester báo</td>
+<td>Lập trình, sửa lỗi theo bug Tester báo; bàn giao bản build mới cho Tester, Automation Tester kiểm thử lại</td>
 <td>Không</td>
 </tr>
 </tbody></table>
@@ -1259,18 +1272,16 @@ Velocity thực tế: __ SP
 </tr>
 </tbody></table>
 <h3>Quy trình hiện tại</h3>
-<pre class="mermaid">flowchart TD
-    S([Bắt đầu sprint]) --&gt; A["BA tạo user story trên Jira"]
-    A --&gt; B["Tester đọc user story, viết test case thủ công trên Excel"]
-    B --&gt; C["Gửi file Excel cho QA Lead qua chat/email"]
-    C --&gt; D{"QA Lead xem"}
-    D --&gt;|Chưa đạt| E["Ghi nhận xét vào file hoặc nhắn tin"] --&gt; B
-    D --&gt;|Đạt| F["Tester chạy test thủ công, tô màu kết quả trên Excel"]
-    F --&gt; G{"Có lỗi?"}
-    G --&gt;|Có| H["Tạo bug trên Jira"] --&gt; F
-    G --&gt;|Không| I["Automation Tester viết lại test case thành script"]
-    I --&gt; J["QA Lead tổng hợp báo cáo bằng tay"]
-    J --&gt; K([Kết thúc sprint])</pre><h3>Mẫu biểu đang dùng</h3>
+<p>Sơ đồ hoạt động chia làn theo bộ phận, vẽ bằng <strong>draw.io</strong> (file gốc: <code>docs/hientrang/QuyTrinhHienTai.drawio</code>). Mỗi hoạt động ghi mã nghiệp vụ tương ứng ở bảng trên; thanh đen là chỗ các bộ phận làm song song hoặc chờ nhau.</p>
+<p><img src="hientrang/QuyTrinhHienTai.svg" alt="Quy trình kiểm thử hiện tại của đội QA"></p>
+<p>Một sprint diễn ra như sau:</p>
+<ul>
+<li><strong>Đầu sprint:</strong> PO/BA tạo user story trên Jira; QA Lead lập kế hoạch và phân công. Sau đó Tester viết test case, còn Developer lập trình song song.</li>
+<li><strong>Duyệt test case:</strong> Tester gửi file Excel qua chat/email. Nếu chưa đạt, QA Lead nhận xét qua chat (không lưu vết) và Tester sửa đè file rồi gửi lại.</li>
+<li><strong>Kiểm thử:</strong> cần đủ hai điều kiện là test case đã được duyệt và Developer đã bàn giao bản build. Khi đó Tester chạy test thủ công, còn Automation Tester đọc lại test case trên Excel để viết script (làm hai lần cùng một việc). Gặp lỗi thì Tester tạo bug trên Jira, Developer sửa và bàn giao bản build mới để chạy lại.</li>
+<li><strong>Cuối sprint:</strong> khi Tester hết lỗi và script đã chạy xong, QA Lead tổng hợp báo cáo bằng tay từ nhiều file Excel và gửi khách hàng.</li>
+</ul>
+<h3>Mẫu biểu đang dùng</h3>
 <p><strong>Mẫu test case Excel hiện tại:</strong></p>
 <table>
 <thead>
@@ -5764,8 +5775,8 @@ npm install
 <td>1</td>
 <td>0:00</td>
 <td>Mở slide, trình bày vấn đề</td>
-<td>&quot;Viết test case thủ công mất 30–60 phút/story, dễ sót case lỗi, duyệt qua chat không lưu vết.&quot;</td>
-<td>Khảo sát hiện trạng</td>
+<td>&quot;Một kịch bản kiểm thử được viết hai lần: bằng chữ trong Excel và bằng code trong script, hai bản nằm ở hai nơi. Yêu cầu đổi, Excel sửa nhưng script không, nên script vẫn báo Pass trong khi chức năng đã sai. Nhiều người dán dữ liệu nội bộ vào ChatGPT. Vấn đề là test case, script và kết quả chạy nằm ở ba nơi, không nối với nhau. AI giúp làm nhanh hơn, còn phần mềm giúp làm đúng và an toàn.&quot;</td>
+<td>Lý do chọn đề tài</td>
 </tr>
 <tr>
 <td>2</td>
