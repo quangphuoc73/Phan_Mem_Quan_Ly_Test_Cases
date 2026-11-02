@@ -155,11 +155,21 @@ function seedIfEmpty() {
   }
 }
 
+// CSDL tạo từ bản cũ thiếu tài khoản demo mới (VD poba): chỉ thêm khi chạy `npm run seed`, không tự chạy lúc khởi động server
+function addMissingDemoUsers() {
+  const db = getDb();
+  const exists = db.prepare('SELECT 1 FROM users WHERE username = ?');
+  const ins = db.prepare('INSERT INTO users (username, password_hash, full_name, email, role) VALUES (?, ?, ?, ?, ?)');
+  const added = USERS.filter(([u]) => !exists.get(u)).map(([u, p, n, e, r]) => (ins.run(u, bcrypt.hashSync(p, 10), n, e, r), u));
+  if (added.length) console.log(`  Đã thêm tài khoản demo còn thiếu: ${added.join(', ')}`);
+}
+
 if (require.main === module) {
   if (process.argv.includes('--reset') && config.dbFile !== ':memory:') {
     for (const f of [config.dbFile, `${config.dbFile}-wal`, `${config.dbFile}-shm`]) fs.rmSync(f, { force: true });
   }
   seedIfEmpty();
+  addMissingDemoUsers();
   closeDb();
   console.log('  Xong. Tài khoản demo: admin/Admin@123, qalead/QaLead@123, poba/PoBa@1234, tester/Tester@123, dev/Dev@123456');
 }

@@ -54,6 +54,8 @@ Chạy: `cd app && npm test`
 | UT-19 | Schema từ chối priority sai, steps rỗng | Pass |
 | UT-20 | Bỏ code fence ```json | Pass |
 | UT-21 | Sinh script Playwright có locator `data-test` | Pass |
+| UT-22 | Script luôn mở URL cần test (`page.goto`) trước tiên, không còn bước TODO | Pass |
+| UT-23 | Sauce Demo: tiêu chí đăng xuất sinh thao tác menu Logout và kiểm tra về trang đăng nhập | Pass |
 | IT-01 | Đăng nhập đúng trả JWT, không trả mật khẩu băm | Pass |
 | IT-02 | Sai mật khẩu → 401, thông báo chung | Pass |
 | IT-03 | Không có token → 401 | Pass |
@@ -96,7 +98,7 @@ Chạy: `cd app && npm test`
 | IT-48 | QĐ13: thiếu bản build → 400; lần chạy Pass, đã chạy lại hoặc đã báo rồi → 409 | Pass |
 | IT-49 | Chỉ Developer được báo đã sửa lỗi (vai trò khác → 403) | Pass |
 
-**Kết quả:** `62 tests, 62 pass, 0 fail` (Node.js 21, macOS, 31/10/2026).
+**Kết quả:** `64 tests, 64 pass, 0 fail` (Node.js 21, macOS, 01/11/2026).
 
 ## 6.3. Kiểm thử E2E bằng Playwright
 

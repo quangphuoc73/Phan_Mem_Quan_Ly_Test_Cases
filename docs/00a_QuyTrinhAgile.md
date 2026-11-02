@@ -53,14 +53,14 @@ Nhóm có **4 thành viên**, đúng quy mô Scrum (3–9 người). Product Own
 
 Product Backlog là danh sách **user story của chính hệ thống AI TestCase Manager**, sắp theo ưu tiên. Ưu tiên dùng **MoSCoW** (Must / Should / Could / Won't), độ lớn ước lượng bằng **story point** theo dãy Fibonacci (1, 2, 3, 5, 8, 13). Story mẫu dùng làm mốc: PB-03 "tạo dự án và module" = 2 điểm.
 
-Bản dạng CSV để nhập vào Jira/Trello: [`docs/agile/ProductBacklog.csv`](agile/ProductBacklog.csv).
+Bản dạng CSV để nhập vào Jira/Trello: [`docs/agile/ProductBacklog.csv`](agile/ProductBacklog.csv). Bản Excel để đọc và in (mỗi trường một cột, có trang tổng story point theo sprint): [`docs/agile/ProductBacklog.xlsx`](agile/ProductBacklog.xlsx), sinh từ file CSV bằng `cd docs/tools && npm run backlog`.
 
 | Mã | Epic | User story | SP | Ưu tiên | Sprint | YC |
 |---|---|---|---|---|---|---|
 | PB-01 | Quản trị & bảo mật | Là người dùng, tôi muốn đăng nhập bằng tài khoản được cấp, để dùng đúng chức năng theo vai trò | 3 | Must | 1 | UC01 |
 | PB-02 | Quản trị & bảo mật | Là Admin, tôi muốn tạo, khóa tài khoản và gán vai trò, để kiểm soát ai được làm gì | 3 | Must | 1 | YC11 |
 | PB-03 | Quản trị & bảo mật | Là Admin, tôi muốn tạo dự án và module, để tổ chức user story theo sản phẩm | 2 | Must | 1 | YC11 |
-| PB-04 | User story | Là Tester, tôi muốn lập user story kèm acceptance criteria, để có đầu vào cho test case | 3 | Must | 1 | YC1 |
+| PB-04 | User story | Là PO/BA, tôi muốn lập user story kèm acceptance criteria, để có đầu vào cho test case | 3 | Must | 1 | YC1 |
 | PB-05 | Quản trị & bảo mật | Là Admin, tôi muốn xem nhật ký hoạt động, để truy vết ai đã làm gì | 2 | Should | 1 | BM-13 |
 | PB-06 | AI test case | Là Tester, tôi muốn AI sinh test case từ user story, để tiết kiệm thời gian viết nháp | 8 | Must | 2 | YC2 |
 | PB-07 | AI test case | Là Admin, tôi muốn dữ liệu nhạy cảm được che trước khi gửi AI, để không lộ thông tin khách hàng | 3 | Must | 2 | BM-09 |
@@ -77,9 +77,9 @@ Bản dạng CSV để nhập vào Jira/Trello: [`docs/agile/ProductBacklog.csv`
 | PB-18 | Tự động hóa | Là Tester, tôi muốn AI sinh script Playwright từ test case đã duyệt, để không phải viết lại | 5 | Should | 4 | YC9 |
 | PB-19 | Tự động hóa | Là Tester, tôi muốn chạy script tự động an toàn và xem ảnh lỗi, để tiết kiệm thời gian chạy lại | 8 | Should | 4 | YC9 |
 | PB-20 | Duyệt & phiên bản | Là QA Lead, tôi muốn so sánh bản AI gốc với bản đã sửa, để đánh giá chất lượng AI | 3 | Could | 4 | YC3 |
-| PB-21 | Agile | Là QA Lead, tôi muốn chia user story theo sprint và ước lượng story point, để lập kế hoạch | 5 | Should | 5 | YC12 |
+| PB-21 | Agile | Là PO/BA, tôi muốn chia user story theo sprint và ước lượng story point, để lập kế hoạch | 5 | Should | 5 | YC12 |
 | PB-22 | Agile | Là QA Lead, tôi muốn xem burndown và velocity, để biết sprint có kịp không | 3 | Could | 5 | YC12 |
-| PB-23 | User story | Là Tester, tôi muốn nhập user story từ file CSV, để không gõ lại từ Jira | 3 | Should | 5 | YC8 |
+| PB-23 | User story | Là PO/BA, tôi muốn nhập user story từ file CSV, để không gõ lại từ Jira | 3 | Should | 5 | YC8 |
 | PB-24 | Thực thi & báo cáo | Là QA Lead, tôi muốn xuất test case ra Excel, để gửi cho khách hàng | 2 | Should | 5 | YC8 |
 | PB-25 | Triển khai | Là Admin, tôi muốn triển khai bằng Docker, để cài đặt nhanh và đồng nhất | 3 | Should | 5 | – |
 | PB-26 | Thực thi & báo cáo | Là Developer, tôi muốn báo đã sửa lỗi kèm bản build, để Tester biết test case nào cần kiểm thử lại | 3 | Should | 4 | YC13 |

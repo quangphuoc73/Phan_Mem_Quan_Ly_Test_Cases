@@ -441,7 +441,7 @@
 </blockquote>
 <h2>0A.4. Product Backlog</h2>
 <p>Product Backlog là danh sách <strong>user story của chính hệ thống AI TestCase Manager</strong>, sắp theo ưu tiên. Ưu tiên dùng <strong>MoSCoW</strong> (Must / Should / Could / Won&#39;t), độ lớn ước lượng bằng <strong>story point</strong> theo dãy Fibonacci (1, 2, 3, 5, 8, 13). Story mẫu dùng làm mốc: PB-03 &quot;tạo dự án và module&quot; = 2 điểm.</p>
-<p>Bản dạng CSV để nhập vào Jira/Trello: <a href="agile/ProductBacklog.csv">`docs/agile/ProductBacklog.csv`</a>.</p>
+<p>Bản dạng CSV để nhập vào Jira/Trello: <a href="agile/ProductBacklog.csv">`docs/agile/ProductBacklog.csv`</a>. Bản Excel để đọc và in (mỗi trường một cột, có trang tổng story point theo sprint): <a href="agile/ProductBacklog.xlsx">`docs/agile/ProductBacklog.xlsx`</a>, sinh từ file CSV bằng <code>cd docs/tools &amp;&amp; npm run backlog</code>.</p>
 <table>
 <thead>
 <tr>
@@ -484,7 +484,7 @@
 <tr>
 <td>PB-04</td>
 <td>User story</td>
-<td>Là Tester, tôi muốn lập user story kèm acceptance criteria, để có đầu vào cho test case</td>
+<td>Là PO/BA, tôi muốn lập user story kèm acceptance criteria, để có đầu vào cho test case</td>
 <td>3</td>
 <td>Must</td>
 <td>1</td>
@@ -637,7 +637,7 @@
 <tr>
 <td>PB-21</td>
 <td>Agile</td>
-<td>Là QA Lead, tôi muốn chia user story theo sprint và ước lượng story point, để lập kế hoạch</td>
+<td>Là PO/BA, tôi muốn chia user story theo sprint và ước lượng story point, để lập kế hoạch</td>
 <td>5</td>
 <td>Should</td>
 <td>5</td>
@@ -655,7 +655,7 @@
 <tr>
 <td>PB-23</td>
 <td>User story</td>
-<td>Là Tester, tôi muốn nhập user story từ file CSV, để không gõ lại từ Jira</td>
+<td>Là PO/BA, tôi muốn nhập user story từ file CSV, để không gõ lại từ Jira</td>
 <td>3</td>
 <td>Should</td>
 <td>5</td>
@@ -5047,6 +5047,16 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <td>Pass</td>
 </tr>
 <tr>
+<td>UT-22</td>
+<td>Script luôn mở URL cần test (<code>page.goto</code>) trước tiên, không còn bước TODO</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>UT-23</td>
+<td>Sauce Demo: tiêu chí đăng xuất sinh thao tác menu Logout và kiểm tra về trang đăng nhập</td>
+<td>Pass</td>
+</tr>
+<tr>
 <td>IT-01</td>
 <td>Đăng nhập đúng trả JWT, không trả mật khẩu băm</td>
 <td>Pass</td>
@@ -5252,7 +5262,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <td>Pass</td>
 </tr>
 </tbody></table>
-<p><strong>Kết quả:</strong> <code>62 tests, 62 pass, 0 fail</code> (Node.js 21, macOS, 31/10/2026).</p>
+<p><strong>Kết quả:</strong> <code>64 tests, 64 pass, 0 fail</code> (Node.js 21, macOS, 01/11/2026).</p>
 <h2>6.3. Kiểm thử E2E bằng Playwright</h2>
 <p>Chạy: <code>cd app &amp;&amp; npm run test:e2e</code> (Playwright tự khởi động server ở cổng 3100 với CSDL riêng <code>data/e2e.db</code>; xem báo cáo HTML: <code>npx playwright show-report e2e-report</code>).</p>
 <p><strong>Kỹ thuật áp dụng:</strong></p>
@@ -6072,7 +6082,7 @@ npm install
 <tr>
 <td>12</td>
 <td>8:45</td>
-<td>Terminal: <code>npm test</code> (62 pass) và <code>npm run test:e2e</code> (Playwright mở Chrome, 9 pass)</td>
+<td>Terminal: <code>npm test</code> (64 pass) và <code>npm run test:e2e</code> (Playwright mở Chrome, 9 pass)</td>
 <td>&quot;Kiểm thử tự động 3 tầng, chạy trên GitHub Actions mỗi lần push.&quot;</td>
 <td>Chất lượng</td>
 </tr>
@@ -6174,7 +6184,7 @@ npm install
 </tr>
 <tr>
 <td>Kiểm thử tự động</td>
-<td>62 unit/API test, 9 E2E Playwright, 8 test Playwright mẫu (POM), script AI sinh chạy được trên web thật</td>
+<td>64 unit/API test, 9 E2E Playwright, 8 test Playwright mẫu (POM), script AI sinh chạy được trên web thật</td>
 </tr>
 <tr>
 <td>Triển khai</td>

@@ -114,15 +114,121 @@ function expectedToCode(expected) {
   return lines;
 }
 
+// ---- Luật riêng cho Sauce Demo (https://www.saucedemo.com/, web công khai để luyện kiểm thử) ----
+const SAUCE = {
+  login: (u = 'standard_user', p = 'secret_sauce') => [
+    `await page.locator('[data-test="username"]').fill(${JSON.stringify(u)});`,
+    `await page.locator('[data-test="password"]').fill(${JSON.stringify(p)});`,
+    `await page.locator('[data-test="login-button"]').click();`,
+  ],
+  logout: [`await page.locator('#react-burger-menu-btn').click();`, `await page.locator('[data-test="logout-sidebar-link"]').click();`],
+  toCheckout: [
+    `await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();`,
+    `await page.locator('[data-test="shopping-cart-link"]').click();`,
+    `await page.locator('[data-test="checkout"]').click();`,
+  ],
+  fillInfo: [
+    `await page.locator('[data-test="firstName"]').fill('An');`,
+    `await page.locator('[data-test="lastName"]').fill('Nguyen');`,
+    `await page.locator('[data-test="postalCode"]').fill('700000');`,
+    `await page.locator('[data-test="continue"]').click();`,
+  ],
+  openDetail: [`await page.locator('[data-test="inventory-item-name"]').first().click();`],
+};
+const SORT = [
+  ['price (low to high)', 'lohi', `await expect(page.locator('[data-test="inventory-item-price"]').first()).toHaveText('$7.99');`],
+  ['price (high to low)', 'hilo', `await expect(page.locator('[data-test="inventory-item-price"]').first()).toHaveText('$49.99');`],
+  ['name (z to a)', 'za', `await expect(page.locator('[data-test="inventory-item-name"]').first()).toHaveText('Test.allTheThings() T-Shirt (Red)');`],
+  ['name (a to z)', 'az', `await expect(page.locator('[data-test="inventory-item-name"]').first()).toHaveText('Sauce Labs Backpack');`],
+];
+
+// Thao tác + kiểm tra cho một acceptance criterion; null nếu không nhận ra chức năng
+function sauceCriterion(ac, baseUrl) {
+  const a = ac.toLowerCase();
+  const root = baseUrl.replace(/\/$/, '');
+  if (/logout|đăng xuất/.test(a)) {
+    if (/inventory\.html/.test(a)) {
+      return { actions: [...SAUCE.logout, `await page.goto(${JSON.stringify(`${root}/inventory.html`)});`],
+        expects: [`await expect(page.locator('[data-test="error"]')).toContainText("You can only access '/inventory.html' when you are logged in.");`] };
+    }
+    if (/đăng nhập lại/.test(a)) {
+      return { actions: [...SAUCE.logout, ...SAUCE.login()],
+        expects: [`await expect(page).toHaveURL(/inventory/);`, `await expect(page.locator('[data-test="title"]')).toHaveText('Products');`] };
+    }
+    return { actions: SAUCE.logout,
+      expects: [`await expect(page.locator('[data-test="login-button"]')).toBeVisible();`, `await expect(page).not.toHaveURL(/inventory/);`] };
+  }
+  const cred = ac.match(/đăng nhập[^/]*?\b([\w.]+)\s*\/\s*([\w.]+)/i);
+  if (cred) {
+    return { actions: [...(/lại/.test(a) ? SAUCE.logout : []), ...SAUCE.login(cred[1], cred[2])],
+      expects: [`await expect(page).toHaveURL(/inventory/);`, `await expect(page.locator('[data-test="title"]')).toHaveText('Products');`] };
+  }
+  if (/sắp xếp|sort|price \(|name \(/.test(a)) {
+    if (/4 kiểu/.test(a)) return { actions: [], expects: [`await expect(page.locator('[data-test="product-sort-container"] option')).toHaveCount(4);`] };
+    if (/mặc định/.test(a)) return { actions: [], expects: [`await expect(page.locator('[data-test="product-sort-container"]')).toHaveValue('az');`, SORT[3][2]] };
+    const opt = SORT.find(([label]) => a.includes(label));
+    if (opt) return { actions: [`await page.locator('[data-test="product-sort-container"]').selectOption(${JSON.stringify(opt[1])});`], expects: [opt[2]] };
+  }
+  if (/first name|bắt buộc nhập/.test(a)) {
+    return { actions: [...SAUCE.toCheckout, `await page.locator('[data-test="continue"]').click();`],
+      expects: [`await expect(page.locator('[data-test="error"]')).toContainText('Error: First Name is required');`] };
+  }
+  if (/overview|item total/.test(a)) {
+    return { actions: [...SAUCE.toCheckout, ...SAUCE.fillInfo],
+      expects: [`await expect(page.locator('[data-test="subtotal-label"]')).toContainText('Item total');`,
+        `await expect(page.locator('[data-test="tax-label"]')).toContainText('Tax');`,
+        `await expect(page.locator('[data-test="total-label"]')).toContainText('Total');`] };
+  }
+  if (/finish/.test(a)) {
+    return { actions: [...SAUCE.toCheckout, ...SAUCE.fillInfo, `await page.locator('[data-test="finish"]').click();`],
+      expects: [`await expect(page.locator('[data-test="complete-header"]')).toHaveText('Thank you for your order!');`,
+        `await expect(page.locator('[data-test="shopping-cart-badge"]')).toHaveCount(0);`] };
+  }
+  if (/cancel/.test(a)) {
+    return { actions: [...SAUCE.toCheckout, `await page.locator('[data-test="cancel"]').click();`], expects: [`await expect(page).toHaveURL(/cart\\.html/);`] };
+  }
+  if (/back to products/.test(a)) {
+    return { actions: [...SAUCE.openDetail, `await page.locator('[data-test="back-to-products"]').click();`], expects: [`await expect(page).toHaveURL(/inventory\\.html/);`] };
+  }
+  if (/add to cart.*chi tiết|chi tiết.*add to cart/.test(a)) {
+    return { actions: [...SAUCE.openDetail, `await page.locator('[data-test="add-to-cart"]').click();`],
+      expects: [`await expect(page.locator('[data-test="shopping-cart-badge"]')).toHaveText('1');`] };
+  }
+  if (/chi tiết|tên sản phẩm/.test(a)) {
+    return { actions: SAUCE.openDetail,
+      expects: [`await expect(page).toHaveURL(/inventory-item/);`,
+        `await expect(page.locator('[data-test="inventory-item-desc"]')).toBeVisible();`,
+        `await expect(page.locator('[data-test="inventory-item-price"]')).toBeVisible();`] };
+  }
+  return null;
+}
+
 function generateScript({ testCase, baseUrl }) {
   const name = `${testCase.code} - ${testCase.title}`;
+  const sauce = /saucedemo\.com/.test(baseUrl || '');
   const body = [];
+  let sauceExpects = null;
+  // Mọi script bắt đầu ở URL cần test, trừ khi bước đầu tiên đã tự mở trang
+  if (baseUrl && !/^await page\.goto/.test(stepToCode(testCase.steps[0] || '', baseUrl))) {
+    body.push(`  // Mở ứng dụng cần test`, `  await page.goto(${JSON.stringify(baseUrl)});`);
+  }
   testCase.steps.forEach((step, i) => {
     body.push(`  // Bước ${i + 1}: ${step}`);
-    body.push(`  ${stepToCode(step, baseUrl)}`);
+    const criterion = step.match(/(?:tiêu chí|điều kiện):\s*(.+)$/i)?.[1];
+    const hit = sauce && criterion ? sauceCriterion(criterion, baseUrl) : null;
+    if (hit) {
+      hit.actions.forEach((l) => body.push(`  ${l}`));
+      sauceExpects = hit.expects;
+    } else if (/đăng nhập.*tài khoản hợp lệ/i.test(step)) {
+      (sauce ? SAUCE.login() : ['// TODO: điền tài khoản test của ứng dụng']).forEach((l) => body.push(`  ${l}`));
+    } else if (/^(mở chức năng|xác nhận thao tác)/i.test(step)) {
+      body.push(`  // (không cần thao tác riêng)`);
+    } else {
+      body.push(`  ${stepToCode(step, baseUrl)}`);
+    }
   });
   body.push(`  // Kết quả mong đợi: ${testCase.expected_result}`);
-  expectedToCode(testCase.expected_result).forEach((l) => body.push(`  ${l}`));
+  (sauceExpects || expectedToCode(testCase.expected_result)).forEach((l) => body.push(`  ${l}`));
 
   const code = [
     `// Script Playwright do AI sinh từ test case ${testCase.code}.`,
