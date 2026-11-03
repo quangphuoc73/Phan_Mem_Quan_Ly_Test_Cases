@@ -28,20 +28,20 @@ function record(testCaseId, input, userId, extra = {}) {
 }
 
 const fixSchema = z.object({
-  build: z.string().trim().min(1, 'Phải nhập bản build đã sửa lỗi (QĐ13)').max(50),
+  build: z.string().trim().min(1, 'Phải nhập bản build đã sửa lỗi (QĐ15)').max(50),
   note: z.string().trim().max(2000).optional().default(''),
 });
 
-// YC13 – QĐ13: chỉ báo đã sửa cho lần chạy Fail gần nhất của test case, mỗi lần chạy báo một lần
+// YC15 – QĐ15: chỉ báo đã sửa cho lần chạy Fail gần nhất của test case, mỗi lần chạy báo một lần
 function reportFix(runId, input, userId) {
   const d = fixSchema.parse(input);
   const db = getDb();
   const run = db.prepare('SELECT * FROM test_runs WHERE id = ?').get(runId);
   if (!run) throw notFound('Không tìm thấy lần chạy');
-  if (run.result !== 'FAIL') throw conflict('Chỉ báo đã sửa cho lần chạy có kết quả Fail (QĐ13)');
+  if (run.result !== 'FAIL') throw conflict('Chỉ báo đã sửa cho lần chạy có kết quả Fail (QĐ15)');
   const latest = db.prepare('SELECT MAX(id) id FROM test_runs WHERE test_case_id = ?').get(run.test_case_id).id;
-  if (latest !== run.id) throw conflict('Test case đã được chạy lại sau lần Fail này (QĐ13)');
-  if (run.fixed_at) throw conflict('Lần chạy này đã được báo sửa (QĐ13)');
+  if (latest !== run.id) throw conflict('Test case đã được chạy lại sau lần Fail này (QĐ15)');
+  if (run.fixed_at) throw conflict('Lần chạy này đã được báo sửa (QĐ15)');
   db.prepare(`UPDATE test_runs SET fix_build = ?, fix_note = ?, fixed_by = ?, fixed_at = datetime('now','localtime') WHERE id = ?`)
     .run(d.build, d.note || null, userId, run.id);
   return db.prepare('SELECT * FROM test_runs WHERE id = ?').get(run.id);

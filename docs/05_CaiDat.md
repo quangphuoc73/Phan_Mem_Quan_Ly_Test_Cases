@@ -30,17 +30,17 @@ NhapMonCongNghePhanMem/
 │   │   ├── db/                   # schema.sql, kết nối, dữ liệu mẫu
 │   │   ├── middleware/           # auth (JWT, RBAC), aiQuota, errorHandler
 │   │   ├── routes/               # auth, admin, work (API REST)
-│   │   ├── services/             # story, sprint, testCase, run, report, parameter, script, audit
+│   │   ├── services/             # story, sprint, testCase, run, report, parameter, script, audit, jira (đồng bộ Jira)
 │   │   │   └── ai/               # AI Service: piiMasker, injectionGuard, promptBuilder, schemas, aiService
 │   │   │       └── providers/    # LLMProvider + Mock, Gemini, Claude, OpenAI
 │   │   └── utils/errors.js
 │   ├── public/                   # Giao diện web (index.html, css, js/pages/*)
 │   ├── tests/                    # Unit test + API test (node:test + supertest)
 │   ├── e2e/                      # E2E test bằng Playwright cho chính hệ thống
-│   ├── samples/                  # File CSV mẫu để nhập user story
+│   ├── samples/                  # Nội dung user story mẫu (chép sang Jira khi tạo story thử)
 │   ├── .env.example
 │   └── package.json
-├── automation/                   # Playwright worker (YC9)
+├── automation/                   # Playwright worker (YC10)
 │   ├── playwright.config.js
 │   ├── pages/                    # Page Object Model: LoginPage, InventoryPage
 │   └── specs/
@@ -56,19 +56,21 @@ NhapMonCongNghePhanMem/
 
 | Yêu cầu | Service / module | Route | Màn hình |
 |---|---|---|---|
-| YC1 | `storyService.create/update/remove` | `/api/stories` | `pages/stories.js` |
+| YC1 | `jiraService.fetchStories/splitDescription/saveStories`, `storyService.list/get` | `/api/projects/:id/jira-sync`, `/api/stories` (chỉ đọc) | `pages/stories.js` |
 | YC2 | `ai/aiService.generateTestCases` + `testCaseService.saveAiResult` | `/api/stories/:id/generate` | Chi tiết user story |
 | YC3 | `testCaseService.create/update/remove/submit/history` | `/api/testcases` | Hộp thoại test case |
 | YC4 | `testCaseService.review` | `/api/testcases/:id/review` | `pages/review.js` |
 | YC5 | `runService.record` | `/api/testcases/:id/runs` | Tab "Chạy test" |
 | YC6 | `reportService.summary` | `/api/reports/summary` | `pages/dashboard.js` |
 | YC7 | `testCaseService.list` | `/api/testcases?…` | `pages/testcases.js` |
-| YC8 | `storyService.importMany`, ExcelJS | `/api/stories/import`, `/api/export/testcases.xlsx` | Nhập file, Xuất Excel |
-| YC9 | `scriptService.generate/save/run/staticCheck` | `/api/testcases/:id/script/*` | Tab "Script Playwright" |
-| YC10 | `parameterService.update` | `/api/parameters/:key` | `pages/admin.js → renderParams` |
-| YC11 | `routes/admin.js` | `/api/users`, `/api/projects` | Người dùng, Dự án |
-| YC12 | `sprintService.list/create/update/burndown/storyProgress` | `/api/projects/:id/sprints`, `/api/sprints/:id/*` | `pages/sprints.js` |
-| YC13 | `runService.reportFix`, `testCaseService.list` (lọc `needs_retest`) | `/api/runs/:id/fix`, `/api/testcases?needs_retest=1` | Kết quả chạy test, tab Chạy test, Tra cứu |
+| YC8 | `jiraService.handleWebhook/syncProject`, `storyService.markReviewed` | `/api/jira/webhook`, `/api/stories/:id/reviewed` | Nhãn *Cần xem lại test case* ở User story |
+| YC9 | ExcelJS | `/api/export/testcases.xlsx` | Xuất test case ra Excel |
+| YC10 | `scriptService.generate/save/run/staticCheck` | `/api/testcases/:id/script/*` | Tab "Script Playwright" |
+| YC11 | `parameterService.update` | `/api/parameters/:key` | `pages/admin.js → renderParams` |
+| YC12 | `routes/admin.js` | `/api/users` | `pages/admin.js → renderUsers` |
+| YC13 | `jiraService.testConnection/importProject/syncProject` (Jira REST API v3, chế độ giả lập khi chưa cấu hình) | `/api/jira/*`, `/api/projects/:id/jira-sync`, `/api/projects` | `pages/admin.js → renderProjects` |
+| YC14 | `jiraService.fetchSprints/saveSprints`, `sprintService.list/burndown/storyProgress` | `/api/projects/:id/sprints`, `/api/sprints/:id/burndown` | `pages/sprints.js` (chỉ xem) |
+| YC15 | `runService.reportFix`, `testCaseService.list` (lọc `needs_retest`) | `/api/runs/:id/fix`, `/api/testcases?needs_retest=1` | Kết quả chạy test, tab Chạy test, Tra cứu |
 
 ## 5.4. Một số điểm cài đặt đáng chú ý
 

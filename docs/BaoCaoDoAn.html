@@ -104,7 +104,7 @@
 <p><strong>Trong phạm vi:</strong></p>
 <ul>
 <li>Quản lý người dùng, phân quyền 5 vai trò: Admin, QA Lead, PO/BA, Tester, Developer.</li>
-<li>Quản lý dự án, module, user story (nhập tay hoặc nhập từ file CSV/JSON).</li>
+<li>Đồng bộ <strong>một chiều từ Jira</strong>: dự án, module, thành viên, user story (kèm acceptance criteria), sprint, story point; nhận thay đổi qua webhook hoặc đồng bộ định kỳ và báo Tester xem lại test case khi story đổi. Hệ thống không tạo, sửa story hay sprint.</li>
 <li>AI sinh test case từ user story và acceptance criteria.</li>
 <li>Soạn thảo, lưu lịch sử phiên bản, gửi duyệt, duyệt/trả lại test case.</li>
 <li>Ghi nhận kết quả chạy test thủ công (Pass/Fail/Blocked); Developer báo đã sửa lỗi kèm bản build để Tester kiểm thử lại.</li>
@@ -113,19 +113,13 @@
 <li>Thay đổi quy định (số test case tối đa, số lần gọi AI…) không cần sửa mã nguồn.</li>
 <li>Bảo mật: JWT, bcrypt, RBAC, audit log, che dữ liệu nhạy cảm trước khi gửi AI, chống prompt injection, sandbox khi chạy script.</li>
 </ul>
-<p><strong>Ngoài phạm vi (hướng phát triển):</strong> tích hợp Jira 2 chiều, RAG theo tài liệu nghiệp vụ, fine-tune model riêng, AI agent tự sửa script (self-healing) – xem <a href="#ch-09">Chương 9</a>.</p>
+<p><strong>Ngoài phạm vi (hướng phát triển):</strong> đẩy bug và kết quả ngược lên Jira (2 chiều), RAG theo tài liệu nghiệp vụ, fine-tune model riêng, AI agent tự sửa script (self-healing) – xem <a href="#ch-09">Chương 9</a>.</p>
 <h2>0.5. Mô hình phát triển: Agile (Scrum) kết hợp 7 hoạt động của môn học</h2>
 <p>Đồ án <strong>thực hiện theo Agile/Scrum</strong> – 5 sprint, mỗi sprint 1 tuần, mỗi sprint giao một phần mềm chạy được – thay vì thác nước thuần (làm xong toàn bộ yêu cầu rồi mới thiết kế, xong thiết kế mới lập trình). Lý do: yêu cầu liên quan đến AI khó chốt từ đầu, cần demo sớm để lấy góp ý, và chức năng rủi ro (AI) phải được làm và kiểm chứng sớm. Chi tiết quy trình: <a href="#ch-00a">Chương 0A</a>.</p>
 <p>Môn SE104 yêu cầu đi qua 7 hoạt động. Trong Agile, <strong>7 hoạt động này lặp lại trong mỗi sprint</strong> cho từng nhóm chức năng nhỏ; báo cáo vẫn tổ chức theo 7 chương để giảng viên dễ chấm, nội dung mỗi chương được bổ sung dần qua các sprint.</p>
-<pre class="mermaid">flowchart TB
-    S0["Đầu Sprint 1: Khảo sát, Product Backlog, kiến trúc, CI"] --&gt; LOOP
-    subgraph LOOP["Mỗi sprint 1 tuần (Sprint 1 → 5)"]
-        direction LR
-        A["Yêu cầu"] --&gt; B["Phân tích"] --&gt; C["Thiết kế"]
-        C --&gt; D["Cài đặt"] --&gt; E["Kiểm chứng"] --&gt; F["Triển khai"]
-    end
-    LOOP --&gt;|"Sprint Review: góp ý → backlog"| LOOP
-    LOOP --&gt; END["Cuối tuần 5&lt;br/&gt;Bảo vệ"]</pre><table>
+<p><img src="sodo/QuyTrinhThucHien.svg" alt="Quy trình thực hiện đồ án"></p>
+<p><em>File gốc:</em> <code>docs/sodo/QuyTrinhThucHien.drawio</code> (mở bằng draw.io để sửa).</p>
+<table>
 <thead>
 <tr>
 <th>Hoạt động</th>
@@ -148,7 +142,7 @@
 </tr>
 <tr>
 <td>2. Xác định yêu cầu</td>
-<td>YC1–YC13, BM, QĐ, yêu cầu phi chức năng</td>
+<td>YC1–YC15, BM, QĐ, yêu cầu phi chức năng</td>
 <td>Tổng quát ở Sprint 1, chi tiết theo từng sprint</td>
 <td><a href="#ch-02">02_DacTaYeuCau.md</a></td>
 </tr>
@@ -226,7 +220,7 @@
 <tr>
 <td>5</td>
 <td>5</td>
-<td>Quản lý sprint trong hệ thống, nhập/xuất, Docker; hoàn thiện tài liệu, slide; bảo vệ cuối tuần (Sprint Review cuối cùng)</td>
+<td>Theo dõi sprint lấy từ Jira, nhận thay đổi story (webhook), xuất Excel, Docker; hoàn thiện tài liệu, slide; bảo vệ cuối tuần (Sprint Review cuối cùng)</td>
 <td>16</td>
 </tr>
 </tbody></table>
@@ -245,7 +239,7 @@
 </tr>
 <tr>
 <td>Theo dõi sprint của dự án được kiểm thử</td>
-<td>Trang <strong>Sprint (Agile)</strong> trong chính hệ thống (YC12): bảng sprint, burndown, velocity</td>
+<td>Trang <strong>Sprint (Agile)</strong> trong chính hệ thống (YC14): bảng sprint, burndown, velocity</td>
 </tr>
 <tr>
 <td>Quản lý mã nguồn</td>
@@ -387,14 +381,9 @@
 </tr>
 </tbody></table>
 <h2>0A.2. Khung Scrum</h2>
-<pre class="mermaid">flowchart LR
-    PB["Product Backlog&lt;br/&gt;danh sách user story&lt;br/&gt;sắp theo ưu tiên"] --&gt; SP["Sprint Planning&lt;br/&gt;chọn story + Sprint Goal"]
-    SP --&gt; SB["Sprint Backlog"]
-    SB --&gt; S["Sprint 1 tuần&lt;br/&gt;phân tích → thiết kế → code → test&lt;br/&gt;Daily Scrum mỗi ngày"]
-    S --&gt; INC["Increment&lt;br/&gt;phần mềm chạy được&lt;br/&gt;đạt Definition of Done"]
-    INC --&gt; RV["Sprint Review&lt;br/&gt;demo, lấy góp ý"]
-    RV --&gt; RT["Retrospective&lt;br/&gt;cải tiến cách làm"]
-    RT --&gt;|cập nhật, sắp xếp lại| PB</pre><h2>0A.3. Vai trò và phân công trong nhóm</h2>
+<p><img src="sodo/KhungScrum.svg" alt="Khung làm việc Scrum"></p>
+<p><em>File gốc:</em> <code>docs/sodo/KhungScrum.drawio</code> (mở bằng draw.io để sửa).</p>
+<h2>0A.3. Vai trò và phân công trong nhóm</h2>
 <p>Nhóm có <strong>4 thành viên</strong>, đúng quy mô Scrum (3–9 người). Product Owner và Scrum Master là hai người khác nhau; cả 4 người đều là Developer. Mỗi người phụ trách chính một mảng nhưng vẫn review code và tài liệu của nhau.</p>
 <table>
 <thead>
@@ -440,7 +429,7 @@
 <p>Tên thành viên được cập nhật sau; phân công có thể đổi trong buổi Sprint Planning nhưng phải ghi vào biên bản.</p>
 </blockquote>
 <h2>0A.4. Product Backlog</h2>
-<p>Product Backlog là danh sách <strong>user story của chính hệ thống AI TestCase Manager</strong>, sắp theo ưu tiên. Ưu tiên dùng <strong>MoSCoW</strong> (Must / Should / Could / Won&#39;t), độ lớn ước lượng bằng <strong>story point</strong> theo dãy Fibonacci (1, 2, 3, 5, 8, 13). Story mẫu dùng làm mốc: PB-03 &quot;tạo dự án và module&quot; = 2 điểm.</p>
+<p>Product Backlog là danh sách <strong>user story của chính hệ thống AI TestCase Manager</strong>, sắp theo ưu tiên. Ưu tiên dùng <strong>MoSCoW</strong> (Must / Should / Could / Won&#39;t), độ lớn ước lượng bằng <strong>story point</strong> theo dãy Fibonacci (1, 2, 3, 5, 8, 13). Story mẫu dùng làm mốc: PB-03 &quot;khai báo URL ứng dụng cần test&quot; = 2 điểm.</p>
 <p>Bản dạng CSV để nhập vào Jira/Trello: <a href="agile/ProductBacklog.csv">`docs/agile/ProductBacklog.csv`</a>. Bản Excel để đọc và in (mỗi trường một cột, có trang tổng story point theo sprint): <a href="agile/ProductBacklog.xlsx">`docs/agile/ProductBacklog.xlsx`</a>, sinh từ file CSV bằng <code>cd docs/tools &amp;&amp; npm run backlog</code>.</p>
 <table>
 <thead>
@@ -470,25 +459,25 @@
 <td>3</td>
 <td>Must</td>
 <td>1</td>
-<td>YC11</td>
+<td>YC12</td>
 </tr>
 <tr>
 <td>PB-03</td>
 <td>Quản trị &amp; bảo mật</td>
-<td>Là Admin, tôi muốn tạo dự án và module, để tổ chức user story theo sản phẩm</td>
+<td>Là Admin, tôi muốn khai báo URL ứng dụng cần test cho từng dự án, để Playwright chạy đúng trang</td>
 <td>2</td>
 <td>Must</td>
 <td>1</td>
-<td>YC11</td>
+<td>YC10</td>
 </tr>
 <tr>
 <td>PB-04</td>
 <td>User story</td>
-<td>Là PO/BA, tôi muốn lập user story kèm acceptance criteria, để có đầu vào cho test case</td>
+<td>Là QA Lead, tôi muốn thêm dự án và đồng bộ user story kèm acceptance criteria từ Jira, để có đầu vào cho test case mà không chép tay</td>
 <td>3</td>
 <td>Must</td>
 <td>1</td>
-<td>YC1</td>
+<td>YC1, YC13</td>
 </tr>
 <tr>
 <td>PB-05</td>
@@ -497,7 +486,7 @@
 <td>2</td>
 <td>Should</td>
 <td>1</td>
-<td>BM-13</td>
+<td>SE-13</td>
 </tr>
 <tr>
 <td>PB-06</td>
@@ -515,7 +504,7 @@
 <td>3</td>
 <td>Must</td>
 <td>2</td>
-<td>BM-09</td>
+<td>SE-09</td>
 </tr>
 <tr>
 <td>PB-08</td>
@@ -524,7 +513,7 @@
 <td>3</td>
 <td>Must</td>
 <td>2</td>
-<td>BM-10</td>
+<td>SE-10</td>
 </tr>
 <tr>
 <td>PB-09</td>
@@ -605,7 +594,7 @@
 <td>3</td>
 <td>Must</td>
 <td>4</td>
-<td>YC10</td>
+<td>YC11</td>
 </tr>
 <tr>
 <td>PB-18</td>
@@ -614,7 +603,7 @@
 <td>5</td>
 <td>Should</td>
 <td>4</td>
-<td>YC9</td>
+<td>YC10</td>
 </tr>
 <tr>
 <td>PB-19</td>
@@ -623,7 +612,7 @@
 <td>8</td>
 <td>Should</td>
 <td>4</td>
-<td>YC9</td>
+<td>YC10</td>
 </tr>
 <tr>
 <td>PB-20</td>
@@ -637,11 +626,11 @@
 <tr>
 <td>PB-21</td>
 <td>Agile</td>
-<td>Là PO/BA, tôi muốn chia user story theo sprint và ước lượng story point, để lập kế hoạch</td>
+<td>Là QA Lead, tôi muốn sprint và story point được lấy từ Jira, để đội không lập kế hoạch ở hai nơi</td>
 <td>5</td>
 <td>Should</td>
 <td>5</td>
-<td>YC12</td>
+<td>YC14</td>
 </tr>
 <tr>
 <td>PB-22</td>
@@ -650,16 +639,16 @@
 <td>3</td>
 <td>Could</td>
 <td>5</td>
-<td>YC12</td>
+<td>YC14</td>
 </tr>
 <tr>
 <td>PB-23</td>
 <td>User story</td>
-<td>Là PO/BA, tôi muốn nhập user story từ file CSV, để không gõ lại từ Jira</td>
+<td>Là PO/BA, tôi muốn story thiếu acceptance criteria trên Jira bị đánh dấu, để bổ sung trước khi đội QA sinh test case</td>
 <td>3</td>
 <td>Should</td>
 <td>5</td>
-<td>YC8</td>
+<td>YC1</td>
 </tr>
 <tr>
 <td>PB-24</td>
@@ -668,7 +657,7 @@
 <td>2</td>
 <td>Should</td>
 <td>5</td>
-<td>YC8</td>
+<td>YC9</td>
 </tr>
 <tr>
 <td>PB-25</td>
@@ -686,19 +675,28 @@
 <td>3</td>
 <td>Should</td>
 <td>4</td>
-<td>YC13</td>
+<td>YC15</td>
 </tr>
 <tr>
 <td>PB-27</td>
 <td>Tích hợp</td>
-<td>Là Tester, tôi muốn đồng bộ 2 chiều với Jira, để không nhập tay</td>
+<td>Là Tester, tôi muốn được báo khi story đổi trên Jira (webhook, đồng bộ định kỳ), để xem lại test case kịp thời</td>
+<td>5</td>
+<td>Should</td>
+<td>5</td>
+<td>YC8</td>
+</tr>
+<tr>
+<td>PB-28</td>
+<td>Tích hợp</td>
+<td>Là Tester, tôi muốn đồng bộ 2 chiều với Jira (đẩy test case và kết quả chạy lên Jira), để không nhập tay</td>
 <td>8</td>
 <td>Won&#39;t (bản này)</td>
 <td>–</td>
 <td>–</td>
 </tr>
 <tr>
-<td>PB-28</td>
+<td>PB-29</td>
 <td>AI nâng cao</td>
 <td>Là Tester, tôi muốn AI dùng tài liệu nghiệp vụ (RAG), để test case sát thực tế hơn</td>
 <td>13</td>
@@ -707,7 +705,7 @@
 <td>–</td>
 </tr>
 <tr>
-<td>PB-29</td>
+<td>PB-30</td>
 <td>AI nâng cao</td>
 <td>Là Tester, tôi muốn script tự sửa locator khi giao diện đổi (self-healing)</td>
 <td>13</td>
@@ -719,19 +717,9 @@
 <p><strong>Hạng mục kỹ thuật</strong> (không phải user story, làm đầu Sprint 1 và duy trì suốt dự án): dựng repo Git, cấu trúc thư mục, CI trên GitHub Actions, khung test (unit, API, E2E Playwright), dữ liệu mẫu.</p>
 <h2>0A.5. Kế hoạch sprint (5 tuần)</h2>
 <p>Sprint dài <strong>1 tuần</strong>. Velocity dự kiến khoảng <strong>13–22 story point/sprint</strong> (nhóm 4 người, vừa học vừa làm các môn khác). Sprint 1 cam kết ít vì phải dành đầu tuần cho khảo sát, lập backlog và dựng dự án. Sau mỗi sprint, velocity thực tế được dùng để điều chỉnh các sprint sau.</p>
-<pre class="mermaid">gantt
-    title Kế hoạch sprint đồ án SE104 (5 tuần)
-    todayMarker off
-    dateFormat YYYY-MM-DD
-    axisFormat %d/%m
-    section Phát triển
-    Sprint 1 – Khởi động, đăng nhập, phân quyền, user story :s1, 2026-10-26, 7d
-    Sprint 2 – AI sinh test case, phiên bản (rủi ro cao nhất) :s2, after s1, 7d
-    Sprint 3 – Duyệt, chạy test, tra cứu, báo cáo            :s3, after s2, 7d
-    Sprint 4 – Tự động hóa Playwright, quy định              :s4, after s3, 7d
-    Sprint 5 – Sprint, nhập/xuất, Docker, hoàn thiện          :s5, after s4, 7d
-    section Bảo vệ
-    Cuối tuần 5 – Sprint Review cuối cùng với giảng viên     :milestone, after s5, 1d</pre><table>
+<p><img src="sodo/KeHoachSprint.svg" alt="Kế hoạch 5 sprint"></p>
+<p><em>File gốc:</em> <code>docs/sodo/KeHoachSprint.drawio</code> (mở bằng draw.io để sửa).</p>
+<table>
 <thead>
 <tr>
 <th>Sprint</th>
@@ -745,7 +733,7 @@
 <tbody><tr>
 <td>1</td>
 <td>1</td>
-<td>&quot;Hiểu bài toán; người dùng đăng nhập theo vai trò và lập được user story&quot;</td>
+<td>&quot;Hiểu bài toán; người dùng đăng nhập theo vai trò và lấy được user story từ Jira&quot;</td>
 <td>Khảo sát, Product Backlog, kiến trúc sơ bộ, repo + CI; PB-01 (3), PB-02 (3), PB-03 (2), PB-04 (3), PB-05 (2)</td>
 <td>13</td>
 <td>Ch.0A, Ch.1, Ch.2 (bản đầu); UC01–UC04, DFD YC1, ERD v1, MH01–MH04</td>
@@ -772,15 +760,15 @@
 <td>&quot;Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được; Developer báo đã sửa lỗi&quot;</td>
 <td>PB-17 (3), PB-18 (5), PB-19 (8), PB-20 (3), PB-26 (3)</td>
 <td>22</td>
-<td>UC11, UC12, UC16, DFD YC9, YC10, sequence YC9, thiết kế sandbox, bảng tham số</td>
+<td>UC11, UC12, UC16, DFD YC10, YC11, sequence YC10, thiết kế sandbox, bảng tham số</td>
 </tr>
 <tr>
 <td>5</td>
 <td>5</td>
-<td>&quot;Đội làm Scrum lập kế hoạch sprint ngay trong hệ thống; sẵn sàng bàn giao và bảo vệ&quot;</td>
-<td>PB-21 (5), PB-22 (3), PB-23 (3), PB-24 (2), PB-25 (3)</td>
-<td>16</td>
-<td>DFD YC8, YC11, YC12; Ch.6 tổng kết, Ch.7, slide, video demo; bảo vệ cuối tuần</td>
+<td>&quot;Đội theo dõi sprint lấy từ Jira, được báo khi story đổi; sẵn sàng bàn giao và bảo vệ&quot;</td>
+<td>PB-21 (5), PB-22 (3), PB-23 (3), PB-24 (2), PB-25 (3), PB-27 (5)</td>
+<td>21</td>
+<td>DFD YC8, YC12, YC13, YC14; Ch.6 tổng kết, Ch.7, slide, video demo; bảo vệ cuối tuần</td>
 </tr>
 </tbody></table>
 <h2>0A.6. Definition of Ready và Definition of Done</h2>
@@ -802,7 +790,7 @@
 <li><input disabled="" type="checkbox"> Demo được trong Sprint Review</li>
 </ul>
 <blockquote>
-<p>Chính hệ thống AI TestCase Manager cũng áp dụng DoD cho dự án mà nó quản lý: một user story được tính <strong>Hoàn thành</strong> khi có ít nhất 1 test case đã duyệt và mọi test case đã duyệt đều có lần chạy gần nhất là PASS (YC12).</p>
+<p>Chính hệ thống AI TestCase Manager cũng áp dụng DoD cho dự án mà nó quản lý: một user story được tính <strong>Hoàn thành</strong> khi có ít nhất 1 test case đã duyệt và mọi test case đã duyệt đều có lần chạy gần nhất là PASS (YC14).</p>
 </blockquote>
 <h2>0A.7. Các sự kiện Scrum của nhóm</h2>
 <table>
@@ -852,8 +840,9 @@
 </tr>
 </tbody></table>
 <p><strong>Bảng công việc (Jira/Trello):</strong></p>
-<pre class="mermaid">flowchart LR
-    A["Backlog"] --&gt; B["To do&lt;br/&gt;(sprint này)"] --&gt; C["In progress&lt;br/&gt;WIP ≤ 2"] --&gt; D["Code review&lt;br/&gt;(Pull Request)"] --&gt; E["Testing&lt;br/&gt;CI + E2E"] --&gt; F["Done&lt;br/&gt;(đạt DoD)"]</pre><p>Giới hạn <strong>WIP ≤ 2 mỗi người</strong>: mỗi thành viên không làm quá 2 việc cùng lúc, hoàn thành dứt điểm trước khi bắt đầu việc mới.</p>
+<p><img src="sodo/BangCongViec.svg" alt="Bảng công việc của nhóm"></p>
+<p><em>File gốc:</em> <code>docs/sodo/BangCongViec.drawio</code> (mở bằng draw.io để sửa).</p>
+<p>Giới hạn <strong>WIP ≤ 2 mỗi người</strong>: mỗi thành viên không làm quá 2 việc cùng lúc, hoàn thành dứt điểm trước khi bắt đầu việc mới.</p>
 <h2>0A.8. Bảy hoạt động của SE104 diễn ra trong mỗi sprint</h2>
 <p>Agile không bỏ các hoạt động của thác nước mà <strong>làm chúng cho từng lát mỏng chức năng</strong>. Ma trận dưới cho thấy các chương của báo cáo được viết dần qua các sprint.</p>
 <table>
@@ -877,11 +866,11 @@
 </tr>
 <tr>
 <td>Yêu cầu (Ch.2)</td>
-<td>●● YC tổng quát, YC1, YC11</td>
+<td>●● YC tổng quát, YC1, YC12</td>
 <td>● YC2, YC3</td>
 <td>● YC4, 5, 6, 7</td>
-<td>● YC9, YC10, YC13</td>
-<td>● YC8, YC12</td>
+<td>● YC10, YC11, YC15</td>
+<td>● YC8, YC9, YC13, YC14</td>
 </tr>
 <tr>
 <td>Phân tích (Ch.3)</td>
@@ -889,7 +878,7 @@
 <td>● UC06, 07</td>
 <td>● UC08–10, 13, 15</td>
 <td>● UC11, 12, 16</td>
-<td>● UC05, 14, 19</td>
+<td>● UC05, 14, 19, 22</td>
 </tr>
 <tr>
 <td>Thiết kế (Ch.4)</td>
@@ -931,7 +920,7 @@
 <li><strong>Velocity:</strong> tổng story point đạt DoD trong một sprint. Ví dụ dữ liệu mẫu trong hệ thống: Sprint 1 cam kết 13, hoàn thành 5 → sprint sau nên cam kết ít hơn hoặc tách story nhỏ hơn.</li>
 <li><strong>Burndown chart:</strong> số story point còn lại theo ngày so với đường lý tưởng. Đường thực tế nằm trên đường lý tưởng quá lâu là dấu hiệu sprint sẽ trễ.</li>
 </ul>
-<p>Các chỉ số này được hệ thống tự tính ở trang <strong>Sprint (Agile)</strong> (YC12).</p>
+<p>Các chỉ số này được hệ thống tự tính ở trang <strong>Sprint (Agile)</strong> (YC14).</p>
 <h2>0A.10. Mẫu biên bản (minh chứng nộp kèm)</h2>
 <p><strong>Sprint Planning – Sprint __</strong></p>
 <pre><code class="language-text">Ngày: __/__/____      Thời lượng: __ phút
@@ -1007,9 +996,9 @@ Velocity thực tế: __ SP
 <blockquote>
 <p><strong>Mục tiêu</strong> của khảo sát hiện trạng là tìm hiểu về <strong>thế giới thực liên quan đến phần mềm</strong>: tổ chức đang làm việc như thế nào, gặp vấn đề gì, cần gì. Theo môn học, cần khảo sát 3 hiện trạng: <strong>tổ chức, nghiệp vụ, tin học</strong>. Kết quả của chương này là đầu vào để lập danh sách yêu cầu (<a href="#ch-02">Chương 2</a>) và sơ đồ luồng dữ liệu (<a href="#ch-03">Chương 3</a>).</p>
 </blockquote>
-<pre class="mermaid">flowchart LR
-    A["Khảo sát&lt;br/&gt;hiện trạng"] --&gt; B["Lập danh sách các&lt;br/&gt;yêu cầu phần mềm"] --&gt; C["Lập sơ đồ&lt;br/&gt;luồng dữ liệu"]
-    C -. "bổ sung, điều chỉnh" .-&gt; B -. "bổ sung, điều chỉnh" .-&gt; A</pre><h2>1.1. Đối tượng khảo sát</h2>
+<p><img src="sodo/GiaiDoanYeuCau.svg" alt="Các bước xác định yêu cầu"></p>
+<p><em>File gốc:</em> <code>docs/sodo/GiaiDoanYeuCau.drawio</code> (mở bằng draw.io để sửa).</p>
+<h2>1.1. Đối tượng khảo sát</h2>
 <table>
 <thead>
 <tr>
@@ -1429,7 +1418,7 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>NV1 Lập user story</td>
-<td>YC1 Lập user story, YC8 Nhập user story từ file</td>
+<td>Vẫn làm trên Jira; hệ thống YC1 Đồng bộ user story, YC8 Nhận thay đổi user story từ Jira</td>
 </tr>
 <tr>
 <td>NV2 Viết test case</td>
@@ -1449,23 +1438,23 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>NV6 Báo lỗi</td>
-<td>Tạo ticket bug vẫn dùng Jira (ngoài phạm vi); hệ thống lưu mã bug trong ghi chú kết quả, YC13 Báo đã sửa lỗi và kiểm thử lại</td>
+<td>Tạo ticket bug vẫn dùng Jira (ngoài phạm vi); hệ thống lưu mã bug trong ghi chú kết quả, YC15 Báo đã sửa lỗi và kiểm thử lại</td>
 </tr>
 <tr>
 <td>NV7 Viết, chạy script tự động</td>
-<td>YC9 Sinh và chạy script tự động</td>
+<td>YC10 Sinh và chạy script tự động</td>
 </tr>
 <tr>
 <td>NV8 Lập báo cáo</td>
-<td>YC6 Lập báo cáo, YC7 Tra cứu, YC8 Xuất Excel</td>
+<td>YC6 Lập báo cáo, YC7 Tra cứu, YC9 Xuất Excel</td>
 </tr>
 <tr>
 <td>NV9 Lập kế hoạch sprint</td>
-<td>YC12 Quản lý sprint</td>
+<td>Vẫn làm trên Jira; hệ thống YC14 Theo dõi sprint (DoD, velocity, burndown)</td>
 </tr>
 <tr>
 <td>NV10 Quản lý thành viên, quy định</td>
-<td>YC10 Thay đổi quy định, YC11 Quản lý người dùng, dự án</td>
+<td>YC11 Thay đổi quy định, YC12 Quản lý người dùng, YC13 Đồng bộ dự án từ Jira</td>
 </tr>
 </tbody></table>
 </section>
@@ -1518,19 +1507,19 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>Admin</td>
-<td>Quản trị hệ thống: tài khoản, phân quyền, dự án, module, quy định</td>
+<td>Quản trị hệ thống: tài khoản, phân quyền, quy định; kiểm tra kết nối Jira, thêm dự án từ Jira, khai báo URL ứng dụng cần test</td>
 </tr>
 <tr>
 <td>QA Lead</td>
-<td>Trưởng nhóm kiểm thử: duyệt/trả lại test case, xem báo cáo, thay đổi quy định, lập kế hoạch sprint (vai trò Scrum Master); có toàn bộ quyền của Tester</td>
+<td>Trưởng nhóm kiểm thử: duyệt/trả lại test case, xem báo cáo, thay đổi quy định, thêm dự án và đồng bộ user story, sprint từ Jira; có toàn bộ quyền của Tester</td>
 </tr>
 <tr>
 <td>PO / BA</td>
-<td>Product Owner / Business Analyst: lập và nhập user story kèm acceptance criteria (NV1), lập kế hoạch sprint, xem test case và báo cáo để nghiệm thu; không viết, duyệt hay chạy test case, không gọi AI</td>
+<td>Product Owner / Business Analyst: viết user story kèm acceptance criteria và lập sprint <strong>trên Jira</strong> (NV1, NV9); trong hệ thống chỉ xem user story, test case, sprint và báo cáo để nghiệm thu</td>
 </tr>
 <tr>
 <td>Tester</td>
-<td>Lập user story (khi đội không có BA), dùng AI sinh test case, chỉnh sửa, gửi duyệt, chạy test, sinh và chạy script tự động</td>
+<td>Dùng AI sinh test case từ user story đã đồng bộ, chỉnh sửa, gửi duyệt, chạy test, sinh và chạy script tự động; xem lại test case khi story đổi trên Jira</td>
 </tr>
 <tr>
 <td>Developer</td>
@@ -1539,6 +1528,10 @@ Velocity thực tế: __ SP
 <tr>
 <td>Dịch vụ LLM (hệ thống ngoài)</td>
 <td>Gemini / Claude / OpenAI: nhận prompt đã che dữ liệu nhạy cảm, trả JSON</td>
+</tr>
+<tr>
+<td>Jira (hệ thống ngoài)</td>
+<td>Jira Cloud: <strong>nơi duy nhất</strong> tạo và sửa user story, sprint; cung cấp dự án, component (module), thành viên, story, sprint qua REST API và gọi webhook khi story thay đổi</td>
 </tr>
 <tr>
 <td>Playwright Worker (hệ thống ngoài)</td>
@@ -1559,11 +1552,11 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>1</td>
-<td>YC1 – Lập user story</td>
+<td>YC1 – Đồng bộ user story từ Jira</td>
 <td>Lưu trữ</td>
 <td>BM1</td>
 <td>QĐ1</td>
-<td>Nhập tay</td>
+<td>Một chiều Jira → hệ thống; story chỉ đọc trong hệ thống</td>
 </tr>
 <tr>
 <td>2</td>
@@ -1571,7 +1564,7 @@ Velocity thực tế: __ SP
 <td>Lưu trữ, tính toán</td>
 <td>BM2</td>
 <td>QĐ2</td>
-<td>Chức năng AI chính</td>
+<td>Mã <code>&lt;mã US&gt;-TCnn</code>, tối đa 20 test case/story, kiểm tra JSON schema</td>
 </tr>
 <tr>
 <td>3</td>
@@ -1587,7 +1580,7 @@ Velocity thực tế: __ SP
 <td>Lưu trữ</td>
 <td>BM3</td>
 <td>QĐ4</td>
-<td>Chỉ QA Lead</td>
+<td>Chỉ QA Lead; trả lại bắt buộc có ghi chú</td>
 </tr>
 <tr>
 <td>5</td>
@@ -1595,70 +1588,86 @@ Velocity thực tế: __ SP
 <td>Lưu trữ</td>
 <td>BM4</td>
 <td>QĐ5</td>
-<td></td>
+<td>Fail/Blocked chạy thủ công bắt buộc có ghi chú (mã bug)</td>
 </tr>
 <tr>
 <td>6</td>
 <td>YC6 – Lập báo cáo kiểm thử</td>
 <td>Tính toán, kết xuất</td>
 <td>BM5</td>
-<td></td>
-<td>Tỷ lệ pass, độ bao phủ, tiến độ</td>
+<td>QĐ6</td>
+<td>Tính theo lần chạy gần nhất</td>
 </tr>
 <tr>
 <td>7</td>
 <td>YC7 – Tra cứu test case</td>
 <td>Tra cứu</td>
 <td>BM6</td>
-<td></td>
-<td></td>
+<td>QĐ7</td>
+<td>Tìm theo từ khóa, kết hợp nhiều điều kiện lọc</td>
 </tr>
 <tr>
 <td>8</td>
-<td>YC8 – Nhập/xuất dữ liệu</td>
-<td>Lưu trữ, kết xuất</td>
-<td>BM7, BM8</td>
+<td>YC8 – Nhận thay đổi user story từ Jira</td>
+<td>Lưu trữ, tính toán</td>
+<td>BM7</td>
 <td>QĐ8</td>
-<td>CSV/JSON vào, Excel ra</td>
+<td>Webhook, đồng bộ định kỳ; đánh dấu test case cần xem lại</td>
 </tr>
 <tr>
 <td>9</td>
-<td>YC9 – Sinh và chạy script kiểm thử tự động</td>
-<td>Lưu trữ, tính toán</td>
-<td>BM9</td>
+<td>YC9 – Xuất dữ liệu test case</td>
+<td>Kết xuất</td>
+<td>BM8</td>
 <td>QĐ9</td>
-<td>Playwright</td>
+<td>File Excel (.xlsx)</td>
 </tr>
 <tr>
 <td>10</td>
-<td>YC10 – Thay đổi quy định</td>
-<td>Lưu trữ</td>
-<td></td>
+<td>YC10 – Sinh và chạy script kiểm thử tự động</td>
+<td>Lưu trữ, tính toán</td>
+<td>BM9</td>
 <td>QĐ10</td>
-<td>Tính tiến hóa</td>
+<td>Playwright, chạy trong tiến trình cô lập</td>
 </tr>
 <tr>
 <td>11</td>
-<td>YC11 – Quản lý người dùng, dự án</td>
+<td>YC11 – Thay đổi quy định hệ thống</td>
 <td>Lưu trữ</td>
-<td></td>
+<td>BM10</td>
 <td>QĐ11</td>
-<td>Admin</td>
+<td>Tính tiến hóa</td>
 </tr>
 <tr>
 <td>12</td>
-<td>YC12 – Quản lý sprint (Agile/Scrum)</td>
-<td>Lưu trữ, tính toán</td>
-<td>BM10</td>
+<td>YC12 – Quản lý người dùng</td>
+<td>Lưu trữ</td>
+<td>BM11</td>
 <td>QĐ12</td>
-<td>Velocity, burndown được tính, không nhập</td>
+<td>Băm mật khẩu bcrypt; Admin không tự khóa, tự hạ quyền</td>
 </tr>
 <tr>
 <td>13</td>
-<td>YC13 – Báo đã sửa lỗi và kiểm thử lại</td>
-<td>Lưu trữ, tra cứu</td>
-<td>BM11</td>
+<td>YC13 – Đồng bộ dự án từ Jira</td>
+<td>Lưu trữ, tính toán</td>
+<td>BM12</td>
 <td>QĐ13</td>
+<td>Lấy dự án, module, thành viên qua Jira REST API; không tạo dự án tay</td>
+</tr>
+<tr>
+<td>14</td>
+<td>YC14 – Theo dõi sprint (Agile/Scrum)</td>
+<td>Lưu trữ, tính toán</td>
+<td>BM13</td>
+<td>QĐ14</td>
+<td>Sprint, story point lấy từ Jira; DoD, velocity, burndown được tính</td>
+</tr>
+<tr>
+<td>15</td>
+<td>YC15 – Báo đã sửa lỗi và kiểm thử lại</td>
+<td>Lưu trữ, tra cứu</td>
+<td>BM14</td>
+<td>QĐ15</td>
 <td>Developer báo, Tester lọc được test case cần kiểm thử lại</td>
 </tr>
 </tbody></table>
@@ -1670,32 +1679,32 @@ Velocity thực tế: __ SP
 <li><strong>Kết xuất:</strong> đưa thông tin ra màn hình, máy in hoặc file theo biểu mẫu.</li>
 </ul>
 <h2>2.3. Biểu mẫu và quy định</h2>
-<h3>BM1 – User story</h3>
+<h3>BM1 – User story (đồng bộ từ Jira)</h3>
 <table>
 <thead>
 <tr>
 <th>BM1</th>
-<th><strong>User story</strong></th>
+<th><strong>User story</strong> – lấy từ issue loại <em>Story</em> trên Jira</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>Mã user story: ............</td>
-<td>Dự án: ............ Module: ............</td>
+<td>Mã user story: ............ (mã issue Jira, VD <code>SHOP-5</code>)</td>
+<td>Dự án: ............ Module (component): ............</td>
 </tr>
 <tr>
-<td>Tiêu đề: ............</td>
-<td>Độ ưu tiên: ............</td>
+<td>Tiêu đề (Summary): ............</td>
+<td>Độ ưu tiên (Priority): ............</td>
 </tr>
 <tr>
 <td>Mô tả: <em>Là [vai trò], tôi muốn [chức năng], để [lợi ích].</em></td>
-<td></td>
+<td>Story point: ............ Sprint: ............ Trạng thái Jira: ............</td>
 </tr>
 <tr>
-<td>Acceptance criteria: 1. ............ 2. ............</td>
-<td></td>
+<td>Acceptance criteria (mục <em>Acceptance criteria</em> trong Description): 1. ............ 2. ............</td>
+<td>Đồng bộ lần cuối: ............</td>
 </tr>
 </tbody></table>
-<p><strong>QĐ1:</strong> Mã user story có dạng <code>US-XXX</code> (chữ in hoa, số, dấu gạch ngang) và không được trùng. Tiêu đề tối thiểu 5 ký tự, mô tả tối thiểu 10 ký tự. Có ít nhất <strong>1</strong> acceptance criterion (mỗi dòng một tiêu chí). Độ ưu tiên thuộc danh sách <strong>High, Medium, Low</strong>.</p>
+<p><strong>QĐ1:</strong> User story chỉ được tạo và sửa <strong>trên Jira</strong>; hệ thống không có chức năng lập, sửa, xóa hay nhập story từ file. Chỉ lấy issue loại <strong>Story</strong> của dự án đã thêm (YC13); mã user story là mã issue Jira và không trùng. Trong Description, phần trước dòng <strong>Acceptance criteria</strong> là mô tả, mỗi dòng (gạch đầu dòng) sau đó là một acceptance criterion. Độ ưu tiên Jira đổi về danh sách <strong>High, Medium, Low</strong> (Highest → High, Lowest → Low). Story có ít hơn <strong>1</strong> acceptance criterion (tham số <code>MIN_AC_PER_STORY</code>) vẫn được lấy về nhưng <strong>không được sinh test case</strong> cho tới khi bổ sung trên Jira.</p>
 <h3>BM2 – Test case</h3>
 <table>
 <thead>
@@ -1792,6 +1801,7 @@ Velocity thực tế: __ SP
 <td>Xu hướng theo ngày; thống kê AI (số test case AI sinh, tỷ lệ phải sửa)</td>
 </tr>
 </tbody></table>
+<p><strong>QĐ6:</strong> Báo cáo được tính ngay khi mở (không lưu sẵn), trong phạm vi dự án và sprint đang chọn. Kết quả Pass/Fail/Blocked chỉ lấy từ <strong>lần chạy gần nhất</strong> của từng test case. Độ bao phủ tính trên số user story có ít nhất 1 test case <em>Đã duyệt</em>. Thống kê AI chỉ tính test case nguồn AI; một test case AI được tính là <em>phải sửa</em> khi Tester đã thay đổi các bước hoặc kết quả mong đợi.</p>
 <h3>BM6 – Tra cứu test case</h3>
 <table>
 <thead>
@@ -1809,12 +1819,47 @@ Velocity thực tế: __ SP
 <td></td>
 </tr>
 </tbody></table>
-<h3>BM7 – Nhập user story từ file · BM8 – Xuất test case</h3>
-<ul>
-<li>BM7: file <code>.csv</code> hoặc <code>.json</code>, các cột <code>code, title, description, acceptance_criteria, priority, module</code>; trong CSV các acceptance criteria ngăn cách bằng <code>|</code>.</li>
-<li>BM8: file Excel <code>.xlsx</code> gồm các cột của BM2 và kết quả gần nhất, theo bộ lọc của BM6.</li>
-</ul>
-<p><strong>QĐ8:</strong> Mỗi lần nhập tối đa 200 dòng. Mỗi dòng được kiểm tra theo QĐ1; dòng lỗi được báo cáo, không làm hỏng các dòng hợp lệ.</p>
+<p><strong>QĐ7:</strong> Từ khóa được tìm gần đúng (chứa từ khóa) trong mã và tiêu đề test case. Nhiều điều kiện lọc được kết hợp theo điều kiện <strong>và</strong> (AND). Kết quả sắp theo user story mới nhất, trong mỗi story theo mã test case; danh sách cập nhật ngay khi đổi điều kiện lọc.</p>
+<h3>BM7 – Phiếu thay đổi user story</h3>
+<table>
+<thead>
+<tr>
+<th>BM7</th>
+<th><strong>Phiếu thay đổi user story</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mã user story: ............</td>
+<td>Nguồn: Webhook Jira / Đồng bộ định kỳ / Nút Đồng bộ ngay</td>
+</tr>
+<tr>
+<td>Nội dung thay đổi: tiêu đề · mô tả · acceptance criteria · ưu tiên · story point · sprint · trạng thái</td>
+<td>Thời điểm thay đổi: ............</td>
+</tr>
+<tr>
+<td>Kết quả: Cần xem lại test case / Đã lưu trữ (xóa trên Jira) / Cập nhật</td>
+<td>Người xem lại: ............ Ngày xem lại: ............</td>
+</tr>
+</tbody></table>
+<p><strong>QĐ8:</strong> Hệ thống nhận thay đổi từ Jira theo 3 cách: <strong>webhook</strong> (Jira gọi <code>POST /api/jira/webhook?secret=…</code>, đúng mã bí mật <code>JIRA_WEBHOOK_SECRET</code> mới nhận), <strong>đồng bộ định kỳ</strong> mỗi <code>JIRA_SYNC_MINUTES</code> phút (mặc định 5) và nút <strong>Đồng bộ ngay</strong> (Admin, QA Lead). Khi tiêu đề, mô tả hoặc acceptance criteria của story <strong>đã có test case</strong> thay đổi, story được đánh dấu <strong>Cần xem lại test case</strong> cho tới khi Tester hoặc QA Lead bấm <em>Đã xem lại</em>. Story không còn trên Jira được <strong>lưu trữ</strong>: ẩn khỏi danh sách, giữ nguyên test case đã viết, không sinh thêm; story xuất hiện lại thì hiện lại.</p>
+<h3>BM8 – Xuất test case</h3>
+<table>
+<thead>
+<tr>
+<th>BM8</th>
+<th><strong>Xuất test case</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Điều kiện lọc: theo bộ lọc đang chọn của BM6</td>
+<td>Định dạng tệp: <code>.xlsx</code></td>
+</tr>
+<tr>
+<td>Cột xuất: các cột của BM2 + Kết quả gần nhất</td>
+<td>Tên tệp: <code>testcases.xlsx</code></td>
+</tr>
+</tbody></table>
+<p><strong>QĐ9:</strong> Xuất đúng danh sách test case đang hiển thị theo bộ lọc của BM6. Mỗi test case một dòng; các bước xuống dòng trong ô; dòng tiêu đề tô màu. Mọi người dùng đã đăng nhập đều được xuất; mỗi lần xuất được ghi nhật ký hoạt động.</p>
 <h3>BM9 – Script kiểm thử tự động</h3>
 <table>
 <thead>
@@ -1832,13 +1877,74 @@ Velocity thực tế: __ SP
 <td>Kết quả chạy, thời gian, log, ảnh chụp lỗi</td>
 </tr>
 </tbody></table>
-<p><strong>QĐ9:</strong> Chỉ sinh và chạy script cho test case <em>Đã duyệt</em>. Trước khi chạy, script phải qua kiểm tra tĩnh: không dùng <code>child_process</code>, <code>fs</code>, <code>net</code>, <code>http</code>, <code>os</code>, <code>vm</code>…; không truy cập <code>process.env</code>; không dùng <code>eval</code>, <code>new Function</code>, <code>import()</code> động. Mỗi lần chạy tối đa <strong>60</strong> giây.</p>
-<p><strong>QĐ10:</strong> Admin hoặc QA Lead được thay đổi các tham số: số test case tối đa/story (1–50), số acceptance criteria tối thiểu (1–10), danh sách độ ưu tiên, số lần thử lại AI (0–5), thời gian chờ AI (5–120 giây), số lần gọi AI/giờ (1–500), thời gian chạy script (10–300 giây), độ dài tối đa sprint (7–42 ngày).</p>
-<h3>BM10 – Sprint</h3>
+<p><strong>QĐ10:</strong> Chỉ sinh và chạy script cho test case <em>Đã duyệt</em>. Trước khi chạy, script phải qua kiểm tra tĩnh: không dùng <code>child_process</code>, <code>fs</code>, <code>net</code>, <code>http</code>, <code>os</code>, <code>vm</code>…; không truy cập <code>process.env</code>; không dùng <code>eval</code>, <code>new Function</code>, <code>import()</code> động. Mỗi lần chạy tối đa <strong>60</strong> giây.</p>
+<h3>BM10 – Thay đổi quy định hệ thống</h3>
 <table>
 <thead>
 <tr>
 <th>BM10</th>
+<th><strong>Thay đổi quy định hệ thống</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Người cấu hình: ............</td>
+<td>Ngày cập nhật: ............</td>
+</tr>
+<tr>
+<td>Tham số nghiệp vụ: số test case tối đa/user story (1–50); số acceptance criteria tối thiểu (1–10); độ dài tối đa sprint (7–42 ngày); danh sách độ ưu tiên</td>
+<td>Tham số AI và tự động hóa: số lần gọi AI tối đa/giờ (1–500); thời gian chờ AI (5–120 giây); số lần thử lại khi sai schema (0–5); thời gian chạy script tối đa (10–300 giây)</td>
+</tr>
+</tbody></table>
+<p><strong>QĐ11:</strong> Admin hoặc QA Lead được thay đổi các tham số: số test case tối đa/story (1–50), số acceptance criteria tối thiểu (1–10), danh sách độ ưu tiên, số lần thử lại AI (0–5), thời gian chờ AI (5–120 giây), số lần gọi AI/giờ (1–500), thời gian chạy script (10–300 giây), độ dài tối đa sprint (7–42 ngày).</p>
+<h3>BM11 – Quản lý người dùng</h3>
+<table>
+<thead>
+<tr>
+<th>BM11</th>
+<th><strong>Quản lý người dùng</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tên đăng nhập: ............ Họ tên: ............ Email: ............</td>
+<td>Vai trò: Admin / QA Lead / PO-BA / Tester / Developer</td>
+</tr>
+<tr>
+<td>Mật khẩu: ............</td>
+<td>Trạng thái: Hoạt động / Đã khóa</td>
+</tr>
+<tr>
+<td>Thao tác: thêm mới, cập nhật thông tin, đổi vai trò, khóa / mở khóa</td>
+<td></td>
+</tr>
+</tbody></table>
+<p><strong>QĐ12:</strong> Chỉ Admin được quản lý người dùng. Tên đăng nhập 3–30 ký tự <code>a-z 0-9 _ .</code>, không trùng. Mật khẩu tối thiểu 8 ký tự, được băm bằng bcrypt trước khi lưu. Admin không được tự khóa hoặc tự hạ quyền chính mình.</p>
+<h3>BM12 – Đồng bộ dự án từ Jira</h3>
+<table>
+<thead>
+<tr>
+<th>BM12</th>
+<th><strong>Đồng bộ dự án từ Jira</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mã dự án trên Jira: ............</td>
+<td>Tên dự án · Mô tả: ............</td>
+</tr>
+<tr>
+<td>Module (component của Jira): ............</td>
+<td>Thành viên thuộc dự án: ............</td>
+</tr>
+<tr>
+<td>Thao tác: Kiểm tra kết nối Jira · Thêm dự án từ Jira · Đồng bộ lại</td>
+<td>Lần đồng bộ gần nhất: ............</td>
+</tr>
+</tbody></table>
+<p><strong>QĐ13:</strong> Dự án, module và danh sách thành viên chỉ được lấy từ Jira qua REST API, hệ thống không có chức năng tạo dự án hay module bằng tay; địa chỉ Jira, email và API token chỉ cấu hình ở máy chủ (<code>.env</code>), không nhập trên giao diện và không lưu xuống CSDL. Chỉ <strong>Admin</strong> được kiểm tra kết nối; <strong>Admin và QA Lead</strong> được thêm dự án và đồng bộ lại. Mã dự án gồm 2–10 ký tự in hoa hoặc số, bắt đầu bằng chữ cái, và chưa có trong hệ thống. Thành viên Jira được gán vào tài khoản có <strong>email trùng</strong> (Jira ẩn email thì so họ tên); thành viên chưa có tài khoản được liệt kê để Admin tạo sau. Jira không có URL ứng dụng cần test nên Admin khai báo thêm trường này cho từng dự án (dùng ở YC10). Thêm dự án xong hệ thống đồng bộ luôn user story (YC1) và sprint (YC14).</p>
+<h3>BM13 – Sprint (đồng bộ từ Jira)</h3>
+<table>
+<thead>
+<tr>
+<th>BM13</th>
 <th><strong>Sprint</strong> – Dự án: ............</th>
 </tr>
 </thead>
@@ -1848,19 +1954,19 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>Ngày bắt đầu: ............</td>
-<td>Ngày kết thúc: ............</td>
+<td>Ngày kết thúc: ............ Trạng thái Jira: future / active / closed</td>
 </tr>
 <tr>
-<td>Các user story trong sprint (mã, story point, trạng thái)</td>
+<td>Các user story trong sprint (mã, story point, trạng thái DoD)</td>
 <td>Story point cam kết / hoàn thành (velocity) · Burndown chart</td>
 </tr>
 </tbody></table>
-<p><strong>QĐ12:</strong> Sprint dài tối đa <strong>28</strong> ngày (tham số <code>SPRINT_MAX_DAYS</code>, 7–42), ngày kết thúc không trước ngày bắt đầu, các sprint của cùng dự án không trùng thời gian. Chỉ Admin, QA Lead và PO/BA được tạo/sửa sprint. User story chỉ thuộc sprint của chính dự án; story chưa thuộc sprint nào nằm trong <strong>Product backlog</strong>. Story point thuộc dãy <strong>1, 2, 3, 5, 8, 13</strong>. Một user story đạt <strong>Definition of Done</strong> khi có ít nhất 1 test case <em>Đã duyệt</em> và mọi test case <em>Đã duyệt</em> có lần chạy gần nhất là <em>Pass</em>. Velocity = tổng story point của các story đạt DoD trong sprint.</p>
-<h3>BM11 – Phiếu báo đã sửa lỗi</h3>
+<p><strong>QĐ14:</strong> Sprint, story point và việc đưa story vào sprint làm <strong>trên Jira</strong>; hệ thống không tạo, sửa, xóa sprint. Chỉ đồng bộ sprint đã đặt <strong>ngày bắt đầu và kết thúc</strong>; sprint dài hơn <code>SPRINT_MAX_DAYS</code> (mặc định <strong>28</strong>, 7–42) vẫn được lấy nhưng có cảnh báo. Story chưa thuộc sprint nào nằm trong <strong>Product backlog</strong>. Story point thuộc dãy <strong>1, 2, 3, 5, 8, 13</strong>; giá trị khác bị bỏ qua kèm cảnh báo. Một user story đạt <strong>Definition of Done</strong> khi có ít nhất 1 test case <em>Đã duyệt</em> và mọi test case <em>Đã duyệt</em> có lần chạy gần nhất là <em>Pass</em>. Velocity = tổng story point của các story đạt DoD trong sprint.</p>
+<h3>BM14 – Phiếu báo đã sửa lỗi</h3>
 <table>
 <thead>
 <tr>
-<th>BM11</th>
+<th>BM14</th>
 <th><strong>Phiếu báo đã sửa lỗi</strong></th>
 </tr>
 </thead>
@@ -1877,8 +1983,7 @@ Velocity thực tế: __ SP
 <td>Ngày báo: ............</td>
 </tr>
 </tbody></table>
-<p><strong>QĐ13:</strong> Chỉ <strong>Developer</strong> được báo đã sửa. Chỉ báo cho <strong>lần chạy gần nhất</strong> của test case và lần chạy đó có kết quả <em>Fail</em>; mỗi lần chạy chỉ báo một lần. <strong>Bắt buộc</strong> nhập bản build (1–50 ký tự). Test case <strong>cần kiểm thử lại</strong> khi lần chạy gần nhất là <em>Fail</em> và đã được báo sửa; khi Tester ghi một lần chạy mới, test case tự hết trạng thái này.</p>
-<p><strong>QĐ11:</strong> Tên đăng nhập 3–30 ký tự <code>a-z 0-9 _ .</code>, không trùng. Mật khẩu tối thiểu 8 ký tự. Admin không được tự khóa hoặc tự hạ quyền chính mình.</p>
+<p><strong>QĐ15:</strong> Chỉ <strong>Developer</strong> được báo đã sửa. Chỉ báo cho <strong>lần chạy gần nhất</strong> của test case và lần chạy đó có kết quả <em>Fail</em>; mỗi lần chạy chỉ báo một lần. <strong>Bắt buộc</strong> nhập bản build (1–50 ký tự). Test case <strong>cần kiểm thử lại</strong> khi lần chạy gần nhất là <em>Fail</em> và đã được báo sửa; khi Tester ghi một lần chạy mới, test case tự hết trạng thái này.</p>
 <h2>2.4. Bảng trách nhiệm yêu cầu nghiệp vụ</h2>
 <table>
 <thead>
@@ -1892,10 +1997,10 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>1</td>
-<td>YC1 Lập user story</td>
-<td>Nhập thông tin theo BM1</td>
-<td>Kiểm tra QĐ1, lưu</td>
-<td></td>
+<td>YC1 Đồng bộ user story</td>
+<td>PO/BA viết story trên Jira; Admin hoặc QA Lead bấm <em>Đồng bộ ngay</em></td>
+<td>Gọi Jira, tách mô tả và acceptance criteria theo QĐ1, lưu story chỉ đọc</td>
+<td>Một chiều Jira → hệ thống</td>
 </tr>
 <tr>
 <td>2</td>
@@ -1928,57 +2033,71 @@ Velocity thực tế: __ SP
 <tr>
 <td>6</td>
 <td>YC6 Báo cáo</td>
-<td>Chọn dự án</td>
-<td>Tính toán và vẽ biểu đồ</td>
+<td>Chọn dự án, sprint</td>
+<td>Tính toán theo QĐ6 và vẽ biểu đồ</td>
 <td></td>
 </tr>
 <tr>
 <td>7</td>
 <td>YC7 Tra cứu</td>
 <td>Nhập điều kiện lọc</td>
-<td>Tìm và hiển thị</td>
+<td>Tìm theo QĐ7 và hiển thị</td>
 <td></td>
 </tr>
 <tr>
 <td>8</td>
-<td>YC8 Nhập/xuất</td>
-<td>Chọn file / bấm Xuất</td>
-<td>Kiểm tra từng dòng, báo lỗi; tạo file Excel</td>
-<td></td>
+<td>YC8 Nhận thay đổi user story</td>
+<td>PO/BA sửa hoặc xóa story trên Jira; Tester xem lại test case rồi bấm <em>Đã xem lại</em></td>
+<td>Nhận webhook hoặc đồng bộ định kỳ, so nội dung cũ, đánh dấu <em>Cần xem lại test case</em>, lưu trữ story đã xóa (QĐ8)</td>
+<td>Tester không bỏ sót thay đổi yêu cầu</td>
 </tr>
 <tr>
 <td>9</td>
-<td>YC9 Script tự động</td>
+<td>YC9 Xuất test case</td>
+<td>Bấm Xuất Excel ở màn hình tra cứu</td>
+<td>Tạo file .xlsx theo QĐ9</td>
+<td></td>
+</tr>
+<tr>
+<td>10</td>
+<td>YC10 Script tự động</td>
 <td>Bấm Sinh script, xem lại, sửa, bấm Chạy</td>
 <td>Gọi LLM sinh script, kiểm tra tĩnh, chạy trong tiến trình cô lập có giới hạn thời gian, lưu kết quả và ảnh lỗi</td>
 <td></td>
 </tr>
 <tr>
-<td>10</td>
-<td>YC10 Thay đổi quy định</td>
+<td>11</td>
+<td>YC11 Thay đổi quy định</td>
 <td>Nhập giá trị mới</td>
 <td>Kiểm tra miền giá trị, lưu vào bảng tham số</td>
 <td></td>
 </tr>
 <tr>
-<td>11</td>
-<td>YC11 Quản lý người dùng</td>
+<td>12</td>
+<td>YC12 Quản lý người dùng</td>
 <td>Nhập thông tin, khóa/mở khóa</td>
-<td>Băm mật khẩu, kiểm tra QĐ11</td>
+<td>Băm mật khẩu, kiểm tra QĐ12</td>
 <td></td>
 </tr>
 <tr>
-<td>12</td>
-<td>YC12 Quản lý sprint</td>
-<td>Tạo sprint (tên, mục tiêu, ngày); đưa story từ backlog vào sprint; ước lượng story point</td>
-<td>Kiểm tra QĐ12; tự tính trạng thái DoD của story, velocity, burndown</td>
+<td>13</td>
+<td>YC13 Đồng bộ dự án từ Jira</td>
+<td>Bấm Kiểm tra kết nối; nhập mã dự án Jira, bấm Thêm hoặc Đồng bộ lại</td>
+<td>Gọi Jira REST API, kiểm tra QĐ13, lưu dự án, module, ánh xạ thành viên theo email; đồng bộ story và sprint</td>
+<td>Admin khai báo thêm URL ứng dụng cần test</td>
+</tr>
+<tr>
+<td>14</td>
+<td>YC14 Theo dõi sprint</td>
+<td>PO/BA, Scrum Master lập sprint, ước lượng story point trên Jira; mọi người xem bảng sprint</td>
+<td>Đồng bộ sprint theo QĐ14; tự tính trạng thái DoD của story, velocity, burndown</td>
 <td>Hỗ trợ đội làm Scrum</td>
 </tr>
 <tr>
-<td>13</td>
-<td>YC13 Báo đã sửa lỗi</td>
+<td>15</td>
+<td>YC15 Báo đã sửa lỗi</td>
 <td>Developer chọn lần chạy Fail, nhập bản build, ghi chú; Tester lọc <em>Cần kiểm thử lại</em> rồi chạy lại</td>
-<td>Kiểm tra QĐ13, lưu phiếu báo sửa, ghi audit log; tự xác định test case cần kiểm thử lại</td>
+<td>Kiểm tra QĐ15, lưu phiếu báo sửa, ghi audit log; tự xác định test case cần kiểm thử lại</td>
 <td>Khép kín vòng báo lỗi – sửa – kiểm thử lại</td>
 </tr>
 </tbody></table>
@@ -1995,9 +2114,9 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>1</td>
-<td>Lập user story</td>
+<td>Đồng bộ user story</td>
 <td>Số acceptance criteria tối thiểu</td>
-<td>Danh sách độ ưu tiên</td>
+<td>Danh sách độ ưu tiên; nhãn tiêu đề mục <em>Acceptance criteria</em> (Anh / Việt)</td>
 </tr>
 <tr>
 <td>2</td>
@@ -2013,9 +2132,15 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>4</td>
-<td>Quản lý sprint</td>
-<td>Độ dài tối đa sprint</td>
+<td>Theo dõi sprint</td>
+<td>Độ dài tối đa sprint (ngưỡng cảnh báo)</td>
 <td>Thang story point</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Đồng bộ với Jira</td>
+<td>Địa chỉ Jira, tài khoản, API token, mã bí mật webhook, chu kỳ đồng bộ (cấu hình <code>.env</code>)</td>
+<td>Trường story point, sprint tự tìm theo tên trên từng site Jira; chưa cấu hình thì dùng Jira giả lập</td>
 </tr>
 </tbody></table>
 <h3>2.5.2. Tính tiện dụng</h3>
@@ -2093,8 +2218,8 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>1</td>
-<td>Nhập user story</td>
-<td>File CSV (UTF-8, xuất từ Excel/Jira), JSON</td>
+<td>Đồng bộ user story, sprint</td>
+<td>Jira Cloud REST API v3, Jira Software Agile API, webhook Jira</td>
 </tr>
 <tr>
 <td>2</td>
@@ -2130,12 +2255,12 @@ Velocity thực tế: __ SP
 <tbody><tr>
 <td>1</td>
 <td>Phục hồi</td>
-<td>Test case đã xóa nhầm: có lịch sử phiên bản; CSDL sao lưu định kỳ (volume Docker)</td>
+<td>Sửa nhầm test case: xem lại lịch sử phiên bản để khôi phục nội dung cũ; CSDL nằm trên volume Docker, sao lưu bằng cách sao chép file <code>app.db</code></td>
 </tr>
 <tr>
 <td>2</td>
-<td>Hủy thật sự</td>
-<td>Xóa user story xóa kèm test case (có xác nhận 2 bước)</td>
+<td>Không hủy thật sự</td>
+<td>Story bị xóa trên Jira chỉ được <strong>lưu trữ</strong>, test case và kết quả chạy đã có vẫn giữ lại</td>
 </tr>
 <tr>
 <td>3</td>
@@ -2151,99 +2276,121 @@ Velocity thực tế: __ SP
 <th>Nghiệp vụ</th>
 <th>Admin</th>
 <th>QA Lead</th>
+<th>PO/BA</th>
 <th>Tester</th>
 <th>Developer</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>1</td>
-<td>Quản lý người dùng, dự án</td>
+<td>Quản lý người dùng; khai báo URL ứng dụng cần test</td>
 <td>✔</td>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
 <td>2</td>
-<td>Lập user story</td>
+<td>Kiểm tra kết nối Jira</td>
 <td>✔</td>
-<td>✔</td>
-<td>✔</td>
+<td></td>
+<td></td>
+<td></td>
 <td></td>
 </tr>
 <tr>
 <td>3</td>
-<td>Sinh test case/script bằng AI</td>
+<td>Thêm dự án; đồng bộ user story, sprint từ Jira</td>
+<td>✔</td>
+<td>✔</td>
 <td></td>
-<td>✔</td>
-<td>✔</td>
+<td></td>
 <td></td>
 </tr>
 <tr>
 <td>4</td>
-<td>Soạn thảo, gửi duyệt</td>
+<td>Sinh test case/script bằng AI</td>
 <td></td>
 <td>✔</td>
+<td></td>
 <td>✔</td>
 <td></td>
 </tr>
 <tr>
 <td>5</td>
+<td>Soạn thảo, gửi duyệt; đánh dấu đã xem lại khi story đổi</td>
+<td></td>
+<td>✔</td>
+<td></td>
+<td>✔</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
 <td>Duyệt test case</td>
 <td></td>
 <td>✔</td>
 <td></td>
 <td></td>
-</tr>
-<tr>
-<td>6</td>
-<td>Ghi kết quả, chạy tự động</td>
-<td></td>
-<td>✔</td>
-<td>✔</td>
 <td></td>
 </tr>
 <tr>
 <td>7</td>
-<td>Thay đổi quy định</td>
-<td>✔</td>
+<td>Ghi kết quả, chạy tự động</td>
+<td></td>
 <td>✔</td>
 <td></td>
-<td></td>
-</tr>
-<tr>
-<td>7b</td>
-<td>Tạo/sửa sprint</td>
-<td>✔</td>
-<td>✔</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>7c</td>
-<td>Đưa story vào sprint, ước lượng story point</td>
-<td>✔</td>
-<td>✔</td>
 <td>✔</td>
 <td></td>
 </tr>
 <tr>
 <td>8</td>
+<td>Báo đã sửa lỗi</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>✔</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Thay đổi quy định</td>
+<td>✔</td>
+<td>✔</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>10</td>
 <td>Xem nhật ký hoạt động</td>
 <td>✔</td>
 <td>✔</td>
 <td></td>
 <td></td>
+<td></td>
 </tr>
 <tr>
-<td>9</td>
-<td>Xem báo cáo, tra cứu</td>
+<td>11</td>
+<td>Xem nhật ký AI</td>
+<td>✔</td>
+<td>✔</td>
+<td></td>
+<td>✔</td>
+<td></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Xem user story, sprint, báo cáo; tra cứu, xuất Excel, xem kết quả chạy</td>
+<td>✔</td>
 <td>✔</td>
 <td>✔</td>
 <td>✔</td>
 <td>✔</td>
 </tr>
 </tbody></table>
+<p>Không vai trò nào được tạo, sửa, xóa user story hoặc sprint trong hệ thống: việc đó làm trên Jira.</p>
 <p><strong>Yêu cầu bảo mật kỹ thuật:</strong></p>
 <table>
 <thead>
@@ -2253,60 +2400,64 @@ Velocity thực tế: __ SP
 </tr>
 </thead>
 <tbody><tr>
-<td>BM-01</td>
+<td>SE-01</td>
 <td>Mật khẩu băm bằng bcrypt (cost 10), không bao giờ trả về qua API</td>
 </tr>
 <tr>
-<td>BM-02</td>
+<td>SE-02</td>
 <td>Xác thực bằng JWT có hạn 8 giờ; kiểm tra tài khoản còn hoạt động ở mỗi request</td>
 </tr>
 <tr>
-<td>BM-03</td>
+<td>SE-03</td>
 <td>Phân quyền theo vai trò (RBAC) kiểm tra ở <strong>backend</strong>, giao diện chỉ ẩn nút</td>
 </tr>
 <tr>
-<td>BM-04</td>
+<td>SE-04</td>
 <td>Giới hạn đăng nhập sai: 10 lần/15 phút/IP</td>
 </tr>
 <tr>
-<td>BM-05</td>
+<td>SE-05</td>
 <td>Mọi truy vấn CSDL dùng prepared statement (chống SQL injection)</td>
 </tr>
 <tr>
-<td>BM-06</td>
+<td>SE-06</td>
 <td>Kiểm tra dữ liệu đầu vào bằng schema (Zod); giới hạn kích thước request 1 MB</td>
 </tr>
 <tr>
-<td>BM-07</td>
+<td>SE-07</td>
 <td>Chống XSS: escape mọi dữ liệu khi hiển thị + Content-Security-Policy <code>script-src &#39;self&#39;</code></td>
 </tr>
 <tr>
-<td>BM-08</td>
-<td>API key LLM chỉ lưu ở biến môi trường backend, không commit (.gitignore)</td>
+<td>SE-08</td>
+<td>API key LLM và API token Jira chỉ lưu ở biến môi trường backend, không commit (.gitignore), không gửi xuống trình duyệt</td>
 </tr>
 <tr>
-<td>BM-09</td>
+<td>SE-09</td>
 <td><strong>Che dữ liệu nhạy cảm</strong> (email, số điện thoại, CCCD, số thẻ) trước khi gửi LLM</td>
 </tr>
 <tr>
-<td>BM-10</td>
+<td>SE-10</td>
 <td><strong>Chống prompt injection:</strong> tách prompt hệ thống và dữ liệu người dùng, bọc dữ liệu trong thẻ, phát hiện và gắn cờ, kết quả bắt buộc qua schema</td>
 </tr>
 <tr>
-<td>BM-11</td>
+<td>SE-11</td>
 <td>Giới hạn số lần gọi AI mỗi người/giờ (chống lạm dụng chi phí)</td>
 </tr>
 <tr>
-<td>BM-12</td>
+<td>SE-12</td>
 <td><strong>Sandbox</strong> cho script do AI sinh: kiểm tra tĩnh, tiến trình riêng, biến môi trường tối thiểu, timeout, giới hạn CPU/RAM trong Docker</td>
 </tr>
 <tr>
-<td>BM-13</td>
+<td>SE-13</td>
 <td>Nhật ký hoạt động (audit log) cho mọi thao tác ghi: ai, làm gì, đối tượng nào, lúc nào, IP</td>
 </tr>
 <tr>
-<td>BM-14</td>
+<td>SE-14</td>
 <td>Ghi rõ chính sách dữ liệu của nhà cung cấp LLM (dùng gói API không dùng dữ liệu để huấn luyện)</td>
+</tr>
+<tr>
+<td>SE-15</td>
+<td>Webhook Jira không dùng JWT nên bắt buộc có mã bí mật <code>JIRA_WEBHOOK_SECRET</code>, so sánh an toàn theo thời gian; thiếu mã thì tắt webhook</td>
 </tr>
 </tbody></table>
 <h2>2.7. Yêu cầu khác – yêu cầu công nghệ</h2>
@@ -2381,11 +2532,13 @@ Velocity thực tế: __ SP
 </tr>
 </tbody></table>
 <ul>
-<li><strong>Người dùng</strong> là tác nhân chung: mọi vai trò đều đăng nhập, tra cứu test case, xuất Excel, xem báo cáo và xem kết quả chạy test. Admin, PO/BA, Developer, Tester tổng quát hóa thành Người dùng.</li>
+<li><strong>Người dùng</strong> là tác nhân chung: mọi vai trò đều đăng nhập, tra cứu test case, xuất Excel, xem báo cáo, kết quả chạy test, user story và sprint. Admin, PO/BA, Developer, Tester tổng quát hóa thành Người dùng.</li>
+<li><strong>User story và sprint đồng bộ một chiều từ Jira</strong> (UC22): hệ thống không có chức năng lập, sửa, xóa, nhập story hay tạo sprint.</li>
 <li><strong>Developer</strong> xem kết quả chạy (log, ảnh chụp lỗi) để tái hiện lỗi, sửa xong thì <strong>báo đã sửa lỗi</strong> (UC21) kèm bản build; test case chuyển sang <em>Cần kiểm thử lại</em> cho Tester.</li>
-<li><strong>PO / BA</strong> lập, nhập user story (UC04, UC05) và lập kế hoạch sprint (UC19); không viết, duyệt, chạy test case và không gọi AI.</li>
-<li><strong>QA Lead</strong> tổng quát hóa thành <strong>Tester</strong>: có toàn bộ quyền của Tester, thêm quyền duyệt test case (UC09), thay đổi quy định (UC16), xem nhật ký hoạt động (UC18) và quản lý sprint (UC19).</li>
-<li>Ở UC19, Tester chỉ đưa story vào sprint và xem bảng sprint; tạo, sửa sprint do PO/BA, QA Lead, Admin thực hiện.</li>
+<li><strong>PO / BA</strong> viết user story, lập sprint <strong>trên Jira</strong>; trong hệ thống chỉ có các use case của Người dùng (xem story, sprint, báo cáo để nghiệm thu).</li>
+<li><strong>QA Lead</strong> tổng quát hóa thành <strong>Tester</strong>: có toàn bộ quyền của Tester, thêm quyền duyệt test case (UC09), thay đổi quy định (UC16), xem nhật ký hoạt động (UC18) và đồng bộ dự án, story, sprint từ Jira (UC22).</li>
+<li><strong>Admin</strong> đồng bộ từ <strong>Jira</strong> (UC22, hệ thống ngoài) và khai báo URL ứng dụng cần test cho từng dự án (UC03), vì Jira không có thông tin này.</li>
+<li><strong>Tester</strong> xem lại test case khi story đổi trên Jira (UC05) để test case luôn khớp acceptance criteria mới.</li>
 </ul>
 <blockquote>
 <p>Mọi use case (trừ UC01) đều yêu cầu đã đăng nhập (<code>&lt;&lt;include&gt;&gt; UC01</code>).</p>
@@ -2410,24 +2563,24 @@ Velocity thực tế: __ SP
 <td>UC02</td>
 <td>Quản lý người dùng (thêm, khóa/mở khóa, phân vai trò)</td>
 <td>Admin</td>
-<td>YC11</td>
+<td>YC12</td>
 </tr>
 <tr>
 <td>UC03</td>
-<td>Quản lý dự án, module</td>
+<td>Khai báo URL ứng dụng cần test của dự án</td>
 <td>Admin</td>
-<td>YC11</td>
+<td>YC10, YC13</td>
 </tr>
 <tr>
 <td>UC04</td>
-<td>Lập, sửa, xóa user story</td>
-<td>PO/BA, Tester, QA Lead, Admin</td>
+<td>Xem user story (đồng bộ từ Jira, chỉ đọc)</td>
+<td>Tất cả</td>
 <td>YC1</td>
 </tr>
 <tr>
 <td>UC05</td>
-<td>Nhập user story từ file CSV/JSON</td>
-<td>PO/BA, Tester, QA Lead, Admin</td>
+<td>Xem lại test case khi story đổi trên Jira, đánh dấu <em>Đã xem lại</em></td>
+<td>Tester, QA Lead</td>
 <td>YC8</td>
 </tr>
 <tr>
@@ -2464,13 +2617,13 @@ Velocity thực tế: __ SP
 <td>UC11</td>
 <td>Sinh script Playwright bằng AI, xem lại, sửa, tải về</td>
 <td>Tester, QA Lead</td>
-<td>YC9</td>
+<td>YC10</td>
 </tr>
 <tr>
 <td>UC12</td>
 <td>Chạy script tự động</td>
 <td>Tester, QA Lead</td>
-<td>YC9</td>
+<td>YC10</td>
 </tr>
 <tr>
 <td>UC13</td>
@@ -2482,7 +2635,7 @@ Velocity thực tế: __ SP
 <td>UC14</td>
 <td>Xuất test case ra Excel</td>
 <td>Tất cả</td>
-<td>YC8</td>
+<td>YC9</td>
 </tr>
 <tr>
 <td>UC15</td>
@@ -2494,7 +2647,7 @@ Velocity thực tế: __ SP
 <td>UC16</td>
 <td>Thay đổi quy định</td>
 <td>Admin, QA Lead</td>
-<td>YC10</td>
+<td>YC11</td>
 </tr>
 <tr>
 <td>UC17</td>
@@ -2510,9 +2663,9 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>UC19</td>
-<td>Quản lý sprint: tạo sprint, đưa story từ backlog vào sprint, xem bảng sprint, burndown, velocity</td>
-<td>PO/BA, QA Lead, Admin (Tester: đưa story vào sprint, xem)</td>
-<td>YC12</td>
+<td>Theo dõi sprint: bảng sprint theo DoD, Product backlog, burndown, velocity (sprint lấy từ Jira)</td>
+<td>Tất cả</td>
+<td>YC14</td>
 </tr>
 <tr>
 <td>UC20</td>
@@ -2524,7 +2677,13 @@ Velocity thực tế: __ SP
 <td>UC21</td>
 <td>Báo đã sửa lỗi kèm bản build để Tester kiểm thử lại</td>
 <td>Developer</td>
-<td>YC13</td>
+<td>YC15</td>
+</tr>
+<tr>
+<td>UC22</td>
+<td>Đồng bộ từ Jira: kiểm tra kết nối, thêm dự án, đồng bộ ngay dự án, module, thành viên, user story, sprint; nhận webhook, đồng bộ định kỳ</td>
+<td>Admin, QA Lead (chỉ Admin kiểm tra kết nối); hệ thống ngoài Jira</td>
+<td>YC1, YC8, YC13, YC14</td>
 </tr>
 </tbody></table>
 <h2>3.3. Đặc tả các use case chính</h2>
@@ -2628,7 +2787,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>Luồng chính</td>
-<td>1. Tester mở tab <strong>Script Playwright</strong>, xem lại mã, bấm <strong>Chạy tự động</strong>.<br>2. Hệ thống kiểm tra tĩnh script (QĐ9).<br>3. Hệ thống ghi script ra file tạm và khởi động tiến trình Playwright riêng với biến môi trường tối thiểu, giới hạn thời gian.<br>4. Playwright mở Chrome, thực hiện các bước trên ứng dụng cần test.<br>5. Hệ thống đọc báo cáo JSON, xác định Pass/Fail, lưu log và ảnh chụp lỗi, xóa file tạm.<br>6. Kết quả hiển thị ngay và được tính vào báo cáo.</td>
+<td>1. Tester mở tab <strong>Script Playwright</strong>, xem lại mã, bấm <strong>Chạy tự động</strong>.<br>2. Hệ thống kiểm tra tĩnh script (QĐ10).<br>3. Hệ thống ghi script ra file tạm và khởi động tiến trình Playwright riêng với biến môi trường tối thiểu, giới hạn thời gian.<br>4. Playwright mở Chrome, thực hiện các bước trên ứng dụng cần test.<br>5. Hệ thống đọc báo cáo JSON, xác định Pass/Fail, lưu log và ảnh chụp lỗi, xóa file tạm.<br>6. Kết quả hiển thị ngay và được tính vào báo cáo.</td>
 </tr>
 <tr>
 <td>Luồng thay thế</td>
@@ -2640,7 +2799,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>Quy định</td>
-<td>QĐ5, QĐ9</td>
+<td>QĐ5, QĐ10</td>
 </tr>
 </tbody></table>
 <h3>UC10 – Ghi nhận kết quả chạy test</h3>
@@ -2682,14 +2841,14 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>Luồng chính</td>
-<td>1. Mở <strong>Thay đổi quy định</strong>. 2. Sửa giá trị tham số. 3. Bấm <strong>Lưu</strong>. 4. Hệ thống kiểm tra miền giá trị (QĐ10), lưu, ghi audit log. Quy định mới có hiệu lực ngay (ví dụ AI sinh tối đa theo số mới).</td>
+<td>1. Mở <strong>Thay đổi quy định</strong>. 2. Sửa giá trị tham số. 3. Bấm <strong>Lưu</strong>. 4. Hệ thống kiểm tra miền giá trị (QĐ11), lưu, ghi audit log. Quy định mới có hiệu lực ngay (ví dụ AI sinh tối đa theo số mới).</td>
 </tr>
 <tr>
 <td>Luồng ngoại lệ</td>
 <td>Giá trị ngoài miền cho phép → báo lỗi, giữ giá trị cũ.</td>
 </tr>
 </tbody></table>
-<h3>UC19 – Quản lý sprint (Sprint Planning)</h3>
+<h3>UC19 – Theo dõi sprint</h3>
 <table>
 <thead>
 <tr>
@@ -2699,27 +2858,60 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>Tác nhân</td>
-<td>PO/BA (Product Owner), QA Lead (Scrum Master), Admin</td>
+<td>Mọi người dùng</td>
 </tr>
 <tr>
 <td>Tiền điều kiện</td>
-<td>Đã chọn dự án; có quyền <code>sprint:manage</code></td>
+<td>Đã chọn dự án; sprint đã được lập (có ngày) trên Jira và đồng bộ về</td>
 </tr>
 <tr>
 <td>Hậu điều kiện</td>
-<td>Sprint mới được lưu; các user story được chọn chuyển từ Product backlog vào sprint</td>
+<td>Không thay đổi dữ liệu (chỉ xem)</td>
 </tr>
 <tr>
 <td>Luồng chính</td>
-<td>1. Mở <strong>Sprint (Agile)</strong>, bấm <strong>Tạo sprint</strong>, nhập tên, Sprint Goal, ngày bắt đầu/kết thúc.<br>2. Hệ thống kiểm tra QĐ12 (độ dài, không trùng thời gian) và lưu.<br>3. Trong mục <strong>Product backlog</strong>, chọn sprint cho từng story và bấm <strong>Đưa vào</strong>.<br>4. Hệ thống kiểm tra story và sprint cùng dự án, cập nhật.<br>5. Bảng sprint hiển thị story theo 4 cột: <em>Cần viết test case → Đang soạn/chờ duyệt → Đang kiểm thử → Hoàn thành (DoD)</em>, cùng burndown và velocity.</td>
+<td>1. Mở <strong>Sprint (Agile)</strong>, chọn sprint.<br>2. Bảng sprint hiển thị story theo 4 cột: <em>Cần viết test case → Đang soạn/chờ duyệt → Đang kiểm thử → Hoàn thành (DoD)</em>, cùng burndown và velocity; trạng thái DoD do hệ thống tự tính từ kết quả kiểm thử.<br>3. Mục <strong>Product backlog</strong> liệt kê story chưa thuộc sprint nào trên Jira.</td>
 </tr>
 <tr>
 <td>Luồng ngoại lệ</td>
-<td>2a. Sprint dài quá giới hạn hoặc trùng thời gian → báo lỗi.<br>1a. Tester không có nút Tạo sprint; gọi trực tiếp API → 403.</td>
+<td>1a. Dự án chưa có sprint → hướng dẫn tạo sprint có ngày trên Jira rồi đồng bộ lại.<br>Không có nút tạo, sửa sprint; gọi API tạo sprint → 404.</td>
 </tr>
 <tr>
 <td>Quy định</td>
-<td>QĐ12</td>
+<td>QĐ14</td>
+</tr>
+</tbody></table>
+<h3>UC05 – Xem lại test case khi story đổi</h3>
+<table>
+<thead>
+<tr>
+<th>Mục</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tác nhân</td>
+<td>Tester, QA Lead; hệ thống ngoài: Jira (gửi webhook)</td>
+</tr>
+<tr>
+<td>Tiền điều kiện</td>
+<td>Story đã có test case; PO/BA sửa tiêu đề, mô tả hoặc acceptance criteria trên Jira</td>
+</tr>
+<tr>
+<td>Hậu điều kiện</td>
+<td>Test case được chỉnh cho khớp; story hết nhãn <em>Cần xem lại test case</em>; ghi audit log <code>STORY_REVIEWED</code></td>
+</tr>
+<tr>
+<td>Luồng chính</td>
+<td>1. Jira gọi webhook (hoặc đến lượt đồng bộ định kỳ, hoặc QA Lead bấm <strong>Đồng bộ ngay</strong>); hệ thống so nội dung mới với nội dung cũ (QĐ8) và gắn nhãn 🔁 <em>Cần xem lại test case</em>.<br>2. Tester mở story, đọc acceptance criteria mới, sửa hoặc thêm test case (UC07).<br>3. Bấm <strong>✔ Đã xem lại</strong>; hệ thống bỏ nhãn.</td>
+</tr>
+<tr>
+<td>Luồng ngoại lệ</td>
+<td>1a. Webhook sai mã bí mật → 401, không đồng bộ.<br>1b. Story bị xóa trên Jira → lưu trữ: ẩn khỏi danh sách, giữ test case, không sinh thêm.<br>3a. Story không có thay đổi cần xem lại → 409.</td>
+</tr>
+<tr>
+<td>Quy định</td>
+<td>QĐ8</td>
 </tr>
 </tbody></table>
 <h3>UC21 – Báo đã sửa lỗi</h3>
@@ -2740,11 +2932,11 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>Hậu điều kiện</td>
-<td>Lần chạy được ghi bản build, ghi chú, người báo, ngày báo (BM11); test case ở trạng thái <em>Cần kiểm thử lại</em>; ghi audit log <code>REPORT_FIX</code></td>
+<td>Lần chạy được ghi bản build, ghi chú, người báo, ngày báo (BM14); test case ở trạng thái <em>Cần kiểm thử lại</em>; ghi audit log <code>REPORT_FIX</code></td>
 </tr>
 <tr>
 <td>Luồng chính</td>
-<td>1. Mở <strong>Kết quả chạy test</strong> (hoặc tab <em>Chạy test</em> của test case), xem ghi chú, log, ảnh chụp lỗi để tái hiện.<br>2. Sửa lỗi, bấm <strong>🔧 Báo đã sửa</strong> ở lần chạy Fail, nhập bản build và ghi chú.<br>3. Hệ thống kiểm tra QĐ13, lưu, báo thành công.<br>4. Tester lọc <strong>Cần kiểm thử lại</strong> ở <em>Tra cứu test case</em>, chạy lại trên bản build mới; lần chạy mới làm test case hết trạng thái này.</td>
+<td>1. Mở <strong>Kết quả chạy test</strong> (hoặc tab <em>Chạy test</em> của test case), xem ghi chú, log, ảnh chụp lỗi để tái hiện.<br>2. Sửa lỗi, bấm <strong>🔧 Báo đã sửa</strong> ở lần chạy Fail, nhập bản build và ghi chú.<br>3. Hệ thống kiểm tra QĐ15, lưu, báo thành công.<br>4. Tester lọc <strong>Cần kiểm thử lại</strong> ở <em>Tra cứu test case</em>, chạy lại trên bản build mới; lần chạy mới làm test case hết trạng thái này.</td>
 </tr>
 <tr>
 <td>Luồng ngoại lệ</td>
@@ -2752,7 +2944,40 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>Quy định</td>
-<td>QĐ13</td>
+<td>QĐ15</td>
+</tr>
+</tbody></table>
+<h3>UC22 – Đồng bộ từ Jira</h3>
+<table>
+<thead>
+<tr>
+<th>Mục</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tác nhân</td>
+<td>Admin, QA Lead; hệ thống ngoài: Jira</td>
+</tr>
+<tr>
+<td>Tiền điều kiện</td>
+<td>Đã đăng nhập, có quyền <code>jira:import</code> (kiểm tra kết nối cần <code>jira:connect</code> – chỉ Admin); máy chủ đã cấu hình <code>JIRA_BASE_URL</code>, <code>JIRA_EMAIL</code>, <code>JIRA_API_TOKEN</code> (để trống thì dùng Jira giả lập)</td>
+</tr>
+<tr>
+<td>Hậu điều kiện</td>
+<td>Dự án có mã Jira; module lấy từ component; thành viên đã ánh xạ sang tài khoản; user story (issue loại Story) và sprint (có ngày) đã lưu; ghi audit log <code>JIRA_IMPORT</code> / <code>JIRA_SYNC</code></td>
+</tr>
+<tr>
+<td>Luồng chính</td>
+<td>1. Admin mở <strong>Dự án &amp; module</strong>, bấm <strong>Kiểm tra kết nối Jira</strong>; hệ thống gọi Jira và báo tài khoản đang kết nối.<br>2. Bấm <strong>Thêm dự án từ Jira</strong>, nhập mã dự án (VD: <code>SHOP</code>).<br>3. Hệ thống kiểm tra QĐ13, gọi Jira lấy dự án, component, thành viên, sprint và mọi Story; tách mô tả và acceptance criteria theo QĐ1.<br>4. Lưu, báo số story mới, số sprint, module, thành viên và các cảnh báo (story point sai dãy, sprint chưa có ngày, thành viên chưa có tài khoản).<br>5. Về sau: bấm <strong>Đồng bộ ngay</strong>, hoặc để webhook và đồng bộ định kỳ tự cập nhật (UC05).</td>
+</tr>
+<tr>
+<td>Luồng ngoại lệ</td>
+<td>1a. Sai thông tin xác thực hoặc không kết nối được → báo lỗi, không lưu gì.<br>3a. Mã sai định dạng → 400; dự án đã có trong hệ thống → 409; không có trên Jira → 404.<br>5a. Dự án mẫu (không liên kết Jira) → không đồng bộ được.</td>
+</tr>
+<tr>
+<td>Quy định</td>
+<td>QĐ13, QĐ1, QĐ14</td>
 </tr>
 </tbody></table>
 <h3>UC01 – Đăng nhập</h3>
@@ -2840,9 +3065,9 @@ Velocity thực tế: __ SP
 <li>Người dùng không nhập những thông tin đã lưu hoặc tính được (VD: người tạo, ngày tạo, phiên bản, tỷ lệ pass do hệ thống tự lấy / tự tính).</li>
 </ul>
 <p><strong>Ba bước thực hiện cho mỗi yêu cầu:</strong> (1) vẽ sơ đồ luồng dữ liệu; (2) mô tả các luồng D1–D6 (luồng không có ghi &quot;Không có&quot;); (3) viết thuật toán xử lý theo khuôn <em>Nhận D1 → Kết nối CSDL → Đọc D3 → kiểm tra quy định → Lưu D4 → Xuất D5 → Xuất D6 → Đóng kết nối → Kết thúc</em>. Ở mỗi bước kiểm tra, nếu không thỏa quy định thì ghi thông báo lỗi vào D6 và nhảy tới bước Xuất D6.</p>
-<h3>3.4.2. DFD YC1 – Lập user story</h3>
-<p><img src="dfd/YC01_LapUserStory.svg" alt="DFD YC1 – Lập user story"></p>
-<p><em>Biểu mẫu:</em> BM1 · <em>Quy định:</em> QĐ1 · <em>File:</em> <code>docs/dfd/YC01_LapUserStory.drawio</code></p>
+<h3>3.4.2. DFD YC1 – Đồng bộ user story từ Jira</h3>
+<p><img src="dfd/YC01_DongBoUserStory.svg" alt="DFD YC1 – Đồng bộ user story từ Jira"></p>
+<p><em>Biểu mẫu:</em> BM1 · <em>Quy định:</em> QĐ1 · <em>File:</em> <code>docs/dfd/YC01_DongBoUserStory.drawio</code></p>
 <table>
 <thead>
 <tr>
@@ -2852,27 +3077,27 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>D1</td>
-<td>Mã user story, dự án, module, tiêu đề, mô tả, các acceptance criteria, độ ưu tiên.</td>
+<td>Dự án cần đồng bộ (thao tác Đồng bộ ngay).</td>
 </tr>
 <tr>
 <td>D2</td>
-<td>Không có</td>
+<td>Từ Jira: các issue loại Story của dự án – mã, Summary, Description (có mục Acceptance criteria), Priority, component, story point, sprint, trạng thái.</td>
 </tr>
 <tr>
 <td>D3</td>
-<td>Danh sách mã user story đã có; danh sách dự án, module; tham số MIN_AC_PER_STORY, PRIORITIES.</td>
+<td>Mã Jira của dự án; user story đã có của dự án; module, sprint đã đồng bộ; tham số MIN_AC_PER_STORY, PRIORITIES.</td>
 </tr>
 <tr>
 <td>D4</td>
-<td>D1 + người tạo, ngày tạo.</td>
+<td>User story mới hoặc cập nhật (BM1): mã issue, tiêu đề, mô tả, acceptance criteria, ưu tiên, module, sprint, story point, trạng thái Jira, thời điểm đồng bộ; nhật ký hoạt động.</td>
 </tr>
 <tr>
 <td>D5</td>
-<td>Không có</td>
+<td>Yêu cầu tìm issue loại Story của dự án gửi Jira REST API, kèm thông tin xác thực đọc từ .env.</td>
 </tr>
 <tr>
 <td>D6</td>
-<td>Thông báo lưu thành công kèm user story vừa lập, hoặc thông báo lỗi vi phạm QĐ1.</td>
+<td>Số story mới, cập nhật, cần xem lại, đã lưu trữ và các cảnh báo; hoặc thông báo lỗi (không kết nối được, dự án chưa liên kết Jira).</td>
 </tr>
 </tbody></table>
 <p><strong>Thuật toán:</strong></p>
@@ -2880,11 +3105,11 @@ Velocity thực tế: __ SP
 <li>B1: Nhận D1 từ người dùng.</li>
 <li>B2: Kết nối cơ sở dữ liệu.</li>
 <li>B3: Đọc D3 từ bộ nhớ phụ.</li>
-<li>B4: Kiểm tra mã user story đúng dạng US-XXX và không trùng với mã đã có? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
-<li>B5: Kiểm tra tiêu đề ≥ 5 ký tự, mô tả ≥ 10 ký tự? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
-<li>B6: Kiểm tra độ ưu tiên thuộc danh sách PRIORITIES? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
-<li>B7: Kiểm tra số acceptance criteria ≥ MIN_AC_PER_STORY? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
-<li>B8: Kiểm tra module thuộc dự án đã chọn? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B4: Kiểm tra người dùng có vai trò Admin hoặc QA Lead và dự án đã liên kết Jira? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
+<li>B5: Xuất D5 đến Jira, nhận D2 (danh sách Story, lấy hết các trang).</li>
+<li>B6: Với từng story: tách Description thành mô tả (trước dòng &quot;Acceptance criteria&quot;) và các acceptance criteria (mỗi dòng sau đó).</li>
+<li>B7: Đổi Priority về High / Medium / Low; gắn module theo component, sprint theo sprint Jira; story point ngoài dãy 1, 2, 3, 5, 8, 13 thì bỏ qua kèm cảnh báo.</li>
+<li>B8: Story có ít hơn MIN_AC_PER_STORY acceptance criteria vẫn lưu nhưng đánh dấu chưa đủ điều kiện sinh test case.</li>
 <li>B9: Lưu D4 xuống bộ nhớ phụ.</li>
 <li>B10: Xuất D6 cho người dùng.</li>
 <li>B11: Đóng kết nối cơ sở dữ liệu.</li>
@@ -3178,9 +3403,9 @@ Velocity thực tế: __ SP
 <li>B6: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B7: Kết thúc.</li>
 </ul>
-<h3>3.4.9. DFD YC8a – Nhập user story từ file</h3>
-<p><img src="dfd/YC08a_NhapUserStory.svg" alt="DFD YC8a – Nhập user story từ file"></p>
-<p><em>Biểu mẫu:</em> BM7 · <em>Quy định:</em> QĐ1, QĐ8 · <em>File:</em> <code>docs/dfd/YC08_NhapXuatDuLieu.drawio</code></p>
+<h3>3.4.9. DFD YC8 – Nhận thay đổi user story từ Jira</h3>
+<p><img src="dfd/YC08_NhanThayDoiUserStory.svg" alt="DFD YC8 – Nhận thay đổi user story từ Jira"></p>
+<p><em>Biểu mẫu:</em> BM7 · <em>Quy định:</em> QĐ8 · <em>File:</em> <code>docs/dfd/YC08_NhanThayDoiUserStory.drawio</code></p>
 <table>
 <thead>
 <tr>
@@ -3190,19 +3415,19 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>D1</td>
-<td>Dự án nhận dữ liệu; lệnh chọn file.</td>
+<td>Thao tác Đã xem lại test case của một story (khi Tester xem xong).</td>
 </tr>
 <tr>
 <td>D2</td>
-<td>Các dòng user story trong file (BM7).</td>
+<td>Từ Jira: sự kiện webhook (issue tạo / sửa / xóa) kèm mã dự án và mã bí mật; hoặc lượt đồng bộ định kỳ.</td>
 </tr>
 <tr>
 <td>D3</td>
-<td>Danh sách mã user story đã có; module của dự án; tham số MIN_AC_PER_STORY, PRIORITIES.</td>
+<td>Mã bí mật JIRA_WEBHOOK_SECRET; nội dung cũ của story (tiêu đề, mô tả, acceptance criteria); số test case của story; danh sách story của dự án.</td>
 </tr>
 <tr>
 <td>D4</td>
-<td>Các user story hợp lệ.</td>
+<td>Nội dung mới của story; thời điểm cần xem lại test case (BM7); cờ lưu trữ của story không còn trên Jira; nhật ký hoạt động.</td>
 </tr>
 <tr>
 <td>D5</td>
@@ -3210,7 +3435,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>D6</td>
-<td>Thông báo số dòng nhập thành công và danh sách dòng lỗi kèm lý do.</td>
+<td>Tester thấy nhãn &quot;Cần xem lại test case&quot; hoặc &quot;Đã xóa trên Jira&quot; trên story; thông báo đã xem lại; hoặc lỗi sai mã bí mật.</td>
 </tr>
 </tbody></table>
 <p><strong>Thuật toán:</strong></p>
@@ -3219,16 +3444,20 @@ Velocity thực tế: __ SP
 <li>B2: Nhận D2 từ thiết bị nhập.</li>
 <li>B3: Kết nối cơ sở dữ liệu.</li>
 <li>B4: Đọc D3 từ bộ nhớ phụ.</li>
-<li>B5: Kiểm tra số dòng trong D2 ≤ 200? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B8.</li>
-<li>B6: Với từng dòng: kiểm tra theo QĐ1 như YC1; dòng lỗi được ghi lại số dòng và lý do, không làm hỏng các dòng hợp lệ.</li>
-<li>B7: Lưu D4 xuống bộ nhớ phụ.</li>
-<li>B8: Xuất D6 cho người dùng.</li>
-<li>B9: Đóng kết nối cơ sở dữ liệu.</li>
-<li>B10: Kết thúc.</li>
+<li>B5: Kiểm tra mã bí mật của webhook đúng JIRA_WEBHOOK_SECRET? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B12.</li>
+<li>B6: Kiểm tra dự án của issue đã được thêm vào hệ thống (chưa có thì bỏ qua sự kiện)? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B12.</li>
+<li>B7: Đồng bộ lại user story của dự án như YC1.</li>
+<li>B8: So nội dung mới với D3: tiêu đề, mô tả hoặc acceptance criteria đổi mà story đã có test case thì ghi thời điểm cần xem lại.</li>
+<li>B9: Story có trong D3 mà không còn trên Jira thì đánh dấu lưu trữ, giữ test case; story xuất hiện lại thì bỏ lưu trữ.</li>
+<li>B10: Khi Tester bấm Đã xem lại: nếu story đang có đánh dấu cần xem lại thì xóa đánh dấu, ngược lại báo lỗi.</li>
+<li>B11: Lưu D4 xuống bộ nhớ phụ.</li>
+<li>B12: Xuất D6 cho người dùng.</li>
+<li>B13: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B14: Kết thúc.</li>
 </ul>
-<h3>3.4.10. DFD YC8b – Xuất test case ra Excel</h3>
-<p><img src="dfd/YC08b_XuatTestCase.svg" alt="DFD YC8b – Xuất test case ra Excel"></p>
-<p><em>Biểu mẫu:</em> BM8 · <em>Quy định:</em> Không có · <em>File:</em> <code>docs/dfd/YC08_NhapXuatDuLieu.drawio</code></p>
+<h3>3.4.10. DFD YC9 – Xuất test case ra Excel</h3>
+<p><img src="dfd/YC09_XuatTestCase.svg" alt="DFD YC9 – Xuất test case ra Excel"></p>
+<p><em>Biểu mẫu:</em> BM8 · <em>Quy định:</em> QĐ9 · <em>File:</em> <code>docs/dfd/YC09_XuatTestCase.drawio</code></p>
 <table>
 <thead>
 <tr>
@@ -3254,7 +3483,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>D5</td>
-<td>File Excel: mỗi test case một dòng theo các cột của BM2 và kết quả gần nhất (BM8).</td>
+<td>File testcases.xlsx: mỗi test case một dòng theo các cột của BM2 và kết quả gần nhất (BM8), dòng tiêu đề tô màu.</td>
 </tr>
 <tr>
 <td>D6</td>
@@ -3272,9 +3501,9 @@ Velocity thực tế: __ SP
 <li>B7: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B8: Kết thúc.</li>
 </ul>
-<h3>3.4.11. DFD YC9 – Sinh và chạy script kiểm thử tự động</h3>
-<p><img src="dfd/YC09_SinhVaChayScript.svg" alt="DFD YC9 – Sinh và chạy script kiểm thử tự động"></p>
-<p><em>Biểu mẫu:</em> BM9 · <em>Quy định:</em> QĐ9 · <em>File:</em> <code>docs/dfd/YC09_SinhVaChayScript.drawio</code></p>
+<h3>3.4.11. DFD YC10 – Sinh và chạy script kiểm thử tự động</h3>
+<p><img src="dfd/YC10_SinhVaChayScript.svg" alt="DFD YC10 – Sinh và chạy script kiểm thử tự động"></p>
+<p><em>Biểu mẫu:</em> BM9 · <em>Quy định:</em> QĐ10 · <em>File:</em> <code>docs/dfd/YC10_SinhVaChayScript.drawio</code></p>
 <table>
 <thead>
 <tr>
@@ -3304,7 +3533,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>D6</td>
-<td>Thông báo thành công kèm mã script, kết quả Pass / Fail, log, ảnh chụp lỗi; hoặc thông báo lỗi vi phạm QĐ9.</td>
+<td>Thông báo thành công kèm mã script, kết quả Pass / Fail, log, ảnh chụp lỗi; hoặc thông báo lỗi vi phạm QĐ10.</td>
 </tr>
 </tbody></table>
 <p><strong>Thuật toán:</strong></p>
@@ -3322,9 +3551,9 @@ Velocity thực tế: __ SP
 <li>B11: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B12: Kết thúc.</li>
 </ul>
-<h3>3.4.12. DFD YC10 – Thay đổi quy định</h3>
-<p><img src="dfd/YC10_ThayDoiQuyDinh.svg" alt="DFD YC10 – Thay đổi quy định"></p>
-<p><em>Biểu mẫu:</em> Không có · <em>Quy định:</em> QĐ10 · <em>File:</em> <code>docs/dfd/YC10_ThayDoiQuyDinh.drawio</code></p>
+<h3>3.4.12. DFD YC11 – Thay đổi quy định</h3>
+<p><img src="dfd/YC11_ThayDoiQuyDinh.svg" alt="DFD YC11 – Thay đổi quy định"></p>
+<p><em>Biểu mẫu:</em> BM10 · <em>Quy định:</em> QĐ11 · <em>File:</em> <code>docs/dfd/YC11_ThayDoiQuyDinh.drawio</code></p>
 <table>
 <thead>
 <tr>
@@ -3363,15 +3592,15 @@ Velocity thực tế: __ SP
 <li>B2: Kết nối cơ sở dữ liệu.</li>
 <li>B3: Đọc D3 từ bộ nhớ phụ.</li>
 <li>B4: Kiểm tra người sửa có vai trò Admin hoặc QA Lead? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B7.</li>
-<li>B5: Kiểm tra giá trị mới đúng kiểu và thuộc miền giá trị cho phép (QĐ10)? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B7.</li>
+<li>B5: Kiểm tra giá trị mới đúng kiểu và thuộc miền giá trị cho phép (QĐ11)? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B7.</li>
 <li>B6: Lưu D4 xuống bộ nhớ phụ.</li>
 <li>B7: Xuất D6 cho người dùng.</li>
 <li>B8: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B9: Kết thúc.</li>
 </ul>
-<h3>3.4.13. DFD YC11 – Quản lý người dùng, dự án</h3>
-<p><img src="dfd/YC11_QuanLyNguoiDungDuAn.svg" alt="DFD YC11 – Quản lý người dùng, dự án"></p>
-<p><em>Biểu mẫu:</em> Không có · <em>Quy định:</em> QĐ11 · <em>File:</em> <code>docs/dfd/YC11_QuanLyNguoiDungDuAn.drawio</code></p>
+<h3>3.4.13. DFD YC12 – Quản lý người dùng</h3>
+<p><img src="dfd/YC12_QuanLyNguoiDung.svg" alt="DFD YC12 – Quản lý người dùng"></p>
+<p><em>Biểu mẫu:</em> BM11 · <em>Quy định:</em> QĐ12 · <em>File:</em> <code>docs/dfd/YC12_QuanLyNguoiDung.drawio</code></p>
 <table>
 <thead>
 <tr>
@@ -3381,7 +3610,7 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>D1</td>
-<td>Thông tin tài khoản (tên đăng nhập, họ tên, vai trò, mật khẩu, khóa/mở); hoặc thông tin dự án, module.</td>
+<td>Thông tin tài khoản (BM11): tên đăng nhập, họ tên, email, vai trò, mật khẩu; thao tác thêm, cập nhật, khóa / mở khóa.</td>
 </tr>
 <tr>
 <td>D2</td>
@@ -3389,11 +3618,11 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>D3</td>
-<td>Danh sách tài khoản, dự án, module hiện có.</td>
+<td>Danh sách tên đăng nhập đã có; tài khoản đang đăng nhập.</td>
 </tr>
 <tr>
 <td>D4</td>
-<td>Tài khoản (mật khẩu ĐÃ BĂM bcrypt), dự án, module; nhật ký hoạt động.</td>
+<td>Tài khoản (mật khẩu ĐÃ BĂM bcrypt); nhật ký hoạt động.</td>
 </tr>
 <tr>
 <td>D5</td>
@@ -3401,7 +3630,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>D6</td>
-<td>Thông báo lưu thành công (không bao giờ chứa mật khẩu băm), hoặc thông báo lỗi vi phạm QĐ11.</td>
+<td>Thông báo lưu thành công (không bao giờ chứa mật khẩu băm), hoặc thông báo lỗi vi phạm QĐ12.</td>
 </tr>
 </tbody></table>
 <p><strong>Thuật toán:</strong></p>
@@ -3418,9 +3647,9 @@ Velocity thực tế: __ SP
 <li>B10: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B11: Kết thúc.</li>
 </ul>
-<h3>3.4.14. DFD YC12 – Quản lý sprint (Agile/Scrum)</h3>
-<p><img src="dfd/YC12_QuanLySprint.svg" alt="DFD YC12 – Quản lý sprint (Agile/Scrum)"></p>
-<p><em>Biểu mẫu:</em> BM10 · <em>Quy định:</em> QĐ12 · <em>File:</em> <code>docs/dfd/YC12_QuanLySprint.drawio</code></p>
+<h3>3.4.14. DFD YC13 – Đồng bộ dự án từ Jira</h3>
+<p><img src="dfd/YC13_DongBoDuAnJira.svg" alt="DFD YC13 – Đồng bộ dự án từ Jira"></p>
+<p><em>Biểu mẫu:</em> BM12 · <em>Quy định:</em> QĐ13, QĐ1, QĐ14 · <em>File:</em> <code>docs/dfd/YC13_DongBoDuAnJira.drawio</code></p>
 <table>
 <thead>
 <tr>
@@ -3430,27 +3659,27 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>D1</td>
-<td>Tên, mục tiêu, ngày bắt đầu, ngày kết thúc sprint (BM10); user story đưa vào sprint và story point.</td>
+<td>Thao tác Kiểm tra kết nối, hoặc mã dự án trên Jira cần thêm (BM12).</td>
 </tr>
 <tr>
 <td>D2</td>
-<td>Không có</td>
+<td>Từ Jira: kết quả xác thực; tên, mô tả dự án; danh sách component (module); danh sách thành viên (tên, email).</td>
 </tr>
 <tr>
 <td>D3</td>
-<td>Các sprint hiện có của dự án; tham số SPRINT_MAX_DAYS; user story, test case Đã duyệt và kết quả chạy gần nhất.</td>
+<td>Danh sách mã dự án đã có; danh sách tài khoản đang hoạt động (email, họ tên) để ánh xạ thành viên.</td>
 </tr>
 <tr>
 <td>D4</td>
-<td>Sprint mới / đã sửa; sprint_id, story_points của user story.</td>
+<td>Dự án (mã, tên, mô tả, mã Jira, thời điểm đồng bộ), các module, thành viên dự án; user story và sprint của dự án (như YC1, YC14); nhật ký hoạt động.</td>
 </tr>
 <tr>
 <td>D5</td>
-<td>Không có</td>
+<td>Yêu cầu gửi Jira REST API kèm thông tin xác thực đọc từ cấu hình máy chủ (.env).</td>
 </tr>
 <tr>
 <td>D6</td>
-<td>Thông báo lưu thành công kèm bảng sprint, burndown, velocity; hoặc thông báo lỗi vi phạm QĐ12.</td>
+<td>Kết quả kiểm tra kết nối; hoặc dự án vừa thêm kèm số module, số thành viên và danh sách thành viên chưa có tài khoản; hoặc thông báo lỗi (không kết nối được, không tìm thấy dự án, dự án đã có).</td>
 </tr>
 </tbody></table>
 <p><strong>Thuật toán:</strong></p>
@@ -3458,19 +3687,20 @@ Velocity thực tế: __ SP
 <li>B1: Nhận D1 từ người dùng.</li>
 <li>B2: Kết nối cơ sở dữ liệu.</li>
 <li>B3: Đọc D3 từ bộ nhớ phụ.</li>
-<li>B4: Kiểm tra số ngày của sprint ≤ SPRINT_MAX_DAYS và ngày kết thúc không trước ngày bắt đầu? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
-<li>B5: Kiểm tra sprint không trùng thời gian với sprint khác của dự án? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
-<li>B6: Kiểm tra user story cùng dự án và story point thuộc dãy 1, 2, 3, 5, 8, 13? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B10.</li>
-<li>B7: Xác định story đạt DoD: có ≥ 1 test case Đã duyệt và mọi test case Đã duyệt có lần chạy gần nhất là Pass.</li>
-<li>B8: Tính velocity = tổng story point của story đạt DoD; burndown: còn lại(ngày) = tổng story point − story point đã đạt DoD đến ngày đó.</li>
-<li>B9: Lưu D4 xuống bộ nhớ phụ.</li>
-<li>B10: Xuất D6 cho người dùng.</li>
-<li>B11: Đóng kết nối cơ sở dữ liệu.</li>
-<li>B12: Kết thúc.</li>
+<li>B4: Kiểm tra quyền: kiểm tra kết nối chỉ Admin; thêm dự án Admin hoặc QA Lead? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B11.</li>
+<li>B5: Kiểm tra kết nối: xuất D5 đến Jira, nhận D2; nếu chỉ kiểm tra kết nối thì chuyển tới bước Xuất D6.</li>
+<li>B6: Kiểm tra mã dự án gồm 2–10 ký tự in hoa hoặc số và chưa có trong hệ thống? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B11.</li>
+<li>B7: Xuất D5 (lấy dự án, component, thành viên theo mã) đến Jira, nhận D2. Kiểm tra dự án có trên Jira? Nếu không thỏa: ghi thông báo lỗi vào D6, chuyển tới B11.</li>
+<li>B8: Ánh xạ thành viên Jira sang tài khoản theo email (Jira ẩn email thì theo họ tên); đếm số module, số thành viên.</li>
+<li>B9: Đồng bộ sprint (YC14) và user story (YC1) của dự án vừa thêm.</li>
+<li>B10: Lưu D4 xuống bộ nhớ phụ.</li>
+<li>B11: Xuất D6 cho người dùng.</li>
+<li>B12: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B13: Kết thúc.</li>
 </ul>
-<h3>3.4.15. DFD YC13 – Báo đã sửa lỗi và kiểm thử lại</h3>
-<p><img src="dfd/YC13_BaoDaSuaLoi.svg" alt="DFD YC13 – Báo đã sửa lỗi và kiểm thử lại"></p>
-<p><em>Biểu mẫu:</em> BM11 · <em>Quy định:</em> QĐ13 · <em>File:</em> <code>docs/dfd/YC13_BaoDaSuaLoi.drawio</code></p>
+<h3>3.4.15. DFD YC14 – Theo dõi sprint (Agile/Scrum)</h3>
+<p><img src="dfd/YC14_TheoDoiSprint.svg" alt="DFD YC14 – Theo dõi sprint (Agile/Scrum)"></p>
+<p><em>Biểu mẫu:</em> BM13 · <em>Quy định:</em> QĐ14 · <em>File:</em> <code>docs/dfd/YC14_TheoDoiSprint.drawio</code></p>
 <table>
 <thead>
 <tr>
@@ -3480,7 +3710,55 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>D1</td>
-<td>Lần chạy Fail được chọn, bản build đã sửa, ghi chú cho Tester (BM11).</td>
+<td>Dự án và sprint cần xem.</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Từ Jira (khi đồng bộ): các sprint của board dự án – tên, mục tiêu, ngày bắt đầu, ngày kết thúc, trạng thái.</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Sprint đã đồng bộ; tham số SPRINT_MAX_DAYS; user story của sprint, test case Đã duyệt và kết quả chạy gần nhất.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Sprint mới hoặc cập nhật (BM13) kèm id sprint Jira, trạng thái (khi đồng bộ).</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Không có</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Bảng sprint theo trạng thái DoD, story point cam kết / hoàn thành (velocity), burndown; cảnh báo sprint chưa có ngày hoặc quá dài.</td>
+</tr>
+</tbody></table>
+<p><strong>Thuật toán:</strong></p>
+<ul>
+<li>B1: Nhận D1 từ người dùng.</li>
+<li>B2: Kết nối cơ sở dữ liệu.</li>
+<li>B3: Đọc D3 từ bộ nhớ phụ.</li>
+<li>B4: Khi đồng bộ: bỏ qua sprint chưa có ngày bắt đầu, kết thúc (ghi cảnh báo); sprint dài hơn SPRINT_MAX_DAYS thì ghi cảnh báo.</li>
+<li>B5: Xác định story đạt DoD: có ≥ 1 test case Đã duyệt và mọi test case Đã duyệt có lần chạy gần nhất là Pass.</li>
+<li>B6: Tính velocity = tổng story point của story đạt DoD; burndown: còn lại(ngày) = tổng story point − story point đã đạt DoD đến ngày đó.</li>
+<li>B7: Lưu D4 xuống bộ nhớ phụ.</li>
+<li>B8: Xuất D6 cho người dùng.</li>
+<li>B9: Đóng kết nối cơ sở dữ liệu.</li>
+<li>B10: Kết thúc.</li>
+</ul>
+<h3>3.4.16. DFD YC15 – Báo đã sửa lỗi và kiểm thử lại</h3>
+<p><img src="dfd/YC15_BaoDaSuaLoi.svg" alt="DFD YC15 – Báo đã sửa lỗi và kiểm thử lại"></p>
+<p><em>Biểu mẫu:</em> BM14 · <em>Quy định:</em> QĐ15 · <em>File:</em> <code>docs/dfd/YC15_BaoDaSuaLoi.drawio</code></p>
+<table>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Mô tả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Lần chạy Fail được chọn, bản build đã sửa, ghi chú cho Tester (BM14).</td>
 </tr>
 <tr>
 <td>D2</td>
@@ -3500,7 +3778,7 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>D6</td>
-<td>Thông báo đã báo sửa, test case chuyển sang Cần kiểm thử lại; hoặc thông báo lỗi vi phạm QĐ13.</td>
+<td>Thông báo đã báo sửa, test case chuyển sang Cần kiểm thử lại; hoặc thông báo lỗi vi phạm QĐ15.</td>
 </tr>
 </tbody></table>
 <p><strong>Thuật toán:</strong></p>
@@ -3518,7 +3796,7 @@ Velocity thực tế: __ SP
 <li>B11: Đóng kết nối cơ sở dữ liệu.</li>
 <li>B12: Kết thúc.</li>
 </ul>
-<h3>3.4.16. Sơ đồ phối hợp giữa các công việc</h3>
+<h3>3.4.17. Sơ đồ phối hợp giữa các công việc</h3>
 <p><img src="dfd/PhoiHop_CacCongViec.svg" alt="Sơ đồ phối hợp giữa các công việc"></p>
 <p><em>File:</em> <code>docs/dfd/PhoiHop_CacCongViec.drawio</code>. Mỗi mũi tên là <strong>thông tin</strong> do công việc trước tạo ra (ghi xuống bộ nhớ phụ ở D4) và công việc sau sử dụng (đọc lên ở D3).</p>
 <table>
@@ -3530,19 +3808,24 @@ Velocity thực tế: __ SP
 </tr>
 </thead>
 <tbody><tr>
-<td>YC1 – Lập user story</td>
+<td>YC1 – Đồng bộ user story</td>
 <td>user story</td>
 <td>YC2 – Sinh test case bằng AI</td>
 </tr>
 <tr>
-<td>YC8a – Nhập user story từ file</td>
-<td>user story</td>
-<td>YC2 – Sinh test case bằng AI</td>
+<td>YC8 – Nhận thay đổi user story</td>
+<td>story đổi: cần xem lại test case</td>
+<td>YC3 – Soạn thảo, gửi duyệt</td>
 </tr>
 <tr>
-<td>YC1 – Lập user story</td>
+<td>YC12 – Quản lý người dùng</td>
+<td>tài khoản (gán thành viên)</td>
+<td>YC13 – Đồng bộ dự án từ Jira</td>
+</tr>
+<tr>
+<td>YC1 – Đồng bộ user story</td>
 <td>user story, story point</td>
-<td>YC12 – Quản lý sprint</td>
+<td>YC14 – Theo dõi sprint</td>
 </tr>
 <tr>
 <td>YC2 – Sinh test case bằng AI</td>
@@ -3567,22 +3850,22 @@ Velocity thực tế: __ SP
 <tr>
 <td>YC4 – Duyệt test case</td>
 <td>test case Đã duyệt</td>
-<td>YC9 – Sinh và chạy script</td>
+<td>YC10 – Sinh và chạy script</td>
 </tr>
 <tr>
 <td>YC5 – Ghi nhận kết quả</td>
 <td>lần chạy Fail</td>
-<td>YC13 – Báo đã sửa lỗi</td>
+<td>YC15 – Báo đã sửa lỗi</td>
 </tr>
 <tr>
-<td>YC13 – Báo đã sửa lỗi</td>
+<td>YC15 – Báo đã sửa lỗi</td>
 <td>bản build đã sửa (cần kiểm thử lại)</td>
 <td>YC5 – Ghi nhận kết quả</td>
 </tr>
 <tr>
 <td>YC5 – Ghi nhận kết quả</td>
 <td>kết quả chạy gần nhất (xét DoD)</td>
-<td>YC12 – Quản lý sprint</td>
+<td>YC14 – Theo dõi sprint</td>
 </tr>
 <tr>
 <td>YC5 – Ghi nhận kết quả</td>
@@ -3595,103 +3878,182 @@ Velocity thực tế: __ SP
 <td>YC6 – Lập báo cáo</td>
 </tr>
 <tr>
-<td>YC9 – Sinh và chạy script</td>
+<td>YC10 – Sinh và chạy script</td>
 <td>kết quả chạy tự động</td>
 <td>YC6 – Lập báo cáo</td>
 </tr>
 <tr>
-<td>YC9 – Sinh và chạy script</td>
+<td>YC10 – Sinh và chạy script</td>
 <td>kết quả gần nhất</td>
-<td>YC8b – Xuất test case ra Excel</td>
+<td>YC9 – Xuất test case ra Excel</td>
 </tr>
 <tr>
-<td>YC9 – Sinh và chạy script</td>
+<td>YC10 – Sinh và chạy script</td>
 <td>kết quả chạy tự động gần nhất (xét DoD)</td>
-<td>YC12 – Quản lý sprint</td>
+<td>YC14 – Theo dõi sprint</td>
 </tr>
 <tr>
-<td>YC11 – Quản lý người dùng, dự án</td>
-<td>tài khoản, vai trò, dự án, module</td>
+<td>YC13 – Đồng bộ dự án từ Jira</td>
+<td>dự án, module, thành viên</td>
 <td>Mọi công việc</td>
 </tr>
 <tr>
-<td>YC10 – Thay đổi quy định</td>
-<td>tham số quy định QĐ1–QĐ12</td>
+<td>YC12 – Quản lý người dùng</td>
+<td>tài khoản, vai trò</td>
+<td>Mọi công việc</td>
+</tr>
+<tr>
+<td>YC11 – Thay đổi quy định</td>
+<td>tham số quy định</td>
 <td>Mọi công việc</td>
 </tr>
 </tbody></table>
 <!-- DFD:END -->
 
 <h2>3.5. Sơ đồ hoạt động – quy trình nghiệp vụ mới</h2>
-<pre class="mermaid">flowchart TD
-    S([Bắt đầu]) --&gt; A["PO/BA (hoặc Tester) lập / nhập user story"]
-    A --&gt; B["Bấm Sinh test case bằng AI"]
-    B --&gt; C{"AI trả kết quả hợp lệ?"}
-    C --&gt;|Không, sau khi thử lại| C2["Viết test case thủ công"] --&gt; D
-    C --&gt;|Có| D["Tester xem lại, sửa, xóa, thêm"]
-    D --&gt; E["Gửi duyệt"]
-    E --&gt; F{"QA Lead duyệt: đạt?"}
-    F --&gt;|Trả lại + ghi chú| D
-    F --&gt;|Duyệt| G{"Tự động hóa?"}
-    G --&gt;|Không| H["Chạy thủ công, ghi kết quả"]
-    G --&gt;|Có| I["AI sinh script Playwright"] --&gt; J["Tester xem lại script"] --&gt; K["Chạy tự động"]
-    H --&gt; L{"Fail?"}
-    K --&gt; L
-    L --&gt;|Có| M["Tạo bug, ghi mã bug vào ghi chú"] --&gt; M2["Developer sửa lỗi, báo đã sửa kèm bản build"]
-    M2 --&gt;|"Cần kiểm thử lại"| G
-    L --&gt;|Không| N["Báo cáo tự động cập nhật"]
-    N --&gt; X([Kết thúc])</pre><p>So với quy trình cũ (Chương 1): AI rút ngắn bước viết nháp; duyệt có lưu vết; không còn viết lại test case thành script bằng tay; Developer báo đã sửa kèm bản build nên Tester biết ngay test case nào cần kiểm thử lại; báo cáo tự động.</p>
+<p><img src="sodo/HoatDong_QuyTrinhMoi.svg" alt="Sơ đồ hoạt động – quy trình nghiệp vụ mới"></p>
+<p><em>File gốc:</em> <code>docs/sodo/HoatDong_QuyTrinhMoi.drawio</code> (mở bằng draw.io để sửa).</p>
+<p>Sơ đồ chia <strong>5 làn</strong> theo vai trò; mỗi hoạt động nằm trong làn của người (hoặc hệ thống) thực hiện nó:</p>
+<table>
+<thead>
+<tr>
+<th>Làn</th>
+<th>Hoạt động chính</th>
+<th>Yêu cầu liên quan</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PO / BA (trên Jira)</td>
+<td>Viết story kèm mục <em>Acceptance criteria</em>; bổ sung khi thiếu; sửa story khi yêu cầu đổi</td>
+<td>Ngoài hệ thống</td>
+</tr>
+<tr>
+<td>Hệ thống</td>
+<td>Đồng bộ story (webhook, 5 phút, <em>Đồng bộ ngay</em>); kiểm tra đủ acceptance criteria; AI sinh test case và script; đánh dấu <em>Cần xem lại test case</em>; tính báo cáo, DoD, velocity</td>
+<td>YC1, YC2, YC6, YC8, YC10, YC14</td>
+</tr>
+<tr>
+<td>Tester</td>
+<td>Bấm sinh test case, xem lại, sửa, gửi duyệt; chọn chạy thủ công hay tự động; quyết định Pass/Fail</td>
+<td>YC2, YC3, YC5, YC10</td>
+</tr>
+<tr>
+<td>QA Lead</td>
+<td>Duyệt hoặc trả lại kèm ghi chú</td>
+<td>YC4</td>
+</tr>
+<tr>
+<td>Developer</td>
+<td>Sửa lỗi, báo đã sửa kèm bản build → test case quay về Tester để kiểm thử lại</td>
+<td>YC15</td>
+</tr>
+</tbody></table>
+<p>Nét đứt là luồng do <strong>thay đổi trên Jira</strong> kích hoạt (không có người bấm trong hệ thống): story đã có test case bị sửa → hệ thống gắn nhãn, Tester xem lại.</p>
+<p>So với quy trình cũ (Chương 1): story không phải chép tay từ Jira sang công cụ khác, sửa story trên Jira thì Tester được báo xem lại test case; AI rút ngắn bước viết nháp; duyệt có lưu vết; không còn viết lại test case thành script bằng tay; Developer báo đã sửa kèm bản build nên Tester biết ngay test case nào cần kiểm thử lại; báo cáo tự động.</p>
 <h2>3.6. Sơ đồ trạng thái của test case</h2>
-<pre class="mermaid">stateDiagram-v2
-    [*] --&gt; DRAFT: AI sinh / thêm thủ công
-    DRAFT --&gt; DRAFT: Sửa (phiên bản +1)
-    DRAFT --&gt; PENDING_REVIEW: Gửi duyệt
-    PENDING_REVIEW --&gt; APPROVED: QA Lead duyệt
-    PENDING_REVIEW --&gt; RETURNED: QA Lead trả lại (bắt buộc ghi chú)
-    RETURNED --&gt; DRAFT: Sửa
-    RETURNED --&gt; PENDING_REVIEW: Gửi lại
-    APPROVED --&gt; DRAFT: Sửa nội dung (phải duyệt lại)
-    APPROVED --&gt; APPROVED: Ghi kết quả / chạy tự động
-    DRAFT --&gt; [*]: Xóa
-    RETURNED --&gt; [*]: Xóa
-    note right of APPROVED
-        Chỉ trạng thái này mới được
-        ghi kết quả, sinh và chạy script
-    end note</pre></section>
+<p><img src="sodo/TrangThai_TestCase.svg" alt="Sơ đồ trạng thái của test case"></p>
+<p><em>File gốc:</em> <code>docs/sodo/TrangThai_TestCase.drawio</code> (mở bằng draw.io để sửa).</p>
+<table>
+<thead>
+<tr>
+<th>Trạng thái</th>
+<th>Ý nghĩa</th>
+<th>Được phép</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Nháp (<code>DRAFT</code>)</td>
+<td>AI vừa sinh hoặc Tester vừa thêm/sửa</td>
+<td>Sửa (phiên bản +1), xóa, gửi duyệt</td>
+</tr>
+<tr>
+<td>Chờ duyệt (<code>PENDING_REVIEW</code>)</td>
+<td>Đã gửi, chờ QA Lead</td>
+<td>Chỉ QA Lead duyệt / trả lại; không sửa, không xóa (QĐ3, QĐ4)</td>
+</tr>
+<tr>
+<td>Bị trả lại (<code>RETURNED</code>)</td>
+<td>QA Lead trả lại kèm ghi chú bắt buộc</td>
+<td>Sửa (về Nháp), gửi lại, xóa</td>
+</tr>
+<tr>
+<td>Đã duyệt (<code>APPROVED</code>)</td>
+<td>Đạt chất lượng</td>
+<td>Ghi kết quả, sinh và chạy script (QĐ5, QĐ10); sửa nội dung thì quay về Nháp và phải duyệt lại</td>
+</tr>
+</tbody></table>
+<h2>3.7. Sơ đồ trạng thái của user story (đồng bộ từ Jira)</h2>
+<p>User story không có trạng thái do người dùng hệ thống đổi tay: mọi chuyển trạng thái đều do <strong>đồng bộ từ Jira</strong> (YC1, YC8) hoặc do Tester xác nhận đã xem lại.</p>
+<p><img src="sodo/TrangThai_UserStory.svg" alt="Sơ đồ trạng thái của user story đồng bộ từ Jira"></p>
+<p><em>File gốc:</em> <code>docs/sodo/TrangThai_UserStory.drawio</code> (mở bằng draw.io để sửa).</p>
+<table>
+<thead>
+<tr>
+<th>Từ</th>
+<th>Sự kiện</th>
+<th>Đến</th>
+<th>Dữ liệu thay đổi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(mới)</td>
+<td>Đồng bộ lần đầu, có ≥ <code>MIN_AC_PER_STORY</code> acceptance criteria</td>
+<td>Sẵn sàng</td>
+<td>Thêm dòng <code>user_stories</code></td>
+</tr>
+<tr>
+<td>(mới)</td>
+<td>Đồng bộ lần đầu, thiếu acceptance criteria</td>
+<td>Thiếu acceptance criteria</td>
+<td><code>acceptance_criteria</code> rỗng hoặc ít dòng</td>
+</tr>
+<tr>
+<td>Thiếu AC</td>
+<td>PO/BA bổ sung mục <em>Acceptance criteria</em> trên Jira, đồng bộ</td>
+<td>Sẵn sàng</td>
+<td><code>acceptance_criteria</code></td>
+</tr>
+<tr>
+<td>Sẵn sàng</td>
+<td>Tiêu đề / mô tả / AC đổi trên Jira <strong>khi đã có test case</strong></td>
+<td>Cần xem lại test case</td>
+<td><code>changed_at = thời điểm đồng bộ</code></td>
+</tr>
+<tr>
+<td>Sẵn sàng</td>
+<td>Nội dung đổi khi <strong>chưa có</strong> test case</td>
+<td>Sẵn sàng</td>
+<td>Chỉ cập nhật nội dung</td>
+</tr>
+<tr>
+<td>Cần xem lại</td>
+<td>Tester / QA Lead bấm <strong>Đã xem lại</strong></td>
+<td>Sẵn sàng</td>
+<td><code>changed_at = NULL</code></td>
+</tr>
+<tr>
+<td>Sẵn sàng, Cần xem lại</td>
+<td>Story không còn trên Jira</td>
+<td>Đã lưu trữ</td>
+<td><code>archived = 1</code> (test case giữ nguyên)</td>
+</tr>
+<tr>
+<td>Đã lưu trữ</td>
+<td>Story xuất hiện lại trên Jira</td>
+<td>Theo nội dung (Sẵn sàng / Thiếu AC)</td>
+<td><code>archived = 0</code></td>
+</tr>
+</tbody></table>
+</section>
 <section class="chapter" id="ch-04"><h1>Chương 4. Thiết kế</h1>
 <blockquote>
 <p>Sản phẩm của giai đoạn: <strong>mô hình phần mềm</strong> – kiến trúc, thiết kế dữ liệu, thiết kế xử lý (class, sequence), thiết kế giao diện, thiết kế API và bảo mật.</p>
 </blockquote>
 <h2>4.1. Kiến trúc hệ thống</h2>
-<p>Kiến trúc nhiều lớp, trong đó <strong>AI Service là module riêng</strong> – nơi duy nhất làm việc với LLM. Muốn đổi model chỉ cần sửa module này.</p>
-<pre class="mermaid">flowchart TB
-    subgraph Client["Frontend (trình duyệt)"]
-        UI["Màn hình: Đăng nhập, Tổng quan, User story,&lt;br/&gt;Test case, Duyệt, Kết quả, Quy định, Nhật ký"]
-    end
-
-    subgraph Server["Backend (Node.js)"]
-        direction TB
-        MW["Middleware: helmet (CSP), JWT, RBAC,&lt;br/&gt;rate limit, kiểm tra schema, audit log"]
-        RT["Lớp Route (API REST /api/...)"]
-        SV["Lớp Service nghiệp vụ:&lt;br/&gt;Story · Sprint · TestCase · Run · Report&lt;br/&gt;Parameter · Script · Audit"]
-        subgraph AIS["AI Service"]
-            PII["Che PII"] --&gt; PG["Chống injection&lt;br/&gt;+ ghép prompt"] --&gt; PV["LLMProvider&lt;br/&gt;(Strategy)"] --&gt; VAL["Kiểm tra schema&lt;br/&gt;+ thử lại"]
-        end
-        DAL["Lớp truy cập dữ liệu (prepared statement)"]
-    end
-
-    DB[("CSDL&lt;br/&gt;SQLite (demo) / PostgreSQL")]
-    LLM[["LLM API:&lt;br/&gt;Gemini · Claude · OpenAI · Mock"]]
-    subgraph Worker["Playwright Worker"]
-        PW["@playwright/test&lt;br/&gt;Chrome headless&lt;br/&gt;(tiến trình cô lập)"]
-    end
-    AUT[["Ứng dụng cần test&lt;br/&gt;(VD: saucedemo.com)"]]
-
-    UI -- "HTTPS + JWT" --&gt; MW --&gt; RT --&gt; SV
-    SV --&gt; AIS
-    SV --&gt; DAL --&gt; DB
-    PV -- "prompt đã che PII" --&gt; LLM
-    SV -- "script đã kiểm tra tĩnh" --&gt; PW --&gt; AUT</pre><table>
+<p>Kiến trúc client – server nhiều lớp. Hai điểm thiết kế chính: <strong>AI Service là module riêng</strong> – nơi duy nhất làm việc với LLM, đổi model chỉ cần sửa module này; <strong>tích hợp Jira một chiều</strong> – Jira là nơi duy nhất tạo, sửa user story và sprint, hệ thống chỉ đọc về qua <code>JiraService</code> (REST API) và nhận thông báo qua webhook, không bao giờ ghi ngược lên Jira.</p>
+<p><img src="sodo/KienTruc.svg" alt="Kiến trúc hệ thống"></p>
+<p><em>File gốc:</em> <code>docs/sodo/KienTruc.drawio</code> (mở bằng draw.io để sửa).</p>
+<table>
 <thead>
 <tr>
 <th>Lớp</th>
@@ -3716,8 +4078,13 @@ Velocity thực tế: __ SP
 </tr>
 <tr>
 <td>Service</td>
-<td>Toàn bộ quy định nghiệp vụ (QĐ1–QĐ11)</td>
+<td>Toàn bộ quy định nghiệp vụ (QĐ1–QĐ15)</td>
 <td><code>app/src/services/</code></td>
+</tr>
+<tr>
+<td>Tích hợp Jira</td>
+<td>Gọi Jira REST / Agile API, tách Description, lưu story, sprint, module, thành viên; nhận webhook; đồng bộ định kỳ</td>
+<td><code>app/src/services/jiraService.js</code>, <code>app/src/app.js</code> (webhook), <code>app/src/server.js</code> (định kỳ)</td>
 </tr>
 <tr>
 <td>AI Service</td>
@@ -3736,15 +4103,54 @@ Velocity thực tế: __ SP
 </tr>
 </tbody></table>
 <h3>Sơ đồ triển khai</h3>
-<pre class="mermaid">flowchart LR
-    B["Máy người dùng&lt;br/&gt;Trình duyệt"] -- "HTTPS :443" --&gt; RP["Reverse proxy&lt;br/&gt;(Nginx / Caddy)"]
-    subgraph Docker["Docker host"]
-        RP --&gt; APP["Container app&lt;br/&gt;Node.js + Playwright&lt;br/&gt;CPU ≤ 2, RAM ≤ 2 GB"]
-        APP --- VOL[("Volume app-data&lt;br/&gt;CSDL + ảnh chụp lỗi")]
-    end
-    APP -- "HTTPS" --&gt; LLM[["LLM API"]]
-    APP -- "HTTPS" --&gt; AUT[["Web cần test"]]
-    GH["GitHub Actions CI"] -- "build image" --&gt; Docker</pre><h2>4.2. Thiết kế dữ liệu</h2>
+<p><img src="sodo/TrienKhai.svg" alt="Sơ đồ triển khai"></p>
+<p><em>File gốc:</em> <code>docs/sodo/TrienKhai.drawio</code> (mở bằng draw.io để sửa).</p>
+<table>
+<thead>
+<tr>
+<th>Nút</th>
+<th>Vai trò</th>
+<th>Kết nối</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Máy người dùng</td>
+<td>Trình duyệt chạy giao diện</td>
+<td>HTTPS :443 tới reverse proxy</td>
+</tr>
+<tr>
+<td>Reverse proxy (Nginx / Caddy)</td>
+<td>Kết thúc HTTPS, chuyển tiếp</td>
+<td><code>:3000</code> tới container app</td>
+</tr>
+<tr>
+<td>Container app</td>
+<td>Node.js + Express + Playwright/Chromium; giới hạn CPU ≤ 2, RAM ≤ 2 GB, <code>no-new-privileges</code></td>
+<td>Đọc/ghi volume; HTTPS ra LLM, Jira, web cần test</td>
+</tr>
+<tr>
+<td>Volume <code>app-data</code></td>
+<td>Giữ CSDL <code>app.db</code> và ảnh chụp lỗi khi tạo lại container</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Jira Cloud</td>
+<td>Nguồn user story, sprint</td>
+<td>App gọi REST API; Jira gọi webhook <code>POST /api/jira/webhook?secret=…</code></td>
+</tr>
+<tr>
+<td>ngrok (tùy chọn)</td>
+<td>Khi app chạy trên máy cá nhân, tạo địa chỉ công khai để Jira gọi được webhook</td>
+<td>Chuyển tiếp tới reverse proxy hoặc thẳng <code>:3000</code></td>
+</tr>
+<tr>
+<td>GitHub Actions</td>
+<td>Chạy test, build image Docker</td>
+<td>–</td>
+</tr>
+</tbody></table>
+<p>Bí mật (khóa LLM, API token Jira, mã bí mật webhook, <code>JWT_SECRET</code>) chỉ nằm trong <code>app/.env</code> trên máy chủ, không vào image, không commit.</p>
+<h2>4.2. Thiết kế dữ liệu</h2>
 <p>Thiết kế theo 3 bước của môn học.</p>
 <h3>Bước 1 – Đúng đắn (đáp ứng yêu cầu)</h3>
 <p>Xét lần lượt từng yêu cầu, xác định thuộc tính cần lưu:</p>
@@ -3759,7 +4165,7 @@ Velocity thực tế: __ SP
 <tbody><tr>
 <td>YC1</td>
 <td><code>user_stories</code></td>
-<td>code, title, description, acceptance_criteria, priority</td>
+<td>code (mã issue Jira), title, description, acceptance_criteria, priority, jira_status, synced_at</td>
 </tr>
 <tr>
 <td>YC2</td>
@@ -3782,22 +4188,37 @@ Velocity thực tế: __ SP
 <td>result, note, run_type</td>
 </tr>
 <tr>
-<td>YC9</td>
+<td>YC8</td>
+<td><code>user_stories</code> (+ cột theo dõi thay đổi)</td>
+<td>changed_at (cần xem lại test case), archived (đã xóa trên Jira)</td>
+</tr>
+<tr>
+<td>YC10</td>
 <td><code>automation_scripts</code></td>
 <td>code, framework</td>
 </tr>
 <tr>
 <td>YC11</td>
-<td><code>users</code>, <code>projects</code>, <code>modules</code></td>
-<td>username, password_hash, role; code, name, base_url</td>
+<td><code>parameters</code></td>
+<td>key, value, data_type, updated_by</td>
 </tr>
 <tr>
 <td>YC12</td>
-<td><code>sprints</code> (+ cột <code>sprint_id</code>, <code>story_points</code> trong <code>user_stories</code>)</td>
-<td>name, goal, start_date, end_date; story_points</td>
+<td><code>users</code></td>
+<td>username, password_hash, full_name, email, role, active</td>
 </tr>
 <tr>
 <td>YC13</td>
+<td><code>projects</code>, <code>modules</code>, <code>project_members</code></td>
+<td>code, name, base_url, jira_key, synced_at; tên module; thành viên (user, jira_account_id)</td>
+</tr>
+<tr>
+<td>YC14</td>
+<td><code>sprints</code> (+ cột <code>sprint_id</code>, <code>story_points</code> trong <code>user_stories</code>)</td>
+<td>name, goal, start_date, end_date, jira_id, state; story_points</td>
+</tr>
+<tr>
+<td>YC15</td>
 <td><code>test_runs</code> (+ cột báo sửa lỗi)</td>
 <td>fix_build, fix_note, fixed_by, fixed_at</td>
 </tr>
@@ -3817,7 +4238,7 @@ Velocity thực tế: __ SP
 <li>Ràng buộc khóa ngoại <code>ON DELETE CASCADE</code> để xóa user story kéo theo test case.</li>
 </ul>
 <h3>Sơ đồ ERD</h3>
-<p>Sơ đồ được vẽ bằng <strong>draw.io</strong> theo ký hiệu chân chim (crow&#39;s foot), sinh <strong>tự động từ lược đồ thật</strong> <code>app/src/db/schema.sql</code> bằng lệnh <code>python3 docs/erd/generate_erd.py</code>: cột, kiểu, PK/FK/UK, NOT NULL và bản số đều đọc từ CSDL nên sơ đồ luôn khớp với code. File gốc để mở và sửa: <code>docs/erd/ERD_CSDL.drawio</code>.</p>
+<p>Sơ đồ được vẽ bằng <strong>draw.io</strong> theo ký hiệu chân chim (crow&#39;s foot), sinh <strong>tự động từ lược đồ thật</strong> <code>app/src/db/schema.sql</code> bằng lệnh <code>python3 docs/erd/generate_erd.py</code>: khóa, NOT NULL và bản số đều đọc từ CSDL nên sơ đồ luôn khớp với code. Để in trên trang A4 dọc vẫn đọc rõ, mỗi bảng chỉ hiện <strong>khóa (PK, FK, UK) và vài thuộc tính tiêu biểu</strong>; dòng <em>“… n thuộc tính khác”</em> cho biết số cột còn lại. Toàn bộ cột kèm kiểu dữ liệu nằm ở mục <em>Lược đồ quan hệ</em> ngay sau và trong bản đầy đủ <code>docs/erd/ERD_CSDL_DayDu.drawio</code> (.svg). File gốc để mở và sửa: <code>docs/erd/ERD_CSDL.drawio</code>.</p>
 <p><img src="erd/ERD_CSDL.svg" alt="Sơ đồ ERD – CSDL AI TestCase Manager"></p>
 <p><strong>Đọc sơ đồ:</strong></p>
 <table>
@@ -3829,7 +4250,7 @@ Velocity thực tế: __ SP
 </thead>
 <tbody><tr>
 <td>PK / FK / UK</td>
-<td>Khóa chính / khóa ngoại / duy nhất. Kiểu có chữ <code>NULL</code> là cột cho phép rỗng</td>
+<td>Khóa chính / khóa ngoại / duy nhất</td>
 </tr>
 <tr>
 <td><code>||</code> (hai vạch) ở phía bảng cha</td>
@@ -3848,7 +4269,7 @@ Velocity thực tế: __ SP
 <td>Một dòng cha có <strong>0 hoặc 1</strong> dòng con (FK có <code>UNIQUE</code>)</td>
 </tr>
 </tbody></table>
-<p><strong>Các quan hệ chính (13 bảng, 24 khóa ngoại):</strong></p>
+<p><strong>Các quan hệ chính (14 bảng, 26 khóa ngoại):</strong></p>
 <table>
 <thead>
 <tr>
@@ -3913,6 +4334,12 @@ Velocity thực tế: __ SP
 <td>Phiếu duyệt bắt buộc có người duyệt</td>
 </tr>
 <tr>
+<td>projects, users</td>
+<td>project_members (<code>project_id</code>, <code>user_id</code>)</td>
+<td>1 – 0..n</td>
+<td>Thành viên dự án đồng bộ từ Jira (YC13); khóa chính gồm 2 cột</td>
+</tr>
+<tr>
 <td>users</td>
 <td>user_stories, ai_logs, test_runs, audit_logs, parameters</td>
 <td>0..1 – 0..n</td>
@@ -3920,6 +4347,24 @@ Velocity thực tế: __ SP
 </tr>
 </tbody></table>
 <p>Để sơ đồ dễ đọc, 5 khóa ngoại chỉ ghi nhận người tạo/sửa không vẽ đường nối: <code>projects.created_by</code>, <code>test_cases.created_by</code>, <code>test_case_versions.changed_by</code>, <code>automation_scripts.created_by</code>, <code>test_runs.fixed_by</code> (người báo đã sửa lỗi) (đều tham chiếu <code>users</code>). Cột <code>ai_logs.test_case_id</code> là tham chiếu logic (lần gọi AI sinh script cho test case nào), không khai báo khóa ngoại vì bản ghi nhật ký phải giữ lại kể cả khi test case bị xóa.</p>
+<h3>Lược đồ quan hệ (đủ 14 bảng)</h3>
+<p>Sinh từ <code>schema.sql</code>. Khóa chính in đậm, khóa ngoại in nghiêng; cột vừa là khóa chính vừa là khóa ngoại in đậm nghiêng.</p>
+<ul>
+<li><code>users</code> (<strong>id</strong>, username, password_hash, full_name, email, role, active, created_at)</li>
+<li><code>projects</code> (<strong>id</strong>, code, name, description, base_url, jira_key, synced_at, <em>created_by</em>, created_at)</li>
+<li><code>project_members</code> (<em><strong>project_id</strong></em>, <em><strong>user_id</strong></em>, jira_account_id)</li>
+<li><code>modules</code> (<strong>id</strong>, <em>project_id</em>, name, description)</li>
+<li><code>sprints</code> (<strong>id</strong>, <em>project_id</em>, name, goal, start_date, end_date, jira_id, state, created_at)</li>
+<li><code>user_stories</code> (<strong>id</strong>, code, <em>project_id</em>, <em>module_id</em>, <em>sprint_id</em>, title, description, acceptance_criteria, priority, story_points, jira_status, synced_at, changed_at, archived, <em>created_by</em>, created_at, updated_at)</li>
+<li><code>ai_logs</code> (<strong>id</strong>, <em>story_id</em>, test_case_id, <em>user_id</em>, task, provider, model, prompt_masked, pii_found, injection_flag, raw_output, status, attempts, duration_ms, error, created_at)</li>
+<li><code>test_cases</code> (<strong>id</strong>, code, <em>story_id</em>, title, precondition, steps, expected_result, priority, type, status, source, <em>ai_log_id</em>, version, <em>created_by</em>, created_at, updated_at)</li>
+<li><code>test_case_versions</code> (<strong>id</strong>, <em>test_case_id</em>, version, snapshot, change_note, <em>changed_by</em>, created_at)</li>
+<li><code>reviews</code> (<strong>id</strong>, <em>test_case_id</em>, <em>reviewer_id</em>, decision, note, created_at)</li>
+<li><code>automation_scripts</code> (<strong>id</strong>, <em>test_case_id</em>, framework, code, <em>ai_log_id</em>, <em>created_by</em>, created_at, updated_at)</li>
+<li><code>test_runs</code> (<strong>id</strong>, <em>test_case_id</em>, result, run_type, note, log, screenshot, duration_ms, <em>executed_by</em>, executed_at, fix_build, fix_note, <em>fixed_by</em>, fixed_at)</li>
+<li><code>parameters</code> (<strong>key</strong>, value, data_type, description, <em>updated_by</em>, updated_at)</li>
+<li><code>audit_logs</code> (<strong>id</strong>, <em>user_id</em>, action, entity, entity_id, detail, ip, created_at)</li>
+</ul>
 <h3>Từ điển dữ liệu (các bảng chính)</h3>
 <p><strong>test_cases</strong></p>
 <table>
@@ -4089,168 +4534,88 @@ Velocity thực tế: __ SP
 <tr>
 <td>RUN_TIMEOUT_SEC</td>
 <td>60</td>
-<td>QĐ9 – thời gian chạy script</td>
+<td>QĐ10 – thời gian chạy script</td>
 </tr>
 <tr>
 <td>SPRINT_MAX_DAYS</td>
 <td>28</td>
-<td>QĐ12 – độ dài tối đa của sprint</td>
+<td>QĐ14 – độ dài tối đa của sprint</td>
 </tr>
 </tbody></table>
 <p>Lược đồ đầy đủ: <code>`app/src/db/schema.sql`</code>.</p>
 <h2>4.3. Thiết kế xử lý</h2>
 <h3>Sơ đồ lớp – AI Service (Strategy pattern)</h3>
-<pre class="mermaid">classDiagram
-    class LLMProvider {
-        &lt;&lt;abstract&gt;&gt;
-        +name: string
-        +model: string
-        +complete(req) Promise~string~
-    }
-    class MockProvider {
-        +complete(req)
-    }
-    class GeminiProvider {
-        -apiKey
-        +complete(req)
-    }
-    class ClaudeProvider {
-        -apiKey
-        +complete(req)
-    }
-    class OpenAIProvider {
-        -apiKey
-        +complete(req)
-    }
-    LLMProvider &lt;|-- MockProvider
-    LLMProvider &lt;|-- GeminiProvider
-    LLMProvider &lt;|-- ClaudeProvider
-    LLMProvider &lt;|-- OpenAIProvider
-
-    class ProviderFactory {
-        +createProvider(name) LLMProvider
-    }
-    ProviderFactory ..&gt; LLMProvider : tạo
-
-    class AIService {
-        -provider: LLMProvider
-        +generateTestCases(story, userId)
-        +generateScript(testCase, baseUrl, userId)
-        -callWithRetry(...)
-        -insertLog(entry)
-    }
-    AIService --&gt; LLMProvider : dùng
-    AIService ..&gt; PIIMasker
-    AIService ..&gt; InjectionGuard
-    AIService ..&gt; PromptBuilder
-    AIService ..&gt; Schemas : kiểm tra Zod
-
-    class PIIMasker {
-        +maskPII(text) MaskResult
-    }
-    class InjectionGuard {
-        +detectInjection(text) bool
-        +neutralize(text)
-    }
-    class PromptBuilder {
-        +buildTestCasePrompt(story, max)
-        +buildScriptPrompt(tc, url)
-    }
-    class Schemas {
-        testCaseSchema
-        generateResultSchema
-        scriptResultSchema
-    }
-
-    class TestCaseService {
-        +saveAiResult()
-        +create()
-        +update()
-        +submit()
-        +review()
-        +history()
-    }
-    class ScriptService {
-        +generate()
-        +save()
-        +run()
-        +staticCheck(code)
-    }
-    TestCaseService ..&gt; ParameterService
-    ScriptService --&gt; AIService
-    ScriptService --&gt; RunService</pre><p>Lợi ích: thêm model mới (ví dụ Ollama chạy local) chỉ cần tạo <code>OllamaProvider extends LLMProvider</code> và thêm 1 dòng vào factory; không sửa service nghiệp vụ. Khi chạy kiểm thử, test thay provider bằng một đối tượng giả (<code>setProvider</code>) để mô phỏng AI trả sai định dạng.</p>
+<p><img src="sodo/Lop_AIService.svg" alt="Sơ đồ lớp – AI Service"></p>
+<p><em>File gốc:</em> <code>docs/sodo/Lop_AIService.drawio</code> (mở bằng draw.io để sửa).</p>
+<p>Lợi ích: thêm model mới (ví dụ Ollama chạy local) chỉ cần tạo <code>OllamaProvider extends LLMProvider</code> và thêm 1 dòng vào factory; không sửa service nghiệp vụ. Khi chạy kiểm thử, test thay provider bằng một đối tượng giả (<code>setProvider</code>) để mô phỏng AI trả sai định dạng.</p>
+<h3>Sơ đồ lớp – tích hợp Jira (một chiều)</h3>
+<p><img src="sodo/Lop_TichHopJira.svg" alt="Sơ đồ lớp – tích hợp Jira"></p>
+<p><em>File gốc:</em> <code>docs/sodo/Lop_TichHopJira.drawio</code> (mở bằng draw.io để sửa).</p>
+<ul>
+<li>Ba lối vào cùng gọi <code>JiraService.syncProject</code>: route <em>Đồng bộ ngay</em> (JWT, quyền <code>jira:import</code>), route webhook (mã bí mật, không qua JWT) và bộ hẹn giờ trong <code>server.js</code> (<code>JIRA_SYNC_MINUTES</code>, chỉ chạy khi đã cấu hình Jira thật).</li>
+<li><code>JiraService</code> là lớp duy nhất ghi bảng <code>user_stories</code>, <code>sprints</code>, <code>modules</code>, <code>project_members</code>; <code>StoryService</code>, <code>SprintService</code> chỉ đọc. Không có API tạo, sửa, xóa story hay sprint.</li>
+<li>Id của trường <em>Story point estimate</em> và <em>Sprint</em> khác nhau trên mỗi site Jira nên được tìm theo tên qua <code>GET /rest/api/3/field</code>.</li>
+<li>Chưa cấu hình <code>JIRA_BASE_URL</code> thì dùng <code>MOCK_PROJECTS</code> (Jira giả lập, cùng dạng dữ liệu với API thật) cho kiểm thử tự động.</li>
+</ul>
+<p><strong>Quy tắc tách Description (QĐ1):</strong> Description của Jira ở dạng <em>Atlassian Document Format</em> (cây JSON). <code>adfLines</code> đổi cây thành các dòng, mỗi mục danh sách một dòng <code>- …</code>; dòng đầu tiên khớp <code>Acceptance criteria</code> hoặc <code>Tiêu chí nghiệm thu</code> (không phân biệt hoa thường, cho phép in đậm, dấu <code>:</code>) chia đôi: phía trên là mô tả, mỗi dòng phía dưới là một acceptance criterion.</p>
+<table>
+<thead>
+<tr>
+<th>Trên Jira</th>
+<th>Trong hệ thống</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Issue loại <em>Story</em>, key <code>SHOP-5</code></td>
+<td><code>user_stories.code = &#39;SHOP-5&#39;</code></td>
+</tr>
+<tr>
+<td>Summary</td>
+<td><code>title</code></td>
+</tr>
+<tr>
+<td>Description – phần trước <em>Acceptance criteria</em></td>
+<td><code>description</code></td>
+</tr>
+<tr>
+<td>Description – các gạch đầu dòng sau <em>Acceptance criteria</em></td>
+<td><code>acceptance_criteria</code> (mỗi dòng 1 tiêu chí)</td>
+</tr>
+<tr>
+<td>Priority Highest / High / Medium / Low / Lowest</td>
+<td>High / High / Medium / Low / Low</td>
+</tr>
+<tr>
+<td>Story point estimate (1, 2, 3, 5, 8, 13)</td>
+<td><code>story_points</code> (giá trị khác: bỏ qua, cảnh báo)</td>
+</tr>
+<tr>
+<td>Sprint chưa đóng (có ngày)</td>
+<td><code>sprint_id</code></td>
+</tr>
+<tr>
+<td>Component đầu tiên</td>
+<td><code>module_id</code></td>
+</tr>
+<tr>
+<td>Status</td>
+<td><code>jira_status</code></td>
+</tr>
+</tbody></table>
 <h3>Sơ đồ tuần tự – Sinh test case bằng AI (YC2)</h3>
-<pre class="mermaid">sequenceDiagram
-    actor T as Tester
-    participant UI as Giao diện
-    participant API as Route /stories/:id/generate
-    participant MW as Middleware (JWT, RBAC, aiQuota)
-    participant AI as AI Service
-    participant L as LLM Provider
-    participant TC as TestCase Service
-    participant DB as CSDL
-
-    T-&gt;&gt;UI: Bấm "Sinh test case bằng AI"
-    UI-&gt;&gt;API: POST (Bearer JWT)
-    API-&gt;&gt;MW: kiểm tra token, quyền ai:use, hạn mức/giờ
-    MW--&gt;&gt;API: hợp lệ
-    API-&gt;&gt;DB: đọc user story, tham số QĐ2
-    API-&gt;&gt;AI: generateTestCases(story)
-    AI-&gt;&gt;AI: maskPII() + detectInjection()
-    AI-&gt;&gt;AI: buildTestCasePrompt(max)
-    loop tối đa 1 + AI_MAX_RETRY lần
-        AI-&gt;&gt;L: complete(system, user, schema)
-        L--&gt;&gt;AI: JSON thô
-        AI-&gt;&gt;AI: JSON.parse + Zod schema
-    end
-    AI-&gt;&gt;DB: INSERT ai_logs
-    AI--&gt;&gt;API: testCases, aiLogId, piiFound
-    API-&gt;&gt;TC: saveAiResult(story, testCases)
-    TC-&gt;&gt;DB: transaction: xóa AI Nháp cũ, kiểm tra QĐ2, INSERT test_cases + versions
-    API-&gt;&gt;DB: INSERT audit_logs
-    API--&gt;&gt;UI: 200 danh sách test case Nháp
-    UI--&gt;&gt;T: Bảng test case + thông báo (đã che PII, cảnh báo)</pre><h3>Sơ đồ tuần tự – Duyệt test case (YC3 + YC4)</h3>
-<pre class="mermaid">sequenceDiagram
-    actor T as Tester
-    actor Q as QA Lead
-    participant S as Hệ thống
-    participant DB as CSDL
-    T-&gt;&gt;S: Gửi duyệt [id...]
-    S-&gt;&gt;DB: kiểm tra trạng thái ∈ {DRAFT, RETURNED}
-    S-&gt;&gt;DB: UPDATE status = PENDING_REVIEW
-    Q-&gt;&gt;S: Mở hàng đợi duyệt
-    S--&gt;&gt;Q: danh sách chờ duyệt
-    alt Trả lại
-        Q-&gt;&gt;S: RETURNED + ghi chú
-        S-&gt;&gt;S: ghi chú rỗng? → lỗi 400
-        S-&gt;&gt;DB: UPDATE RETURNED, INSERT reviews
-        S--&gt;&gt;T: hiển thị ghi chú trả lại
-    else Duyệt
-        Q-&gt;&gt;S: APPROVED
-        S-&gt;&gt;DB: UPDATE APPROVED, INSERT reviews
-    end</pre><h3>Sơ đồ tuần tự – Sinh và chạy script Playwright (YC9)</h3>
-<pre class="mermaid">sequenceDiagram
-    actor T as Tester
-    participant S as Script Service
-    participant AI as AI Service
-    participant FS as File tạm
-    participant W as Playwright Worker
-    participant APP as Web cần test
-    participant DB as CSDL
-    T-&gt;&gt;S: Sinh script (test case Đã duyệt)
-    S-&gt;&gt;AI: generateScript(testCase, baseUrl)
-    AI--&gt;&gt;S: mã Playwright
-    S-&gt;&gt;DB: lưu automation_scripts
-    T-&gt;&gt;S: Chạy tự động
-    S-&gt;&gt;S: staticCheck(code) – chặn fs, child_process, process.env, eval
-    S-&gt;&gt;FS: ghi specs/generated/&lt;mã&gt;-&lt;ngẫu nhiên&gt;.spec.js
-    S-&gt;&gt;W: spawn playwright test --reporter=json (env tối thiểu, timeout)
-    W-&gt;&gt;APP: mở Chrome headless, thao tác, kiểm tra
-    APP--&gt;&gt;W: giao diện
-    W--&gt;&gt;S: báo cáo JSON (+ ảnh chụp nếu lỗi)
-    S-&gt;&gt;FS: xóa file tạm
-    S-&gt;&gt;DB: INSERT test_runs (AUTO, log, ảnh, thời gian)
-    S--&gt;&gt;T: Pass / Fail</pre><h2>4.4. Thiết kế prompt và định dạng kết quả AI</h2>
+<p><img src="sodo/TuanTu_SinhTestCase.svg" alt="Sơ đồ tuần tự – Sinh test case bằng AI (YC2)"></p>
+<p><em>File gốc:</em> <code>docs/sodo/TuanTu_SinhTestCase.drawio</code> (mở bằng draw.io để sửa).</p>
+<h3>Sơ đồ tuần tự – Duyệt test case (YC3 + YC4)</h3>
+<p><img src="sodo/TuanTu_DuyetTestCase.svg" alt="Sơ đồ tuần tự – Gửi duyệt và duyệt test case (YC3, YC4)"></p>
+<p><em>File gốc:</em> <code>docs/sodo/TuanTu_DuyetTestCase.drawio</code> (mở bằng draw.io để sửa).</p>
+<h3>Sơ đồ tuần tự – Sinh và chạy script Playwright (YC10)</h3>
+<p><img src="sodo/TuanTu_ChayScript.svg" alt="Sơ đồ tuần tự – Sinh và chạy script Playwright (YC10)"></p>
+<p><em>File gốc:</em> <code>docs/sodo/TuanTu_ChayScript.drawio</code> (mở bằng draw.io để sửa).</p>
+<h3>Sơ đồ tuần tự – Đồng bộ user story, sprint từ Jira (YC1, YC8, YC13, YC14)</h3>
+<p><img src="sodo/TuanTu_DongBoJira.svg" alt="Sơ đồ tuần tự – Đồng bộ user story từ Jira (YC1, YC8)"></p>
+<p><em>File gốc:</em> <code>docs/sodo/TuanTu_DongBoJira.drawio</code> (mở bằng draw.io để sửa).</p>
+<p>Toàn bộ phần ghi CSDL của một lần đồng bộ nằm trong <strong>một transaction</strong>: Jira lỗi giữa chừng thì không lưu dở dang. So sánh nội dung cũ – mới để quyết định <em>Cần xem lại test case</em> chỉ xét tiêu đề, mô tả, acceptance criteria; đổi ưu tiên, story point hay sprint chỉ cập nhật, không đánh dấu.</p>
+<h2>4.4. Thiết kế prompt và định dạng kết quả AI</h2>
 <p><strong>Prompt hệ thống (rút gọn):</strong></p>
 <pre><code class="language-text">Bạn là một QA senior có 10 năm kinh nghiệm viết test case.
 Nhiệm vụ: từ user story và acceptance criteria, sinh danh sách test case.
@@ -4309,13 +4674,13 @@ Acceptance criteria: ...
 <td>MH03</td>
 <td>Danh sách user story</td>
 <td>Tất cả</td>
-<td>Tìm kiếm, lập mới, nhập từ file</td>
+<td>Tìm kiếm; nhãn <em>Cần xem lại test case</em>, <em>Thiếu acceptance criteria</em>; nút <strong>Đồng bộ từ Jira</strong> (Admin, QA Lead)</td>
 </tr>
 <tr>
 <td>MH04</td>
 <td>Chi tiết user story</td>
 <td>Tất cả</td>
-<td>Mô tả, acceptance criteria, <strong>Sinh test case bằng AI</strong>, bảng test case, chọn và gửi duyệt, thêm thủ công</td>
+<td>Liên kết sang issue Jira, mô tả, acceptance criteria (chỉ đọc), <strong>Sinh test case bằng AI</strong>, bảng test case, chọn và gửi duyệt, thêm thủ công, <strong>Đã xem lại</strong> khi story đổi</td>
 </tr>
 <tr>
 <td>MH05</td>
@@ -4356,8 +4721,8 @@ Acceptance criteria: ...
 <tr>
 <td>MH11</td>
 <td>Dự án &amp; module</td>
-<td>Admin</td>
-<td>Tạo dự án, khai báo URL cần test, thêm module</td>
+<td>Admin, QA Lead</td>
+<td>Kiểm tra kết nối Jira, thêm dự án từ Jira, đồng bộ ngay; Admin khai báo URL ứng dụng cần test</td>
 </tr>
 <tr>
 <td>MH12</td>
@@ -4374,21 +4739,15 @@ Acceptance criteria: ...
 <tr>
 <td>MH14</td>
 <td>Sprint (Agile)</td>
-<td>Tất cả (tạo sprint: Admin, QA Lead, PO/BA)</td>
-<td>Chọn sprint, Sprint Goal, bảng 4 cột theo DoD, burndown, velocity, Product backlog và đưa story vào sprint</td>
+<td>Tất cả (chỉ xem)</td>
+<td>Chọn sprint, Sprint Goal, trạng thái Jira, bảng 4 cột theo DoD, burndown, velocity, Product backlog</td>
 </tr>
 </tbody></table>
 <p><strong>Sơ đồ chuyển màn hình:</strong></p>
-<pre class="mermaid">flowchart LR
-    MH01[MH01 Đăng nhập] --&gt; MH02[MH02 Tổng quan]
-    MH02 --&gt; MH03[MH03 User story] --&gt; MH04[MH04 Chi tiết story] --&gt; MH05[MH05 Chi tiết test case]
-    MH02 --&gt; MH06[MH06 Tra cứu] --&gt; MH05
-    MH02 --&gt; MH07[MH07 Duyệt] --&gt; MH05
-    MH02 --&gt; MH08[MH08 Kết quả] --&gt; MH05
-    MH02 --&gt; MH14[MH14 Sprint] --&gt; MH04
-    MH02 --&gt; MH09[MH09 Quy định]
-    MH02 --&gt; MH10[MH10 Nhật ký AI]
-    MH02 --&gt; MH11[MH11 Dự án] &amp; MH12[MH12 Người dùng] &amp; MH13[MH13 Audit log]</pre><p>Nguyên tắc: menu hiển thị theo vai trò; nút thao tác chỉ hiện khi có quyền (backend vẫn kiểm tra lại); mọi thông báo lỗi bằng tiếng Việt và nêu rõ quy định bị vi phạm; thao tác AI có trạng thái chờ và kết quả rõ ràng.</p>
+<p><img src="sodo/LuongManHinh.svg" alt="Sơ đồ luồng màn hình"></p>
+<p><em>File gốc:</em> <code>docs/sodo/LuongManHinh.drawio</code> (mở bằng draw.io để sửa).</p>
+<p>Từ <em>Tổng quan</em> (MH02) người dùng đi tới các màn hình nghiệp vụ; mọi đường cuối cùng dẫn tới hộp thoại <em>Chi tiết test case</em> (MH05) gồm 4 tab: chi tiết/sửa/duyệt, lịch sử phiên bản, chạy test, script Playwright. MH03 và MH14 chỉ đọc dữ liệu đồng bộ từ Jira; nút <em>Đồng bộ từ Jira</em> chỉ hiện với Admin, QA Lead.</p>
+<p>Nguyên tắc: menu hiển thị theo vai trò; nút thao tác chỉ hiện khi có quyền (backend vẫn kiểm tra lại); mọi thông báo lỗi bằng tiếng Việt và nêu rõ quy định bị vi phạm; thao tác AI có trạng thái chờ và kết quả rõ ràng.</p>
 <h2>4.6. Thiết kế API</h2>
 <p>Tất cả API (trừ đăng nhập, health) yêu cầu header <code>Authorization: Bearer &lt;JWT&gt;</code>.</p>
 <table>
@@ -4425,28 +4784,64 @@ Acceptance criteria: ...
 <td>Quản lý người dùng</td>
 </tr>
 <tr>
-<td>GET/POST/PUT</td>
-<td><code>/api/projects[/:id]</code></td>
-<td>xem / <code>project:manage</code></td>
-<td>Dự án</td>
+<td>GET</td>
+<td><code>/api/projects</code></td>
+<td>xem</td>
+<td>Dự án kèm module, sprint</td>
 </tr>
 <tr>
-<td>POST</td>
-<td><code>/api/projects/:id/modules</code></td>
+<td>PUT</td>
+<td><code>/api/projects/:id</code></td>
 <td><code>project:manage</code></td>
-<td>Thêm module</td>
+<td>Khai báo URL ứng dụng cần test</td>
 </tr>
 <tr>
-<td>GET/POST/PUT/DELETE</td>
-<td><code>/api/stories[/:id]</code></td>
-<td>xem / <code>story:write</code></td>
-<td>User story (YC1)</td>
+<td>GET</td>
+<td><code>/api/jira/info</code></td>
+<td><code>jira:import</code></td>
+<td>Chế độ Jira (thật / giả lập) và địa chỉ</td>
 </tr>
 <tr>
 <td>POST</td>
-<td><code>/api/stories/import</code></td>
-<td><code>story:write</code></td>
-<td>Nhập từ file (YC8)</td>
+<td><code>/api/jira/test</code></td>
+<td><code>jira:connect</code></td>
+<td>Kiểm tra kết nối Jira (YC13)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/jira/import</code></td>
+<td><code>jira:import</code></td>
+<td><strong>Thêm dự án từ Jira</strong>, đồng bộ luôn story và sprint (YC13)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/projects/:id/jira-sync</code></td>
+<td><code>jira:import</code></td>
+<td>Đồng bộ ngay: dự án, module, thành viên, story, sprint (YC1, YC8, YC14)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/projects/:id/members</code></td>
+<td>xem</td>
+<td>Thành viên dự án</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/stories[/:id]?project_id&amp;sprint_id&amp;backlog</code></td>
+<td>xem</td>
+<td>User story đồng bộ từ Jira, chỉ đọc (YC1)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/stories/:id/reviewed</code></td>
+<td><code>testcase:write</code></td>
+<td>Đã xem lại test case sau khi story đổi (YC8)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/jira/webhook?secret=</code></td>
+<td>mã bí mật webhook</td>
+<td>Jira báo story / sprint thay đổi → đồng bộ lại dự án (YC8)</td>
 </tr>
 <tr>
 <td>POST</td>
@@ -4500,13 +4895,13 @@ Acceptance criteria: ...
 <td>POST</td>
 <td><code>/api/runs/:id/fix</code></td>
 <td><code>bug:fix</code></td>
-<td>Báo đã sửa lỗi kèm bản build (YC13)</td>
+<td>Báo đã sửa lỗi kèm bản build (YC15)</td>
 </tr>
 <tr>
 <td>POST</td>
 <td><code>/api/testcases/:id/script/generate</code></td>
 <td><code>ai:use</code> + hạn mức</td>
-<td><strong>AI sinh script Playwright (YC9)</strong></td>
+<td><strong>AI sinh script Playwright (YC10)</strong></td>
 </tr>
 <tr>
 <td>GET/PUT</td>
@@ -4518,7 +4913,7 @@ Acceptance criteria: ...
 <td>POST</td>
 <td><code>/api/testcases/:id/script/run</code></td>
 <td><code>run:write</code></td>
-<td><strong>Chạy tự động (YC9)</strong></td>
+<td><strong>Chạy tự động (YC10)</strong></td>
 </tr>
 <tr>
 <td>GET</td>
@@ -4536,25 +4931,19 @@ Acceptance criteria: ...
 <td>GET</td>
 <td><code>/api/export/testcases.xlsx</code></td>
 <td>xem</td>
-<td>Xuất Excel (YC8)</td>
+<td>Xuất Excel (YC9)</td>
 </tr>
 <tr>
 <td>GET/PUT</td>
 <td><code>/api/parameters[/:key]</code></td>
 <td>xem / <code>param:update</code></td>
-<td>Quy định (YC10)</td>
+<td>Quy định (YC11)</td>
 </tr>
 <tr>
-<td>GET/POST</td>
+<td>GET</td>
 <td><code>/api/projects/:id/sprints</code></td>
-<td>xem / <code>sprint:manage</code></td>
-<td>Danh sách sprint (kèm velocity) / tạo sprint (YC12)</td>
-</tr>
-<tr>
-<td>PUT/DELETE</td>
-<td><code>/api/sprints/:id</code></td>
-<td><code>sprint:manage</code></td>
-<td>Sửa / xóa sprint</td>
+<td>xem</td>
+<td>Danh sách sprint đồng bộ từ Jira, kèm velocity (YC14)</td>
 </tr>
 <tr>
 <td>GET</td>
@@ -4581,13 +4970,12 @@ Acceptance criteria: ...
 <td>Nhật ký hoạt động</td>
 </tr>
 </tbody></table>
-<p>Mã lỗi: <code>400</code> dữ liệu sai/vi phạm quy định · <code>401</code> chưa đăng nhập · <code>403</code> không có quyền · <code>404</code> không tìm thấy · <code>409</code> xung đột trạng thái/trùng mã · <code>429</code> vượt hạn mức · <code>502</code> AI trả kết quả không hợp lệ · <code>503</code> worker chưa sẵn sàng.</p>
+<p>Mã lỗi: <code>400</code> dữ liệu sai/vi phạm quy định · <code>401</code> chưa đăng nhập · <code>403</code> không có quyền · <code>404</code> không tìm thấy · <code>409</code> xung đột trạng thái/trùng mã · <code>429</code> vượt hạn mức · <code>502</code> AI trả kết quả không hợp lệ hoặc không kết nối được Jira · <code>503</code> worker chưa sẵn sàng.</p>
 <h2>4.7. Thiết kế bảo mật</h2>
-<pre class="mermaid">flowchart LR
-    R["Request"] --&gt; H["helmet: CSP, nosniff,&lt;br/&gt;ẩn X-Powered-By"] --&gt; J["Giới hạn body 1 MB"] --&gt; A["JWT + tài khoản còn hoạt động"] --&gt; P["RBAC theo quyền"] --&gt; Q["Hạn mức AI / giờ"] --&gt; V["Zod schema"] --&gt; S["Service: quy định nghiệp vụ"] --&gt; D["Prepared statement"]
-    S --&gt; L["Audit log"]
-    S --&gt; AI["AI: che PII → chống injection → schema"]
-    S --&gt; SB["Script: kiểm tra tĩnh → tiến trình riêng, env tối thiểu, timeout → container giới hạn CPU/RAM"]</pre><table>
+<p><img src="sodo/BaoMat_LopPhongVe.svg" alt="Các lớp bảo mật của một request"></p>
+<p><em>File gốc:</em> <code>docs/sodo/BaoMat_LopPhongVe.drawio</code> (mở bằng draw.io để sửa).</p>
+<p>Request thường đi qua đủ 8 lớp từ trái sang phải; request từ webhook Jira là ngoại lệ duy nhất không có JWT nên được bảo vệ bằng mã bí mật (SE-15) và chỉ được làm một việc: đồng bộ lại dự án đã thêm.</p>
+<table>
 <thead>
 <tr>
 <th>Mối đe dọa (OWASP / AI)</th>
@@ -4723,17 +5111,17 @@ Acceptance criteria: ...
 │   │   ├── db/                   # schema.sql, kết nối, dữ liệu mẫu
 │   │   ├── middleware/           # auth (JWT, RBAC), aiQuota, errorHandler
 │   │   ├── routes/               # auth, admin, work (API REST)
-│   │   ├── services/             # story, sprint, testCase, run, report, parameter, script, audit
+│   │   ├── services/             # story, sprint, testCase, run, report, parameter, script, audit, jira (đồng bộ Jira)
 │   │   │   └── ai/               # AI Service: piiMasker, injectionGuard, promptBuilder, schemas, aiService
 │   │   │       └── providers/    # LLMProvider + Mock, Gemini, Claude, OpenAI
 │   │   └── utils/errors.js
 │   ├── public/                   # Giao diện web (index.html, css, js/pages/*)
 │   ├── tests/                    # Unit test + API test (node:test + supertest)
 │   ├── e2e/                      # E2E test bằng Playwright cho chính hệ thống
-│   ├── samples/                  # File CSV mẫu để nhập user story
+│   ├── samples/                  # Nội dung user story mẫu (chép sang Jira khi tạo story thử)
 │   ├── .env.example
 │   └── package.json
-├── automation/                   # Playwright worker (YC9)
+├── automation/                   # Playwright worker (YC10)
 │   ├── playwright.config.js
 │   ├── pages/                    # Page Object Model: LoginPage, InventoryPage
 │   └── specs/
@@ -4756,8 +5144,8 @@ Acceptance criteria: ...
 </thead>
 <tbody><tr>
 <td>YC1</td>
-<td><code>storyService.create/update/remove</code></td>
-<td><code>/api/stories</code></td>
+<td><code>jiraService.fetchStories/splitDescription/saveStories</code>, <code>storyService.list/get</code></td>
+<td><code>/api/projects/:id/jira-sync</code>, <code>/api/stories</code> (chỉ đọc)</td>
 <td><code>pages/stories.js</code></td>
 </tr>
 <tr>
@@ -4798,36 +5186,48 @@ Acceptance criteria: ...
 </tr>
 <tr>
 <td>YC8</td>
-<td><code>storyService.importMany</code>, ExcelJS</td>
-<td><code>/api/stories/import</code>, <code>/api/export/testcases.xlsx</code></td>
-<td>Nhập file, Xuất Excel</td>
+<td><code>jiraService.handleWebhook/syncProject</code>, <code>storyService.markReviewed</code></td>
+<td><code>/api/jira/webhook</code>, <code>/api/stories/:id/reviewed</code></td>
+<td>Nhãn <em>Cần xem lại test case</em> ở User story</td>
 </tr>
 <tr>
 <td>YC9</td>
+<td>ExcelJS</td>
+<td><code>/api/export/testcases.xlsx</code></td>
+<td>Xuất test case ra Excel</td>
+</tr>
+<tr>
+<td>YC10</td>
 <td><code>scriptService.generate/save/run/staticCheck</code></td>
 <td><code>/api/testcases/:id/script/*</code></td>
 <td>Tab &quot;Script Playwright&quot;</td>
 </tr>
 <tr>
-<td>YC10</td>
+<td>YC11</td>
 <td><code>parameterService.update</code></td>
 <td><code>/api/parameters/:key</code></td>
 <td><code>pages/admin.js → renderParams</code></td>
 </tr>
 <tr>
-<td>YC11</td>
-<td><code>routes/admin.js</code></td>
-<td><code>/api/users</code>, <code>/api/projects</code></td>
-<td>Người dùng, Dự án</td>
-</tr>
-<tr>
 <td>YC12</td>
-<td><code>sprintService.list/create/update/burndown/storyProgress</code></td>
-<td><code>/api/projects/:id/sprints</code>, <code>/api/sprints/:id/*</code></td>
-<td><code>pages/sprints.js</code></td>
+<td><code>routes/admin.js</code></td>
+<td><code>/api/users</code></td>
+<td><code>pages/admin.js → renderUsers</code></td>
 </tr>
 <tr>
 <td>YC13</td>
+<td><code>jiraService.testConnection/importProject/syncProject</code> (Jira REST API v3, chế độ giả lập khi chưa cấu hình)</td>
+<td><code>/api/jira/*</code>, <code>/api/projects/:id/jira-sync</code>, <code>/api/projects</code></td>
+<td><code>pages/admin.js → renderProjects</code></td>
+</tr>
+<tr>
+<td>YC14</td>
+<td><code>jiraService.fetchSprints/saveSprints</code>, <code>sprintService.list/burndown/storyProgress</code></td>
+<td><code>/api/projects/:id/sprints</code>, <code>/api/sprints/:id/burndown</code></td>
+<td><code>pages/sprints.js</code> (chỉ xem)</td>
+</tr>
+<tr>
+<td>YC15</td>
 <td><code>runService.reportFix</code>, <code>testCaseService.list</code> (lọc <code>needs_retest</code>)</td>
 <td><code>/api/runs/:id/fix</code>, <code>/api/testcases?needs_retest=1</code></td>
 <td>Kết quả chạy test, tab Chạy test, Tra cứu</td>
@@ -4879,11 +5279,9 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </blockquote>
 <h2>6.1. Chiến lược kiểm thử</h2>
 <p>Áp dụng mô hình <strong>kim tự tháp kiểm thử</strong>: nhiều test nhanh ở tầng dưới, ít test chậm ở tầng trên.</p>
-<pre class="mermaid">flowchart TB
-    E2E["E2E – Playwright (9 kịch bản)&lt;br/&gt;Toàn bộ luồng qua giao diện thật"]
-    API["API / tích hợp – supertest (34 test)&lt;br/&gt;Quy định nghiệp vụ, phân quyền, bảo mật AI, sprint"]
-    UNIT["Unit – node:test (21 test)&lt;br/&gt;Che PII, chống injection, kiểm tra tĩnh, AI mock, schema"]
-    E2E --- API --- UNIT</pre><table>
+<p><img src="sodo/ThapKiemThu.svg" alt="Tháp kiểm thử"></p>
+<p><em>File gốc:</em> <code>docs/sodo/ThapKiemThu.drawio</code> (mở bằng draw.io để sửa).</p>
+<table>
 <thead>
 <tr>
 <th>Loại</th>
@@ -4923,13 +5321,13 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <td>CI + thủ công</td>
 </tr>
 <tr>
-<td>Kiểm thử chức năng YC9</td>
+<td>Kiểm thử chức năng YC10</td>
 <td>Playwright trên Sauce Demo</td>
 <td>Script mẫu (POM) + script do AI sinh</td>
 <td>Thủ công, demo</td>
 </tr>
 </tbody></table>
-<p><strong>Tiêu chí hoàn thành:</strong> 100% test tự động pass; không còn lỗi mức High; mỗi YC1–YC13 có ít nhất 1 test case kiểm thử.</p>
+<p><strong>Tiêu chí hoàn thành:</strong> 100% test tự động pass; không còn lỗi mức High; mỗi YC1–YC15 có ít nhất 1 test case kiểm thử.</p>
 <p><strong>Kiểm thử trong Agile:</strong> kiểm thử không phải một giai đoạn cuối mà là một phần của <strong>Definition of Done</strong> của mỗi story: story chỉ được tính hoàn thành khi có test tự động mới và CI xanh. Vì vậy bộ test dưới đây được viết dần qua 5 sprint (cột <em>Sprint</em> trong Product Backlog), không dồn về cuối kỳ.</p>
 <h2>6.2. Kiểm thử tự động – Unit và API</h2>
 <p>Chạy: <code>cd app &amp;&amp; npm test</code></p>
@@ -5083,7 +5481,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>IT-06</td>
-<td>Developer chỉ xem, không lập story, không gọi AI</td>
+<td>Developer chỉ xem: không sinh AI, không đồng bộ Jira → 403</td>
 <td>Pass</td>
 </tr>
 <tr>
@@ -5108,17 +5506,17 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>IT-11</td>
-<td>QĐ1: mã sai định dạng → 400</td>
+<td>User story chỉ đến từ Jira: API tạo, sửa, xóa, nhập file đều không có (404)</td>
 <td>Pass</td>
 </tr>
 <tr>
 <td>IT-12</td>
-<td>QĐ1: mã trùng → 409</td>
+<td>QĐ1: tách mô tả và acceptance criteria từ Description Jira; Highest/Lowest → High/Low</td>
 <td>Pass</td>
 </tr>
 <tr>
 <td>IT-13</td>
-<td>QĐ1: độ ưu tiên sai → 400</td>
+<td>QĐ1: story thiếu acceptance criteria thì không sinh test case bằng AI → 400</td>
 <td>Pass</td>
 </tr>
 <tr>
@@ -5128,7 +5526,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>IT-23</td>
-<td>QĐ2 + YC10: đổi tối đa 3 → AI chỉ sinh 3; thêm tay bị chặn</td>
+<td>QĐ2 + YC11: đổi tối đa 3 → AI chỉ sinh 3; thêm tay bị chặn</td>
 <td>Pass</td>
 </tr>
 <tr>
@@ -5163,7 +5561,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>IT-30</td>
-<td>Nhập file: dòng lỗi không làm hỏng dòng hợp lệ</td>
+<td>QĐ8: webhook sai mã bí mật → 401; đúng mã thì đồng bộ lại dự án; dự án chưa thêm thì bỏ qua</td>
 <td>Pass</td>
 </tr>
 <tr>
@@ -5173,7 +5571,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>IT-32</td>
-<td>YC9: chỉ sinh script cho test case đã duyệt</td>
+<td>YC10: chỉ sinh script cho test case đã duyệt</td>
 <td>Pass</td>
 </tr>
 <tr>
@@ -5183,32 +5581,32 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>IT-34</td>
-<td>QA Lead tạo sprint mới cho dự án</td>
+<td>Đồng bộ sprint từ Jira: sprint có ngày được thêm, sprint chưa đặt ngày bỏ qua kèm cảnh báo</td>
 <td>Pass</td>
 </tr>
 <tr>
 <td>IT-35</td>
-<td>QĐ12: sprint trùng thời gian → 409</td>
+<td>Story gắn đúng sprint theo Jira; story không thuộc sprint nằm trong Product backlog</td>
 <td>Pass</td>
 </tr>
 <tr>
 <td>IT-36</td>
-<td>QĐ12: sprint quá dài / kết thúc trước khi bắt đầu → 400</td>
+<td>QĐ14: story point ngoài dãy Fibonacci bị bỏ qua kèm cảnh báo</td>
 <td>Pass</td>
 </tr>
 <tr>
 <td>IT-37</td>
-<td>Tester không được tạo sprint → 403</td>
+<td>Không có API tạo, sửa, xóa sprint (404)</td>
 <td>Pass</td>
 </tr>
 <tr>
 <td>IT-38</td>
-<td>Story chỉ gắn sprint cùng dự án; story point phải thuộc Fibonacci</td>
+<td>Đồng bộ lại khi sprint đổi trên Jira: cập nhật, không tạo trùng; story chuyển sprint theo Jira</td>
 <td>Pass</td>
 </tr>
 <tr>
 <td>IT-39</td>
-<td>Product backlog chỉ gồm story chưa có sprint; đưa story vào sprint</td>
+<td>Product backlog chỉ gồm story chưa thuộc sprint</td>
 <td>Pass</td>
 </tr>
 <tr>
@@ -5228,7 +5626,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>IT-43</td>
-<td>PO/BA lập được user story và tạo sprint</td>
+<td>PO/BA xem được story, sprint; không đồng bộ, không thêm dự án Jira → 403</td>
 <td>Pass</td>
 </tr>
 <tr>
@@ -5243,17 +5641,17 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>IT-46</td>
-<td>YC13: Developer báo đã sửa lần chạy Fail → test case cần kiểm thử lại</td>
+<td>YC15: Developer báo đã sửa lần chạy Fail → test case cần kiểm thử lại</td>
 <td>Pass</td>
 </tr>
 <tr>
 <td>IT-47</td>
-<td>YC13: Tester chạy lại thì test case hết cần kiểm thử lại</td>
+<td>YC15: Tester chạy lại thì test case hết cần kiểm thử lại</td>
 <td>Pass</td>
 </tr>
 <tr>
 <td>IT-48</td>
-<td>QĐ13: thiếu bản build → 400; lần chạy Pass, đã chạy lại hoặc đã báo rồi → 409</td>
+<td>QĐ15: thiếu bản build → 400; lần chạy Pass, đã chạy lại hoặc đã báo rồi → 409</td>
 <td>Pass</td>
 </tr>
 <tr>
@@ -5261,8 +5659,53 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <td>Chỉ Developer được báo đã sửa lỗi (vai trò khác → 403)</td>
 <td>Pass</td>
 </tr>
+<tr>
+<td>IT-50</td>
+<td>YC13: chỉ Admin được kiểm tra kết nối Jira (QA Lead → 403)</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>IT-51</td>
+<td>YC13: QA Lead thêm dự án HRM từ Jira: 3 module, 4 thành viên gán theo email, 1 người chưa có tài khoản</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>IT-52</td>
+<td>QĐ13: dự án đã đồng bộ → 409; mã không có trên Jira → 404; mã sai định dạng → 400</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>IT-53</td>
+<td>QĐ13: Tester, PO/BA, Developer không được thêm dự án từ Jira → 403</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>IT-54</td>
+<td>Đồng bộ lại dự án Jira; dự án mẫu (không liên kết Jira) không đồng bộ được → 400</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>IT-55</td>
+<td>YC1: story đồng bộ đủ mô tả, acceptance criteria, ưu tiên, module, story point, trạng thái Jira</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>IT-56</td>
+<td>QĐ8: story đổi acceptance criteria khi đã có test case → cần xem lại; <em>Đã xem lại</em> bỏ đánh dấu, bấm lần nữa → 409</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>IT-57</td>
+<td>QĐ8: story chưa có test case đổi nội dung thì không đánh dấu</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>IT-58</td>
+<td>QĐ8: story xóa trên Jira → lưu trữ, giữ test case, không sinh thêm (409); có lại thì hiện lại</td>
+<td>Pass</td>
+</tr>
 </tbody></table>
-<p><strong>Kết quả:</strong> <code>64 tests, 64 pass, 0 fail</code> (Node.js 21, macOS, 01/11/2026).</p>
+<p><strong>Kết quả:</strong> <code>73 tests, 73 pass, 0 fail</code> (Node.js 21, macOS, 03/11/2026).</p>
 <h2>6.3. Kiểm thử E2E bằng Playwright</h2>
 <p>Chạy: <code>cd app &amp;&amp; npm run test:e2e</code> (Playwright tự khởi động server ở cổng 3100 với CSDL riêng <code>data/e2e.db</code>; xem báo cáo HTML: <code>npx playwright show-report e2e-report</code>).</p>
 <p><strong>Kỹ thuật áp dụng:</strong></p>
@@ -5288,7 +5731,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>E2E-02</td>
-<td>Tester lập user story mới qua hộp thoại</td>
+<td>QA Lead thêm dự án HRM từ Jira (giả lập): 3 story được đồng bộ, không có nút lập story hay nhập file</td>
 <td>Pass</td>
 </tr>
 <tr>
@@ -5313,21 +5756,21 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>E2E-07</td>
-<td>Developer không thấy chức năng ghi</td>
+<td>Developer không thấy chức năng ghi, không có nút Đồng bộ từ Jira</td>
 <td>Pass</td>
 </tr>
 <tr>
 <td>E2E-08</td>
-<td>QA Lead Sprint Planning: đưa story từ Product backlog vào sprint đang chạy, bảng sprint cập nhật</td>
+<td>QA Lead xem sprint đồng bộ từ Jira: bảng sprint có story, Product backlog đúng, không có nút tạo/sửa sprint</td>
 <td>Pass</td>
 </tr>
 <tr>
 <td>E2E-09</td>
-<td>Tester xem được burndown nhưng không có nút tạo sprint</td>
+<td>Tester xem được burndown của dự án mẫu, không có nút tạo sprint hay đưa story vào sprint</td>
 <td>Pass</td>
 </tr>
 </tbody></table>
-<p><strong>Kết quả:</strong> <code>9 passed (10.1s)</code>.</p>
+<p><strong>Kết quả:</strong> <code>9 passed (13.8s)</code>.</p>
 <h2>6.4. Bộ test case kiểm thử hệ thống (thủ công)</h2>
 <table>
 <thead>
@@ -5367,16 +5810,16 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <tr>
 <td>ST-04</td>
 <td>YC1</td>
-<td>Lập story mã <code>us-abc</code> (chữ thường)</td>
-<td>Lưu thành <code>US-ABC</code></td>
-<td>Edge</td>
-<td>Low</td>
+<td>PO/BA tạo Story trên Jira có mục <em>Acceptance criteria</em> 3 dòng; QA Lead bấm <em>Đồng bộ từ Jira</em></td>
+<td>Story hiện trong hệ thống với 3 acceptance criteria, mã trùng mã issue Jira, có liên kết mở Jira</td>
+<td>Positive</td>
+<td>High</td>
 </tr>
 <tr>
 <td>ST-05</td>
 <td>YC1</td>
-<td>Acceptance criteria chỉ gồm dòng trống</td>
-<td>Báo lỗi tối thiểu 1 tiêu chí</td>
+<td>Story trên Jira không có mục <em>Acceptance criteria</em></td>
+<td>Story có nhãn <em>Thiếu acceptance criteria</em>, nút Sinh test case bị khóa</td>
 <td>Negative</td>
 <td>Medium</td>
 </tr>
@@ -5471,14 +5914,14 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <tr>
 <td>ST-17</td>
 <td>YC8</td>
-<td>Nhập <code>samples/user_stories_mau.csv</code></td>
-<td>4 story được tạo; tiếng Việt hiển thị đúng</td>
+<td>Story đã có test case; PO/BA thêm 1 acceptance criterion trên Jira; webhook (hoặc Đồng bộ ngay)</td>
+<td>Story có nhãn <em>Cần xem lại test case</em>; bấm <em>Đã xem lại</em> thì nhãn mất</td>
 <td>Positive</td>
-<td>Medium</td>
+<td>High</td>
 </tr>
 <tr>
 <td>ST-18</td>
-<td>YC8</td>
+<td>YC9</td>
 <td>Xuất Excel, mở bằng Excel</td>
 <td>Đủ cột, các bước xuống dòng, tiêu đề tô màu</td>
 <td>Positive</td>
@@ -5486,7 +5929,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>ST-19</td>
-<td>YC9</td>
+<td>YC10</td>
 <td>Sinh script cho US-SAU-001-TC01 và chạy</td>
 <td>Chrome chạy ngầm; kết quả Pass trong khoảng 2–5 giây</td>
 <td>Positive</td>
@@ -5494,7 +5937,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>ST-20</td>
-<td>YC9</td>
+<td>YC10</td>
 <td>Sửa script cho expect sai rồi chạy</td>
 <td>Kết quả Fail, có log lỗi và ảnh chụp màn hình</td>
 <td>Negative</td>
@@ -5502,7 +5945,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>ST-21</td>
-<td>YC9</td>
+<td>YC10</td>
 <td>Thêm <code>require(&#39;child_process&#39;)</code> vào script rồi chạy</td>
 <td>Bị chặn: &quot;không được dùng module hệ thống&quot;</td>
 <td>Negative</td>
@@ -5510,7 +5953,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>ST-22</td>
-<td>YC10</td>
+<td>YC11</td>
 <td>Đặt MAX_TC_PER_STORY = 100</td>
 <td>Báo lỗi miền 1–50</td>
 <td>Edge</td>
@@ -5542,7 +5985,7 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>ST-26</td>
-<td>YC12</td>
+<td>YC14</td>
 <td>Ghi Pass cho test case cuối cùng của một story trong sprint đang chạy</td>
 <td>Story chuyển sang cột <em>Hoàn thành (DoD)</em>, burndown giảm đúng số story point</td>
 <td>Positive</td>
@@ -5550,22 +5993,30 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </tr>
 <tr>
 <td>ST-27</td>
-<td>YC12</td>
-<td>Tạo sprint 30 ngày khi <code>SPRINT_MAX_DAYS</code> = 28</td>
-<td>Báo lỗi QĐ12</td>
+<td>YC14</td>
+<td>Trên Jira tạo sprint 30 ngày khi <code>SPRINT_MAX_DAYS</code> = 28 rồi đồng bộ</td>
+<td>Sprint vẫn được lấy, có cảnh báo vượt QĐ14</td>
 <td>Edge</td>
 <td>Medium</td>
 </tr>
 <tr>
 <td>ST-28</td>
-<td>YC13</td>
+<td>YC15</td>
 <td>Tester ghi Fail; Developer bấm <em>Báo đã sửa</em>, nhập bản 1.0.2; Tester lọc <em>Cần kiểm thử lại</em> và chạy lại Pass</td>
 <td>Test case hiện trong bộ lọc kèm cảnh báo bản build; sau khi chạy lại thì biến mất</td>
 <td>Positive</td>
 <td>High</td>
 </tr>
+<tr>
+<td>ST-29</td>
+<td>YC13</td>
+<td>Admin bấm <em>Kiểm tra kết nối Jira</em>, rồi <em>Thêm dự án từ Jira</em> với mã <code>HRM</code></td>
+<td>Báo kết nối thành công; dự án HRM xuất hiện kèm 3 module, nhãn <em>Jira</em>, số thành viên; thông báo tên thành viên chưa có tài khoản</td>
+<td>Positive</td>
+<td>High</td>
+</tr>
 </tbody></table>
-<h2>6.5. Kiểm thử chức năng YC9 với Playwright trên Sauce Demo</h2>
+<h2>6.5. Kiểm thử chức năng YC10 với Playwright trên Sauce Demo</h2>
 <h3>Bộ test mẫu viết tay (Page Object Model)</h3>
 <p><code>automation/specs/samples/</code> – 8 test cho US-SAU-001 (đăng nhập) và US-SAU-002 (giỏ hàng). Áp dụng:</p>
 <ul>
@@ -5618,12 +6069,9 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <p><strong>So sánh script AI với bộ viết tay:</strong> script AI viết &quot;phẳng&quot; (mỗi bước một lệnh, locator CSS <code>[data-test=...]</code>), đủ để chạy nhưng chưa tái sử dụng được. Bộ viết tay dùng POM, data-driven, dễ bảo trì hơn. Đây là lý do hệ thống bắt buộc <strong>Tester xem lại script</strong> trước khi chạy và là hướng phát triển ở các phiên bản sau (AI sinh script theo POM, tự sửa locator).</p>
 <h2>6.6. Tích hợp liên tục (CI)</h2>
 <p><code>.github/workflows/ci.yml</code> chạy tự động mỗi lần push lên <code>main</code> hoặc tạo Pull Request:</p>
-<pre class="mermaid">flowchart LR
-    P["git push / PR"] --&gt; U["Job 1: Unit &amp; API test&lt;br/&gt;npm ci → npm test"]
-    U --&gt; E["Job 2: E2E Playwright&lt;br/&gt;playwright install chromium → npm run test:e2e&lt;br/&gt;→ lưu báo cáo HTML"]
-    U --&gt; A["Job 3: Playwright mẫu Sauce Demo&lt;br/&gt;biến từ GitHub Secrets/Variables"]
-    E --&gt; D["Job 4: Build Docker image"]
-    A --&gt; D</pre><p>Pull Request chỉ được merge khi cả 4 job xanh.</p>
+<p><img src="sodo/CI_Pipeline.svg" alt="Quy trình CI trên GitHub Actions"></p>
+<p><em>File gốc:</em> <code>docs/sodo/CI_Pipeline.drawio</code> (mở bằng draw.io để sửa).</p>
+<p>Pull Request chỉ được merge khi cả 4 job xanh.</p>
 <h2>6.7. Tổng kết kiểm thử</h2>
 <table>
 <thead>
@@ -5636,14 +6084,14 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 </thead>
 <tbody><tr>
 <td>Unit test</td>
-<td>21</td>
-<td>21</td>
+<td>23</td>
+<td>23</td>
 <td>0</td>
 </tr>
 <tr>
 <td>API / tích hợp</td>
-<td>34</td>
-<td>34</td>
+<td>50</td>
+<td>50</td>
 <td>0</td>
 </tr>
 <tr>
@@ -5665,13 +6113,19 @@ npm install               # Playwright worker dùng Chrome có sẵn trên máy
 <td>0</td>
 </tr>
 <tr>
+<td>Đồng bộ Jira Cloud thật (dự án SHOP: 4 story, 1 sprint, acceptance criteria tách đúng)</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
 <td>Test case hệ thống thủ công</td>
-<td>27</td>
+<td>29</td>
 <td>Thực hiện trước buổi bảo vệ</td>
 <td></td>
 </tr>
 </tbody></table>
-<p><strong>Hạn chế đã biết:</strong> MockProvider sinh câu chữ theo khuôn mẫu, chất lượng thấp hơn LLM thật; kiểm tra tĩnh dựa trên mẫu (regex) nên chỉ là một lớp bảo vệ, lớp chính khi triển khai là container cô lập; chưa kiểm thử hiệu năng với dữ liệu lớn.</p>
+<p><strong>Hạn chế đã biết:</strong> MockProvider sinh câu chữ theo khuôn mẫu, chất lượng thấp hơn LLM thật; kiểm tra tĩnh dựa trên mẫu (regex) nên chỉ là một lớp bảo vệ, lớp chính khi triển khai là container cô lập; chưa kiểm thử hiệu năng với dữ liệu lớn; webhook Jira mới kiểm thử tự động bằng request giả lập, chưa thử với Jira Cloud thật qua ngrok.</p>
 </section>
 <section class="chapter" id="ch-07"><h1>Chương 7. Triển khai và hướng dẫn sử dụng</h1>
 <h2>7.1. Yêu cầu hệ thống</h2>
@@ -5750,6 +6204,51 @@ npm install
 <blockquote>
 <p><strong>Chính sách dữ liệu:</strong> dữ liệu gửi qua API của các nhà cung cấp trên (gói API, không phải ứng dụng chat) theo điều khoản hiện hành không được dùng để huấn luyện model; hệ thống vẫn che dữ liệu nhạy cảm trước khi gửi. Kiểm tra lại điều khoản mới nhất của nhà cung cấp trước khi dùng với dữ liệu thật.</p>
 </blockquote>
+<h3>Cấu hình kết nối Jira (YC1, YC8, YC13, YC14)</h3>
+<p>User story và sprint chỉ được tạo trên Jira rồi đồng bộ <strong>một chiều</strong> về hệ thống. Jira Cloud gói <strong>Free</strong> (tối đa 10 người) là đủ. Để trống <code>JIRA_BASE_URL</code> thì hệ thống dùng <strong>Jira giả lập</strong> có 2 dự án mẫu <code>HRM</code> và <code>LIB</code> (cho kiểm thử tự động và khi buổi demo không có mạng). Để dùng Jira thật, điền vào <code>app/.env</code> rồi khởi động lại server:</p>
+<table>
+<thead>
+<tr>
+<th>Biến</th>
+<th>Ví dụ</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>JIRA_BASE_URL</code></td>
+<td><code>https://ten-nhom.atlassian.net</code></td>
+<td>Địa chỉ Jira Cloud của nhóm</td>
+</tr>
+<tr>
+<td><code>JIRA_EMAIL</code></td>
+<td>email tài khoản Atlassian</td>
+<td>Tài khoản có quyền xem dự án</td>
+</tr>
+<tr>
+<td><code>JIRA_API_TOKEN</code></td>
+<td>(token)</td>
+<td>Tạo tại <em>id.atlassian.com → Bảo mật → Mã thông báo API</em>; chỉ để trong <code>.env</code>, không commit</td>
+</tr>
+<tr>
+<td><code>JIRA_SYNC_MINUTES</code></td>
+<td><code>5</code></td>
+<td>Tự đồng bộ mọi dự án Jira mỗi 5 phút; <code>0</code> = tắt</td>
+</tr>
+<tr>
+<td><code>JIRA_WEBHOOK_SECRET</code></td>
+<td>chuỗi ngẫu nhiên dài</td>
+<td>Bật webhook; để trống thì tắt</td>
+</tr>
+</tbody></table>
+<p>Thành viên Jira được gán vào tài khoản có <strong>email trùng</strong>, nên Admin tạo tài khoản với đúng email Atlassian của từng người trước khi đồng bộ.</p>
+<p><strong>Quy ước viết story trên Jira</strong> (để hệ thống đọc được):</p>
+<ol>
+<li>Loại issue là <strong>Story</strong> (Task, Bug không được lấy).</li>
+<li>Trong <strong>Description</strong>: phần đầu là mô tả <em>&quot;Là …, tôi muốn …, để …&quot;</em>; tiếp theo một dòng <strong>Acceptance criteria</strong>; dưới đó mỗi gạch đầu dòng là một tiêu chí.</li>
+<li><strong>Priority</strong> Highest/High → High, Medium → Medium, Low/Lowest → Low. <strong>Story point estimate</strong> dùng 1, 2, 3, 5, 8, 13. <strong>Component</strong> thành module.</li>
+<li>Sprint phải có ngày bắt đầu, kết thúc mới được đồng bộ.</li>
+</ol>
+<p><strong>Webhook</strong> (tùy chọn, cần địa chỉ công khai): Jira → <em>Settings → System → WebHooks → Create</em> với URL <code>https://&lt;địa chỉ app&gt;/api/jira/webhook?secret=&lt;JIRA_WEBHOOK_SECRET&gt;</code>, chọn sự kiện <em>Issue created / updated / deleted</em> và <em>Sprint</em>. Khi chạy trên máy cá nhân, mở đường hầm bằng <code>ngrok http 3000</code> để lấy địa chỉ công khai; nếu không dùng webhook thì đồng bộ định kỳ và nút <em>Đồng bộ ngay</em> vẫn đủ.</p>
 <h3>Cấu hình bộ kiểm thử Playwright</h3>
 <p>Sao chép <code>automation/.env.example</code> thành <code>automation/.env</code> (không commit file này):</p>
 <table>
@@ -5868,11 +6367,11 @@ npm install
 <td><code>Dev@123456</code></td>
 </tr>
 </tbody></table>
-<p>Dữ liệu mẫu: dự án <strong>PETINS – App bảo hiểm thú cưng</strong> (hư cấu, 3 module, 5 user story, 4 test case đã duyệt có lịch sử chạy; Sprint 1 đã kết thúc, Sprint 2 đang chạy tính từ ngày tạo dữ liệu, 1 story trong Product backlog) và <strong>SAUCE – Sauce Demo Shop</strong> (web thật <code>https://www.saucedemo.com/</code>, 2 user story, 4 test case đã duyệt dùng cho Playwright). Đặt lại dữ liệu: <code>npm run reset</code>.</p>
+<p>Dữ liệu mẫu (không liên kết Jira, chỉ để xem và demo; story của dự án mẫu không đồng bộ được): dự án <strong>PETINS – App bảo hiểm thú cưng</strong> (hư cấu, 3 module, 5 user story, 4 test case đã duyệt có lịch sử chạy; Sprint 1 đã kết thúc, Sprint 2 đang chạy tính từ ngày tạo dữ liệu, 1 story trong Product backlog) và <strong>SAUCE – Sauce Demo Shop</strong> (web thật <code>https://www.saucedemo.com/</code>, 2 user story, 4 test case đã duyệt dùng cho Playwright). Đặt lại dữ liệu: <code>npm run reset</code>.</p>
 <h2>7.6. Hướng dẫn sử dụng theo vai trò</h2>
 <h3>Tester</h3>
 <ol>
-<li><strong>Lập user story:</strong> menu <em>User story</em> → <em>＋ Lập user story</em> → nhập mã (<code>US-...</code>), tiêu đề, mô tả &quot;Là…, tôi muốn…, để…&quot;, mỗi acceptance criterion một dòng → <em>Lưu</em>. Có thể <em>⬆️ Nhập từ file</em> CSV/JSON (mẫu ở <code>app/samples/</code>).</li>
+<li><strong>User story</strong> đến từ Jira (PO/BA viết). Menu <em>User story</em> liệt kê story đã đồng bộ; story có nhãn 🔁 <em>Cần xem lại test case</em> là story vừa đổi trên Jira – mở ra, sửa test case cho khớp acceptance criteria mới rồi bấm <strong>✔ Đã xem lại</strong>.</li>
 <li><strong>Sinh test case bằng AI:</strong> mở user story → <em>✨ Sinh test case bằng AI</em>. Sau vài giây bảng test case hiện ra ở trạng thái <em>Nháp</em>; thông báo cho biết số test case, thời gian, dữ liệu nhạy cảm đã che.</li>
 <li><strong>Xem lại và sửa:</strong> bấm vào một dòng → <em>✏️ Sửa</em> → <em>Lưu phiên bản mới</em>. Xóa case thừa, <em>＋ Thêm thủ công</em> case còn thiếu.</li>
 <li><strong>Gửi duyệt:</strong> tích chọn các test case → <em>📤 Gửi duyệt mục đã chọn</em>. Nếu bị trả lại, ghi chú của QA Lead hiện ở đầu chi tiết test case.</li>
@@ -5887,14 +6386,12 @@ npm install
 <li><em>Thay đổi quy định</em>: sửa số test case tối đa, số lần gọi AI/giờ… → <em>Lưu</em>. Có hiệu lực ngay.</li>
 <li><em>Tổng quan &amp; báo cáo</em>: theo dõi tỷ lệ pass, độ bao phủ, story chưa có test case, hiệu quả AI.</li>
 </ol>
-<h3>PO / BA, QA Lead – lập user story và kế hoạch sprint (Agile/Scrum)</h3>
-<p>PO/BA lập user story (menu <em>User story</em> → <em>＋ Lập user story</em> hoặc <em>⬆️ Nhập từ file</em>) với acceptance criteria rõ ràng, rồi cùng QA Lead lập kế hoạch sprint:</p>
+<h3>PO / BA, QA Lead – user story và sprint (Agile/Scrum)</h3>
+<p>PO/BA viết user story và lập sprint <strong>trên Jira</strong> theo quy ước ở mục 7.4; hệ thống chỉ đọc.</p>
 <ol>
-<li>Chọn dự án ở thanh trên cùng → menu <em>Sprint (Agile)</em>.</li>
-<li><em>＋ Tạo sprint</em>: nhập tên, Sprint Goal, ngày bắt đầu/kết thúc (tối đa 28 ngày, không trùng sprint khác).</li>
-<li><strong>Sprint Planning:</strong> ở mục <em>Product backlog</em>, chọn sprint cho từng story → <em>Đưa vào</em>. Khi lập hoặc sửa user story có thể chọn luôn sprint và story point (1, 2, 3, 5, 8, 13).</li>
-<li>Theo dõi bảng 4 cột: <em>Cần viết test case → Đang soạn/chờ duyệt → Đang kiểm thử → Hoàn thành (DoD)</em>. Story tự chuyển cột theo trạng thái test case và kết quả chạy.</li>
-<li>Xem <em>Burndown chart</em> (story point còn lại theo ngày) và <em>Velocity các sprint</em>. Chọn sprint ở ô thứ hai trên thanh trên cùng để lọc toàn bộ hệ thống (báo cáo, user story, tra cứu, duyệt) theo sprint đó.</li>
+<li>QA Lead (hoặc Admin) chọn dự án → menu <em>User story</em> → <strong>⟳ Đồng bộ từ Jira</strong> (hoặc chờ đồng bộ định kỳ / webhook). Thông báo cho biết số story mới, cập nhật, cần xem lại, đã xóa trên Jira và các cảnh báo.</li>
+<li>Menu <em>Sprint (Agile)</em>: chọn sprint (lấy từ Jira). Bảng 4 cột <em>Cần viết test case → Đang soạn/chờ duyệt → Đang kiểm thử → Hoàn thành (DoD)</em> do hệ thống tự tính từ trạng thái test case và kết quả chạy.</li>
+<li>Xem <em>Burndown chart</em> (story point còn lại theo ngày) và <em>Velocity các sprint</em>; mục <em>Product backlog</em> là story chưa thuộc sprint nào trên Jira. Chọn sprint ở ô thứ hai trên thanh trên cùng để lọc toàn bộ hệ thống theo sprint đó.</li>
 </ol>
 <h3>Developer</h3>
 <ol>
@@ -5903,7 +6400,15 @@ npm install
 <li>Test case chuyển sang <strong>🔁 Cần kiểm thử lại</strong>. Tester lọc <em>Cần kiểm thử lại</em> ở <em>Tra cứu test case</em>, chạy lại trên bản build mới; lần chạy mới làm test case hết trạng thái này.</li>
 </ol>
 <h3>Admin</h3>
-<p><em>Người dùng</em> (thêm, khóa/mở khóa, xem ma trận phân quyền), <em>Dự án &amp; module</em> (tạo dự án, khai báo URL ứng dụng cần test cho Playwright, thêm module), <em>Nhật ký hoạt động</em>, <em>Nhật ký AI</em>.</p>
+<p><em>Người dùng</em> (thêm, khóa/mở khóa, xem ma trận phân quyền), <em>Nhật ký hoạt động</em>, <em>Nhật ký AI</em>.</p>
+<p><strong>Dự án &amp; module (YC13):</strong></p>
+<ol>
+<li>Bấm <strong>🔌 Kiểm tra kết nối Jira</strong> để chắc chắn cấu hình <code>.env</code> đúng (dòng đầu trang cho biết đang dùng Jira thật hay giả lập, webhook đã bật chưa).</li>
+<li>Bấm <strong>⬇ Thêm dự án từ Jira</strong>, nhập mã dự án (space key, VD <code>SHOP</code>) → hệ thống lấy tên, mô tả, module (component), thành viên, sprint và mọi Story; thông báo tên thành viên chưa có tài khoản để Admin tạo thêm.</li>
+<li>Bấm <strong>Sửa URL</strong> để khai báo URL ứng dụng cần test (VD <code>https://www.saucedemo.com/</code>) cho Playwright, vì Jira không có thông tin này.</li>
+<li>Khi Jira có thay đổi mà chưa tới lượt đồng bộ định kỳ, bấm <strong>⟳ Đồng bộ ngay</strong> trên thẻ dự án.</li>
+</ol>
+<p>QA Lead cũng thêm dự án và đồng bộ được, nhưng không kiểm tra kết nối và không sửa URL. Hệ thống không có chức năng tạo dự án, module, user story hay sprint bằng tay.</p>
 <h2>7.7. Xử lý sự cố thường gặp</h2>
 <table>
 <thead>
@@ -5944,6 +6449,21 @@ npm install
 <td>Chờ, hoặc QA Lead tăng <code>AI_CALLS_PER_HOUR</code></td>
 </tr>
 <tr>
+<td>&quot;Jira từ chối xác thực&quot; / &quot;Không kết nối được tới Jira&quot;</td>
+<td>Sai <code>JIRA_EMAIL</code>, <code>JIRA_API_TOKEN</code> hoặc <code>JIRA_BASE_URL</code></td>
+<td>Tạo lại API token, kiểm tra địa chỉ có dạng <code>https://…atlassian.net</code>; khởi động lại server</td>
+</tr>
+<tr>
+<td>Story về hệ thống nhưng có nhãn <em>Thiếu acceptance criteria</em></td>
+<td>Description thiếu dòng <code>Acceptance criteria</code> hoặc không có gạch đầu dòng bên dưới</td>
+<td>Sửa Description trên Jira theo quy ước mục 7.4 rồi <em>Đồng bộ ngay</em></td>
+</tr>
+<tr>
+<td>Sprint không hiện</td>
+<td>Sprint trên Jira chưa đặt ngày</td>
+<td>Đặt ngày bắt đầu, kết thúc trên Jira (hoặc bấm <em>Start sprint</em>) rồi đồng bộ</td>
+</tr>
+<tr>
 <td>Lỗi cài <code>better-sqlite3</code></td>
 <td>Thiếu công cụ biên dịch</td>
 <td>macOS: <code>xcode-select --install</code>; hoặc dùng Docker</td>
@@ -5964,11 +6484,11 @@ npm install
 <p><img src="images/06_lich_su_phien_ban.png" alt="Lịch sử phiên bản"></p>
 <p><strong>Hàng đợi duyệt của QA Lead (YC4)</strong></p>
 <p><img src="images/07_hang_doi_duyet.png" alt="Duyệt"></p>
-<p><strong>Script Playwright do AI sinh và chạy tự động (YC9)</strong></p>
+<p><strong>Script Playwright do AI sinh và chạy tự động (YC10)</strong></p>
 <p><img src="images/08_playwright_chay_tu_dong.png" alt="Playwright"></p>
-<p><strong>Sprint (Agile) – YC12</strong> – Sprint Goal, bảng sprint theo Definition of Done, burndown, velocity, Product backlog.</p>
+<p><strong>Sprint (Agile) – YC14</strong> – sprint lấy từ Jira: Sprint Goal, bảng sprint theo Definition of Done, burndown, velocity, Product backlog (chỉ xem).</p>
 <p><img src="images/11_sprint.png" alt="Sprint"></p>
-<p><strong>Thay đổi quy định (YC10)</strong></p>
+<p><strong>Thay đổi quy định (YC11)</strong></p>
 <p><img src="images/09_thay_doi_quy_dinh.png" alt="Quy định"></p>
 </section>
 <section class="chapter" id="ch-08"><h1>Chương 8. Kịch bản demo khi bảo vệ (8–10 phút)</h1>
@@ -6019,9 +6539,9 @@ npm install
 <tr>
 <td>3</td>
 <td>1:30</td>
-<td><em>User story</em> → <em>Lập user story</em> trực tiếp, ví dụ &quot;Hủy hợp đồng bảo hiểm&quot; với 3 acceptance criteria</td>
-<td>&quot;Đây là BM1, có QĐ1: mã không trùng, ít nhất 1 tiêu chí.&quot;</td>
-<td>Biểu mẫu, quy định</td>
+<td>Mở Jira (dự án <strong>SHOP</strong>) bên cạnh → sửa 1 acceptance criterion của story <em>Sắp xếp danh sách sản phẩm</em>; về hệ thống, <strong>qalead</strong> bấm <em>⟳ Đồng bộ từ Jira</em></td>
+<td>&quot;Story chỉ viết trên Jira, hệ thống đồng bộ một chiều (QĐ1). Story đã có test case mà đổi trên Jira thì được gắn nhãn <em>Cần xem lại test case</em> (QĐ8).&quot;</td>
+<td>Tích hợp Jira</td>
 </tr>
 <tr>
 <td>4</td>
@@ -6075,14 +6595,14 @@ npm install
 <tr>
 <td>11</td>
 <td>8:15</td>
-<td>Đăng nhập <strong>qalead</strong> → <em>Sprint (Agile)</em> → đưa <strong>US-PET-005</strong> từ Product backlog vào Sprint 2; mở <em>Tổng quan</em> → bảng tiến độ theo sprint</td>
-<td>&quot;Đây là bước Sprint Planning. Báo cáo lọc được theo sprint, tính theo lần chạy gần nhất.&quot;</td>
-<td>YC6, YC12</td>
+<td>Chọn dự án <strong>SHOP</strong> → <em>Sprint (Agile)</em>: sprint lấy từ Jira; mở <em>Tổng quan</em> → bảng tiến độ theo sprint</td>
+<td>&quot;Sprint Planning làm trên Jira; hệ thống tự tính DoD, velocity, burndown từ kết quả kiểm thử. Báo cáo lọc được theo sprint.&quot;</td>
+<td>YC6, YC14</td>
 </tr>
 <tr>
 <td>12</td>
 <td>8:45</td>
-<td>Terminal: <code>npm test</code> (64 pass) và <code>npm run test:e2e</code> (Playwright mở Chrome, 9 pass)</td>
+<td>Terminal: <code>npm test</code> (73 pass) và <code>npm run test:e2e</code> (Playwright mở Chrome, 9 pass)</td>
 <td>&quot;Kiểm thử tự động 3 tầng, chạy trên GitHub Actions mỗi lần push.&quot;</td>
 <td>Chất lượng</td>
 </tr>
@@ -6094,7 +6614,8 @@ npm install
 <td></td>
 </tr>
 </tbody></table>
-<p><strong>Dự phòng:</strong> mạng hoặc API lỗi → chuyển <code>AI_PROVIDER=mock</code> (khởi động lại 3 giây) hoặc mở video đã quay.</p>
+<p><strong>Chuẩn bị:</strong> trước buổi demo thêm dự án <code>SHOP</code> từ Jira, khai báo URL <code>https://www.saucedemo.com/</code>, sinh sẵn test case cho 1 story để bước 3 hiện được nhãn <em>Cần xem lại test case</em>.</p>
+<p><strong>Dự phòng:</strong> mạng hoặc API lỗi → chuyển <code>AI_PROVIDER=mock</code> và để trống <code>JIRA_BASE_URL</code> (Jira giả lập, dự án <code>HRM</code>), khởi động lại 3 giây; hoặc mở video đã quay.</p>
 <h2>8.3. Câu hỏi hội đồng có thể hỏi</h2>
 <table>
 <thead>
@@ -6125,7 +6646,7 @@ npm install
 </tr>
 <tr>
 <td>Đề tài có phải &quot;chỉ gọi API&quot; không?</td>
-<td>AI chỉ là YC2 và YC9 trong 11 yêu cầu. Trọng tâm là quy trình quản lý test case có phân quyền, duyệt, phiên bản, báo cáo, quy định thay đổi được. Phần AI cũng được thiết kế bài bản: Strategy pattern, che PII, chống prompt injection, schema, retry, rate limit, sandbox.</td>
+<td>AI chỉ là YC2 và YC10 trong 15 yêu cầu. Trọng tâm là quy trình quản lý test case có phân quyền, duyệt, phiên bản, báo cáo, quy định thay đổi được. Phần AI cũng được thiết kế bài bản: Strategy pattern, che PII, chống prompt injection, schema, retry, rate limit, sandbox.</td>
 </tr>
 <tr>
 <td>Vì sao tách AI Service?</td>
@@ -6172,11 +6693,11 @@ npm install
 </thead>
 <tbody><tr>
 <td>Quy trình CNPM</td>
-<td>Agile/Scrum, nhóm 4 người: 5 sprint × 1 tuần, Product Backlog 29 story, DoR/DoD, biên bản các sự kiện; mỗi sprint đi qua đủ 7 hoạt động của môn học</td>
+<td>Agile/Scrum, nhóm 4 người: 5 sprint × 1 tuần, Product Backlog 30 story, DoR/DoD, biên bản các sự kiện; mỗi sprint đi qua đủ 7 hoạt động của môn học</td>
 </tr>
 <tr>
 <td>Phần mềm chạy được</td>
-<td>13 yêu cầu nghiệp vụ (YC1–YC13), 14 màn hình, 40+ API; hỗ trợ đội làm Scrum (sprint, story point, burndown, velocity)</td>
+<td>15 yêu cầu nghiệp vụ (YC1–YC15), user story và sprint đồng bộ một chiều từ Jira, 14 màn hình, 40+ API; hỗ trợ đội làm Scrum (sprint, story point, burndown, velocity)</td>
 </tr>
 <tr>
 <td>Tích hợp AI đúng cách</td>
@@ -6184,7 +6705,7 @@ npm install
 </tr>
 <tr>
 <td>Kiểm thử tự động</td>
-<td>64 unit/API test, 9 E2E Playwright, 8 test Playwright mẫu (POM), script AI sinh chạy được trên web thật</td>
+<td>73 unit/API test, 9 E2E Playwright, 8 test Playwright mẫu (POM), script AI sinh chạy được trên web thật</td>
 </tr>
 <tr>
 <td>Triển khai</td>
@@ -6195,14 +6716,14 @@ npm install
 <ul>
 <li>MockProvider dùng luật đơn giản; chất lượng thật phụ thuộc LLM được cấu hình.</li>
 <li>Script Playwright do AI sinh còn dạng &quot;phẳng&quot;, chưa tái sử dụng Page Object.</li>
-<li>Chưa tích hợp Jira/GitHub Issues 2 chiều; chưa có thông báo (email/Slack).</li>
+<li>Tích hợp Jira mới một chiều (Jira → hệ thống), chưa đẩy bug và kết quả ngược lên Jira; chưa có thông báo (email/Slack).</li>
 <li>Hàng đợi chạy test đang đồng bộ (mỗi request chờ kết quả); chưa có hàng đợi job (BullMQ + Redis) cho chạy hàng loạt.</li>
 <li>Chưa kiểm thử hiệu năng với dữ liệu lớn.</li>
 </ul>
 <h2>9.3. Hướng phát triển cho phần mềm</h2>
 <ol>
 <li>Hàng đợi job (BullMQ + Redis) để sinh test case và chạy script nền, chạy hàng loạt theo bộ test (test suite).</li>
-<li>Tích hợp Jira: nhập user story trực tiếp, tạo bug tự động khi Fail.</li>
+<li>Mở rộng tích hợp Jira (hiện đồng bộ một chiều dự án, module, thành viên, user story, sprint): tạo bug trên Jira tự động khi Fail, đẩy kết quả kiểm thử lên Jira.</li>
 <li>Phát hiện test case trùng lặp bằng embedding; gợi ý edge case còn thiếu.</li>
 <li>RAG với pgvector: đưa tài liệu nghiệp vụ vào để AI sinh test case sát thực tế hơn.</li>
 <li>Quan sát LLM (Langfuse): theo dõi chi phí, độ trễ, chất lượng từng prompt.</li>

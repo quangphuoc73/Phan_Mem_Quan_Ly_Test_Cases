@@ -1,4 +1,4 @@
-// YC9: Sinh script Playwright bằng AI và chạy tự động.
+// YC10: Sinh script Playwright bằng AI và chạy tự động.
 // Bảo mật khi chạy mã do AI sinh:
 //   1. Kiểm tra tĩnh: chặn các API nguy hiểm (child_process, fs, process.env, eval...).
 //   2. Chạy trong tiến trình riêng, biến môi trường tối thiểu (không có API key, JWT secret).

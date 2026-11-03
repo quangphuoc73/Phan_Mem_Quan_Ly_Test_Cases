@@ -32,7 +32,7 @@ function nextCode(story) {
   return (offset) => `${story.code}-TC${String(max + offset).padStart(2, '0')}`;
 }
 
-// YC13: lần chạy gần nhất là Fail và Developer đã báo sửa → Tester cần kiểm thử lại
+// YC15: lần chạy gần nhất là Fail và Developer đã báo sửa → Tester cần kiểm thử lại
 const NEEDS_RETEST = `EXISTS (SELECT 1 FROM test_runs r WHERE r.id = (SELECT MAX(x.id) FROM test_runs x WHERE x.test_case_id = t.id)
   AND r.result = 'FAIL' AND r.fixed_at IS NOT NULL)`;
 

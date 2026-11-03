@@ -1,53 +1,63 @@
-// IT-34 → IT-42: Sprint (Agile/Scrum) – QĐ12, Definition of Done, velocity, burndown
+// IT-34 → IT-42: Sprint (Agile/Scrum) – sprint lấy từ Jira (QĐ14), Definition of Done, velocity, burndown
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { as, newStory, getDb } = require('../helpers');
+const { as, getDb } = require('../helpers');
+const jira = require('../../src/services/jiraService');
 
-const day = (o) => new Date(Date.now() + o * 86400000).toLocaleDateString('sv-SE');
+let hrm;
+const sprintOf = (code) => getDb().prepare('SELECT sp.name FROM user_stories s LEFT JOIN sprints sp ON sp.id = s.sprint_id WHERE s.code = ?').get(code)?.name ?? null;
 
-test('IT-34 QA Lead tạo sprint mới cho dự án', async () => {
+test('IT-34 đồng bộ sprint từ Jira: sprint có ngày được thêm, sprint chưa đặt ngày bỏ qua kèm cảnh báo', async () => {
   const qa = await as('qalead');
-  const res = await qa.post('/api/projects/1/sprints').send({ name: 'Sprint 3', goal: 'Đổi gói', start_date: day(14), end_date: day(27) });
-  assert.equal(res.status, 201);
-  assert.equal(res.body.days, 14);
-  assert.equal(res.body.committed_points, 0);
+  hrm = (await qa.post('/api/jira/import').send({ key: 'HRM' })).body;
+  assert.equal(hrm.sprints, 1);
+  assert.ok(hrm.warnings.some((w) => /HRM Sprint 2: chưa đặt ngày/.test(w)));
+  const list = (await qa.get(`/api/projects/${hrm.id}/sprints`)).body;
+  assert.deepEqual(list.map((s) => [s.name, s.start_date, s.end_date, s.state]), [['HRM Sprint 1', '2026-11-02', '2026-11-15', 'active']]);
 });
 
-test('IT-35 QĐ12: sprint trùng thời gian với sprint khác bị từ chối', async () => {
+test('IT-35 story gắn đúng sprint theo Jira; story không thuộc sprint nằm trong Product backlog', async () => {
+  assert.equal(sprintOf('HRM-1'), 'HRM Sprint 1');
+  assert.equal(sprintOf('HRM-2'), 'HRM Sprint 1');
+  assert.equal(sprintOf('HRM-3'), null);
   const qa = await as('qalead');
-  const res = await qa.post('/api/projects/1/sprints').send({ name: 'Sprint X', start_date: day(5), end_date: day(10) });
-  assert.equal(res.status, 409);
+  const backlog = (await qa.get(`/api/stories?project_id=${hrm.id}&backlog=1`)).body.map((s) => s.code);
+  assert.deepEqual(backlog, ['HRM-3']);
 });
 
-test('IT-36 QĐ12: sprint dài quá SPRINT_MAX_DAYS hoặc kết thúc trước khi bắt đầu bị từ chối', async () => {
+test('IT-36 QĐ14: story point ngoài dãy 1, 2, 3, 5, 8, 13 bị bỏ qua kèm cảnh báo', () => {
+  const pts = (c) => getDb().prepare('SELECT story_points FROM user_stories WHERE code = ?').get(c).story_points;
+  assert.equal(pts('HRM-1'), 5);
+  assert.equal(pts('HRM-3'), null);
+  assert.ok(hrm.warnings.some((w) => /HRM-3: story point 4/.test(w)));
+});
+
+test('IT-37 không có API tạo, sửa, xóa sprint (sprint lập trên Jira)', async () => {
+  const admin = await as('admin');
+  const sp = getDb().prepare('SELECT id FROM sprints LIMIT 1').get().id;
+  assert.equal((await admin.post('/api/projects/1/sprints').send({ name: 'Sprint X' })).status, 404);
+  assert.equal((await admin.put(`/api/sprints/${sp}`).send({ name: 'Y' })).status, 404);
+  assert.equal((await admin.delete(`/api/sprints/${sp}`)).status, 404);
+});
+
+test('IT-38 đồng bộ lại khi sprint đổi trên Jira: cập nhật, không tạo trùng; story chuyển sprint theo Jira', async () => {
+  const s1 = jira.MOCK_PROJECTS.HRM.sprints[0];
+  s1.goal = 'Mục tiêu mới';
+  s1.endDate = '2026-11-16T10:00:00.000Z';
+  jira.MOCK_PROJECTS.HRM.issues[2].fields.mock_sprint = 9001;
   const qa = await as('qalead');
-  assert.equal((await qa.post('/api/projects/1/sprints').send({ name: 'Dài', start_date: day(40), end_date: day(80) })).status, 400);
-  assert.equal((await qa.post('/api/projects/1/sprints').send({ name: 'Ngược', start_date: day(90), end_date: day(85) })).status, 400);
+  await qa.post(`/api/projects/${hrm.id}/jira-sync`);
+  const list = (await qa.get(`/api/projects/${hrm.id}/sprints`)).body;
+  assert.equal(list.length, 1);
+  assert.equal(list[0].goal, 'Mục tiêu mới');
+  assert.equal(list[0].end_date, '2026-11-16');
+  assert.equal(sprintOf('HRM-3'), 'HRM Sprint 1');
 });
 
-test('IT-37 Tester không được tạo sprint (chỉ Admin, QA Lead)', async () => {
-  const tester = await as('tester');
-  const res = await tester.post('/api/projects/1/sprints').send({ name: 'Sprint T', start_date: day(100), end_date: day(110) });
-  assert.equal(res.status, 403);
-});
-
-test('IT-38 story chỉ được gắn vào sprint của chính dự án; story point theo Fibonacci', async () => {
-  const tester = await as('tester');
-  const sauceSprint = getDb().prepare('SELECT id FROM sprints WHERE project_id = 2').get().id;
-  assert.equal((await tester.post('/api/stories').send(newStory({ sprint_id: sauceSprint }))).status, 400);
-  assert.equal((await tester.post('/api/stories').send(newStory({ story_points: 4 }))).status, 400);
-  const ok = await tester.post('/api/stories').send(newStory({ story_points: 8 }));
-  assert.equal(ok.status, 201);
-  assert.equal(ok.body.sprint_id, null); // không chọn sprint → nằm trong Product backlog
-});
-
-test('IT-39 Product backlog chỉ gồm story chưa thuộc sprint; Sprint Planning đưa story vào sprint', async () => {
+test('IT-39 Product backlog chỉ gồm story chưa thuộc sprint', async () => {
   const tester = await as('tester');
   const backlog = (await tester.get('/api/stories?project_id=1&backlog=1')).body;
   assert.ok(backlog.length >= 1 && backlog.every((s) => s.sprint_id === null));
-  const sprint3 = getDb().prepare("SELECT id FROM sprints WHERE project_id = 1 AND name = 'Sprint 3'").get().id;
-  const moved = await tester.put(`/api/stories/${backlog[0].id}`).send({ sprint_id: sprint3 });
-  assert.equal(moved.body.sprint_id, sprint3);
 });
 
 test('IT-40 Definition of Done và velocity: Sprint 1 hoàn thành 5/13 story point', async () => {

@@ -21,7 +21,7 @@ const NAV = [
   { hash: '#/ai-logs', label: 'Nhật ký AI', icon: '🤖', perm: 'ailog:view' },
   { hash: '#/params', label: 'Thay đổi quy định', icon: '⚙️' },
   { group: 'Quản trị', perm: 'audit:view' },
-  { hash: '#/projects', label: 'Dự án & module', icon: '📁', perm: 'project:manage' },
+  { hash: '#/projects', label: 'Dự án & module', icon: '📁', perm: 'jira:import' },
   { hash: '#/users', label: 'Người dùng', icon: '👤', perm: 'user:manage' },
   { hash: '#/audit', label: 'Nhật ký hoạt động', icon: '🛡️', perm: 'audit:view' },
 ];

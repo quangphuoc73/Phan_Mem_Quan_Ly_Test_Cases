@@ -2,7 +2,9 @@
 
 Đồ án môn **SE104 – Nhập môn Công nghệ phần mềm**, Trường Đại học Công nghệ Thông tin – ĐHQG TP.HCM.
 
-User story → **AI sinh test case** → Tester chỉnh sửa → QA Lead duyệt → **AI sinh script Playwright** và chạy tự động → Báo cáo.
+User story trên **Jira** (đồng bộ một chiều) → **AI sinh test case** → Tester chỉnh sửa → QA Lead duyệt → **AI sinh script Playwright** và chạy tự động → Báo cáo. Story đổi trên Jira thì Tester được báo xem lại test case.
+
+Cấu hình Jira Cloud (gói Free) trong `app/.env`: `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN`; để trống thì dùng Jira giả lập (dự án mẫu `HRM`, `LIB`). Xem mục 7.4 của báo cáo.
 
 Đồ án được thực hiện theo **Agile/Scrum** (nhóm 4 người, 5 sprint × 1 tuần) và hệ thống hỗ trợ đội QA làm Scrum: sprint, story point, Product backlog, burndown, velocity, Definition of Done tự động.
 
@@ -50,7 +52,8 @@ Mặc định AI chạy chế độ **mock** (offline, không cần API key). D�
 | `docs/00…09_*.md` | Từng chương: kế hoạch, khảo sát, yêu cầu, phân tích, thiết kế, cài đặt, kiểm thử, triển khai, **kịch bản demo**, hướng phát triển |
 | `docs/hientrang/` | Sơ đồ tổ chức và quy trình hiện tại (draw.io), sinh bằng `python3 docs/hientrang/generate_hientrang.py` |
 | `docs/usecase/` | Sơ đồ use case tổng quát (draw.io), sinh bằng `python3 docs/usecase/generate_usecase.py` |
-| `docs/dfd/` | 13 sơ đồ DFD + sơ đồ phối hợp (draw.io), sinh bằng `python3 docs/dfd/generate_dfd.py` |
+| `docs/dfd/` | 15 sơ đồ DFD + sơ đồ phối hợp (draw.io), sinh bằng `python3 docs/dfd/generate_dfd.py` |
+| `docs/sodo/` | 20 sơ đồ mô hình (draw.io): quy trình, Scrum, kế hoạch sprint, hoạt động, trạng thái test case và user story, kiến trúc, triển khai, lớp, tuần tự (có đồng bộ Jira), luồng màn hình, bảo mật, tháp kiểm thử, CI – sinh bằng `python3 docs/sodo/generate_sodo.py` |
 | `docs/erd/` | Sơ đồ ERD (draw.io) sinh từ `app/src/db/schema.sql` bằng `python3 docs/erd/generate_erd.py` |
 | `docs/images/` | Ảnh chụp màn hình hệ thống |
 | `app/` | Mã nguồn hệ thống (Node.js, Express, SQLite) + unit/API test + E2E Playwright |
@@ -62,7 +65,7 @@ Mặc định AI chạy chế độ **mock** (offline, không cần API key). D�
 ## Kiểm thử
 
 ```bash
-cd app && npm test             # 64 unit + API test
+cd app && npm test             # 73 unit + API test
 cd app && npm run test:e2e     # 9 kịch bản E2E bằng Playwright
 cd automation && npm run test:samples   # 8 test Playwright mẫu trên saucedemo.com
 ```

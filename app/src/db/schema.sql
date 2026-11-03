@@ -25,9 +25,19 @@ CREATE TABLE IF NOT EXISTS projects (
   code        TEXT    NOT NULL UNIQUE,
   name        TEXT    NOT NULL,
   description TEXT,
-  base_url    TEXT,                       -- URL ứng dụng cần test (dùng cho YC9)
+  base_url    TEXT,                       -- URL ứng dụng cần test (dùng cho YC10)
+  jira_key    TEXT,                       -- YC13: mã dự án trên Jira (NULL nếu tạo thủ công)
+  synced_at   TEXT,                       -- lần đồng bộ Jira gần nhất
   created_by  INTEGER REFERENCES users(id),
   created_at  TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
+);
+
+-- YC13: thành viên dự án, đồng bộ từ Jira
+CREATE TABLE IF NOT EXISTS project_members (
+  project_id      INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  user_id         INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  jira_account_id TEXT,
+  PRIMARY KEY (project_id, user_id)
 );
 
 -- Module thuộc dự án
@@ -47,6 +57,8 @@ CREATE TABLE IF NOT EXISTS sprints (
   goal        TEXT,                       -- mục tiêu sprint
   start_date  TEXT    NOT NULL,           -- YYYY-MM-DD
   end_date    TEXT    NOT NULL,
+  jira_id     INTEGER,                    -- YC14: id sprint trên Jira (NULL với dữ liệu mẫu)
+  state       TEXT,                       -- future / active / closed (theo Jira)
   created_at  TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
   UNIQUE (project_id, name),
   CHECK (end_date >= start_date)
@@ -55,7 +67,7 @@ CREATE TABLE IF NOT EXISTS sprints (
 -- BM1: User story
 CREATE TABLE IF NOT EXISTS user_stories (
   id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-  code                TEXT    NOT NULL UNIQUE,     -- QĐ1: mã không trùng
+  code                TEXT    NOT NULL UNIQUE,     -- QĐ1: mã issue trên Jira (VD SHOP-5), không trùng
   project_id          INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
   module_id           INTEGER REFERENCES modules(id) ON DELETE SET NULL,
   sprint_id           INTEGER REFERENCES sprints(id) ON DELETE SET NULL,
@@ -64,6 +76,10 @@ CREATE TABLE IF NOT EXISTS user_stories (
   acceptance_criteria TEXT    NOT NULL,            -- mỗi dòng 1 tiêu chí
   priority            TEXT    NOT NULL DEFAULT 'Medium',
   story_points        INTEGER,                     -- ước lượng độ lớn (Fibonacci)
+  jira_status         TEXT,                        -- trạng thái trên Jira (To Do, In Progress...)
+  synced_at           TEXT,                        -- YC1: lần đồng bộ gần nhất
+  changed_at          TEXT,                        -- YC8: nội dung đổi trên Jira khi đã có test case → cần xem lại
+  archived            INTEGER NOT NULL DEFAULT 0,  -- YC8: đã xóa trên Jira (giữ lại test case)
   created_by          INTEGER REFERENCES users(id),
   created_at          TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
   updated_at          TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
@@ -155,14 +171,14 @@ CREATE TABLE IF NOT EXISTS test_runs (
   duration_ms  INTEGER,
   executed_by  INTEGER REFERENCES users(id),
   executed_at  TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
-  -- BM11: Developer báo đã sửa lỗi của lần chạy Fail này (YC13); lần chạy mới hơn thì hết cần kiểm thử lại
+  -- BM14: Developer báo đã sửa lỗi của lần chạy Fail này (YC15); lần chạy mới hơn thì hết cần kiểm thử lại
   fix_build    TEXT,
   fix_note     TEXT,
   fixed_by     INTEGER REFERENCES users(id),
   fixed_at     TEXT
 );
 
--- Bảng THAM SỐ: lưu quy định để thay đổi được (tính tiến hóa – YC10)
+-- Bảng THAM SỐ: lưu quy định để thay đổi được (tính tiến hóa – YC11)
 CREATE TABLE IF NOT EXISTS parameters (
   key         TEXT PRIMARY KEY,
   value       TEXT NOT NULL,

@@ -42,17 +42,21 @@ NONE = 'Không có'
 #   d5_inline: D5/D2 đã được nói trong các bước check (VD: gửi prompt cho LLM)
 # ---------------------------------------------------------------------------
 DFDS = [
-    dict(file='YC01_LapUserStory', title='DFD YC1 – Lập user story', process='Lập user story',
-         user='PO/BA, Tester', bm='BM1', qd='QĐ1',
-         d={'D1': 'Mã user story, dự án, module, tiêu đề, mô tả, các acceptance criteria, độ ưu tiên.',
-            'D3': 'Danh sách mã user story đã có; danh sách dự án, module; tham số MIN_AC_PER_STORY, PRIORITIES.',
-            'D4': 'D1 + người tạo, ngày tạo.',
-            'D6': 'Thông báo lưu thành công kèm user story vừa lập, hoặc thông báo lỗi vi phạm QĐ1.'},
-         check=['Kiểm tra mã user story đúng dạng US-XXX và không trùng với mã đã có?',
-                'Kiểm tra tiêu đề ≥ 5 ký tự, mô tả ≥ 10 ký tự?',
-                'Kiểm tra độ ưu tiên thuộc danh sách PRIORITIES?',
-                'Kiểm tra số acceptance criteria ≥ MIN_AC_PER_STORY?',
-                'Kiểm tra module thuộc dự án đã chọn?']),
+    dict(file='YC01_DongBoUserStory', title='DFD YC1 – Đồng bộ user story từ Jira', process='Đồng bộ user story',
+         user='Admin, QA Lead', inp='Jira (REST API)', outp='Jira (REST API)', bm='BM1', qd='QĐ1', d5_inline=True,
+         d={'D1': 'Dự án cần đồng bộ (thao tác Đồng bộ ngay).',
+            'D2': 'Từ Jira: các issue loại Story của dự án – mã, Summary, Description (có mục Acceptance criteria), Priority, '
+                  'component, story point, sprint, trạng thái.',
+            'D3': 'Mã Jira của dự án; user story đã có của dự án; module, sprint đã đồng bộ; tham số MIN_AC_PER_STORY, PRIORITIES.',
+            'D4': 'User story mới hoặc cập nhật (BM1): mã issue, tiêu đề, mô tả, acceptance criteria, ưu tiên, module, sprint, story point, '
+                  'trạng thái Jira, thời điểm đồng bộ; nhật ký hoạt động.',
+            'D5': 'Yêu cầu tìm issue loại Story của dự án gửi Jira REST API, kèm thông tin xác thực đọc từ .env.',
+            'D6': 'Số story mới, cập nhật, cần xem lại, đã lưu trữ và các cảnh báo; hoặc thông báo lỗi (không kết nối được, dự án chưa liên kết Jira).'},
+         check=['Kiểm tra người dùng có vai trò Admin hoặc QA Lead và dự án đã liên kết Jira?',
+                'Xuất D5 đến Jira, nhận D2 (danh sách Story, lấy hết các trang).',
+                'Với từng story: tách Description thành mô tả (trước dòng "Acceptance criteria") và các acceptance criteria (mỗi dòng sau đó).',
+                'Đổi Priority về High / Medium / Low; gắn module theo component, sprint theo sprint Jira; story point ngoài dãy 1, 2, 3, 5, 8, 13 thì bỏ qua kèm cảnh báo.',
+                'Story có ít hơn MIN_AC_PER_STORY acceptance criteria vẫn lưu nhưng đánh dấu chưa đủ điều kiện sinh test case.']),
     dict(file='YC02_SinhTestCaseBangAI', title='DFD YC2 – Sinh test case bằng AI', process='Sinh test case bằng AI',
          user='Tester', inp='Dịch vụ LLM', outp='Dịch vụ LLM', bm='BM2', qd='QĐ2', d5_inline=True,
          d={'D1': 'Mã user story cần sinh test case.',
@@ -113,71 +117,89 @@ DFDS = [
             'D3': 'Các test case thỏa điều kiện kèm user story, kết quả chạy gần nhất, có script hay không.',
             'D6': 'Danh sách test case thỏa điều kiện (BM6), hoặc thông báo không tìm thấy.'},
          check=['Ghép điều kiện D1 thành câu truy vấn có tham số (không nối chuỗi SQL) trước khi đọc D3.']),
-    dict(file='YC08_NhapXuatDuLieu', svg='YC08a_NhapUserStory', title='DFD YC8a – Nhập user story từ file',
-         process='Nhập user story từ file', user='PO/BA, Tester', inp='File CSV / JSON', bm='BM7', qd='QĐ1, QĐ8', d2_first=True,
-         d={'D1': 'Dự án nhận dữ liệu; lệnh chọn file.',
-            'D2': 'Các dòng user story trong file (BM7).',
-            'D3': 'Danh sách mã user story đã có; module của dự án; tham số MIN_AC_PER_STORY, PRIORITIES.',
-            'D4': 'Các user story hợp lệ.',
-            'D6': 'Thông báo số dòng nhập thành công và danh sách dòng lỗi kèm lý do.'},
-         check=['Kiểm tra số dòng trong D2 ≤ 200?',
-                'Với từng dòng: kiểm tra theo QĐ1 như YC1; dòng lỗi được ghi lại số dòng và lý do, không làm hỏng các dòng hợp lệ.']),
-    dict(file='YC08_NhapXuatDuLieu', svg='YC08b_XuatTestCase', title='DFD YC8b – Xuất test case ra Excel',
-         process='Xuất test case ra Excel', user='Người dùng', outp='File Excel (.xlsx)', bm='BM8', qd='',
+    dict(file='YC08_NhanThayDoiUserStory', title='DFD YC8 – Nhận thay đổi user story từ Jira', process='Nhận thay đổi user story',
+         user='Tester, QA Lead', inp='Jira (webhook)', bm='BM7', qd='QĐ8', d2_first=True,
+         d={'D1': 'Thao tác Đã xem lại test case của một story (khi Tester xem xong).',
+            'D2': 'Từ Jira: sự kiện webhook (issue tạo / sửa / xóa) kèm mã dự án và mã bí mật; hoặc lượt đồng bộ định kỳ.',
+            'D3': 'Mã bí mật JIRA_WEBHOOK_SECRET; nội dung cũ của story (tiêu đề, mô tả, acceptance criteria); số test case của story; danh sách story của dự án.',
+            'D4': 'Nội dung mới của story; thời điểm cần xem lại test case (BM7); cờ lưu trữ của story không còn trên Jira; nhật ký hoạt động.',
+            'D6': 'Tester thấy nhãn "Cần xem lại test case" hoặc "Đã xóa trên Jira" trên story; thông báo đã xem lại; hoặc lỗi sai mã bí mật.'},
+         check=['Kiểm tra mã bí mật của webhook đúng JIRA_WEBHOOK_SECRET?',
+                'Kiểm tra dự án của issue đã được thêm vào hệ thống (chưa có thì bỏ qua sự kiện)?',
+                'Đồng bộ lại user story của dự án như YC1.',
+                'So nội dung mới với D3: tiêu đề, mô tả hoặc acceptance criteria đổi mà story đã có test case thì ghi thời điểm cần xem lại.',
+                'Story có trong D3 mà không còn trên Jira thì đánh dấu lưu trữ, giữ test case; story xuất hiện lại thì bỏ lưu trữ.',
+                'Khi Tester bấm Đã xem lại: nếu story đang có đánh dấu cần xem lại thì xóa đánh dấu, ngược lại báo lỗi.']),
+    dict(file='YC09_XuatTestCase', title='DFD YC9 – Xuất test case ra Excel',
+         process='Xuất test case ra Excel', user='Người dùng', outp='File Excel (.xlsx)', bm='BM8', qd='QĐ9',
          d={'D1': 'Điều kiện lọc như YC7.',
             'D3': 'Các test case thỏa điều kiện kèm kết quả chạy gần nhất.',
-            'D5': 'File Excel: mỗi test case một dòng theo các cột của BM2 và kết quả gần nhất (BM8).',
+            'D5': 'File testcases.xlsx: mỗi test case một dòng theo các cột của BM2 và kết quả gần nhất (BM8), dòng tiêu đề tô màu.',
             'D6': 'Thông báo xuất file thành công (trình duyệt tải file về).'},
          check=['Ghi từng test case thành một dòng Excel; các bước, acceptance criteria xuống dòng trong ô.']),
-    dict(file='YC09_SinhVaChayScript', title='DFD YC9 – Sinh và chạy script kiểm thử tự động', process='Sinh và chạy script',
+    dict(file='YC10_SinhVaChayScript', title='DFD YC10 – Sinh và chạy script kiểm thử tự động', process='Sinh và chạy script',
          user='Tester', inp='Dịch vụ LLM, Playwright Worker', outp='Dịch vụ LLM, Playwright Worker',
-         bm='BM9', qd='QĐ9', d5_inline=True,
+         bm='BM9', qd='QĐ10', d5_inline=True,
          d={'D1': 'Mã test case; yêu cầu sinh script hoặc chạy script; mã script đã sửa (nếu Tester sửa tay).',
             'D2': 'Từ LLM: mã script Playwright. Từ Playwright Worker: báo cáo chạy (JSON), log, ảnh chụp lỗi.',
             'D3': 'Test case Đã duyệt, URL ứng dụng của dự án, script đang lưu; tham số RUN_TIMEOUT_SEC, AI_MAX_RETRY.',
             'D4': 'Script (mã nguồn, người tạo, ngày); kết quả chạy hình thức Tự động (kết quả, thời gian, log, ảnh lỗi); nhật ký AI.',
             'D5': 'Đến LLM: prompt đã che PII. Đến Playwright Worker: script đã qua kiểm tra tĩnh.',
-            'D6': 'Thông báo thành công kèm mã script, kết quả Pass / Fail, log, ảnh chụp lỗi; hoặc thông báo lỗi vi phạm QĐ9.'},
+            'D6': 'Thông báo thành công kèm mã script, kết quả Pass / Fail, log, ảnh chụp lỗi; hoặc thông báo lỗi vi phạm QĐ10.'},
          check=['Kiểm tra test case ở trạng thái Đã duyệt?',
                 'Sinh script: xuất D5 (prompt) đến Dịch vụ LLM, nhận D2 (mã script).',
                 'Kiểm tra tĩnh script: không dùng module nguy hiểm, không truy cập process.env, không eval / new Function?',
                 'Chạy script: xuất D5 (script) đến Playwright Worker, chờ tối đa RUN_TIMEOUT_SEC giây, nhận D2 (báo cáo, ảnh lỗi).',
                 'Xác định kết quả Pass / Fail từ báo cáo.']),
-    dict(file='YC10_ThayDoiQuyDinh', title='DFD YC10 – Thay đổi quy định', process='Thay đổi quy định',
-         user='Admin / QA Lead', bm='', qd='QĐ10',
+    dict(file='YC11_ThayDoiQuyDinh', title='DFD YC11 – Thay đổi quy định', process='Thay đổi quy định',
+         user='Admin / QA Lead', bm='BM10', qd='QĐ11',
          d={'D1': 'Tham số cần thay đổi, giá trị mới.',
             'D3': 'Giá trị hiện tại, kiểu dữ liệu, miền giá trị cho phép của tham số; vai trò người sửa.',
             'D4': 'Giá trị mới, người sửa, thời điểm sửa; nhật ký hoạt động.',
             'D6': 'Thông báo thay đổi thành công (giá trị cũ → mới), hoặc thông báo giá trị ngoài miền cho phép.'},
          check=['Kiểm tra người sửa có vai trò Admin hoặc QA Lead?',
-                'Kiểm tra giá trị mới đúng kiểu và thuộc miền giá trị cho phép (QĐ10)?']),
-    dict(file='YC11_QuanLyNguoiDungDuAn', title='DFD YC11 – Quản lý người dùng, dự án', process='Quản lý người dùng, dự án',
-         user='Admin', bm='', qd='QĐ11',
-         d={'D1': 'Thông tin tài khoản (tên đăng nhập, họ tên, vai trò, mật khẩu, khóa/mở); hoặc thông tin dự án, module.',
-            'D3': 'Danh sách tài khoản, dự án, module hiện có.',
-            'D4': 'Tài khoản (mật khẩu ĐÃ BĂM bcrypt), dự án, module; nhật ký hoạt động.',
-            'D6': 'Thông báo lưu thành công (không bao giờ chứa mật khẩu băm), hoặc thông báo lỗi vi phạm QĐ11.'},
+                'Kiểm tra giá trị mới đúng kiểu và thuộc miền giá trị cho phép (QĐ11)?']),
+    dict(file='YC12_QuanLyNguoiDung', title='DFD YC12 – Quản lý người dùng', process='Quản lý người dùng',
+         user='Admin', bm='BM11', qd='QĐ12',
+         d={'D1': 'Thông tin tài khoản (BM11): tên đăng nhập, họ tên, email, vai trò, mật khẩu; thao tác thêm, cập nhật, khóa / mở khóa.',
+            'D3': 'Danh sách tên đăng nhập đã có; tài khoản đang đăng nhập.',
+            'D4': 'Tài khoản (mật khẩu ĐÃ BĂM bcrypt); nhật ký hoạt động.',
+            'D6': 'Thông báo lưu thành công (không bao giờ chứa mật khẩu băm), hoặc thông báo lỗi vi phạm QĐ12.'},
          check=['Kiểm tra người thực hiện có vai trò Admin?',
                 'Kiểm tra tên đăng nhập 3–30 ký tự a-z 0-9 _ . và không trùng; mật khẩu ≥ 8 ký tự?',
                 'Kiểm tra Admin không tự khóa hoặc tự hạ quyền chính mình?',
                 'Băm mật khẩu bằng bcrypt.']),
-    dict(file='YC12_QuanLySprint', title='DFD YC12 – Quản lý sprint (Agile/Scrum)', process='Quản lý sprint',
-         user='PO/BA, QA Lead', bm='BM10', qd='QĐ12',
-         d={'D1': 'Tên, mục tiêu, ngày bắt đầu, ngày kết thúc sprint (BM10); user story đưa vào sprint và story point.',
-            'D3': 'Các sprint hiện có của dự án; tham số SPRINT_MAX_DAYS; user story, test case Đã duyệt và kết quả chạy gần nhất.',
-            'D4': 'Sprint mới / đã sửa; sprint_id, story_points của user story.',
-            'D6': 'Thông báo lưu thành công kèm bảng sprint, burndown, velocity; hoặc thông báo lỗi vi phạm QĐ12.'},
-         check=['Kiểm tra số ngày của sprint ≤ SPRINT_MAX_DAYS và ngày kết thúc không trước ngày bắt đầu?',
-                'Kiểm tra sprint không trùng thời gian với sprint khác của dự án?',
-                'Kiểm tra user story cùng dự án và story point thuộc dãy 1, 2, 3, 5, 8, 13?',
+    dict(file='YC13_DongBoDuAnJira', title='DFD YC13 – Đồng bộ dự án từ Jira', process='Đồng bộ dự án từ Jira',
+         user='Admin, QA Lead', inp='Jira (REST API)', outp='Jira (REST API)', bm='BM12', qd='QĐ13, QĐ1, QĐ14', d5_inline=True,
+         d={'D1': 'Thao tác Kiểm tra kết nối, hoặc mã dự án trên Jira cần thêm (BM12).',
+            'D2': 'Từ Jira: kết quả xác thực; tên, mô tả dự án; danh sách component (module); danh sách thành viên (tên, email).',
+            'D3': 'Danh sách mã dự án đã có; danh sách tài khoản đang hoạt động (email, họ tên) để ánh xạ thành viên.',
+            'D4': 'Dự án (mã, tên, mô tả, mã Jira, thời điểm đồng bộ), các module, thành viên dự án; user story và sprint của dự án (như YC1, YC14); nhật ký hoạt động.',
+            'D5': 'Yêu cầu gửi Jira REST API kèm thông tin xác thực đọc từ cấu hình máy chủ (.env).',
+            'D6': 'Kết quả kiểm tra kết nối; hoặc dự án vừa thêm kèm số module, số thành viên và danh sách thành viên chưa có tài khoản; '
+                  'hoặc thông báo lỗi (không kết nối được, không tìm thấy dự án, dự án đã có).'},
+         check=['Kiểm tra quyền: kiểm tra kết nối chỉ Admin; thêm dự án Admin hoặc QA Lead?',
+                'Kiểm tra kết nối: xuất D5 đến Jira, nhận D2; nếu chỉ kiểm tra kết nối thì chuyển tới bước Xuất D6.',
+                'Kiểm tra mã dự án gồm 2–10 ký tự in hoa hoặc số và chưa có trong hệ thống?',
+                'Xuất D5 (lấy dự án, component, thành viên theo mã) đến Jira, nhận D2. Kiểm tra dự án có trên Jira?',
+                'Ánh xạ thành viên Jira sang tài khoản theo email (Jira ẩn email thì theo họ tên); đếm số module, số thành viên.',
+                'Đồng bộ sprint (YC14) và user story (YC1) của dự án vừa thêm.']),
+    dict(file='YC14_TheoDoiSprint', title='DFD YC14 – Theo dõi sprint (Agile/Scrum)', process='Theo dõi sprint',
+         user='Người dùng', inp='Jira (Agile API)', bm='BM13', qd='QĐ14',
+         d={'D1': 'Dự án và sprint cần xem.',
+            'D2': 'Từ Jira (khi đồng bộ): các sprint của board dự án – tên, mục tiêu, ngày bắt đầu, ngày kết thúc, trạng thái.',
+            'D3': 'Sprint đã đồng bộ; tham số SPRINT_MAX_DAYS; user story của sprint, test case Đã duyệt và kết quả chạy gần nhất.',
+            'D4': 'Sprint mới hoặc cập nhật (BM13) kèm id sprint Jira, trạng thái (khi đồng bộ).',
+            'D6': 'Bảng sprint theo trạng thái DoD, story point cam kết / hoàn thành (velocity), burndown; cảnh báo sprint chưa có ngày hoặc quá dài.'},
+         check=['Khi đồng bộ: bỏ qua sprint chưa có ngày bắt đầu, kết thúc (ghi cảnh báo); sprint dài hơn SPRINT_MAX_DAYS thì ghi cảnh báo.',
                 'Xác định story đạt DoD: có ≥ 1 test case Đã duyệt và mọi test case Đã duyệt có lần chạy gần nhất là Pass.',
                 'Tính velocity = tổng story point của story đạt DoD; burndown: còn lại(ngày) = tổng story point − story point đã đạt DoD đến ngày đó.']),
-    dict(file='YC13_BaoDaSuaLoi', title='DFD YC13 – Báo đã sửa lỗi và kiểm thử lại', process='Báo đã sửa lỗi',
-         user='Developer', bm='BM11', qd='QĐ13',
-         d={'D1': 'Lần chạy Fail được chọn, bản build đã sửa, ghi chú cho Tester (BM11).',
+    dict(file='YC15_BaoDaSuaLoi', title='DFD YC15 – Báo đã sửa lỗi và kiểm thử lại', process='Báo đã sửa lỗi',
+         user='Developer', bm='BM14', qd='QĐ15',
+         d={'D1': 'Lần chạy Fail được chọn, bản build đã sửa, ghi chú cho Tester (BM14).',
             'D3': 'Kết quả của lần chạy; lần chạy gần nhất của test case; thông tin đã báo sửa trước đó.',
             'D4': 'Bản build, ghi chú, người báo, thời điểm báo sửa của lần chạy; nhật ký hoạt động.',
-            'D6': 'Thông báo đã báo sửa, test case chuyển sang Cần kiểm thử lại; hoặc thông báo lỗi vi phạm QĐ13.'},
+            'D6': 'Thông báo đã báo sửa, test case chuyển sang Cần kiểm thử lại; hoặc thông báo lỗi vi phạm QĐ15.'},
          check=['Kiểm tra người báo có vai trò Developer?',
                 'Kiểm tra bản build được nhập (1–50 ký tự)?',
                 'Kiểm tra lần chạy có kết quả Fail?',
@@ -290,7 +312,7 @@ class Canvas:
         self.svg.append(f'<polygon points="{" ".join(f"{a:.1f},{b:.1f}" for a, b in pts)}" fill="{fill}" stroke="{stroke}" stroke-width="2"/>')
         self.svg.append(f'<text x="{lx + 30}" y="{ly + 20}" font-size="26" font-weight="bold" text-anchor="middle" dominant-baseline="middle">{label}</text>')
 
-    def edge(self, src, dst, label, p1, p2, s1, s2, dashed=False, label_shift=0):
+    def edge(self, src, dst, label, p1, p2, s1, s2, dashed=False, label_shift=0, label_t=0.5):
         # Mũi tên nối hai công việc (sơ đồ phối hợp). p1, p2: điểm đầu/cuối; s1, s2: (x, y, w, h) của hình nguồn/đích
         self.n += 1
         ex, ey = (p1[0] - s1[0]) / s1[2], (p1[1] - s1[1]) / s1[3]
@@ -307,7 +329,7 @@ class Canvas:
         da = ' stroke-dasharray="8 6"' if dashed else ''
         self.svg.append(f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{hx:.1f}" y2="{hy:.1f}" stroke="#000" stroke-width="2"{da}/>'
                         f'<polygon points="{" ".join(f"{a:.1f},{b:.1f}" for a, b in head)}" fill="#000"/>')
-        mx, my = (x1 + x2) / 2 - label_shift * math.sin(ang), (y1 + y2) / 2 + label_shift * math.cos(ang)
+        mx, my = x1 + (x2 - x1) * label_t - label_shift * math.sin(ang), y1 + (y2 - y1) * label_t + label_shift * math.cos(ang)
         lines = wrap(label, 18)
         bw, bh = max(len(s) for s in lines) * 8 + 10, len(lines) * 19 + 4
         self.svg.append(f'<rect x="{mx - bw / 2:.1f}" y="{my - bh / 2:.1f}" width="{bw}" height="{bh}" fill="#fff"/>')
@@ -366,38 +388,40 @@ def build_dfd(spec):
 # Công việc trước tạo ra thông tin (lưu ở bộ nhớ phụ) để công việc sau sử dụng.
 # ---------------------------------------------------------------------------
 EW, EH = 250, 100
-PHOI_HOP_NODES = {  # khóa: (tâm x, tâm y, tên)
-    'YC1': (175, 300, 'YC1 – Lập user story'),
-    'YC8a': (175, 600, 'YC8a – Nhập user story từ file'),
-    'YC12': (520, 150, 'YC12 – Quản lý sprint'),
-    'YC2': (520, 450, 'YC2 – Sinh test case bằng AI'),
-    'YC3': (900, 450, 'YC3 – Soạn thảo, gửi duyệt'),
-    'YC4': (1280, 450, 'YC4 – Duyệt test case'),
-    'YC5': (1660, 270, 'YC5 – Ghi nhận kết quả'),
-    'YC13': (1280, 150, 'YC13 – Báo đã sửa lỗi'),
-    'YC9': (1660, 630, 'YC9 – Sinh và chạy script'),
-    'YC7': (2070, 150, 'YC7 – Tra cứu test case'),
-    'YC6': (2070, 450, 'YC6 – Lập báo cáo'),
-    'YC8b': (2070, 680, 'YC8b – Xuất test case ra Excel'),
-    'YC11': (760, 860, 'YC11 – Quản lý người dùng, dự án'),
-    'YC10': (1480, 860, 'YC10 – Thay đổi quy định'),
+PHOI_HOP_NODES = {  # khóa: (tâm x, tâm y, tên) – lưới 3 cột x = 175 / 575 / 975, luồng đi từ trên xuống
+    'YC1': (175, 170, 'YC1 – Đồng bộ user story'),
+    'YC14': (575, 170, 'YC14 – Theo dõi sprint'),
+    'YC8': (975, 170, 'YC8 – Nhận thay đổi user story'),
+    'YC2': (175, 350, 'YC2 – Sinh test case bằng AI'),
+    'YC3': (575, 350, 'YC3 – Soạn thảo, gửi duyệt'),
+    'YC15': (975, 350, 'YC15 – Báo đã sửa lỗi'),
+    'YC4': (575, 530, 'YC4 – Duyệt test case'),
+    'YC5': (975, 530, 'YC5 – Ghi nhận kết quả'),
+    'YC10': (575, 710, 'YC10 – Sinh và chạy script'),
+    'YC9': (175, 890, 'YC9 – Xuất test case ra Excel'),
+    'YC6': (575, 890, 'YC6 – Lập báo cáo'),
+    'YC7': (975, 890, 'YC7 – Tra cứu test case'),
+    'YC13': (175, 1110, 'YC13 – Đồng bộ dự án từ Jira'),
+    'YC12': (575, 1110, 'YC12 – Quản lý người dùng'),
+    'YC11': (975, 1110, 'YC11 – Thay đổi quy định'),
 }
 PHOI_HOP_EDGES = [  # (nguồn, đích, thông tin chuyển giao, dịch song song để hai chiều không chồng nhau)
     ('YC1', 'YC2', 'user story', 0),
-    ('YC8a', 'YC2', 'user story', 0),
-    ('YC1', 'YC12', 'user story, story point', 0),
+    ('YC8', 'YC3', 'story đổi: cần xem lại test case', 0, 0.28),
+    ('YC12', 'YC13', 'tài khoản (gán thành viên)', 0),
+    ('YC1', 'YC14', 'user story, story point', 0),
     ('YC2', 'YC3', 'test case Nháp', 0),
-    ('YC3', 'YC4', 'test case Chờ duyệt', -20),
-    ('YC4', 'YC3', 'test case Bị trả lại + ghi chú', -20),
+    ('YC3', 'YC4', 'test case Chờ duyệt', -45),
+    ('YC4', 'YC3', 'test case Bị trả lại + ghi chú', -45),
     ('YC4', 'YC5', 'test case Đã duyệt', 0),
-    ('YC4', 'YC9', 'test case Đã duyệt', 0),
-    ('YC5', 'YC13', 'lần chạy Fail', -20),
-    ('YC13', 'YC5', 'bản build đã sửa (cần kiểm thử lại)', -20),
-    ('YC5', 'YC12', 'kết quả chạy gần nhất (xét DoD)', 0),
+    ('YC4', 'YC10', 'test case Đã duyệt', 0),
+    ('YC5', 'YC15', 'lần chạy Fail', -45),
+    ('YC15', 'YC5', 'bản build đã sửa (cần kiểm thử lại)', -45),
+    ('YC5', 'YC14', 'kết quả chạy gần nhất (xét DoD)', 0),
     ('YC5', 'YC7', 'kết quả gần nhất', 0),
     ('YC5', 'YC6', 'kết quả chạy thủ công', 0),
-    ('YC9', 'YC6', 'kết quả chạy tự động', 0),
-    ('YC9', 'YC8b', 'kết quả gần nhất', 0),
+    ('YC10', 'YC6', 'kết quả chạy tự động', 0),
+    ('YC10', 'YC9', 'kết quả gần nhất', 0),
 ]
 
 
@@ -418,26 +442,27 @@ def ellipse_point(cx, cy, tx, ty, shift):
 
 
 def build_phoi_hop():
-    c = Canvas(2240, 960)
+    c = Canvas(1150, 1190)
     c.title('Sơ đồ phối hợp giữa các công việc')
-    c.frame('Mọi công việc đọc tài khoản, dự án (YC11) và tham số quy định (YC10) từ bộ nhớ phụ', 30, 70, 2180, 690)
+    c.frame('Mọi công việc đọc tài khoản (YC12), dự án, module (YC13), tham số quy định (YC11) từ bộ nhớ phụ', 30, 70, 1090, 935)
     ids, rect = {}, {}
     for k, (x, y, name) in PHOI_HOP_NODES.items():
         ids[k] = c.process(name, x - EW / 2, y - EH / 2, EW, EH, size=19)
         rect[k] = (x - EW / 2, y - EH / 2, EW, EH)
-    for s, t, label, shift in PHOI_HOP_EDGES:
+    for s, t, label, shift, *lt in PHOI_HOP_EDGES:
         (sx, sy, _), (tx, ty, _) = PHOI_HOP_NODES[s], PHOI_HOP_NODES[t]
         p1 = ellipse_point(sx, sy, tx, ty, shift)
         p2 = ellipse_point(tx, ty, sx, sy, -shift)
         # mũi tên nằm ngang, ngắn: đặt nhãn phía trên đường để không che đầu mũi tên
         flat = shift == 0 and abs(ty - sy) < 0.3 * abs(tx - sx)
-        c.edge(ids[s], ids[t], label, p1, p2, rect[s], rect[t], label_shift=-20 if flat else shift * 1.6)
-    # YC10, YC11 cung cấp dữ liệu nền cho mọi công việc (mũi tên nét đứt lên khung)
+        above = -(len(wrap(label, 18)) * 19 + 4) / 2 - 6
+        c.edge(ids[s], ids[t], label, p1, p2, rect[s], rect[t], label_shift=above if flat else shift, label_t=lt[0] if lt else 0.3 if shift else 0.5)
+    # YC11, YC12, YC13 cung cấp dữ liệu nền cho mọi công việc (mũi tên nét đứt lên khung)
     fid = f'c{3}'  # id của khung (được tạo ngay sau tiêu đề)
-    frame = (30, 70, 2180, 690)
-    for k, label in (('YC11', 'tài khoản, vai trò, dự án, module'), ('YC10', 'tham số quy định QĐ1–QĐ12')):
+    frame = (30, 70, 1090, 935)
+    for k, label in (('YC13', 'dự án, module, thành viên'), ('YC12', 'tài khoản, vai trò'), ('YC11', 'tham số quy định')):
         x, y, _ = PHOI_HOP_NODES[k]
-        c.edge(ids[k], fid, label, (x, y - EH / 2), (x, 760), rect[k], frame, dashed=True)
+        c.edge(ids[k], fid, label, (x, y - EH / 2), (x, 1005), rect[k], frame, dashed=True)
     return c
 
 
@@ -493,10 +518,11 @@ def markdown():
                  '*File:* `docs/dfd/PhoiHop_CacCongViec.drawio`. Mỗi mũi tên là **thông tin** do công việc trước tạo ra '
                  '(ghi xuống bộ nhớ phụ ở D4) và công việc sau sử dụng (đọc lên ở D3).\n\n'
                  '| Công việc trước | Thông tin chuyển giao | Công việc sau |\n|---|---|---|\n'
-                 + ''.join(f'| {PHOI_HOP_NODES[s][2]} | {lb} | {PHOI_HOP_NODES[t][2]} |\n' for s, t, lb, _ in PHOI_HOP_EDGES)
-                 + '| YC9 – Sinh và chạy script | kết quả chạy tự động gần nhất (xét DoD) | YC12 – Quản lý sprint |\n'
-                 '| YC11 – Quản lý người dùng, dự án | tài khoản, vai trò, dự án, module | Mọi công việc |\n'
-                 '| YC10 – Thay đổi quy định | tham số quy định QĐ1–QĐ12 | Mọi công việc |\n\n')
+                 + ''.join(f'| {PHOI_HOP_NODES[s][2]} | {lb} | {PHOI_HOP_NODES[t][2]} |\n' for s, t, lb, *_ in PHOI_HOP_EDGES)
+                 + '| YC10 – Sinh và chạy script | kết quả chạy tự động gần nhất (xét DoD) | YC14 – Theo dõi sprint |\n'
+                 '| YC13 – Đồng bộ dự án từ Jira | dự án, module, thành viên | Mọi công việc |\n'
+                 '| YC12 – Quản lý người dùng | tài khoản, vai trò | Mọi công việc |\n'
+                 '| YC11 – Thay đổi quy định | tham số quy định | Mọi công việc |\n\n')
     return ''.join(parts)
 
 
@@ -516,7 +542,7 @@ def main():
         (OUT / f'{name}.drawio').write_text(mxfile(pages), encoding='utf-8')
     ph = build_phoi_hop()
     (OUT / 'PhoiHop_CacCongViec.svg').write_text(ph.svg_doc(), encoding='utf-8')
-    (OUT / 'PhoiHop_CacCongViec.drawio').write_text(mxfile([('Sơ đồ phối hợp', ph.mxgraph(960))]), encoding='utf-8')
+    (OUT / 'PhoiHop_CacCongViec.drawio').write_text(mxfile([('Sơ đồ phối hợp', ph.mxgraph(1190))]), encoding='utf-8')
 
     text = CHAPTER.read_text(encoding='utf-8')
     block = f'<!-- DFD:BEGIN (sinh tự động bởi docs/dfd/generate_dfd.py, đừng sửa tay) -->\n{markdown()}<!-- DFD:END -->\n'

@@ -54,6 +54,29 @@ Khởi động lại server sau khi sửa. Thanh bên trái hiển thị provide
 
 > **Chính sách dữ liệu:** dữ liệu gửi qua API của các nhà cung cấp trên (gói API, không phải ứng dụng chat) theo điều khoản hiện hành không được dùng để huấn luyện model; hệ thống vẫn che dữ liệu nhạy cảm trước khi gửi. Kiểm tra lại điều khoản mới nhất của nhà cung cấp trước khi dùng với dữ liệu thật.
 
+### Cấu hình kết nối Jira (YC1, YC8, YC13, YC14)
+
+User story và sprint chỉ được tạo trên Jira rồi đồng bộ **một chiều** về hệ thống. Jira Cloud gói **Free** (tối đa 10 người) là đủ. Để trống `JIRA_BASE_URL` thì hệ thống dùng **Jira giả lập** có 2 dự án mẫu `HRM` và `LIB` (cho kiểm thử tự động và khi buổi demo không có mạng). Để dùng Jira thật, điền vào `app/.env` rồi khởi động lại server:
+
+| Biến | Ví dụ | Ghi chú |
+|---|---|---|
+| `JIRA_BASE_URL` | `https://ten-nhom.atlassian.net` | Địa chỉ Jira Cloud của nhóm |
+| `JIRA_EMAIL` | email tài khoản Atlassian | Tài khoản có quyền xem dự án |
+| `JIRA_API_TOKEN` | (token) | Tạo tại *id.atlassian.com → Bảo mật → Mã thông báo API*; chỉ để trong `.env`, không commit |
+| `JIRA_SYNC_MINUTES` | `5` | Tự đồng bộ mọi dự án Jira mỗi 5 phút; `0` = tắt |
+| `JIRA_WEBHOOK_SECRET` | chuỗi ngẫu nhiên dài | Bật webhook; để trống thì tắt |
+
+Thành viên Jira được gán vào tài khoản có **email trùng**, nên Admin tạo tài khoản với đúng email Atlassian của từng người trước khi đồng bộ.
+
+**Quy ước viết story trên Jira** (để hệ thống đọc được):
+
+1. Loại issue là **Story** (Task, Bug không được lấy).
+2. Trong **Description**: phần đầu là mô tả *"Là …, tôi muốn …, để …"*; tiếp theo một dòng **Acceptance criteria**; dưới đó mỗi gạch đầu dòng là một tiêu chí.
+3. **Priority** Highest/High → High, Medium → Medium, Low/Lowest → Low. **Story point estimate** dùng 1, 2, 3, 5, 8, 13. **Component** thành module.
+4. Sprint phải có ngày bắt đầu, kết thúc mới được đồng bộ.
+
+**Webhook** (tùy chọn, cần địa chỉ công khai): Jira → *Settings → System → WebHooks → Create* với URL `https://<địa chỉ app>/api/jira/webhook?secret=<JIRA_WEBHOOK_SECRET>`, chọn sự kiện *Issue created / updated / deleted* và *Sprint*. Khi chạy trên máy cá nhân, mở đường hầm bằng `ngrok http 3000` để lấy địa chỉ công khai; nếu không dùng webhook thì đồng bộ định kỳ và nút *Đồng bộ ngay* vẫn đủ.
+
 ### Cấu hình bộ kiểm thử Playwright
 
 Sao chép `automation/.env.example` thành `automation/.env` (không commit file này):
@@ -91,13 +114,13 @@ Chưa khai báo thì CI dùng giá trị mặc định cho Sauce Demo. CI luôn 
 | Tester | `tester` | `Tester@123` |
 | Developer | `dev` | `Dev@123456` |
 
-Dữ liệu mẫu: dự án **PETINS – App bảo hiểm thú cưng** (hư cấu, 3 module, 5 user story, 4 test case đã duyệt có lịch sử chạy; Sprint 1 đã kết thúc, Sprint 2 đang chạy tính từ ngày tạo dữ liệu, 1 story trong Product backlog) và **SAUCE – Sauce Demo Shop** (web thật `https://www.saucedemo.com/`, 2 user story, 4 test case đã duyệt dùng cho Playwright). Đặt lại dữ liệu: `npm run reset`.
+Dữ liệu mẫu (không liên kết Jira, chỉ để xem và demo; story của dự án mẫu không đồng bộ được): dự án **PETINS – App bảo hiểm thú cưng** (hư cấu, 3 module, 5 user story, 4 test case đã duyệt có lịch sử chạy; Sprint 1 đã kết thúc, Sprint 2 đang chạy tính từ ngày tạo dữ liệu, 1 story trong Product backlog) và **SAUCE – Sauce Demo Shop** (web thật `https://www.saucedemo.com/`, 2 user story, 4 test case đã duyệt dùng cho Playwright). Đặt lại dữ liệu: `npm run reset`.
 
 ## 7.6. Hướng dẫn sử dụng theo vai trò
 
 ### Tester
 
-1. **Lập user story:** menu *User story* → *＋ Lập user story* → nhập mã (`US-...`), tiêu đề, mô tả "Là…, tôi muốn…, để…", mỗi acceptance criterion một dòng → *Lưu*. Có thể *⬆️ Nhập từ file* CSV/JSON (mẫu ở `app/samples/`).
+1. **User story** đến từ Jira (PO/BA viết). Menu *User story* liệt kê story đã đồng bộ; story có nhãn 🔁 *Cần xem lại test case* là story vừa đổi trên Jira – mở ra, sửa test case cho khớp acceptance criteria mới rồi bấm **✔ Đã xem lại**.
 2. **Sinh test case bằng AI:** mở user story → *✨ Sinh test case bằng AI*. Sau vài giây bảng test case hiện ra ở trạng thái *Nháp*; thông báo cho biết số test case, thời gian, dữ liệu nhạy cảm đã che.
 3. **Xem lại và sửa:** bấm vào một dòng → *✏️ Sửa* → *Lưu phiên bản mới*. Xóa case thừa, *＋ Thêm thủ công* case còn thiếu.
 4. **Gửi duyệt:** tích chọn các test case → *📤 Gửi duyệt mục đã chọn*. Nếu bị trả lại, ghi chú của QA Lead hiện ở đầu chi tiết test case.
@@ -112,15 +135,13 @@ Dữ liệu mẫu: dự án **PETINS – App bảo hiểm thú cưng** (hư cấ
 4. *Thay đổi quy định*: sửa số test case tối đa, số lần gọi AI/giờ… → *Lưu*. Có hiệu lực ngay.
 5. *Tổng quan & báo cáo*: theo dõi tỷ lệ pass, độ bao phủ, story chưa có test case, hiệu quả AI.
 
-### PO / BA, QA Lead – lập user story và kế hoạch sprint (Agile/Scrum)
+### PO / BA, QA Lead – user story và sprint (Agile/Scrum)
 
-PO/BA lập user story (menu *User story* → *＋ Lập user story* hoặc *⬆️ Nhập từ file*) với acceptance criteria rõ ràng, rồi cùng QA Lead lập kế hoạch sprint:
+PO/BA viết user story và lập sprint **trên Jira** theo quy ước ở mục 7.4; hệ thống chỉ đọc.
 
-1. Chọn dự án ở thanh trên cùng → menu *Sprint (Agile)*.
-2. *＋ Tạo sprint*: nhập tên, Sprint Goal, ngày bắt đầu/kết thúc (tối đa 28 ngày, không trùng sprint khác).
-3. **Sprint Planning:** ở mục *Product backlog*, chọn sprint cho từng story → *Đưa vào*. Khi lập hoặc sửa user story có thể chọn luôn sprint và story point (1, 2, 3, 5, 8, 13).
-4. Theo dõi bảng 4 cột: *Cần viết test case → Đang soạn/chờ duyệt → Đang kiểm thử → Hoàn thành (DoD)*. Story tự chuyển cột theo trạng thái test case và kết quả chạy.
-5. Xem *Burndown chart* (story point còn lại theo ngày) và *Velocity các sprint*. Chọn sprint ở ô thứ hai trên thanh trên cùng để lọc toàn bộ hệ thống (báo cáo, user story, tra cứu, duyệt) theo sprint đó.
+1. QA Lead (hoặc Admin) chọn dự án → menu *User story* → **⟳ Đồng bộ từ Jira** (hoặc chờ đồng bộ định kỳ / webhook). Thông báo cho biết số story mới, cập nhật, cần xem lại, đã xóa trên Jira và các cảnh báo.
+2. Menu *Sprint (Agile)*: chọn sprint (lấy từ Jira). Bảng 4 cột *Cần viết test case → Đang soạn/chờ duyệt → Đang kiểm thử → Hoàn thành (DoD)* do hệ thống tự tính từ trạng thái test case và kết quả chạy.
+3. Xem *Burndown chart* (story point còn lại theo ngày) và *Velocity các sprint*; mục *Product backlog* là story chưa thuộc sprint nào trên Jira. Chọn sprint ở ô thứ hai trên thanh trên cùng để lọc toàn bộ hệ thống theo sprint đó.
 
 ### Developer
 
@@ -130,7 +151,15 @@ PO/BA lập user story (menu *User story* → *＋ Lập user story* hoặc *⬆
 
 ### Admin
 
-*Người dùng* (thêm, khóa/mở khóa, xem ma trận phân quyền), *Dự án & module* (tạo dự án, khai báo URL ứng dụng cần test cho Playwright, thêm module), *Nhật ký hoạt động*, *Nhật ký AI*.
+*Người dùng* (thêm, khóa/mở khóa, xem ma trận phân quyền), *Nhật ký hoạt động*, *Nhật ký AI*.
+
+**Dự án & module (YC13):**
+1. Bấm **🔌 Kiểm tra kết nối Jira** để chắc chắn cấu hình `.env` đúng (dòng đầu trang cho biết đang dùng Jira thật hay giả lập, webhook đã bật chưa).
+2. Bấm **⬇ Thêm dự án từ Jira**, nhập mã dự án (space key, VD `SHOP`) → hệ thống lấy tên, mô tả, module (component), thành viên, sprint và mọi Story; thông báo tên thành viên chưa có tài khoản để Admin tạo thêm.
+3. Bấm **Sửa URL** để khai báo URL ứng dụng cần test (VD `https://www.saucedemo.com/`) cho Playwright, vì Jira không có thông tin này.
+4. Khi Jira có thay đổi mà chưa tới lượt đồng bộ định kỳ, bấm **⟳ Đồng bộ ngay** trên thẻ dự án.
+
+QA Lead cũng thêm dự án và đồng bộ được, nhưng không kiểm tra kết nối và không sửa URL. Hệ thống không có chức năng tạo dự án, module, user story hay sprint bằng tay.
 
 ## 7.7. Xử lý sự cố thường gặp
 
@@ -142,6 +171,9 @@ PO/BA lập user story (menu *User story* → *＋ Lập user story* hoặc *⬆
 | Provider "unavailable" | Chọn AI thật nhưng thiếu API key | Điền key trong `.env` hoặc quay về `AI_PROVIDER=mock` |
 | AI báo "chưa sinh được test case hợp lệ" | Model trả sai định dạng sau 3 lần | Bấm sinh lại; xem *Nhật ký AI* để biết lý do; hoặc viết thủ công |
 | Bị 429 khi gọi AI | Vượt hạn mức/giờ | Chờ, hoặc QA Lead tăng `AI_CALLS_PER_HOUR` |
+| "Jira từ chối xác thực" / "Không kết nối được tới Jira" | Sai `JIRA_EMAIL`, `JIRA_API_TOKEN` hoặc `JIRA_BASE_URL` | Tạo lại API token, kiểm tra địa chỉ có dạng `https://…atlassian.net`; khởi động lại server |
+| Story về hệ thống nhưng có nhãn *Thiếu acceptance criteria* | Description thiếu dòng `Acceptance criteria` hoặc không có gạch đầu dòng bên dưới | Sửa Description trên Jira theo quy ước mục 7.4 rồi *Đồng bộ ngay* |
+| Sprint không hiện | Sprint trên Jira chưa đặt ngày | Đặt ngày bắt đầu, kết thúc trên Jira (hoặc bấm *Start sprint*) rồi đồng bộ |
 | Lỗi cài `better-sqlite3` | Thiếu công cụ biên dịch | macOS: `xcode-select --install`; hoặc dùng Docker |
 
 ## 7.8. Giao diện thực tế
@@ -174,14 +206,14 @@ PO/BA lập user story (menu *User story* → *＋ Lập user story* hoặc *⬆
 
 ![Duyệt](images/07_hang_doi_duyet.png)
 
-**Script Playwright do AI sinh và chạy tự động (YC9)**
+**Script Playwright do AI sinh và chạy tự động (YC10)**
 
 ![Playwright](images/08_playwright_chay_tu_dong.png)
 
-**Sprint (Agile) – YC12** – Sprint Goal, bảng sprint theo Definition of Done, burndown, velocity, Product backlog.
+**Sprint (Agile) – YC14** – sprint lấy từ Jira: Sprint Goal, bảng sprint theo Definition of Done, burndown, velocity, Product backlog (chỉ xem).
 
 ![Sprint](images/11_sprint.png)
 
-**Thay đổi quy định (YC10)**
+**Thay đổi quy định (YC11)**
 
 ![Quy định](images/09_thay_doi_quy_dinh.png)

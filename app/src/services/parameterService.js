@@ -1,4 +1,4 @@
-// Quản lý bảng THAM SỐ (các quy định thay đổi được – YC10).
+// Quản lý bảng THAM SỐ (các quy định thay đổi được – YC11).
 const { getDb } = require('../db');
 const { badRequest, notFound } = require('../utils/errors');
 

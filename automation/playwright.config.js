@@ -1,4 +1,4 @@
-// Cấu hình Playwright cho worker chạy test tự động (YC9).
+// Cấu hình Playwright cho worker chạy test tự động (YC10).
 // Đọc biến môi trường từ file .env (mẫu: .env.example); mọi biến đều có giá trị mặc định.
 // Mặc định dùng Google Chrome đã cài trên máy (channel: 'chrome') nên không cần
 // tải thêm trình duyệt. Trong Docker/CI dùng Chromium của Playwright (PW_CHANNEL=chromium).

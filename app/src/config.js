@@ -24,8 +24,19 @@ module.exports = {
     mockDelayMs: isTest ? 0 : Number(process.env.MOCK_DELAY_MS || 1500),
   },
 
+  // YC13: đồng bộ dự án từ Jira Cloud. Để trống JIRA_BASE_URL thì dùng Jira giả lập (dữ liệu mẫu)
+  jira: {
+    baseUrl: isTest ? '' : (process.env.JIRA_BASE_URL || ''),
+    email: process.env.JIRA_EMAIL || '',
+    apiToken: process.env.JIRA_API_TOKEN || '',
+    // QĐ8: mã bí mật Jira gửi kèm webhook (?secret=...); để trống thì tắt webhook
+    webhookSecret: isTest ? 'test-secret' : (process.env.JIRA_WEBHOOK_SECRET || ''),
+    // Đồng bộ định kỳ mọi dự án Jira (phút); 0 = tắt. Chỉ chạy khi đã cấu hình Jira thật
+    syncMinutes: Number(process.env.JIRA_SYNC_MINUTES ?? 5),
+  },
+
   runner: {
-    // Thư mục project Playwright dùng để chạy script tự động (YC9)
+    // Thư mục project Playwright dùng để chạy script tự động (YC10)
     dir: process.env.RUNNER_DIR || path.join(__dirname, '..', '..', 'automation'),
     enabled: process.env.RUNNER_ENABLED !== 'false',
   },

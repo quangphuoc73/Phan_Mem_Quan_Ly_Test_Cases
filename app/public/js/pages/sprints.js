@@ -1,5 +1,5 @@
-// YC12: Sprint (Agile/Scrum) – bảng sprint (Kanban), burndown, velocity, product backlog.
-import { state, api, esc, can, pill, toast, toastError, modal, bind, busy, formData, safeSet } from '../core.js';
+// YC14: Theo dõi sprint (Agile/Scrum) – sprint và story point lấy từ Jira; bảng sprint, burndown, velocity tính trong hệ thống.
+import { state, api, esc, pill, bind, safeSet } from '../core.js';
 import { refreshProjects, currentProject, activeSprint, renderSprintSwitch } from '../main.js';
 
 const STAGES = [
@@ -10,39 +10,6 @@ const STAGES = [
 ];
 const charts = [];
 const fmt = (d) => d.split('-').reverse().slice(0, 2).join('/');
-
-function sprintForm(sp = {}) {
-  return `<form id="sp-form">
-    <div class="field"><label>Tên sprint *</label><input name="name" required value="${esc(sp.name || '')}" placeholder="Sprint 3"></div>
-    <div class="field"><label>Mục tiêu sprint (Sprint Goal)</label><input name="goal" value="${esc(sp.goal || '')}" placeholder="Khách hàng ... được ..."></div>
-    <div class="grid g2">
-      <div class="field"><label>Ngày bắt đầu *</label><input type="date" name="start_date" required value="${esc(sp.start_date || '')}"></div>
-      <div class="field"><label>Ngày kết thúc *</label><input type="date" name="end_date" required value="${esc(sp.end_date || '')}"></div>
-    </div>
-    <p class="hint">QĐ12: sprint dài tối đa theo tham số SPRINT_MAX_DAYS và không trùng thời gian với sprint khác của dự án.</p>
-  </form>`;
-}
-
-function openSprintForm(project, sp, onSaved) {
-  const m = modal({
-    title: sp ? `Sửa ${sp.name}` : `Tạo sprint mới – ${project.name}`,
-    body: sprintForm(sp),
-    foot: '<button class="btn" data-close>Hủy</button><button class="btn primary" id="sp-save">Lưu</button>',
-  });
-  m.el.querySelector('#sp-save').addEventListener('click', async (e) => {
-    const f = m.el.querySelector('#sp-form');
-    if (!f.reportValidity()) return;
-    try {
-      const saved = await busy(e.currentTarget, () =>
-        sp ? api(`/sprints/${sp.id}`, { method: 'PUT', body: formData(f) }) : api(`/projects/${project.id}/sprints`, { method: 'POST', body: formData(f) }));
-      m.close();
-      toast(`Đã lưu ${saved.name}`, 'success');
-      onSaved(saved);
-    } catch (err) {
-      toastError(err);
-    }
-  });
-}
 
 export async function renderSprints(page) {
   await refreshProjects();
@@ -73,15 +40,13 @@ export async function renderSprints(page) {
 
   page.innerHTML = `
     <div class="page-head">
-      <div><h1>Sprint · ${esc(project.name)}</h1><p>Phát triển theo Scrum: mỗi sprint đưa một nhóm user story từ backlog đến trạng thái Hoàn thành.</p></div>
-      ${can('sprint:manage') ? '<button class="btn primary" id="new-sprint">＋ Tạo sprint</button>' : ''}
+      <div><h1>Sprint · ${esc(project.name)}</h1><p>Sprint, story point và việc đưa story vào sprint làm trên Jira; hệ thống tự tính trạng thái DoD, velocity, burndown từ kết quả kiểm thử.</p></div>
     </div>
     ${sprint ? `
     <div class="card mb">
       <div class="row">
         <div class="row" role="tablist" aria-label="Chọn sprint">${project.sprints.map((s) => `<button class="btn sm ${s.id === sprint.id ? 'primary' : ''}" data-sprint="${s.id}">${esc(s.name)}</button>`).join('')}</div>
-        <span class="spacer"></span>
-        ${can('sprint:manage') ? '<button class="btn sm" id="edit-sprint">Sửa sprint</button>' : ''}
+        <span class="spacer"></span>${sprint.state ? `<span class="pill role">Jira: ${esc(sprint.state)}</span>` : ''}
       </div>
       <div class="grid g4 mt">
         <div><div class="muted small">Mục tiêu sprint</div><b>${esc(sprint.goal || '—')}</b></div>
@@ -106,15 +71,13 @@ export async function renderSprints(page) {
     <div class="grid g2 mt">
       <div class="card"><h3>Burndown chart – ${esc(sprint.name)}</h3><p class="muted small">Story point còn lại theo ngày. Story giảm điểm khi đạt Definition of Done.</p><div class="chart-box"><canvas id="c-burndown"></canvas></div></div>
       <div class="card"><h3>Velocity các sprint</h3><p class="muted small">Story point cam kết so với hoàn thành – dùng để ước lượng khả năng làm của sprint sau.</p><div class="chart-box"><canvas id="c-velocity"></canvas></div></div>
-    </div>` : `<div class="alert info">Dự án chưa có sprint nào${can('sprint:manage') ? '. Bấm <b>＋ Tạo sprint</b> để lập kế hoạch sprint đầu tiên.' : '.'}</div>`}
+    </div>` : `<div class="alert info">Dự án chưa có sprint nào. Tạo sprint (có ngày bắt đầu, kết thúc) trên Jira rồi đồng bộ lại.</div>`}
     <div class="card mt">
       <h3>Product backlog (${backlog.length})</h3>
-      <p class="muted small">User story chưa thuộc sprint nào. Trong buổi Sprint Planning, nhóm chọn story từ đây đưa vào sprint.</p>
+      <p class="muted small">User story chưa thuộc sprint nào trên Jira. Trong buổi Sprint Planning, nhóm kéo story vào sprint trên Jira.</p>
       <div class="table-wrap"><table>
-        <thead><tr><th>Mã</th><th>Tiêu đề</th><th>Ưu tiên</th><th>Story point</th>${can('story:write') && project.sprints.length ? '<th>Đưa vào sprint</th>' : ''}</tr></thead>
-        <tbody>${backlog.map((s) => `<tr><td><a href="#/stories/${s.id}" class="mono">${esc(s.code)}</a></td><td>${esc(s.title)}</td><td>${pill(s.priority)}</td><td>${s.story_points ?? '—'}</td>
-          ${can('story:write') && project.sprints.length ? `<td><div class="row"><select data-plan-sel="${s.id}" style="width:150px" aria-label="Sprint cho ${esc(s.code)}">${project.sprints.filter((x) => x.end_date >= today).map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select>
-          <button class="btn sm" data-plan="${s.id}">Đưa vào</button></div></td>` : ''}</tr>`).join('') || '<tr><td colspan="5" class="empty">Backlog trống – mọi story đã được lên kế hoạch</td></tr>'}</tbody>
+        <thead><tr><th>Mã</th><th>Tiêu đề</th><th>Ưu tiên</th><th>Story point</th></tr></thead>
+        <tbody>${backlog.map((s) => `<tr><td><a href="#/stories/${s.id}" class="mono">${esc(s.code)}</a></td><td>${esc(s.title)}</td><td>${pill(s.priority)}</td><td>${s.story_points ?? '—'}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">Backlog trống – mọi story đã được lên kế hoạch</td></tr>'}</tbody>
       </table></div>
     </div>`;
 
@@ -123,18 +86,6 @@ export async function renderSprints(page) {
     state.sprintId = Number(b.dataset.sprint);
     safeSet('sprintId', state.sprintId);
     reload();
-  });
-  page.querySelector('#new-sprint')?.addEventListener('click', () => openSprintForm(project, null, (sp) => ((state.sprintId = sp.id), reload())));
-  page.querySelector('#edit-sprint')?.addEventListener('click', () => openSprintForm(project, sprint, reload));
-  bind(page, '[data-plan]', 'click', async (_e, b) => {
-    const sprintId = Number(page.querySelector(`[data-plan-sel="${b.dataset.plan}"]`).value);
-    try {
-      await api(`/stories/${b.dataset.plan}`, { method: 'PUT', body: { sprint_id: sprintId } });
-      toast('Đã đưa user story vào sprint', 'success');
-      reload();
-    } catch (e) {
-      toastError(e);
-    }
   });
 
   charts.splice(0).forEach((c) => c.destroy());

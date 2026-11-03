@@ -1,4 +1,4 @@
-// IT-46 → IT-49: YC13 – Developer báo đã sửa lỗi, Tester kiểm thử lại (QĐ13)
+// IT-46 → IT-49: YC15 – Developer báo đã sửa lỗi, Tester kiểm thử lại (QĐ15)
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { as } = require('../helpers');
@@ -32,7 +32,7 @@ test('IT-47 Tester chạy lại thì test case hết cần kiểm thử lại', 
   assert.ok(!retest.some((t) => t.id === tc.id));
 });
 
-test('IT-48 QĐ13: không báo sửa khi thiếu bản build, lần chạy Pass, đã chạy lại hoặc đã báo rồi', async () => {
+test('IT-48 QĐ15: không báo sửa khi thiếu bản build, lần chạy Pass, đã chạy lại hoặc đã báo rồi', async () => {
   const { tester, tc, run } = await failedRun();
   const dev = await as('dev');
   assert.equal((await dev.post(`/api/runs/${run.id}/fix`).send({ build: '  ' })).status, 400);

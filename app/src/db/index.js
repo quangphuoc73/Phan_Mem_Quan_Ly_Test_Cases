@@ -29,6 +29,20 @@ function migrate(conn) {
   if (cols.length && !cols.includes('story_points')) {
     conn.exec('ALTER TABLE user_stories ADD COLUMN story_points INTEGER');
   }
+  const projCols = conn.prepare("SELECT name FROM pragma_table_info('projects')").all().map((c) => c.name);
+  if (projCols.length && !projCols.includes('jira_key')) {
+    conn.exec('ALTER TABLE projects ADD COLUMN jira_key TEXT; ALTER TABLE projects ADD COLUMN synced_at TEXT');
+  }
+  if (cols.length && !cols.includes('archived')) {
+    conn.exec(`ALTER TABLE user_stories ADD COLUMN jira_status TEXT;
+      ALTER TABLE user_stories ADD COLUMN synced_at TEXT;
+      ALTER TABLE user_stories ADD COLUMN changed_at TEXT;
+      ALTER TABLE user_stories ADD COLUMN archived INTEGER NOT NULL DEFAULT 0`);
+  }
+  const spCols = conn.prepare("SELECT name FROM pragma_table_info('sprints')").all().map((c) => c.name);
+  if (spCols.length && !spCols.includes('jira_id')) {
+    conn.exec('ALTER TABLE sprints ADD COLUMN jira_id INTEGER; ALTER TABLE sprints ADD COLUMN state TEXT');
+  }
   const runCols = conn.prepare("SELECT name FROM pragma_table_info('test_runs')").all().map((c) => c.name);
   if (runCols.length && !runCols.includes('fix_build')) {
     conn.exec(`ALTER TABLE test_runs ADD COLUMN fix_build TEXT;

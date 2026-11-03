@@ -1,10 +1,10 @@
-// E2E-01 → E2E-07: kịch bản người dùng chính, chạy nối tiếp trên cùng dữ liệu.
+// E2E-01 → E2E-09: kịch bản người dùng chính, chạy nối tiếp trên cùng dữ liệu (Jira giả lập).
 const { test, expect } = require('@playwright/test');
 const { login } = require('./helpers');
 
 test.describe.configure({ mode: 'serial' });
 
-const STORY = 'US-PET-099';
+const STORY = 'HRM-1'; // user story lấy từ dự án HRM trên Jira giả lập
 
 test('E2E-01 đăng nhập sai mật khẩu hiển thị lỗi', async ({ page }) => {
   await page.goto('/');
@@ -14,17 +14,18 @@ test('E2E-01 đăng nhập sai mật khẩu hiển thị lỗi', async ({ page }
   await expect(page.getByText('Tên đăng nhập hoặc mật khẩu không đúng')).toBeVisible();
 });
 
-test('E2E-02 Tester lập user story mới', async ({ page }) => {
-  await login(page, 'tester');
+test('E2E-02 QA Lead thêm dự án từ Jira, user story được đồng bộ về', async ({ page }) => {
+  await login(page, 'qalead');
+  await page.getByRole('link', { name: /Dự án & module/ }).click();
+  await page.getByRole('button', { name: /Thêm dự án từ Jira/ }).click();
+  await page.getByRole('dialog').getByLabel(/Mã dự án/).fill('HRM');
+  await page.getByRole('dialog').getByRole('button', { name: 'Thêm dự án' }).click();
+  await expect(page.getByText(/HRM: 3 story mới/)).toBeVisible();
+  await page.waitForLoadState('load');
+  await page.getByLabel('Dự án').selectOption({ label: 'HRM – Hệ thống quản lý nhân sự' });
   await page.getByRole('link', { name: /User story/ }).click();
-  await page.getByRole('button', { name: /Lập user story/ }).click();
-  const dialog = page.getByRole('dialog');
-  await dialog.getByLabel(/Mã user story/).fill(STORY);
-  await dialog.getByLabel(/Tiêu đề/).fill('Hủy hợp đồng bảo hiểm');
-  await dialog.getByLabel(/Mô tả/).fill('Là chủ thú cưng, tôi muốn hủy hợp đồng, để không bị tính phí kỳ tiếp theo.');
-  await dialog.getByLabel(/Acceptance criteria/).fill('- Chỉ hủy được hợp đồng đang hiệu lực\n- Hủy trong 15 ngày đầu được hoàn 100% phí\n- Gửi email xác nhận sau khi hủy');
-  await dialog.getByRole('button', { name: 'Lưu' }).click();
-  await expect(page.getByRole('heading', { name: new RegExp(STORY) })).toBeVisible();
+  await expect(page.getByRole('cell', { name: STORY, exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Lập user story|Nhập từ file/ })).toHaveCount(0);
 });
 
 test('E2E-03 Tester sinh test case bằng AI và gửi duyệt', async ({ page }) => {
@@ -93,27 +94,23 @@ test('E2E-07 Developer chỉ được xem, không thấy chức năng ghi', asyn
   await expect(page.getByRole('link', { name: /Duyệt test case/ })).toHaveCount(0);
   await page.getByRole('link', { name: /User story/ }).click();
   await expect(page.getByRole('heading', { name: 'User story' })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Lập user story/ })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /Đồng bộ từ Jira/ })).toHaveCount(0);
 });
 
-test('E2E-08 QA Lead lập kế hoạch sprint: đưa story từ Product backlog vào sprint đang chạy', async ({ page }) => {
+test('E2E-08 QA Lead xem sprint đồng bộ từ Jira: bảng sprint, Product backlog, không có nút tạo sprint', async ({ page }) => {
   await login(page, 'qalead');
-  await page.getByLabel('Dự án').selectOption({ label: 'PETINS – App bảo hiểm thú cưng' });
+  await page.getByLabel('Dự án').selectOption({ label: 'HRM – Hệ thống quản lý nhân sự' });
   await page.getByRole('link', { name: /Sprint \(Agile\)/ }).click();
-  await expect(page.getByRole('heading', { name: 'Sprint · App bảo hiểm thú cưng' })).toBeVisible();
-  // Backlog gồm US-PET-005 (dữ liệu mẫu) và US-PET-099 (tạo ở E2E-02, chưa chọn sprint)
-  await expect(page.getByRole('heading', { name: 'Product backlog (2)' })).toBeVisible();
-  await page.getByLabel('Sprint cho US-PET-005').selectOption({ label: 'Sprint 2' });
-  await page.getByRole('row').filter({ hasText: 'US-PET-005' }).getByRole('button', { name: 'Đưa vào' }).click();
-  await expect(page.getByText('Đã đưa user story vào sprint')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Product backlog (1)' })).toBeVisible();
-  await expect(page.locator('#board')).toContainText('US-PET-005');
+  await expect(page.getByRole('heading', { name: 'Sprint · Hệ thống quản lý nhân sự' })).toBeVisible();
+  await expect(page.locator('#board')).toContainText('HRM-1');
+  await expect(page.getByRole('heading', { name: 'Product backlog (1)' })).toBeVisible(); // HRM-3 chưa thuộc sprint nào trên Jira
+  await expect(page.getByRole('button', { name: /Tạo sprint|Sửa sprint|Đưa vào/ })).toHaveCount(0);
 });
 
-test('E2E-09 Tester xem được sprint nhưng không tạo được sprint', async ({ page }) => {
+test('E2E-09 Tester xem được sprint của dự án mẫu nhưng không sửa được', async ({ page }) => {
   await login(page, 'tester');
   await page.getByLabel('Dự án').selectOption({ label: 'PETINS – App bảo hiểm thú cưng' });
   await page.getByRole('link', { name: /Sprint \(Agile\)/ }).click();
   await expect(page.getByRole('heading', { name: /Burndown chart/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Tạo sprint/ })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /Tạo sprint|Đưa vào/ })).toHaveCount(0);
 });

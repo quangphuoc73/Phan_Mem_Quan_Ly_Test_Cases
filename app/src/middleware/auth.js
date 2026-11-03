@@ -7,7 +7,7 @@ const { AppError, forbidden } = require('../utils/errors');
 const ROLES = {
   ADMIN: 'ADMIN',
   QA_LEAD: 'QA_LEAD',
-  PO_BA: 'PO_BA', // Product Owner / Business Analyst: viết user story, lập kế hoạch sprint
+  PO_BA: 'PO_BA', // Product Owner / Business Analyst: viết story, lập sprint trên Jira; trong hệ thống chỉ xem
   TESTER: 'TESTER',
   DEVELOPER: 'DEVELOPER',
 };
@@ -15,16 +15,16 @@ const ROLES = {
 // Ma trận phân quyền: quyền -> các vai trò được phép
 const PERMISSIONS = {
   'user:manage': ['ADMIN'],
-  'project:manage': ['ADMIN'],
-  'sprint:manage': ['ADMIN', 'QA_LEAD', 'PO_BA'], // lập kế hoạch sprint (Product Owner, Scrum Master)
+  'project:manage': ['ADMIN'], // khai báo URL ứng dụng cần test của dự án
+  'jira:connect': ['ADMIN'], // YC13: chỉ Admin kiểm tra kết nối Jira
+  'jira:import': ['ADMIN', 'QA_LEAD'], // YC13: thêm dự án từ Jira; YC1, YC8, YC14: đồng bộ story, sprint
   'param:update': ['ADMIN', 'QA_LEAD'],
   'audit:view': ['ADMIN', 'QA_LEAD'],
-  'story:write': ['ADMIN', 'QA_LEAD', 'TESTER', 'PO_BA'],
   'testcase:write': ['QA_LEAD', 'TESTER'],
   'testcase:review': ['QA_LEAD'], // QĐ4: chỉ QA Lead được duyệt
   'ai:use': ['QA_LEAD', 'TESTER'],
   'run:write': ['QA_LEAD', 'TESTER'],
-  'bug:fix': ['DEVELOPER'], // YC13: báo đã sửa lỗi để Tester kiểm thử lại
+  'bug:fix': ['DEVELOPER'], // YC15: báo đã sửa lỗi để Tester kiểm thử lại
   'ailog:view': ['ADMIN', 'QA_LEAD', 'TESTER'],
 };
 

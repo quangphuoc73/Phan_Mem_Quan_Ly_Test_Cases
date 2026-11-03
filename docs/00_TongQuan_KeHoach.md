@@ -35,7 +35,7 @@ Các mô hình ngôn ngữ lớn (LLM) có thể sinh bản nháp test case tron
 **Trong phạm vi:**
 
 - Quản lý người dùng, phân quyền 5 vai trò: Admin, QA Lead, PO/BA, Tester, Developer.
-- Quản lý dự án, module, user story (nhập tay hoặc nhập từ file CSV/JSON).
+- Đồng bộ **một chiều từ Jira**: dự án, module, thành viên, user story (kèm acceptance criteria), sprint, story point; nhận thay đổi qua webhook hoặc đồng bộ định kỳ và báo Tester xem lại test case khi story đổi. Hệ thống không tạo, sửa story hay sprint.
 - AI sinh test case từ user story và acceptance criteria.
 - Soạn thảo, lưu lịch sử phiên bản, gửi duyệt, duyệt/trả lại test case.
 - Ghi nhận kết quả chạy test thủ công (Pass/Fail/Blocked); Developer báo đã sửa lỗi kèm bản build để Tester kiểm thử lại.
@@ -44,7 +44,7 @@ Các mô hình ngôn ngữ lớn (LLM) có thể sinh bản nháp test case tron
 - Thay đổi quy định (số test case tối đa, số lần gọi AI…) không cần sửa mã nguồn.
 - Bảo mật: JWT, bcrypt, RBAC, audit log, che dữ liệu nhạy cảm trước khi gửi AI, chống prompt injection, sandbox khi chạy script.
 
-**Ngoài phạm vi (hướng phát triển):** tích hợp Jira 2 chiều, RAG theo tài liệu nghiệp vụ, fine-tune model riêng, AI agent tự sửa script (self-healing) – xem [Chương 9](09_HuongPhatTrien.md).
+**Ngoài phạm vi (hướng phát triển):** đẩy bug và kết quả ngược lên Jira (2 chiều), RAG theo tài liệu nghiệp vụ, fine-tune model riêng, AI agent tự sửa script (self-healing) – xem [Chương 9](09_HuongPhatTrien.md).
 
 ## 0.5. Mô hình phát triển: Agile (Scrum) kết hợp 7 hoạt động của môn học
 
@@ -52,23 +52,15 @@ Các mô hình ngôn ngữ lớn (LLM) có thể sinh bản nháp test case tron
 
 Môn SE104 yêu cầu đi qua 7 hoạt động. Trong Agile, **7 hoạt động này lặp lại trong mỗi sprint** cho từng nhóm chức năng nhỏ; báo cáo vẫn tổ chức theo 7 chương để giảng viên dễ chấm, nội dung mỗi chương được bổ sung dần qua các sprint.
 
-```mermaid
-flowchart TB
-    S0["Đầu Sprint 1: Khảo sát, Product Backlog, kiến trúc, CI"] --> LOOP
-    subgraph LOOP["Mỗi sprint 1 tuần (Sprint 1 → 5)"]
-        direction LR
-        A["Yêu cầu"] --> B["Phân tích"] --> C["Thiết kế"]
-        C --> D["Cài đặt"] --> E["Kiểm chứng"] --> F["Triển khai"]
-    end
-    LOOP -->|"Sprint Review: góp ý → backlog"| LOOP
-    LOOP --> END["Cuối tuần 5<br/>Bảo vệ"]
-```
+![Quy trình thực hiện đồ án](sodo/QuyTrinhThucHien.svg)
+
+*File gốc:* `docs/sodo/QuyTrinhThucHien.drawio` (mở bằng draw.io để sửa).
 
 | Hoạt động | Sản phẩm đầu ra | Thực hiện ở | Tài liệu |
 |---|---|---|---|
 | Quy trình Agile | Product Backlog, kế hoạch sprint, DoR/DoD, biên bản | Sprint 1, cập nhật mỗi sprint | [00a_QuyTrinhAgile.md](00a_QuyTrinhAgile.md) |
 | 1. Khảo sát hiện trạng | Quy trình QA hiện tại, vấn đề, nhu cầu | Sprint 1; bổ sung qua Sprint Review | [01_KhaoSatHienTrang.md](01_KhaoSatHienTrang.md) |
-| 2. Xác định yêu cầu | YC1–YC13, BM, QĐ, yêu cầu phi chức năng | Tổng quát ở Sprint 1, chi tiết theo từng sprint | [02_DacTaYeuCau.md](02_DacTaYeuCau.md) |
+| 2. Xác định yêu cầu | YC1–YC15, BM, QĐ, yêu cầu phi chức năng | Tổng quát ở Sprint 1, chi tiết theo từng sprint | [02_DacTaYeuCau.md](02_DacTaYeuCau.md) |
 | 3. Phân tích | Use case, đặc tả, DFD, hoạt động, trạng thái | Mỗi sprint cho các story của sprint | [03_PhanTich.md](03_PhanTich.md) |
 | 4. Thiết kế | Kiến trúc, ERD, class, sequence, giao diện, API, bảo mật | Kiến trúc ở Sprint 1, chi tiết mỗi sprint | [04_ThietKe.md](04_ThietKe.md) |
 | 5. Cài đặt | Mã nguồn, Git flow | Mỗi sprint | [05_CaiDat.md](05_CaiDat.md) |
@@ -84,7 +76,7 @@ flowchart TB
 | 2 | 2 | AI sinh được test case an toàn từ user story *(rủi ro cao nhất, làm sớm)*; test case được sửa và lưu phiên bản | 22 |
 | 3 | 3 | Test case được duyệt, chạy thủ công, tra cứu và xem được báo cáo | 18 |
 | 4 | 4 | Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được; Developer báo đã sửa lỗi | 22 |
-| 5 | 5 | Quản lý sprint trong hệ thống, nhập/xuất, Docker; hoàn thiện tài liệu, slide; bảo vệ cuối tuần (Sprint Review cuối cùng) | 16 |
+| 5 | 5 | Theo dõi sprint lấy từ Jira, nhận thay đổi story (webhook), xuất Excel, Docker; hoàn thiện tài liệu, slide; bảo vệ cuối tuần (Sprint Review cuối cùng) | 16 |
 
 Danh sách story của từng sprint, ước lượng và Definition of Done: [Chương 0A](00a_QuyTrinhAgile.md). Mỗi sprint có biên bản Planning, Review, Retrospective và Daily log làm minh chứng.
 
@@ -93,7 +85,7 @@ Danh sách story của từng sprint, ước lượng và Definition of Done: [C
 | Mục đích | Công cụ |
 |---|---|
 | Product Backlog, sprint board | Jira Software (Scrum board) hoặc Trello; nhập sẵn từ `docs/agile/ProductBacklog.csv`. Cột: Backlog → To do → In progress (WIP ≤ 2) → Code review → Testing → Done |
-| Theo dõi sprint của dự án được kiểm thử | Trang **Sprint (Agile)** trong chính hệ thống (YC12): bảng sprint, burndown, velocity |
+| Theo dõi sprint của dự án được kiểm thử | Trang **Sprint (Agile)** trong chính hệ thống (YC14): bảng sprint, burndown, velocity |
 | Quản lý mã nguồn | Git + GitHub, nhánh `main` (ổn định) và `feature/pb-xx-*` (mỗi story một nhánh), Pull Request, ít nhất 1 thành viên khác review trước khi merge |
 | CI/CD | GitHub Actions: unit test → API test → E2E Playwright → build Docker image; CI xanh là điều kiện của Definition of Done |
 | Vẽ sơ đồ | Mermaid (lưu cùng mã nguồn, có lịch sử phiên bản), draw.io, StarUML |

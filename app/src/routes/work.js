@@ -15,41 +15,21 @@ const { badRequest } = require('../utils/errors');
 const router = express.Router();
 const id = (req) => Number(req.params.id);
 
-// ---------- YC1: User story ----------
+// ---------- YC1: User story – chỉ đọc; tạo, sửa trên Jira rồi đồng bộ về ----------
 router.get('/stories', (req, res) => res.json(stories.list(req.query)));
 router.get('/stories/:id', (req, res) => res.json(stories.get(id(req))));
 
-router.post('/stories', requirePermission('story:write'), (req, res) => {
-  const s = stories.create(req.body, req.user.id);
-  audit.log(req, 'CREATE_STORY', 'user_story', s.id, { code: s.code });
-  res.status(201).json(s);
-});
-
-router.put('/stories/:id', requirePermission('story:write'), (req, res) => {
-  const s = stories.update(id(req), req.body);
-  audit.log(req, 'UPDATE_STORY', 'user_story', s.id);
+// YC8: Tester đã xem lại test case sau khi story đổi trên Jira
+router.post('/stories/:id/reviewed', requirePermission('testcase:write'), (req, res) => {
+  const s = stories.markReviewed(id(req));
+  audit.log(req, 'STORY_REVIEWED', 'user_story', s.id, { code: s.code });
   res.json(s);
-});
-
-router.delete('/stories/:id', requirePermission('story:write'), (req, res) => {
-  stories.remove(id(req));
-  audit.log(req, 'DELETE_STORY', 'user_story', id(req));
-  res.status(204).end();
-});
-
-// YC8: nhập user story từ file (frontend đọc CSV/JSON và gửi mảng dòng)
-router.post('/stories/import', requirePermission('story:write'), (req, res) => {
-  const rows = req.body?.rows;
-  if (!Array.isArray(rows) || !rows.length) throw badRequest('File không có dòng dữ liệu nào');
-  if (rows.length > 200) throw badRequest('Mỗi lần chỉ nhập tối đa 200 user story');
-  const r = stories.importMany(rows, req.user.id);
-  audit.log(req, 'IMPORT_STORIES', 'user_story', null, { created: r.created.length, errors: r.errors.length });
-  res.json(r);
 });
 
 // ---------- YC2: Sinh test case bằng AI ----------
 router.post('/stories/:id/generate', requirePermission('ai:use'), aiQuota, async (req, res) => {
   const story = stories.get(id(req));
+  stories.assertReady(story);
   const r = await ai.generateTestCases(story, req.user.id);
   const saved = testCases.saveAiResult(story, r.testCases, r.aiLogId, req.user.id);
   audit.log(req, 'AI_GENERATE_TESTCASES', 'user_story', story.id, { count: saved.length, aiLogId: r.aiLogId });
@@ -109,14 +89,14 @@ router.post('/testcases/:id/runs', requirePermission('run:write'), (req, res) =>
   res.status(201).json(r);
 });
 
-// ---------- YC13: Báo đã sửa lỗi ----------
+// ---------- YC15: Báo đã sửa lỗi ----------
 router.post('/runs/:id/fix', requirePermission('bug:fix'), (req, res) => {
   const r = runs.reportFix(id(req), req.body, req.user.id);
   audit.log(req, 'REPORT_FIX', 'test_run', r.id, { build: r.fix_build });
   res.json(r);
 });
 
-// ---------- YC9: Script Playwright ----------
+// ---------- YC10: Script Playwright ----------
 router.get('/testcases/:id/script', (req, res) => {
   const s = scripts.getByTestCase(id(req));
   res.json(s ? { ...s, warnings: scripts.staticCheck(s.code) } : null);
@@ -153,7 +133,7 @@ router.get('/testcases/:id/script/download', (req, res) => {
 router.get('/reports/summary', (req, res) =>
   res.json(reports.summary(Number(req.query.project_id) || null, Number(req.query.sprint_id) || null)));
 
-// ---------- YC8: Xuất Excel ----------
+// ---------- YC9: Xuất Excel ----------
 router.get('/export/testcases.xlsx', async (req, res) => {
   const list = testCases.list(req.query);
   const wb = new ExcelJS.Workbook();

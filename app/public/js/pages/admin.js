@@ -1,4 +1,4 @@
-// Kết quả chạy test, thay đổi quy định (YC10), nhật ký AI, quản trị người dùng/dự án, audit log.
+// Kết quả chạy test, thay đổi quy định (YC11), nhật ký AI, quản trị người dùng/dự án, audit log.
 import { state, api, esc, can, pill, fmtDate, toast, toastError, modal, bind, busy, formData, options, LABEL } from '../core.js';
 import { openTestCase, fixCell, openFixForm } from './testcases.js';
 import { refreshProjects } from '../main.js';
@@ -23,7 +23,7 @@ export async function renderParams(page) {
   const list = await api('/parameters');
   const editable = can('param:update');
   page.innerHTML = `
-    <div class="page-head"><div><h1>Thay đổi quy định (YC10)</h1>
+    <div class="page-head"><div><h1>Thay đổi quy định (YC11)</h1>
       <p>Các quy định được lưu trong bảng THAM SỐ nên thay đổi được mà không phải sửa mã nguồn (tính tiến hóa của phần mềm).</p></div></div>
     ${editable ? '' : '<div class="alert info">Chỉ Admin hoặc QA Lead được thay đổi quy định.</div>'}
     <div class="table-wrap"><table>
@@ -88,9 +88,11 @@ export async function renderUsers(page) {
     </table></div>
     <div class="card mt"><h3>Ma trận phân quyền</h3>
       <div class="table-wrap"><table><thead><tr><th>Chức năng</th><th>Admin</th><th>QA Lead</th><th>PO / BA</th><th>Tester</th><th>Developer</th></tr></thead><tbody>
-      ${[['Quản lý người dùng, dự án', 1, 0, 0, 0, 0], ['Lập user story', 1, 1, 1, 1, 0], ['Lập kế hoạch sprint', 1, 1, 1, 0, 0],
+      ${[['Quản lý người dùng; khai báo URL ứng dụng cần test', 1, 0, 0, 0, 0], ['Kiểm tra kết nối Jira', 1, 0, 0, 0, 0],
+         ['Thêm dự án, đồng bộ story và sprint từ Jira', 1, 1, 0, 0, 0],
          ['Sinh test case / script bằng AI', 0, 1, 0, 1, 0], ['Sửa, gửi duyệt test case', 0, 1, 0, 1, 0], ['Duyệt test case (QĐ4)', 0, 1, 0, 0, 0],
-         ['Ghi kết quả, chạy tự động', 0, 1, 0, 1, 0], ['Thay đổi quy định', 1, 1, 0, 0, 0], ['Xem báo cáo, tra cứu', 1, 1, 1, 1, 1]]
+         ['Ghi kết quả, chạy tự động', 0, 1, 0, 1, 0], ['Báo đã sửa lỗi', 0, 0, 0, 0, 1], ['Thay đổi quy định', 1, 1, 0, 0, 0],
+         ['Xem user story, sprint (từ Jira), báo cáo, tra cứu', 1, 1, 1, 1, 1]]
         .map(([n, ...r]) => `<tr><td>${n}</td>${r.map((x) => `<td>${x ? '✅' : '—'}</td>`).join('')}</tr>`).join('')}
       </tbody></table></div></div>`;
   bind(page, '[data-toggle]', 'click', async (_e, b) => {
@@ -129,43 +131,84 @@ export async function renderUsers(page) {
 
 export async function renderProjects(page) {
   await refreshProjects();
+  const jira = await api('/jira/info');
+  const manage = can('project:manage');
   page.innerHTML = `
-    <div class="page-head"><div><h1>Dự án & module</h1></div><button class="btn primary" id="new-proj">＋ Tạo dự án</button></div>
+    <div class="page-head"><div><h1>Dự án & module</h1>
+      <p>YC13 – Dự án, module, thành viên, user story và sprint đồng bộ một chiều từ Jira · ${jira.mode === 'mock' ? 'Đang dùng <b>Jira giả lập</b> (chưa cấu hình JIRA_BASE_URL)' : `Jira: <code>${esc(jira.site)}</code>`}
+      · Webhook: ${jira.webhook ? 'đã bật' : 'chưa bật'}</p></div>
+      <div class="row">
+        ${can('jira:connect') ? '<button class="btn" id="jira-test">🔌 Kiểm tra kết nối Jira</button>' : ''}
+        <button class="btn primary" id="jira-import">⬇ Thêm dự án từ Jira</button>
+      </div></div>
     <div class="grid g2">${state.projects.map((p) => `
-      <div class="card"><div class="row"><h2 style="margin:0">${esc(p.code)} · ${esc(p.name)}</h2></div>
+      <div class="card"><div class="row"><h2 style="margin:0">${esc(p.code)} · ${esc(p.name)}</h2>
+        ${p.jira_key ? `<span class="pill AI" title="Đồng bộ lần cuối ${esc(fmtDate(p.synced_at))}">Jira</span><button class="btn sm" data-sync="${p.id}">⟳ Đồng bộ ngay</button>` : '<span class="pill MANUAL">Dữ liệu mẫu</span>'}</div>
         <p class="muted">${esc(p.description || '')}</p>
-        <p class="small">URL ứng dụng cần test: ${p.base_url ? `<code>${esc(p.base_url)}</code>` : '<span class="muted">chưa khai báo</span>'} · ${p.story_count} user story</p>
+        <p class="small">URL ứng dụng cần test: ${p.base_url ? `<code>${esc(p.base_url)}</code>` : '<span class="muted">chưa khai báo</span>'}
+          ${manage ? `<button class="btn sm" data-url="${p.id}">Sửa URL</button>` : ''}
+          · ${p.story_count} user story · ${p.sprints.length} sprint · ${p.member_count} thành viên${p.synced_at ? ` · đồng bộ ${esc(fmtDate(p.synced_at))}` : ''}</p>
         <h3>Module</h3><div class="row">${p.modules.map((m) => `<span class="pill MANUAL">${esc(m.name)}</span>`).join('') || '<span class="muted">Chưa có</span>'}</div>
-        <div class="row mt"><input placeholder="Tên module mới" data-mod-input="${p.id}" style="flex:1"><button class="btn sm" data-mod="${p.id}">＋ Thêm module</button></div>
       </div>`).join('')}</div>`;
-  bind(page, '[data-mod]', 'click', async (_e, b) => {
-    const name = page.querySelector(`[data-mod-input="${b.dataset.mod}"]`).value;
+  const report = (r) => {
+    const st = r.stories;
+    toast(`${r.code}: ${st.created} story mới, ${st.updated} cập nhật${st.changed ? `, ${st.changed} cần xem lại test case` : ''}${st.archived ? `, ${st.archived} đã xóa trên Jira` : ''} · ${r.sprints} sprint · ${r.modules} module · ${r.members} thành viên${r.unmapped.length ? ` · chưa có tài khoản: ${r.unmapped.join(', ')}` : ''}`, 'success');
+    if (r.warnings.length) toast(r.warnings.join(' · '), 'info');
+  };
+  page.querySelector('#jira-test')?.addEventListener('click', async (e) => {
     try {
-      await api(`/projects/${b.dataset.mod}/modules`, { method: 'POST', body: { name } });
-      toast('Đã thêm module', 'success');
-      renderProjects(page);
-    } catch (e) {
-      toastError(e);
+      const r = await busy(e.currentTarget, () => api('/jira/test', { method: 'POST' }));
+      toast(`Kết nối Jira thành công – ${r.user}`, 'success');
+    } catch (err) {
+      toastError(err);
     }
   });
-  page.querySelector('#new-proj').addEventListener('click', () => {
+  bind(page, '[data-sync]', 'click', async (e, b) => {
+    try {
+      report(await busy(e.currentTarget, () => api(`/projects/${b.dataset.sync}/jira-sync`, { method: 'POST' }), 'Đang đồng bộ...'));
+      renderProjects(page);
+    } catch (err) {
+      toastError(err);
+    }
+  });
+  bind(page, '[data-url]', 'click', (_e, b) => {
+    const p = state.projects.find((x) => x.id === Number(b.dataset.url));
     const m = modal({
-      title: 'Tạo dự án',
-      body: `<form id="p-form">
-        <div class="field"><label>Mã dự án *</label><input name="code" required placeholder="SHOP"></div>
-        <div class="field"><label>Tên dự án *</label><input name="name" required></div>
-        <div class="field"><label>Mô tả</label><textarea name="description"></textarea></div>
-        <div class="field"><label>URL ứng dụng cần test</label><input name="base_url" type="url" placeholder="https://..."></div></form>`,
-      foot: '<button class="btn" data-close>Hủy</button><button class="btn primary" id="p-save">Tạo</button>',
+      title: `URL ứng dụng cần test – ${p.code}`,
+      body: `<form id="u-form"><div class="field"><label>URL (Playwright mở trang này khi chạy script, YC10)</label>
+        <input name="base_url" type="url" value="${esc(p.base_url || '')}" placeholder="https://www.saucedemo.com/"></div></form>`,
+      foot: '<button class="btn" data-close>Hủy</button><button class="btn primary" id="u-save">Lưu</button>',
     });
-    m.el.querySelector('#p-save').addEventListener('click', async (e) => {
-      const f = m.el.querySelector('#p-form');
+    m.el.querySelector('#u-save').addEventListener('click', async (e) => {
+      const f = m.el.querySelector('#u-form');
       if (!f.reportValidity()) return;
       try {
-        await busy(e.currentTarget, () => api('/projects', { method: 'POST', body: formData(f) }));
+        await busy(e.currentTarget, () => api(`/projects/${p.id}`, { method: 'PUT', body: formData(f) }));
         m.close();
-        toast('Đã tạo dự án', 'success');
-        location.reload();
+        toast('Đã lưu URL ứng dụng cần test', 'success');
+        renderProjects(page);
+      } catch (err) {
+        toastError(err);
+      }
+    });
+  });
+  page.querySelector('#jira-import').addEventListener('click', () => {
+    const m = modal({
+      title: 'Thêm dự án từ Jira',
+      body: `<form id="j-form">
+        <div class="field"><label>Mã dự án (space key) trên Jira *</label><input name="key" required maxlength="10" placeholder="${jira.mode === 'mock' ? 'HRM hoặc LIB' : 'VD: SHOP'}"></div>
+        <p class="small muted">Hệ thống lấy tên, mô tả, module (component), thành viên, các sprint có ngày và mọi issue loại <b>Story</b>.
+        Thành viên được gán theo email trùng với tài khoản trong hệ thống. Acceptance criteria lấy từ mục <b>Acceptance criteria</b> trong Description.</p></form>`,
+      foot: '<button class="btn" data-close>Hủy</button><button class="btn primary" id="j-save">Thêm dự án</button>',
+    });
+    m.el.querySelector('#j-save').addEventListener('click', async (e) => {
+      const f = m.el.querySelector('#j-form');
+      if (!f.reportValidity()) return;
+      try {
+        const r = await busy(e.currentTarget, () => api('/jira/import', { method: 'POST', body: formData(f) }), 'Đang đồng bộ...');
+        m.close();
+        report(r);
+        setTimeout(() => location.reload(), 1500); // tải lại để ô chọn dự án trên thanh trên có dự án mới
       } catch (err) {
         toastError(err);
       }

@@ -4,24 +4,24 @@
 
 | Mục tiêu | Kết quả |
 |---|---|
-| Quy trình CNPM | Agile/Scrum, nhóm 4 người: 5 sprint × 1 tuần, Product Backlog 29 story, DoR/DoD, biên bản các sự kiện; mỗi sprint đi qua đủ 7 hoạt động của môn học |
-| Phần mềm chạy được | 13 yêu cầu nghiệp vụ (YC1–YC13), 14 màn hình, 40+ API; hỗ trợ đội làm Scrum (sprint, story point, burndown, velocity) |
+| Quy trình CNPM | Agile/Scrum, nhóm 4 người: 5 sprint × 1 tuần, Product Backlog 30 story, DoR/DoD, biên bản các sự kiện; mỗi sprint đi qua đủ 7 hoạt động của môn học |
+| Phần mềm chạy được | 15 yêu cầu nghiệp vụ (YC1–YC15), user story và sprint đồng bộ một chiều từ Jira, 14 màn hình, 40+ API; hỗ trợ đội làm Scrum (sprint, story point, burndown, velocity) |
 | Tích hợp AI đúng cách | AI Service tách riêng (Strategy pattern, 4 provider), che PII, chống prompt injection, schema + retry, rate limit, nhật ký AI |
-| Kiểm thử tự động | 64 unit/API test, 9 E2E Playwright, 8 test Playwright mẫu (POM), script AI sinh chạy được trên web thật |
+| Kiểm thử tự động | 73 unit/API test, 9 E2E Playwright, 8 test Playwright mẫu (POM), script AI sinh chạy được trên web thật |
 | Triển khai | Docker, docker-compose, GitHub Actions CI |
 
 ## 9.2. Hạn chế
 
 - MockProvider dùng luật đơn giản; chất lượng thật phụ thuộc LLM được cấu hình.
 - Script Playwright do AI sinh còn dạng "phẳng", chưa tái sử dụng Page Object.
-- Chưa tích hợp Jira/GitHub Issues 2 chiều; chưa có thông báo (email/Slack).
+- Tích hợp Jira mới một chiều (Jira → hệ thống), chưa đẩy bug và kết quả ngược lên Jira; chưa có thông báo (email/Slack).
 - Hàng đợi chạy test đang đồng bộ (mỗi request chờ kết quả); chưa có hàng đợi job (BullMQ + Redis) cho chạy hàng loạt.
 - Chưa kiểm thử hiệu năng với dữ liệu lớn.
 
 ## 9.3. Hướng phát triển cho phần mềm
 
 1. Hàng đợi job (BullMQ + Redis) để sinh test case và chạy script nền, chạy hàng loạt theo bộ test (test suite).
-2. Tích hợp Jira: nhập user story trực tiếp, tạo bug tự động khi Fail.
+2. Mở rộng tích hợp Jira (hiện đồng bộ một chiều dự án, module, thành viên, user story, sprint): tạo bug trên Jira tự động khi Fail, đẩy kết quả kiểm thử lên Jira.
 3. Phát hiện test case trùng lặp bằng embedding; gợi ý edge case còn thiếu.
 4. RAG với pgvector: đưa tài liệu nghiệp vụ vào để AI sinh test case sát thực tế hơn.
 5. Quan sát LLM (Langfuse): theo dõi chi phí, độ trễ, chất lượng từng prompt.

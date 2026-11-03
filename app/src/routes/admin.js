@@ -7,6 +7,7 @@ const { requirePermission } = require('../middleware/auth');
 const audit = require('../services/auditService');
 const params = require('../services/parameterService');
 const sprints = require('../services/sprintService');
+const jira = require('../services/jiraService');
 const { notFound, badRequest } = require('../utils/errors');
 
 const router = express.Router();
@@ -56,19 +57,13 @@ router.patch('/users/:id', requirePermission('user:manage'), (req, res) => {
   res.json({ ok: true });
 });
 
-// ---------- Dự án & module ----------
-const projectSchema = z.object({
-  code: z.string().trim().toUpperCase().regex(/^[A-Z0-9]{2,10}$/, 'Mã dự án 2–10 ký tự in hoa/số'),
-  name: z.string().trim().min(3).max(200),
-  description: z.string().trim().max(2000).optional().default(''),
-  base_url: z.string().trim().url('URL không hợp lệ').optional().or(z.literal('')),
-});
-
+// ---------- Dự án & module (YC13: chỉ lấy từ Jira) ----------
 router.get('/projects', (_req, res) => {
   const db = getDb();
   const projects = db
     .prepare(
-      `SELECT p.*, (SELECT COUNT(*) FROM user_stories s WHERE s.project_id = p.id) story_count
+      `SELECT p.*, (SELECT COUNT(*) FROM user_stories s WHERE s.project_id = p.id AND s.archived = 0) story_count,
+        (SELECT COUNT(*) FROM project_members m WHERE m.project_id = p.id) member_count
        FROM projects p ORDER BY p.id`
     )
     .all();
@@ -81,58 +76,43 @@ router.get('/projects', (_req, res) => {
   })));
 });
 
-router.post('/projects', requirePermission('project:manage'), (req, res) => {
-  const d = projectSchema.parse(req.body);
-  const info = getDb()
-    .prepare('INSERT INTO projects (code, name, description, base_url, created_by) VALUES (?, ?, ?, ?, ?)')
-    .run(d.code, d.name, d.description, d.base_url || null, req.user.id);
-  audit.log(req, 'CREATE_PROJECT', 'project', info.lastInsertRowid, { code: d.code });
-  res.status(201).json({ id: info.lastInsertRowid });
-});
-
+// Jira không có URL ứng dụng cần test nên Admin khai báo ở đây (dùng cho YC10)
 router.put('/projects/:id', requirePermission('project:manage'), (req, res) => {
-  const d = projectSchema.omit({ code: true }).parse(req.body);
-  const r = getDb()
-    .prepare('UPDATE projects SET name = ?, description = ?, base_url = ? WHERE id = ?')
-    .run(d.name, d.description, d.base_url || null, id(req));
+  const d = z.object({ base_url: z.string().trim().url('URL không hợp lệ').or(z.literal('')) }).parse(req.body);
+  const r = getDb().prepare('UPDATE projects SET base_url = ? WHERE id = ?').run(d.base_url || null, id(req));
   if (!r.changes) throw notFound();
-  audit.log(req, 'UPDATE_PROJECT', 'project', id(req));
+  audit.log(req, 'UPDATE_PROJECT', 'project', id(req), { base_url: d.base_url });
   res.json({ ok: true });
 });
 
-router.post('/projects/:id/modules', requirePermission('project:manage'), (req, res) => {
-  const d = z.object({ name: z.string().trim().min(2).max(100), description: z.string().max(500).optional() }).parse(req.body);
-  const info = getDb()
-    .prepare('INSERT INTO modules (project_id, name, description) VALUES (?, ?, ?)')
-    .run(id(req), d.name, d.description || null);
-  audit.log(req, 'CREATE_MODULE', 'module', info.lastInsertRowid, { name: d.name });
-  res.status(201).json({ id: info.lastInsertRowid });
+// ---------- YC13: Đồng bộ dự án từ Jira · YC1, YC8, YC14: đồng bộ user story, sprint ----------
+router.get('/jira/info', (_req, res) => res.json(jira.info()));
+
+router.post('/jira/test', requirePermission('jira:connect'), async (req, res) => {
+  const r = await jira.testConnection();
+  audit.log(req, 'JIRA_TEST', 'jira', null, { mode: r.mode });
+  res.json(r);
 });
 
-// ---------- Sprint (YC12 – Agile/Scrum) ----------
+router.post('/jira/import', requirePermission('jira:import'), async (req, res) => {
+  const r = await jira.importProject(req.body, req.user.id);
+  audit.log(req, 'JIRA_IMPORT', 'project', r.id, { code: r.code, modules: r.modules, members: r.members, stories: r.stories });
+  res.status(201).json(r);
+});
+
+router.post('/projects/:id/jira-sync', requirePermission('jira:import'), async (req, res) => {
+  const r = await jira.syncProject(id(req), req.user.id);
+  audit.log(req, 'JIRA_SYNC', 'project', r.id, { stories: r.stories, sprints: r.sprints });
+  res.json(r);
+});
+
+router.get('/projects/:id/members', (req, res) => res.json(jira.members(id(req))));
+
+// ---------- YC14: Sprint – lấy từ Jira, hệ thống chỉ tính DoD, velocity, burndown ----------
 router.get('/projects/:id/sprints', (req, res) => res.json(sprints.list(id(req))));
-
-router.post('/projects/:id/sprints', requirePermission('sprint:manage'), (req, res) => {
-  const sp = sprints.create(id(req), req.body);
-  audit.log(req, 'CREATE_SPRINT', 'sprint', sp.id, { name: sp.name });
-  res.status(201).json(sp);
-});
-
-router.put('/sprints/:id', requirePermission('sprint:manage'), (req, res) => {
-  const sp = sprints.update(id(req), req.body);
-  audit.log(req, 'UPDATE_SPRINT', 'sprint', sp.id);
-  res.json(sp);
-});
-
-router.delete('/sprints/:id', requirePermission('sprint:manage'), (req, res) => {
-  sprints.remove(id(req));
-  audit.log(req, 'DELETE_SPRINT', 'sprint', id(req));
-  res.status(204).end();
-});
-
 router.get('/sprints/:id/burndown', (req, res) => res.json(sprints.burndown(id(req))));
 
-// ---------- Tham số / quy định (YC10) ----------
+// ---------- Tham số / quy định (YC11) ----------
 router.get('/parameters', (_req, res) => res.json(params.getAll()));
 
 router.put('/parameters/:key', requirePermission('param:update'), (req, res) => {

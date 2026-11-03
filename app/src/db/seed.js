@@ -11,8 +11,8 @@ const PARAMETERS = [
   ['AI_MAX_RETRY', '2', 'int', 'Số lần thử lại khi AI trả kết quả sai định dạng'],
   ['AI_TIMEOUT_SEC', '30', 'int', 'Thời gian chờ tối đa một lần gọi AI (giây)'],
   ['AI_CALLS_PER_HOUR', '30', 'int', 'Số lần gọi AI tối đa của mỗi người dùng trong 1 giờ'],
-  ['RUN_TIMEOUT_SEC', '60', 'int', 'QĐ9: Thời gian tối đa chạy một script tự động (giây)'],
-  ['SPRINT_MAX_DAYS', '28', 'int', 'QĐ12: Độ dài tối đa của một sprint (ngày)'],
+  ['RUN_TIMEOUT_SEC', '60', 'int', 'QĐ10: Thời gian tối đa chạy một script tự động (giây)'],
+  ['SPRINT_MAX_DAYS', '28', 'int', 'QĐ14: Độ dài tối đa của một sprint (ngày)'],
 ];
 
 // Mật khẩu mẫu chỉ dùng cho demo – đổi ngay khi triển khai thật
@@ -91,14 +91,14 @@ function seed() {
     insReview.run(tcId, uid.QA_LEAD, 'APPROVED', 'Đạt');
     const runId = insRun.run(tcId, result, 'MANUAL', result === 'FAIL' ? 'Hệ thống chấp nhận mật khẩu 7 ký tự – đã báo bug BUG-12' : null, uid.TESTER, '-10 days').lastInsertRowid;
     if (result === 'FAIL') {
-      // YC13: Developer báo đã sửa ở bản build mới → Tester kiểm thử lại → story đạt Definition of Done
+      // YC15: Developer báo đã sửa ở bản build mới → Tester kiểm thử lại → story đạt Definition of Done
       db.prepare(`UPDATE test_runs SET fix_build = '1.0.1', fix_note = 'Thêm kiểm tra độ dài mật khẩu ở backend', fixed_by = ?,
         fixed_at = datetime('now','localtime','-5 days') WHERE id = ?`).run(uid.DEVELOPER, runId);
       insRun.run(tcId, 'PASS', 'MANUAL', 'Kiểm thử lại trên bản 1.0.1 sau khi sửa BUG-12', uid.TESTER, '-3 days');
     }
   });
 
-  // ===== Dự án 2: Sauce Demo (web thật để chạy Playwright – YC9) =====
+  // ===== Dự án 2: Sauce Demo (web thật để chạy Playwright – YC10) =====
   const sauce = insProject.run('SAUCE', 'Sauce Demo Shop', 'Trang bán hàng mẫu công khai dành cho luyện kiểm thử tự động.', 'https://www.saucedemo.com/', uid.ADMIN).lastInsertRowid;
   const mLogin = insModule.run(sauce, 'Đăng nhập', null).lastInsertRowid;
   const mCart = insModule.run(sauce, 'Giỏ hàng', null).lastInsertRowid;

@@ -1,16 +1,17 @@
-// YC1: Lập user story (BM1) và YC8: nhập user story từ file.
+// YC1: User story (BM1). Story chỉ được tạo, sửa trên Jira rồi đồng bộ về (jiraService);
+// trong hệ thống story là CHỈ ĐỌC. Hàm create chỉ dùng cho dữ liệu mẫu và kiểm thử.
 const { z } = require('zod');
 const { getDb } = require('../db');
 const params = require('./parameterService');
 const { parseCriteria } = require('./ai/providers/MockProvider');
 const { badRequest, notFound, conflict } = require('../utils/errors');
 
-// QĐ1: mã user story có dạng US-XXX, không trùng
+// QĐ1: mã user story là mã issue Jira (VD SHOP-5); dữ liệu mẫu dùng dạng US-XXX. Không trùng
 const STORY_POINTS = [1, 2, 3, 5, 8, 13];
-const CODE_REGEX = /^US-[A-Z0-9]+(?:-[A-Z0-9]+)*$/;
+const CODE_REGEX = /^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/;
 
 const storySchema = z.object({
-  code: z.string().trim().toUpperCase().regex(CODE_REGEX, 'Mã phải có dạng US-XXX (chữ in hoa, số, dấu -)'),
+  code: z.string().trim().toUpperCase().regex(CODE_REGEX, 'Mã phải có dạng KEY-số (chữ in hoa, số, dấu -)'),
   project_id: z.coerce.number().int().positive(),
   module_id: z.coerce.number().int().positive().nullable().optional(),
   sprint_id: z.coerce.number().int().positive().nullable().optional(),
@@ -18,7 +19,7 @@ const storySchema = z.object({
   description: z.string().trim().min(10, 'Mô tả tối thiểu 10 ký tự').max(3000),
   acceptance_criteria: z.string().trim().min(3).max(5000),
   priority: z.string().trim().default('Medium'),
-  // Story point theo dãy Fibonacci (QĐ12)
+  // Story point theo dãy Fibonacci (QĐ14)
   story_points: z.coerce.number().int().refine((n) => STORY_POINTS.includes(n), 'Story point phải thuộc 1, 2, 3, 5, 8, 13')
     .nullable().optional(),
 });
@@ -44,13 +45,14 @@ function validate(input) {
   return data;
 }
 
-function list({ project_id, module_id, sprint_id, backlog, q } = {}) {
+function list({ project_id, module_id, sprint_id, backlog, archived, q } = {}) {
   const where = [];
   const args = [];
   if (project_id) (where.push('s.project_id = ?'), args.push(project_id));
   if (module_id) (where.push('s.module_id = ?'), args.push(module_id));
   if (sprint_id) (where.push('s.sprint_id = ?'), args.push(sprint_id));
   if (backlog) where.push('s.sprint_id IS NULL'); // Product backlog: story chưa đưa vào sprint nào
+  if (!archived) where.push('s.archived = 0'); // story đã xóa trên Jira chỉ hiện khi xem lưu trữ
   if (q) (where.push('(s.code LIKE ? OR s.title LIKE ?)'), args.push(`%${q}%`, `%${q}%`));
   return getDb()
     .prepare(
@@ -71,7 +73,7 @@ function list({ project_id, module_id, sprint_id, backlog, q } = {}) {
 function get(id) {
   const s = getDb()
     .prepare(
-      `SELECT s.*, p.name project_name, p.base_url, m.name module_name, sp.name sprint_name FROM user_stories s
+      `SELECT s.*, p.name project_name, p.base_url, p.jira_key project_jira_key, m.name module_name, sp.name sprint_name FROM user_stories s
        JOIN projects p ON p.id = s.project_id LEFT JOIN modules m ON m.id = s.module_id
        LEFT JOIN sprints sp ON sp.id = s.sprint_id WHERE s.id = ?`
     )
@@ -93,34 +95,21 @@ function create(input, userId) {
   return get(info.lastInsertRowid);
 }
 
-function update(id, input) {
-  const current = get(id);
-  const d = validate({ ...current, ...input, code: current.code });
-  getDb()
-    .prepare(
-      `UPDATE user_stories SET module_id = ?, sprint_id = ?, title = ?, description = ?, acceptance_criteria = ?, priority = ?, story_points = ?,
-       updated_at = datetime('now','localtime') WHERE id = ?`
-    )
-    .run(d.module_id || null, d.sprint_id || null, d.title, d.description, d.acceptance_criteria, d.priority, d.story_points ?? null, id);
+// YC8: Tester đã xem lại test case sau khi story đổi trên Jira → bỏ đánh dấu
+function markReviewed(id) {
+  const s = get(id);
+  if (!s.changed_at) throw conflict('User story không có thay đổi nào cần xem lại');
+  getDb().prepare('UPDATE user_stories SET changed_at = NULL WHERE id = ?').run(id);
   return get(id);
 }
 
-function remove(id) {
-  get(id);
-  getDb().prepare('DELETE FROM user_stories WHERE id = ?').run(id);
+// QĐ1: chỉ sinh test case cho story còn trên Jira và có đủ acceptance criteria
+function assertReady(story) {
+  if (story.archived) throw conflict('User story đã bị xóa trên Jira, chỉ còn để xem');
+  const minAc = params.get('MIN_AC_PER_STORY');
+  if (parseCriteria(story.acceptance_criteria).length < minAc) {
+    throw badRequest(`User story chưa có đủ ${minAc} acceptance criteria – bổ sung mục "Acceptance criteria" trong Description trên Jira (QĐ1)`);
+  }
 }
 
-// Nhập nhiều user story; dòng lỗi không làm hỏng các dòng hợp lệ
-function importMany(rows, userId) {
-  const result = { created: [], errors: [] };
-  rows.forEach((row, i) => {
-    try {
-      result.created.push(create(row, userId).code);
-    } catch (e) {
-      result.errors.push({ row: i + 1, code: row.code, error: e.issues ? e.issues[0].message : e.message });
-    }
-  });
-  return result;
-}
-
-module.exports = { list, get, create, update, remove, importMany, CODE_REGEX, STORY_POINTS };
+module.exports = { list, get, create, markReviewed, assertReady, CODE_REGEX, STORY_POINTS };

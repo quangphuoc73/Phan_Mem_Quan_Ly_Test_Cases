@@ -1,7 +1,7 @@
 // IT-01 → IT-10, IT-43 → IT-45: Đăng nhập, xác thực, phân quyền (RBAC)
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { app, request, as, newStory } = require('../helpers');
+const { app, request, as } = require('../helpers');
 
 test('IT-01 đăng nhập đúng trả về JWT, không trả về mật khẩu băm', async () => {
   const res = await request(app).post('/api/auth/login').send({ username: 'tester', password: 'Tester@123' });
@@ -33,11 +33,11 @@ test('IT-05 QĐ4: Tester không được duyệt test case', async () => {
   assert.equal(res.status, 403);
 });
 
-test('IT-06 Developer chỉ được xem, không được lập user story', async () => {
+test('IT-06 Developer chỉ được xem: không sinh AI, không đồng bộ Jira', async () => {
   const dev = await as('dev');
   assert.equal((await dev.get('/api/stories')).status, 200);
-  assert.equal((await dev.post('/api/stories').send(newStory())).status, 403);
   assert.equal((await dev.post('/api/stories/1/generate')).status, 403);
+  assert.equal((await dev.post('/api/projects/1/jira-sync')).status, 403);
 });
 
 test('IT-07 Tester không được thay đổi quy định', async () => {
@@ -71,12 +71,12 @@ test('IT-10 header bảo mật (helmet) và CSP được bật', async () => {
   assert.equal(res.headers['x-content-type-options'], 'nosniff');
 });
 
-test('IT-43 PO/BA lập user story và lập kế hoạch sprint (NV1, NV9)', async () => {
+test('IT-43 PO/BA viết story, lập sprint trên Jira; trong hệ thống chỉ xem story và sprint', async () => {
   const po = await as('poba');
-  assert.equal((await po.post('/api/stories').send(newStory())).status, 201);
-  const day = (o) => new Date(Date.now() + o * 86400000).toLocaleDateString('sv-SE');
-  const sprint = await po.post('/api/projects/1/sprints').send({ name: 'Sprint PO', start_date: day(200), end_date: day(210) });
-  assert.equal(sprint.status, 201);
+  assert.equal((await po.get('/api/stories?project_id=1')).status, 200);
+  assert.equal((await po.get('/api/projects/1/sprints')).status, 200);
+  assert.equal((await po.post('/api/projects/1/jira-sync')).status, 403);
+  assert.equal((await po.post('/api/jira/import').send({ key: 'HRM' })).status, 403);
 });
 
 test('IT-44 PO/BA không viết, duyệt, chạy test case và không gọi AI', async () => {

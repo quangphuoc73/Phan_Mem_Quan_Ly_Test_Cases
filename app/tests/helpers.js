@@ -36,4 +36,8 @@ const newStory = (over = {}) => ({
   ...over,
 });
 
-module.exports = { app, request, login, as, newStory, getDb };
+// User story chỉ đến từ Jira (không có API tạo); test tạo thẳng qua service như dữ liệu đã đồng bộ
+const stories = require('../src/services/storyService');
+const createStory = (over = {}) => stories.create(newStory(over), 1);
+
+module.exports = { app, request, login, as, newStory, createStory, getDb };

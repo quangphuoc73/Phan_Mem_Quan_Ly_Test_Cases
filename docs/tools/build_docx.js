@@ -25,6 +25,8 @@ const PAGE_W = 11906; // A4, đơn vị DXA
 const MARGIN = 1134; // 2 cm
 const CONTENT_W = PAGE_W - 2 * MARGIN;
 const MAX_IMG_PX = 620; // chiều rộng ảnh tối đa (px ở 96 dpi) ≈ chiều rộng vùng chữ
+const PAGE_H = 16838;
+const MAX_IMG_H = Math.floor((PAGE_H - 2 * MARGIN) / 15) - 60; // chiều cao ảnh tối đa: vừa một trang dọc
 
 if (!CHROME) throw new Error('Cần Google Chrome để vẽ sơ đồ Mermaid và đổi SVG sang PNG.');
 if (!fs.existsSync(HTML)) throw new Error('Chưa có BaoCaoDoAn.html: chạy "npm run build" trước.');
@@ -60,9 +62,9 @@ function renderMermaid() {
   });
 }
 
-function imageParagraph(buf, alt) {
+function imageParagraph(buf, alt, maxW = MAX_IMG_PX, maxH = Infinity) {
   const { w, h } = pngSize(buf);
-  const scale = Math.min(1, MAX_IMG_PX / (w / 2)); // ảnh chụp ở tỷ lệ 2x
+  const scale = Math.min(1, maxW / (w / 2), maxH / (h / 2)); // ảnh chụp ở tỷ lệ 2x
   return new Paragraph({
     alignment: AlignmentType.CENTER, spacing: { before: 120, after: 120 }, keepNext: false,
     children: [new ImageRun({ type: 'png', data: buf, transformation: { width: Math.round((w / 2) * scale), height: Math.round((h / 2) * scale) }, altText: { title: alt, description: alt, name: alt } })],
@@ -121,7 +123,7 @@ function table(t) {
     const lens = [t.header, ...t.rows].reduce((acc, row) => row.map((c, i) => Math.max(acc[i] || 0, Math.min(c.text.length, 60))), []);
     const total = lens.reduce((a, b) => a + Math.max(b, 6), 0);
     lens.forEach((l, i) => { widths[i] = Math.floor((CONTENT_W * Math.max(l, 6)) / total); });
-    // cột tối thiểu đủ cho chữ ngắn như "STT", "BM10", "QĐ12" không bị bẻ dòng
+    // cột tối thiểu đủ cho chữ ngắn như "STT", "BM13", "QĐ14" không bị bẻ dòng
     const MIN = 820;
     const short = widths.map((w) => w < MIN);
     const need = short.reduce((a, s, i) => a + (s ? MIN - widths[i] : 0), 0);
@@ -185,8 +187,8 @@ function blocks(tokens) {
             if (!fs.existsSync(file)) continue;
             const buf = file.endsWith('.svg') ? svgToPng(fs.readFileSync(file, 'utf8')) : fs.readFileSync(file);
             if (!file.endsWith('.svg') && !file.endsWith('.png')) continue;
-            out.push(imageParagraph(buf, im.text || path.basename(file)));
-            if (im.text) out.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 160 }, children: [new TextRun({ text: im.text, italics: true, size: 22 })] }));
+            const cap = im.text ? [new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 160 }, children: [new TextRun({ text: im.text, italics: true, size: 22 })] })] : [];
+            out.push(imageParagraph(buf, im.text || path.basename(file), MAX_IMG_PX, MAX_IMG_H), ...cap);
           }
           const rest = t.tokens.filter((x) => x.type !== 'image' && !(x.type === 'text' && !x.text.trim()));
           if (rest.length) out.push(new Paragraph({ children: inline(rest) }));
@@ -234,7 +236,7 @@ function blocks(tokens) {
 }
 
 // ---------- Trang bìa, mục lục ----------
-function cover() {
+function cover(staticToc = false) {
   const lines = (s) => s.split('<br>');
   const p = (text, opts = {}) => new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 80 }, ...opts.p, children: [new TextRun({ text, bold: true, size: 26, ...opts.r })] });
   const BLANK = '..............................';
@@ -254,8 +256,11 @@ function cover() {
     p(COVER.place, { r: { bold: false }, p: { spacing: { before: 1600 } } }),
     new Paragraph({ children: [new PageBreak()] }),
     new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun('MỤC LỤC')] }),
-    new Paragraph({ children: [new TextRun({ text: 'Trong Word: nhấn chuột phải vào mục lục → Update Field (Cập nhật trường) để cập nhật số trang.', italics: true, size: 20, color: '666666' })] }),
-    new TableOfContents('Mục lục', { hyperlink: true, headingStyleRange: '1-3' }),
+    ...(staticToc
+      // Bản để xuất PDF: LibreOffice không cập nhật trường mục lục nên liệt kê sẵn tên các chương
+      ? FILES.map((f) => new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: fs.readFileSync(path.join(DOCS, f), 'utf8').match(/^# (.+)$/m)[1], size: 26 })] }))
+      : [new Paragraph({ children: [new TextRun({ text: 'Trong Word: nhấn chuột phải vào mục lục → Update Field (Cập nhật trường) để cập nhật số trang.', italics: true, size: 20, color: '666666' })] }),
+        new TableOfContents('Mục lục', { hyperlink: true, headingStyleRange: '1-3' })]),
     new Paragraph({ children: [new PageBreak()] }),
   ];
 }
@@ -269,7 +274,7 @@ async function main() {
   if (mdCount !== mermaidImages.filter(Boolean).length) console.warn(`Cảnh báo: có ${mdCount} sơ đồ Mermaid nhưng chỉ vẽ được ${mermaidImages.filter(Boolean).length}.`);
 
   const level = (lvl, fmt, text) => ({ level: lvl, format: fmt, text, alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 720 * (lvl + 1), hanging: 360 } } } });
-  const doc = new Document({
+  const makeDoc = (staticToc) => new Document({
     creator: 'Nhóm đồ án SE104', title: 'Báo cáo đồ án SE104 – AI TestCase Manager',
     features: { updateFields: true },
     styles: {
@@ -289,13 +294,13 @@ async function main() {
       ],
     },
     sections: [{
-      properties: { page: { size: { width: PAGE_W, height: 16838 }, margin: { top: MARGIN, bottom: MARGIN, left: MARGIN, right: MARGIN } } },
+      properties: { page: { size: { width: PAGE_W, height: PAGE_H }, margin: { top: MARGIN, bottom: MARGIN, left: MARGIN, right: MARGIN } } },
       footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ children: [PageNumber.CURRENT], size: 22 })] })] }) },
-      children: [...cover(), ...body],
+      children: [...cover(staticToc), ...body],
     }],
   });
   const out = path.join(DOCS, 'BaoCaoDoAn.docx');
-  fs.writeFileSync(out, await Packer.toBuffer(doc));
+  fs.writeFileSync(out, await Packer.toBuffer(makeDoc(false)));
   fs.rmSync(TMP, { recursive: true, force: true });
   console.log(`Đã tạo ${out} (${FILES.length} chương, ${mermaidImages.filter(Boolean).length} sơ đồ Mermaid)`);
 }

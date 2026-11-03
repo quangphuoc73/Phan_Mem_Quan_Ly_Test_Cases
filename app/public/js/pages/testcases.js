@@ -1,4 +1,4 @@
-// YC3: Soạn thảo test case · YC4: Duyệt · YC5: Ghi kết quả · YC7: Tra cứu · YC8: Xuất Excel · YC9: Script Playwright · YC13: Báo đã sửa lỗi
+// YC3: Soạn thảo test case · YC4: Duyệt · YC5: Ghi kết quả · YC7: Tra cứu · YC9: Xuất Excel · YC10: Script Playwright · YC15: Báo đã sửa lỗi
 import { state, api, esc, can, pill, fmtDate, toast, toastError, modal, confirmBox, bind, busy, formData, options, download, LABEL, linkLabels } from '../core.js';
 import { updateReviewBadge } from '../main.js';
 
@@ -72,7 +72,7 @@ function historyView(h) {
     <tbody>${h.reviews.map((r) => `<tr><td>${pill(r.decision)}</td><td>${esc(r.note || '')}</td><td>${esc(r.reviewer_name)}</td><td class="small">${fmtDate(r.created_at)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">Chưa được duyệt lần nào.</p>'}`;
 }
 
-// YC13: cột Sửa lỗi – Developer báo đã sửa lần chạy Fail gần nhất (QĐ13)
+// YC15: cột Sửa lỗi – Developer báo đã sửa lần chạy Fail gần nhất (QĐ15)
 export function fixCell(r) {
   if (r.fixed_at) return `<span class="pill PASS">🔧 Đã sửa · bản ${esc(r.fix_build)}</span><div class="small muted">${esc(r.fixed_by_name || '')} · ${fmtDate(r.fixed_at)}</div>`;
   if (r.result === 'FAIL' && r.is_latest && can('bug:fix')) return `<button class="btn sm" data-fix="${r.id}">🔧 Báo đã sửa</button>`;
@@ -84,7 +84,7 @@ export function openFixForm(run, onSaved) {
     title: `Báo đã sửa lỗi – ${run.tc_code || 'test case'}`,
     body: `<form id="fix-form">
       <p class="small muted">Lần chạy Fail: ${esc(run.note || '')}</p>
-      <div class="field"><label>Bản build đã sửa (bắt buộc, QĐ13)</label><input name="build" required maxlength="50" placeholder="VD: 1.4.2"></div>
+      <div class="field"><label>Bản build đã sửa (bắt buộc, QĐ15)</label><input name="build" required maxlength="50" placeholder="VD: 1.4.2"></div>
       <div class="field"><label>Ghi chú cho Tester</label><textarea name="note" rows="3" maxlength="2000" placeholder="Đã sửa gì, cần chú ý gì khi kiểm thử lại"></textarea></div>
     </form>`,
     foot: '<button class="btn" data-close>Hủy</button><button class="btn primary" id="fix-save">Báo đã sửa</button>',
@@ -113,7 +113,7 @@ function runsTable(runs) {
       <td>${fixCell({ ...r, is_latest: r.id === runs[0].id })}${r.fix_note ? `<div class="small">${esc(r.fix_note)}</div>` : ''}</td></tr>`).join('')}</tbody></table></div>`;
 }
 
-// YC13: lần chạy gần nhất là Fail và Developer đã báo sửa
+// YC15: lần chạy gần nhất là Fail và Developer đã báo sửa
 const retestOf = (runs) => (runs[0]?.result === 'FAIL' && runs[0].fixed_at ? runs[0] : null);
 
 export async function openTestCase(id, onChange = () => {}) {
@@ -265,7 +265,7 @@ export async function openTestCase(id, onChange = () => {}) {
 export async function renderTestCases(page) {
   page.innerHTML = `
     <div class="page-head">
-      <div><h1>Tra cứu test case</h1><p>Lọc theo trạng thái, độ ưu tiên, loại, nguồn sinh (YC7) và xuất Excel (YC8)</p></div>
+      <div><h1>Tra cứu test case</h1><p>Lọc theo trạng thái, độ ưu tiên, loại, nguồn sinh (YC7) và xuất Excel (YC9)</p></div>
       <button class="btn" id="export">⬇️ Xuất Excel</button>
     </div>
     <form class="filters" id="tc-filter">

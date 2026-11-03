@@ -2,11 +2,9 @@
 
 > **Mục tiêu** của khảo sát hiện trạng là tìm hiểu về **thế giới thực liên quan đến phần mềm**: tổ chức đang làm việc như thế nào, gặp vấn đề gì, cần gì. Theo môn học, cần khảo sát 3 hiện trạng: **tổ chức, nghiệp vụ, tin học**. Kết quả của chương này là đầu vào để lập danh sách yêu cầu ([Chương 2](02_DacTaYeuCau.md)) và sơ đồ luồng dữ liệu ([Chương 3](03_PhanTich.md)).
 
-```mermaid
-flowchart LR
-    A["Khảo sát<br/>hiện trạng"] --> B["Lập danh sách các<br/>yêu cầu phần mềm"] --> C["Lập sơ đồ<br/>luồng dữ liệu"]
-    C -. "bổ sung, điều chỉnh" .-> B -. "bổ sung, điều chỉnh" .-> A
-```
+![Các bước xác định yêu cầu](sodo/GiaiDoanYeuCau.svg)
+
+*File gốc:* `docs/sodo/GiaiDoanYeuCau.drawio` (mở bằng draw.io để sửa).
 
 ## 1.1. Đối tượng khảo sát
 
@@ -157,13 +155,13 @@ Các nghiệp vụ khảo sát được chuyển thành yêu cầu phần mềm 
 
 | Nghiệp vụ | Yêu cầu phần mềm |
 |---|---|
-| NV1 Lập user story | YC1 Lập user story, YC8 Nhập user story từ file |
+| NV1 Lập user story | Vẫn làm trên Jira; hệ thống YC1 Đồng bộ user story, YC8 Nhận thay đổi user story từ Jira |
 | NV2 Viết test case | YC2 Sinh test case bằng AI, YC3 Soạn thảo test case |
 | NV3 Cập nhật test case | YC3 Soạn thảo (lưu phiên bản) |
 | NV4 Duyệt test case | YC4 Duyệt test case |
 | NV5 Chạy test, ghi kết quả | YC5 Ghi nhận kết quả chạy test |
-| NV6 Báo lỗi | Tạo ticket bug vẫn dùng Jira (ngoài phạm vi); hệ thống lưu mã bug trong ghi chú kết quả, YC13 Báo đã sửa lỗi và kiểm thử lại |
-| NV7 Viết, chạy script tự động | YC9 Sinh và chạy script tự động |
-| NV8 Lập báo cáo | YC6 Lập báo cáo, YC7 Tra cứu, YC8 Xuất Excel |
-| NV9 Lập kế hoạch sprint | YC12 Quản lý sprint |
-| NV10 Quản lý thành viên, quy định | YC10 Thay đổi quy định, YC11 Quản lý người dùng, dự án |
+| NV6 Báo lỗi | Tạo ticket bug vẫn dùng Jira (ngoài phạm vi); hệ thống lưu mã bug trong ghi chú kết quả, YC15 Báo đã sửa lỗi và kiểm thử lại |
+| NV7 Viết, chạy script tự động | YC10 Sinh và chạy script tự động |
+| NV8 Lập báo cáo | YC6 Lập báo cáo, YC7 Tra cứu, YC9 Xuất Excel |
+| NV9 Lập kế hoạch sprint | Vẫn làm trên Jira; hệ thống YC14 Theo dõi sprint (DoD, velocity, burndown) |
+| NV10 Quản lý thành viên, quy định | YC11 Thay đổi quy định, YC12 Quản lý người dùng, YC13 Đồng bộ dự án từ Jira |

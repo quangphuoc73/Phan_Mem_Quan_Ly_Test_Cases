@@ -4,6 +4,8 @@ const express = require('express');
 const helmet = require('helmet');
 const { authenticate } = require('./middleware/auth');
 const { errorHandler } = require('./middleware/errorHandler');
+const jira = require('./services/jiraService');
+const audit = require('./services/auditService');
 
 function createApp() {
   const app = express();
@@ -29,6 +31,13 @@ function createApp() {
 
   app.get('/api/health', (_req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
   app.use('/api/auth', require('./routes/auth'));
+  // YC8: Jira gọi webhook khi story thay đổi – xác thực bằng mã bí mật, không dùng JWT
+  app.post('/api/jira/webhook', async (req, res) => {
+    jira.checkWebhookSecret(req.query.secret);
+    const r = await jira.handleWebhook(req.body);
+    audit.log(req, 'JIRA_WEBHOOK', 'project', null, { event: r.event, project: r.project, ignored: r.ignored });
+    res.json(r);
+  });
   app.use('/api', authenticate, require('./routes/admin'));
   app.use('/api', authenticate, require('./routes/work'));
   app.use('/api', (_req, res) => res.status(404).json({ error: 'API không tồn tại' }));
