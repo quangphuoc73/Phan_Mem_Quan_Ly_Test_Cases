@@ -1,4 +1,5 @@
 # CI/CD: mỗi lần push hoặc tạo Pull Request sẽ tự động kiểm thử và build Docker image
+# Cố định ubuntu-24.04: ubuntu-latest đã chuyển sang Ubuntu 26, Playwright 1.55 chưa cài được thư viện hệ thống trên bản này
 name: CI
 
 on:
@@ -9,7 +10,7 @@ on:
 jobs:
   unit-api-test:
     name: Unit & API test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: app
@@ -25,7 +26,7 @@ jobs:
 
   e2e-test:
     name: E2E test (Playwright)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: unit-api-test
     env:
       PW_CHANNEL: chromium
@@ -51,7 +52,7 @@ jobs:
 
   automation-samples:
     name: Playwright mẫu (Sauce Demo)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: unit-api-test
     # Giá trị lấy từ Settings → Secrets and variables → Actions của repo GitHub.
     # Chưa khai báo thì dùng mặc định trong automation/test-data/accounts.js và playwright.config.js.
@@ -85,7 +86,7 @@ jobs:
 
   docker:
     name: Build Docker image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [unit-api-test, e2e-test, automation-samples]
     steps:
       - uses: actions/checkout@v4
