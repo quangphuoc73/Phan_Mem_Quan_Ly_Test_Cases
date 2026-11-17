@@ -161,11 +161,11 @@ export async function renderRunDetail(page, id) {
       <tbody>${run.items.map((i) => `<tr data-item="${i.id}">
         <td class="mono clickable" data-open="${i.test_case_id}">${esc(i.code)}</td><td style="min-width:200px">${esc(i.title)}<div class="small muted">${esc(i.story_code)}</div></td>
         <td>v${i.tc_version}${i.current_version > i.tc_version ? ` <span class="small muted">(hiện v${i.current_version})</span>` : ''}</td>
-        <td>${manage ? `<select data-assign="${i.id}" style="width:160px" aria-label="Người được giao ${esc(i.code)}">${options(people, i.assignee_id, { empty: 'Chưa giao' })}</select>` : esc(i.assignee_name || '—')}</td>
+        <td>${manage ? `<select data-assign="${i.id}" style="min-width:190px" aria-label="Người được giao ${esc(i.code)}">${options(people, i.assignee_id, { empty: 'Chưa giao' })}</select>` : esc(i.assignee_name || '—')}</td>
         <td>${i.last_result ? `${pill(i.last_result)}<div class="small muted">${esc(fmtDate(i.last_executed_at))}</div>` : '<span class="muted small">Chưa chạy</span>'}</td>
         <td>${i.warnings.length ? `<ul class="warn-list">${i.warnings.map((w) => `<li>${esc(w)}</li>`).join('')}</ul>` : ''}</td>
-        <td class="row" style="gap:4px">${canRecord(i) ? `<button class="btn sm primary" data-record="${i.id}">Ghi kết quả</button>` : ''}
-          ${manage && !i.last_result ? `<button class="btn sm" data-remove="${i.id}" title="Chỉ bỏ được test chưa có kết quả (QĐ3)">Bỏ</button>` : ''}</td>
+        <td style="white-space:nowrap"><div class="row" style="gap:4px;flex-wrap:nowrap">${canRecord(i) ? `<button class="btn sm primary" data-record="${i.id}">Ghi kết quả</button>` : ''}
+          ${manage && !i.last_result ? `<button class="btn sm" data-remove="${i.id}" title="Chỉ bỏ được test chưa có kết quả (QĐ3)">Bỏ</button>` : ''}</div></td>
       </tr>`).join('') || '<tr><td colspan="7" class="empty">Đợt chưa có test</td></tr>'}</tbody>
     </table></div>
     <div class="card mt"><h3>Các lần ghi kết quả (${executions.length})</h3>
