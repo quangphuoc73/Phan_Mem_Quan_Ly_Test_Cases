@@ -1,5 +1,4 @@
 # CI/CD: mỗi lần push hoặc tạo Pull Request sẽ tự động kiểm thử và build Docker image
-# Mã nguồn nằm trong thư mục "Đồ án/" (app/, automation/, Dockerfile)
 name: CI
 
 on:
@@ -13,14 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: "Đồ án/app"
+        working-directory: app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: "Đồ án/app/package-lock.json"
+          cache-dependency-path: app/package-lock.json
       - run: npm ci
       - run: npm test
 
@@ -32,14 +31,14 @@ jobs:
       PW_CHANNEL: chromium
     defaults:
       run:
-        working-directory: "Đồ án/app"
+        working-directory: app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: "Đồ án/app/package-lock.json"
+          cache-dependency-path: app/package-lock.json
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
@@ -47,7 +46,7 @@ jobs:
         if: always()
         with:
           name: e2e-report
-          path: "Đồ án/app/e2e-report"
+          path: app/e2e-report
           retention-days: 7
 
   automation-samples:
@@ -55,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: unit-api-test
     # Giá trị lấy từ Settings → Secrets and variables → Actions của repo GitHub.
-    # Chưa khai báo thì dùng mặc định trong Đồ án/automation/test-data/accounts.js và playwright.config.js.
+    # Chưa khai báo thì dùng mặc định trong automation/test-data/accounts.js và playwright.config.js.
     env:
       BASE_URL: ${{ vars.BASE_URL }}
       TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
@@ -66,14 +65,14 @@ jobs:
       WORKERS: 2
     defaults:
       run:
-        working-directory: "Đồ án/automation"
+        working-directory: automation
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: "Đồ án/automation/package-lock.json"
+          cache-dependency-path: automation/package-lock.json
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:samples
@@ -81,7 +80,7 @@ jobs:
         if: always()
         with:
           name: automation-report
-          path: "Đồ án/automation/playwright-report"
+          path: automation/playwright-report
           retention-days: 7
 
   docker:
@@ -90,4 +89,4 @@ jobs:
     needs: [unit-api-test, e2e-test, automation-samples]
     steps:
       - uses: actions/checkout@v4
-      - run: docker build -t ai-testcase-manager:${{ github.sha }} "Đồ án"
+      - run: docker build -t ai-testcase-manager:${{ github.sha }} .
