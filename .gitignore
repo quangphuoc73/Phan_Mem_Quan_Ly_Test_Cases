@@ -1,12 +1,18 @@
 node_modules/
 .env
-app/data/
-app/e2e-report/
-app/e2e-results/
-automation/test-results/
-automation/playwright-report/
-automation/specs/generated/*.spec.js
+**/app/data/
+**/app/e2e-report/
+**/app/e2e-results/
+**/automation/test-results/
+**/automation/playwright-report/
+**/automation/specs/generated/*.spec.js
 .DS_Store
 
 # File khóa tạm của Word/Excel/PowerPoint khi đang mở file
 ~$*
+
+# CSDL SQLite và bản sao lưu tự động (không đưa lên repo)
+*.db
+*.db-shm
+*.db-wal
+*.db.bak-*

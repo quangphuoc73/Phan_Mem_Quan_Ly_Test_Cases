@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slide bảo vệ SE104</title>
+<style>
+  :root {
+    --bg: #0b1220; --panel: #ffffff; --text: #1c2333; --muted: #5d6781; --primary: #2563eb; --violet: #6d28d9;
+    --soft: #eef3ff; --green: #15803d; --red: #c2262e; --amber: #b45309; --border: #e2e7f1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; color: var(--text); }
+  .deck { height: 100%; display: grid; place-items: center; }
+  .slide { display: none; width: min(96vw, calc(96vh * 16 / 9)); aspect-ratio: 16 / 9; background: var(--panel); border-radius: 14px; padding: 4.2% 5%; position: relative; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+  .slide.active { display: flex; flex-direction: column; }
+  .slide { font-size: clamp(11px, 1.45vw, 22px); }
+  h1 { font-size: 2.3em; margin: 0 0 .3em; line-height: 1.2; }
+  h2 { font-size: 1.75em; margin: 0 0 .7em; color: var(--primary); }
+  h3 { font-size: 1.1em; margin: 0 0 .4em; }
+  p, li { line-height: 1.5; }
+  ul { margin: .2em 0; padding-left: 1.2em; }
+  li { margin-bottom: .3em; }
+  .muted { color: var(--muted); }
+  .tag { display: inline-block; background: var(--soft); color: var(--primary); border-radius: 99px; padding: .15em .7em; font-size: .8em; font-weight: 600; margin: 0 .3em .3em 0; }
+  .grid { display: grid; gap: 1.1em; }
+  .g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); } .g4 { grid-template-columns: repeat(4, 1fr); }
+  .card { border: 1px solid var(--border); border-radius: 10px; padding: .9em 1em; background: #fbfcff; }
+  .big { font-size: 2.2em; font-weight: 800; color: var(--primary); line-height: 1.1; }
+  .flow { display: flex; align-items: stretch; gap: .5em; flex-wrap: nowrap; margin: .6em 0; }
+  .flow .step { flex: 1; border-radius: 10px; padding: .8em .6em; text-align: center; font-weight: 600; font-size: .9em; background: var(--soft); color: #1e3a8a; display: grid; place-items: center; }
+  .flow .step.ai { background: #efe7fd; color: var(--violet); }
+  .flow .arrow { display: grid; place-items: center; color: var(--muted); font-size: 1.3em; }
+  .shot { width: 100%; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(16,24,40,.12); }
+  .two { display: grid; grid-template-columns: 1fr 1.55fr; gap: 1.4em; align-items: center; flex: 1; min-height: 0; }
+  .two img { max-height: 100%; object-fit: contain; }
+  table { border-collapse: collapse; width: 100%; font-size: .85em; }
+  th, td { border: 1px solid var(--border); padding: .35em .6em; text-align: left; }
+  th { background: var(--soft); }
+  .footer { position: absolute; bottom: 2.4%; left: 5%; right: 5%; display: flex; justify-content: space-between; font-size: .7em; color: var(--muted); }
+  .title-slide { background: linear-gradient(140deg, #0b1220 0%, #1e3a8a 60%, #6d28d9 100%); color: #fff; justify-content: center; }
+  .title-slide h1 { font-size: 2.8em; }
+  .title-slide .muted { color: #c7d2fe; }
+  .title-slide .footer { color: #c7d2fe; }
+  .pyramid { display: grid; gap: .35em; justify-items: center; }
+  .pyramid div { border-radius: 8px; color: #fff; font-weight: 700; text-align: center; padding: .55em; }
+  .ok { color: var(--green); font-weight: 700; }
+  .controls { position: fixed; bottom: 14px; right: 18px; color: #94a3b8; font: 13px system-ui; display: flex; gap: 8px; align-items: center; }
+  .controls button { background: #1e293b; color: #e2e8f0; border: 0; border-radius: 6px; padding: 6px 12px; cursor: pointer; font: inherit; }
+  pre.mermaid { margin: 0; flex: 1; display: grid; place-items: center; min-height: 0; }
+  pre.mermaid svg { width: 100% !important; max-width: none !important; height: auto; max-height: 100%; }
+  @media print {
+    @page { size: 1280px 720px; margin: 0; }
+    html, body { background: #fff; height: auto; }
+    .deck { display: block; }
+    .slide { display: flex !important; flex-direction: column; width: 1280px; height: 720px; border-radius: 0; box-shadow: none; page-break-after: always; font-size: 20px; }
+    .controls { display: none; }
+    .slide:last-child { page-break-after: auto; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- 1 -->
+  <section class="slide title-slide">
+    <div class="muted">SE104 – Nhập môn Công nghệ phần mềm · Trường ĐH Công nghệ Thông tin – ĐHQG-HCM</div>
+    <h1 style="margin-top:.6em">Hệ thống quản lý kiểm thử<br>có hỗ trợ trí tuệ nhân tạo</h1>
+    <p style="font-size:1.2em">AI TestCase Manager · khi requirement đổi trên Jira, biết test nào cần sửa, test nào cần chạy lại</p>
+    <p class="muted" style="margin-top:2em">Nhóm thực hiện: [Thành viên 1] · [Thành viên 2] · [Thành viên 3] · [Thành viên 4]<br>Giảng viên hướng dẫn: [Tên giảng viên]</p>
+    <div class="footer"><span>Đồ án môn học · theo đặc tả bản chốt 16/11/2026</span><span>Tháng 11/2026</span></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide">
+    <h2>1. Khảo sát hiện trạng: đội QA đang gặp vấn đề gì?</h2>
+    <div class="grid g2" style="flex:1">
+      <div>
+        <ul>
+          <li>PO/BA sửa requirement, AC trên Jira giữa sprint: <b style="color:var(--red)">không ai biết test nào đã lỗi thời</b></li>
+          <li>Sau thay đổi <b>không biết cần chạy lại test nào</b>: chạy hết hoặc chọn theo cảm tính</li>
+          <li>Viết test case thủ công: <b>30–60 phút / requirement</b>, dễ sót case lỗi, case biên</li>
+          <li>Duyệt qua chat, <b>không lưu vết</b>; kết quả chạy không gắn bản build nào</li>
+          <li>Tổng hợp báo cáo bằng tay mất 1–2 giờ</li>
+          <li>Dán dữ liệu khách hàng vào ChatGPT: <b style="color:var(--red)">nguy cơ lộ dữ liệu</b></li>
+        </ul>
+      </div>
+      <div class="card" style="align-self:center">
+        <h3>Điểm mới trọng tâm</h3>
+        <p>AI giúp QA xác định <b>test nào cần sửa</b> và <b>test nào cần chạy lại</b> sau khi requirement thay đổi trên Jira. Jira quản lý requirement gốc; ứng dụng quản lý nghiệp vụ kiểm thử.</p>
+        <span class="tag">Jira một chiều</span><span class="tag">Phiên bản requirement</span><span class="tag">AI có kiểm soát</span><span class="tag">Kiểm thử tự động</span>
+      </div>
+    </div>
+    <div class="footer"><span>Chương 1 – Khảo sát hiện trạng</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide">
+    <h2>2. Giải pháp: quy trình khép kín, con người kiểm soát AI</h2>
+    <div class="flow">
+      <div class="step">📝 Requirement<br><span class="muted" style="font-weight:400">từ Jira, có phiên bản</span></div><div class="arrow">→</div>
+      <div class="step ai">🤖 AI sinh test<br><span style="font-weight:400">gắn AC · Nháp</span></div><div class="arrow">→</div>
+      <div class="step">✅ QA Lead duyệt<br><span class="muted" style="font-weight:400">trả lại + ghi chú</span></div><div class="arrow">→</div>
+      <div class="step">▶️ Test Run<br><span class="muted" style="font-weight:400">build · phiên bản cố định</span></div><div class="arrow">→</div>
+      <div class="step">🔧 Báo sửa lỗi<br><span class="muted" style="font-weight:400">kiểm thử lại</span></div><div class="arrow">→</div>
+      <div class="step">📊 Báo cáo</div>
+    </div>
+    <div class="flow" style="margin-top:.2em">
+      <div class="step">✎ PO/BA đổi AC trên Jira</div><div class="arrow">→</div>
+      <div class="step">🚩 Gắn cờ đúng test bị ảnh hưởng</div><div class="arrow">→</div>
+      <div class="step ai">🔍 AI phân tích ảnh hưởng</div><div class="arrow">→</div>
+      <div class="step">🧑‍⚖️ QA Lead quyết định</div><div class="arrow">→</div>
+      <div class="step ai">🧭 Bộ regression → Test Run</div>
+    </div>
+    <div class="grid g3" style="margin-top:.8em">
+      <div class="card"><h3>5 vai trò</h3>Admin · QA Lead · PO/BA · Tester · Developer, RBAC 13 quyền</div>
+      <div class="card"><h3>AI không tự đổi test</h3>AI chỉ đề xuất kèm lý do; mọi thay đổi qua duyệt; đề xuất cũ thành Lỗi thời</div>
+      <div class="card"><h3>Chạy được offline</h3>AI mock và Jira giả lập cho demo; đổi Gemini / Claude / OpenAI bằng cấu hình</div>
+    </div>
+    <div class="footer"><span>Tổng quan giải pháp</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide">
+    <h2>3. Quy trình thực hiện: Agile – Scrum</h2>
+    <div class="grid g2" style="flex:1">
+      <div>
+        <div class="flow" style="flex-wrap:wrap">
+          <div class="step">📋 Product Backlog<br><span class="muted" style="font-weight:400">33 story, MoSCoW, SP</span></div><div class="arrow">→</div>
+          <div class="step">🗓️ Planning</div><div class="arrow">→</div>
+          <div class="step ai">🏃 Sprint 1 tuần</div><div class="arrow">→</div>
+          <div class="step">👀 Review + 🔁 Retro</div>
+        </div>
+        <ul style="margin-top:.6em">
+          <li><b>Mỗi sprint</b> đi qua đủ 7 hoạt động của môn học</li>
+          <li>Đặc tả rà soát nhiều vòng, <b>chốt 16/11/2026</b> rồi thiết kế lại phần mềm theo bản chốt</li>
+          <li><b>Definition of Done</b>: merge qua PR, có test tự động, CI xanh, tài liệu cập nhật, demo được</li>
+        </ul>
+      </div>
+      <table>
+        <tr><th>Sprint</th><th>Sprint Goal</th><th>SP</th></tr>
+        <tr><td>1</td><td>Đăng nhập, phân quyền, đồng bộ requirement có phiên bản từ Jira</td><td>16</td></tr>
+        <tr><td>2</td><td><b>AI sinh test gắn AC</b> an toàn; soạn, duyệt</td><td>22</td></tr>
+        <tr><td>3</td><td>Test Suite, Test Run, ghi kết quả, báo cáo</td><td>21</td></tr>
+        <tr><td>4</td><td><b>Requirement đổi</b>: gắn cờ, AI phân tích ảnh hưởng, đề xuất</td><td>21</td></tr>
+        <tr><td>5</td><td>Regression, kiểm thử lại, quy định, Excel, Docker</td><td>19</td></tr>
+      </table>
+    </div>
+    <div class="footer"><span>Chương 0A – Quy trình Agile</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <h2>4. Yêu cầu nghiệp vụ: MVP 18 yêu cầu</h2>
+    <div class="grid g2" style="flex:1">
+      <table>
+        <tr><th>Yêu cầu</th><th>QĐ</th></tr>
+        <tr><td>YC1 Xem requirement từ Jira, lịch sử · <b>YC8 Nhận thay đổi</b> · YC12 Đồng bộ dự án</td><td>QĐ1, 8, 12</td></tr>
+        <tr><td>YC2 AI sinh test · YC3 Soạn, gửi duyệt · YC4 Duyệt</td><td>QĐ2–4</td></tr>
+        <tr><td>YC13 Test Suite · <b>YC14 Test Run</b> · YC5 Ghi kết quả</td><td>QĐ13, 14, 5</td></tr>
+        <tr><td><b>YC15 AI phân tích ảnh hưởng · YC16 Rà soát đề xuất · YC17 Bộ regression</b></td><td>QĐ15–17</td></tr>
+        <tr><td>YC18 Báo đã sửa lỗi, kiểm thử lại</td><td>QĐ18</td></tr>
+        <tr><td>YC6 Báo cáo · YC7 Tra cứu · YC9 Xuất Excel</td><td>QĐ6, 7, 9</td></tr>
+        <tr><td>YC10 Quy định · YC11 Người dùng</td><td>QĐ10, 11</td></tr>
+        <tr><td class="muted">Ngoài MVP (code có, tắt): YC19 script Playwright, YC20 sprint</td><td class="muted">QĐ19, 20</td></tr>
+      </table>
+      <div>
+        <div class="card" style="margin-bottom:.7em"><b>QĐ1:</b> nhận diện bằng <b>issue ID</b>; tiêu đề, mô tả, AC đổi → <b>phiên bản mới</b></div>
+        <div class="card" style="margin-bottom:.7em"><b>QĐ3:</b> AC đổi → chỉ test liên kết AC đó có cờ; tiêu đề/mô tả đổi → mọi test; <b>Đã xem lại</b> bắt buộc lý do</div>
+        <div class="card" style="margin-bottom:.7em"><b>QĐ8:</b> chỉ ghi bản Jira <b>mới hơn</b>; issue biến mất → <b>Cần kiểm tra</b>, không tự lưu trữ</div>
+        <div class="card"><b>QĐ14:</b> cố định phiên bản test trong đợt; build, môi trường <b>khóa khi đã có kết quả</b></div>
+      </div>
+    </div>
+    <div class="footer"><span>Chương 2 – Đặc tả bản chốt 16/11/2026</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide">
+    <h2>5. Kiến trúc: AI Service riêng, Jira đồng bộ một chiều</h2>
+    <img src="sodo/KienTruc.svg" alt="Kiến trúc hệ thống" style="flex:1;min-height:0;width:100%;object-fit:contain">
+    <div class="footer"><span>Chương 4 – Thiết kế · 27 bảng, 75 API (OpenAPI 3.1)</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide">
+    <h2>6. Requirement đổi trên Jira → biết ngay test nào bị ảnh hưởng</h2>
+    <div class="two">
+      <div>
+        <ul>
+          <li>Webhook, định kỳ 5 phút hoặc <b>Đồng bộ ngay</b></li>
+          <li>Mỗi lần đổi lưu <b>một phiên bản</b>; so sánh tô màu AC đổi</li>
+          <li>AC được so theo <b>nội dung dòng</b>: chỉ test liên kết AC bị sửa, bỏ mới có cờ <b>Cần xem lại</b></li>
+          <li>Test vẫn đúng → <b>Đã xem lại</b> kèm lý do; test cần sửa → sửa, duyệt lại</li>
+          <li>Không đưa test có cờ vào Test Run mới</li>
+        </ul>
+      </div>
+      <img class="shot" src="images/06_so_sanh_phien_ban.png" alt="So sánh phiên bản requirement">
+    </div>
+    <div class="footer"><span>YC1, YC8, YC3 – điểm mới</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide">
+    <h2>7. AI phân tích ảnh hưởng, QA Lead quyết định</h2>
+    <div class="two">
+      <div>
+        <ul>
+          <li>So <b>phiên bản test đã liên kết</b> với phiên bản hiện tại (không bỏ sót lần sửa ở giữa)</li>
+          <li>4 loại đề xuất: <b>Cần sửa</b> · <b>Còn thiếu</b> · <b>Nên chạy lại</b> · <b>Cần làm rõ</b></li>
+          <li>Mỗi đề xuất có <b>lý do</b> và <b>AC nguồn</b>; nội dung trước/sau</li>
+          <li>Chấp nhận → bản nháp phải duyệt lại; requirement đổi sau phân tích → <b>Lỗi thời</b></li>
+        </ul>
+      </div>
+      <img class="shot" src="images/09_de_xuat_ai.png" alt="Đề xuất AI">
+    </div>
+    <div class="footer"><span>YC15, YC16</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide">
+    <h2>8. Bộ regression: cần chạy lại test nào?</h2>
+    <div class="two">
+      <div>
+        <ul>
+          <li>Phần <b>bắt buộc</b>: test liên kết AC đã đổi (tiêu đề/mô tả đổi → mọi test)</li>
+          <li>AI chỉ <b>xếp ưu tiên</b> Cao/Trung bình/Thấp kèm lý do và gợi ý thêm</li>
+          <li>Test chưa đủ điều kiện chạy được liệt kê riêng, <b>chặn xác nhận</b></li>
+          <li>Bỏ test bắt buộc phải ghi lý do</li>
+          <li>Xác nhận → <b>Test Run loại Regression</b>; AI lỗi vẫn có danh sách liên kết</li>
+        </ul>
+      </div>
+      <img class="shot" src="images/10_bo_regression.png" alt="Bộ regression">
+    </div>
+    <div class="footer"><span>YC17</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 10 -->
+  <section class="slide">
+    <h2>9. AI sinh test case an toàn</h2>
+    <div class="grid g2" style="flex:1; align-items:center">
+      <img class="shot" src="images/04_ai_sinh_test_case.png" alt="AI sinh test case">
+      <img class="shot" src="images/05_nhat_ky_ai_che_pii.png" alt="Nhật ký AI che dữ liệu">
+    </div>
+    <p class="muted" style="margin:.6em 0 0">Mỗi test chỉ rõ <b>AC liên quan</b> · bản nháp cũ được giữ · <b>che dữ liệu nhạy cảm</b> ([EMAIL], [PHONE]) · chống prompt injection · JSON schema + thử lại · hạn mức gọi AI/giờ · nhật ký AI</p>
+    <div class="footer"><span>YC2 – Sinh test case bằng AI · Bảo mật AI</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 11 -->
+  <section class="slide">
+    <h2>10. Test Run, báo sửa lỗi và kiểm thử lại</h2>
+    <div class="grid g2" style="flex:1; align-items:center">
+      <img class="shot" src="images/08_test_run.png" alt="Test Run">
+      <img class="shot" src="images/11_kiem_thu_lai.png" alt="Kiểm thử lại">
+    </div>
+    <p class="muted" style="margin:.6em 0 0">Đợt có build, môi trường, phân công, <b>phiên bản test cố định</b> · Developer báo đã sửa kèm build · lần chạy lại <b>gắn với đúng lần Fail gốc</b> · Pass → Đã đóng, Fail → Mở lại</p>
+    <div class="footer"><span>YC13, YC14, YC5, YC18</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 12 -->
+  <section class="slide">
+    <h2>11. Báo cáo tự động</h2>
+    <div class="two">
+      <div>
+        <ul>
+          <li>Phạm vi <b>dự án</b> hoặc <b>Test Run</b></li>
+          <li>Tỷ lệ pass, tiến độ theo lần chạy gần nhất của <b>phiên bản hiện tại</b></li>
+          <li><b>Độ bao phủ requirement và AC</b>; requirement Thiếu AC liệt kê riêng</li>
+          <li>Test cần xem lại, chờ kiểm thử lại, đề xuất AI chờ xử lý</li>
+          <li>Thống kê AI: số test AI sinh, tỷ lệ phải sửa</li>
+        </ul>
+      </div>
+      <img class="shot" src="images/02_tong_quan.png" alt="Báo cáo">
+    </div>
+    <div class="footer"><span>YC6 – Báo cáo</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 13 -->
+  <section class="slide">
+    <h2>12. Kiểm chứng: kiểm thử 3 tầng + CI/CD</h2>
+    <div class="grid g2" style="flex:1; align-items:center">
+      <div class="pyramid">
+        <div style="width:40%;background:#6d28d9">E2E Playwright<br>11/11 pass</div>
+        <div style="width:70%;background:#2563eb">API / tích hợp (supertest)<br>85 + 11 mở rộng pass</div>
+        <div style="width:100%;background:#15803d">Unit test (node:test)<br>33/33 pass</div>
+      </div>
+      <div>
+        <ul>
+          <li>Mỗi quy định QĐ1–QĐ18 và mỗi góp ý đã chốt có test riêng, mã góp ý ghi trong tên test</li>
+          <li>Đồng bộ chồng nhau, đổi mã issue, issue biến mất, Giữ lại / Lưu trữ</li>
+          <li>E2E: Jira → AI sinh → duyệt → Test Run → báo sửa → requirement đổi → phân tích → regression</li>
+          <li>31 test case hệ thống thủ công (XSS, SQLi, RBAC…)</li>
+          <li><b>GitHub Actions</b>: Unit & API → E2E → build Docker image</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer"><span>Chương 6 – Kiểm chứng</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 14 -->
+  <section class="slide">
+    <h2>13. Kết luận và hướng phát triển</h2>
+    <div class="grid g2" style="flex:1">
+      <div class="card">
+        <h3>Đạt được</h3>
+        <ul>
+          <li>Scrum 5 sprint × 1 tuần; đặc tả chốt rồi thiết kế lại theo bản chốt</li>
+          <li>18 YC, 18 màn hình, 75 API; mô hình vẽ bằng draw.io, ERD sinh từ CSDL thật</li>
+          <li>Điểm mới: gắn cờ đúng test khi requirement đổi, AI phân tích ảnh hưởng, regression</li>
+          <li>140 test tự động, Docker, CI</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Hướng phát triển</h3>
+        <ul>
+          <li>Hàng đợi sự kiện Jira bền vững</li>
+          <li>Phân quyền theo thành viên dự án</li>
+          <li>Regression theo bản phát hành; đọc trạng thái Bug từ Jira</li>
+          <li>Bật lại script Playwright (self-healing) và theo dõi sprint</li>
+          <li>Đo độ chính xác phân tích ảnh hưởng; RAG theo tài liệu nghiệp vụ</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer"><span>Chương 9</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 15 -->
+  <section class="slide title-slide" style="text-align:center;align-items:center">
+    <h1>Cảm ơn thầy cô và các bạn!</h1>
+    <p style="font-size:1.3em">Demo trực tiếp · Hỏi đáp</p>
+    <p class="muted">Mã nguồn, tài liệu và hướng dẫn chạy: thư mục <code>Đồ án</code></p>
+  </section>
+
+</div>
+<div class="controls"><button id="prev" aria-label="Trang trước">←</button><span id="pos"></span><button id="next" aria-label="Trang sau">→</button><button id="fs">Toàn màn hình</button></div>
+<script src="assets/mermaid.min.js"></script>
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1), 10) || 1) - 1));
+  const show = () => {
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    document.getElementById('pos').textContent = `${i + 1} / ${slides.length}`;
+    history.replaceState(null, '', `#${i + 1}`);
+  };
+  const go = (d) => { i = Math.max(0, Math.min(slides.length - 1, i + d)); show(); };
+  document.addEventListener('keydown', (e) => {
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(1); }
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
+    if (e.key === 'Home') { i = 0; show(); }
+    if (e.key === 'End') { i = slides.length - 1; show(); }
+  });
+  document.getElementById('prev').onclick = () => go(-1);
+  document.getElementById('next').onclick = () => go(1);
+  document.getElementById('fs').onclick = () => document.documentElement.requestFullscreen?.();
+  slides.forEach((sl, k) => sl.querySelectorAll('.pg').forEach((el) => (el.textContent = k + 1)));
+  show();
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', flowchart: { useMaxWidth: true } });
+    // Vẽ sơ đồ khi tất cả slide đang hiển thị để mermaid đo được kích thước
+    slides.forEach((s) => s.classList.add('active'));
+    mermaid.run().finally(() => { show(); document.body.dataset.ready = '1'; });
+  }
+</script>
+</body>
+</html>
