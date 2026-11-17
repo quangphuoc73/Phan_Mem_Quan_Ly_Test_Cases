@@ -1,4 +1,4 @@
-// YC4: Duyệt test case – hàng đợi của QA Lead (QĐ4: chỉ QA Lead được duyệt).
+// YC4 – BM3, QĐ4: duyệt test case – hàng đợi của QA Lead. Bản nháp tạo từ đề xuất AI cũng phải qua bước này (QĐ16).
 import { state, api, esc, pill, fmtDate, toast, toastError, bind } from '../core.js';
 import { openTestCase } from './testcases.js';
 import { updateReviewBadge } from '../main.js';
@@ -6,7 +6,6 @@ import { updateReviewBadge } from '../main.js';
 export async function renderReview(page) {
   const q = new URLSearchParams({ status: 'PENDING_REVIEW' });
   if (state.projectId) q.set('project_id', state.projectId);
-  if (state.sprintId) q.set('sprint_id', state.sprintId);
   const list = await api(`/testcases?${q}`);
 
   page.innerHTML = `
@@ -15,10 +14,10 @@ export async function renderReview(page) {
       ${list.length ? '<button class="btn success" id="approve-all">✓ Duyệt tất cả mục đã chọn</button>' : ''}
     </div>
     <div class="table-wrap"><table>
-      <thead><tr><th><input type="checkbox" id="rv-all" aria-label="Chọn tất cả"></th><th>Mã</th><th>Tiêu đề</th><th>User story</th><th>Loại</th><th>Ưu tiên</th><th>Nguồn</th><th>Gửi lúc</th></tr></thead>
+      <thead><tr><th><input type="checkbox" id="rv-all" aria-label="Chọn tất cả"></th><th>Mã</th><th>Tiêu đề</th><th>Requirement</th><th>Loại</th><th>Ưu tiên</th><th>Nguồn</th><th>Gửi lúc</th></tr></thead>
       <tbody>${list.map((t) => `
         <tr class="clickable" data-id="${t.id}"><td data-nocl><input type="checkbox" class="rv-sel" value="${t.id}" aria-label="Chọn ${esc(t.code)}"></td>
-        <td class="mono">${esc(t.code)}</td><td>${esc(t.title)}<div class="small muted">${esc(t.steps.length)} bước · ${esc(t.expected_result.slice(0, 90))}</div></td>
+        <td class="mono">${esc(t.code)}</td><td>${esc(t.title)}<div class="small muted">${esc(t.steps.length)} bước · ${t.acs.length} AC · ${esc(t.expected_result.slice(0, 90))}</div>${t.proposal_id ? `<div class="small"><span class="pill AI">Từ đề xuất AI #${t.proposal_id}</span></div>` : ''}${t.needs_review ? ' <span class="pill flag">⚑ Cần xem lại</span>' : ''}</td>
         <td>${esc(t.story_code)}</td><td>${esc(t.type)}</td><td>${pill(t.priority)}</td><td>${pill(t.source)}</td><td class="small">${fmtDate(t.updated_at)}</td></tr>`).join('')
         || '<tr><td colspan="8" class="empty">🎉 Không có test case nào chờ duyệt</td></tr>'}
       </tbody>

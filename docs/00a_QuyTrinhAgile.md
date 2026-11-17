@@ -24,16 +24,9 @@
 
 ## 0A.2. Khung Scrum
 
-```mermaid
-flowchart LR
-    PB["Product Backlog<br/>danh sách user story<br/>sắp theo ưu tiên"] --> SP["Sprint Planning<br/>chọn story + Sprint Goal"]
-    SP --> SB["Sprint Backlog"]
-    SB --> S["Sprint 1 tuần<br/>phân tích → thiết kế → code → test<br/>Daily Scrum mỗi ngày"]
-    S --> INC["Increment<br/>phần mềm chạy được<br/>đạt Definition of Done"]
-    INC --> RV["Sprint Review<br/>demo, lấy góp ý"]
-    RV --> RT["Retrospective<br/>cải tiến cách làm"]
-    RT -->|cập nhật, sắp xếp lại| PB
-```
+![Khung làm việc Scrum](sodo/KhungScrum.svg)
+
+*File gốc:* `docs/sodo/KhungScrum.drawio` (mở bằng draw.io để sửa).
 
 ## 0A.3. Vai trò và phân công trong nhóm
 
@@ -43,15 +36,15 @@ Nhóm có **4 thành viên**, đúng quy mô Scrum (3–9 người). Product Own
 |---|---|---|---|
 | [Thành viên 1] | Product Owner + Developer | Khảo sát, Product Backlog, yêu cầu (BM, QĐ), phân tích (use case, DFD), nhập/xuất dữ liệu | Ch.0, 1, 2, 3 |
 | [Thành viên 2] | Scrum Master + Developer | Kiến trúc, backend, CSDL, AI Service (prompt, che PII, chống injection); giữ nhịp sprint, tổ chức các buổi họp | Ch.0A, 4, 5 |
-| [Thành viên 3] | Developer | Giao diện web, các màn hình, báo cáo và biểu đồ, trang Sprint (Agile) | Ch.4 (giao diện), 7 |
-| [Thành viên 4] | Developer | Kiểm thử: unit, API, E2E Playwright; sinh và chạy script tự động; CI, Docker | Ch.6, 7 |
+| [Thành viên 3] | Developer | Giao diện web, các màn hình (requirement, Test Run, đề xuất AI, regression), báo cáo và biểu đồ | Ch.4 (giao diện), 7 |
+| [Thành viên 4] | Developer | Kiểm thử: unit, API, E2E Playwright; Jira giả lập; CI, Docker | Ch.6, 7 |
 | Giảng viên, bạn cùng lớp | Stakeholder / người dùng | Tham gia khảo sát (đóng vai đội QA), dùng thử bản demo trong Sprint Review, góp ý | – |
 
 > Tên thành viên được cập nhật sau; phân công có thể đổi trong buổi Sprint Planning nhưng phải ghi vào biên bản.
 
 ## 0A.4. Product Backlog
 
-Product Backlog là danh sách **user story của chính hệ thống AI TestCase Manager**, sắp theo ưu tiên. Ưu tiên dùng **MoSCoW** (Must / Should / Could / Won't), độ lớn ước lượng bằng **story point** theo dãy Fibonacci (1, 2, 3, 5, 8, 13). Story mẫu dùng làm mốc: PB-03 "tạo dự án và module" = 2 điểm.
+Product Backlog là danh sách **user story của chính hệ thống AI TestCase Manager**, sắp theo ưu tiên. Ưu tiên dùng **MoSCoW** (Must / Should / Could / Won't), độ lớn ước lượng bằng **story point** theo dãy Fibonacci (1, 2, 3, 5, 8, 13). Story mẫu dùng làm mốc: PB-05 "xem nhật ký hoạt động" = 2 điểm. Product Backlog được lập lại theo đặc tả bản chốt 16/11/2026: các story cũ về script Playwright và sprint chuyển xuống Won't (MVP).
 
 Bản dạng CSV để nhập vào Jira/Trello: [`docs/agile/ProductBacklog.csv`](agile/ProductBacklog.csv). Bản Excel để đọc và in (mỗi trường một cột, có trang tổng story point theo sprint): [`docs/agile/ProductBacklog.xlsx`](agile/ProductBacklog.xlsx), sinh từ file CSV bằng `cd docs/tools && npm run backlog`.
 
@@ -59,63 +52,55 @@ Bản dạng CSV để nhập vào Jira/Trello: [`docs/agile/ProductBacklog.csv`
 |---|---|---|---|---|---|---|
 | PB-01 | Quản trị & bảo mật | Là người dùng, tôi muốn đăng nhập bằng tài khoản được cấp, để dùng đúng chức năng theo vai trò | 3 | Must | 1 | UC01 |
 | PB-02 | Quản trị & bảo mật | Là Admin, tôi muốn tạo, khóa tài khoản và gán vai trò, để kiểm soát ai được làm gì | 3 | Must | 1 | YC11 |
-| PB-03 | Quản trị & bảo mật | Là Admin, tôi muốn tạo dự án và module, để tổ chức user story theo sản phẩm | 2 | Must | 1 | YC11 |
-| PB-04 | User story | Là PO/BA, tôi muốn lập user story kèm acceptance criteria, để có đầu vào cho test case | 3 | Must | 1 | YC1 |
-| PB-05 | Quản trị & bảo mật | Là Admin, tôi muốn xem nhật ký hoạt động, để truy vết ai đã làm gì | 2 | Should | 1 | BM-13 |
-| PB-06 | AI test case | Là Tester, tôi muốn AI sinh test case từ user story, để tiết kiệm thời gian viết nháp | 8 | Must | 2 | YC2 |
-| PB-07 | AI test case | Là Admin, tôi muốn dữ liệu nhạy cảm được che trước khi gửi AI, để không lộ thông tin khách hàng | 3 | Must | 2 | BM-09 |
-| PB-08 | AI test case | Là Admin, tôi muốn hệ thống chống prompt injection, để AI không bị điều khiển bởi dữ liệu xấu | 3 | Must | 2 | BM-10 |
-| PB-09 | AI test case | Là QA Lead, tôi muốn xem nhật ký AI (prompt, kết quả gốc), để truy vết khi AI sinh sai | 2 | Should | 3 | – |
-| PB-10 | AI test case | Là Admin, tôi muốn đổi nhà cung cấp LLM bằng cấu hình, để chủ động chi phí và chất lượng | 3 | Should | 2 | YC2 |
-| PB-11 | Duyệt & phiên bản | Là Tester, tôi muốn sửa test case và lưu phiên bản, để không mất bản AI gốc | 5 | Must | 2 | YC3 |
-| PB-12 | Duyệt & phiên bản | Là Tester, tôi muốn gửi duyệt nhiều test case một lần, để QA Lead xem xét | 2 | Must | 3 | YC3 |
-| PB-13 | Duyệt & phiên bản | Là QA Lead, tôi muốn duyệt hoặc trả lại kèm ghi chú, để kiểm soát chất lượng | 3 | Must | 3 | YC4 |
-| PB-14 | Thực thi & báo cáo | Là Tester, tôi muốn tra cứu test case theo nhiều tiêu chí, để tìm nhanh | 3 | Should | 3 | YC7 |
-| PB-15 | Thực thi & báo cáo | Là Tester, tôi muốn ghi kết quả Pass/Fail/Blocked, để theo dõi chất lượng | 3 | Must | 3 | YC5 |
-| PB-16 | Thực thi & báo cáo | Là QA Lead, tôi muốn xem báo cáo tỷ lệ pass và độ bao phủ, để báo cáo tiến độ | 5 | Must | 3 | YC6 |
-| PB-17 | Thực thi & báo cáo | Là QA Lead, tôi muốn thay đổi quy định không cần sửa code, để hệ thống thích ứng với đội | 3 | Must | 4 | YC10 |
-| PB-18 | Tự động hóa | Là Tester, tôi muốn AI sinh script Playwright từ test case đã duyệt, để không phải viết lại | 5 | Should | 4 | YC9 |
-| PB-19 | Tự động hóa | Là Tester, tôi muốn chạy script tự động an toàn và xem ảnh lỗi, để tiết kiệm thời gian chạy lại | 8 | Should | 4 | YC9 |
-| PB-20 | Duyệt & phiên bản | Là QA Lead, tôi muốn so sánh bản AI gốc với bản đã sửa, để đánh giá chất lượng AI | 3 | Could | 4 | YC3 |
-| PB-21 | Agile | Là PO/BA, tôi muốn chia user story theo sprint và ước lượng story point, để lập kế hoạch | 5 | Should | 5 | YC12 |
-| PB-22 | Agile | Là QA Lead, tôi muốn xem burndown và velocity, để biết sprint có kịp không | 3 | Could | 5 | YC12 |
-| PB-23 | User story | Là PO/BA, tôi muốn nhập user story từ file CSV, để không gõ lại từ Jira | 3 | Should | 5 | YC8 |
-| PB-24 | Thực thi & báo cáo | Là QA Lead, tôi muốn xuất test case ra Excel, để gửi cho khách hàng | 2 | Should | 5 | YC8 |
-| PB-25 | Triển khai | Là Admin, tôi muốn triển khai bằng Docker, để cài đặt nhanh và đồng nhất | 3 | Should | 5 | – |
-| PB-26 | Thực thi & báo cáo | Là Developer, tôi muốn báo đã sửa lỗi kèm bản build, để Tester biết test case nào cần kiểm thử lại | 3 | Should | 4 | YC13 |
-| PB-27 | Tích hợp | Là Tester, tôi muốn đồng bộ 2 chiều với Jira, để không nhập tay | 8 | Won't (bản này) | – | – |
-| PB-28 | AI nâng cao | Là Tester, tôi muốn AI dùng tài liệu nghiệp vụ (RAG), để test case sát thực tế hơn | 13 | Won't (bản này) | – | – |
-| PB-29 | AI nâng cao | Là Tester, tôi muốn script tự sửa locator khi giao diện đổi (self-healing) | 13 | Won't (bản này) | – | – |
+| PB-03 | Tích hợp Jira | Là Admin, tôi muốn kiểm tra kết nối Jira và thêm dự án kèm module, thành viên từ Jira, để không tạo dự án bằng tay | 3 | Must | 1 | YC12 |
+| PB-04 | Tích hợp Jira | Là QA Lead, tôi muốn requirement kèm AC được đồng bộ từ Jira theo issue ID và lưu phiên bản, để có đầu vào cho test mà không chép tay | 5 | Must | 1 | YC1 |
+| PB-05 | Quản trị & bảo mật | Là Admin, tôi muốn xem nhật ký hoạt động, để truy vết ai đã làm gì | 2 | Should | 1 | SE-12 |
+| PB-06 | AI test case | Là Tester, tôi muốn AI sinh test case từ requirement, mỗi test chỉ rõ AC liên quan, để tiết kiệm thời gian viết nháp | 8 | Must | 2 | YC2 |
+| PB-07 | AI test case | Là Admin, tôi muốn dữ liệu nhạy cảm được che trước khi gửi AI, để không lộ thông tin khách hàng | 3 | Must | 2 | SE-09 |
+| PB-08 | AI test case | Là Admin, tôi muốn hệ thống chống prompt injection, để AI không bị điều khiển bởi dữ liệu xấu | 3 | Must | 2 | SE-10 |
+| PB-09 | Test case | Là Tester, tôi muốn soạn test, gán AC và lưu phiên bản, để không mất bản AI gốc và biết test kiểm tra AC nào | 5 | Must | 2 | YC3 |
+| PB-10 | Test case | Là QA Lead, tôi muốn duyệt hoặc trả lại test kèm ghi chú, để kiểm soát chất lượng | 3 | Must | 2 | YC4 |
+| PB-11 | Thực thi | Là Tester, tôi muốn gom test thành Test Suite, để lập đợt kiểm thử nhanh | 3 | Must | 3 | YC13 |
+| PB-12 | Thực thi | Là QA Lead, tôi muốn lập Test Run có build, môi trường, phân công và cố định phiên bản test, để kết quả gắn đúng nội dung và bản build | 5 | Must | 3 | YC14 |
+| PB-13 | Thực thi | Là Tester, tôi muốn ghi kết quả Pass/Fail/Blocked trong đợt được giao, để theo dõi chất lượng | 3 | Must | 3 | YC5 |
+| PB-14 | Báo cáo | Là Tester, tôi muốn tra cứu test theo nhiều tiêu chí, để tìm nhanh | 3 | Should | 3 | YC7 |
+| PB-15 | Báo cáo | Là QA Lead, tôi muốn xem báo cáo theo dự án hoặc Test Run, gồm độ bao phủ requirement và AC, để báo cáo tiến độ | 5 | Must | 3 | YC6 |
+| PB-16 | AI test case | Là Admin, tôi muốn đổi nhà cung cấp LLM bằng cấu hình, để chủ động chi phí và chất lượng | 2 | Should | 3 | YC2 |
+| PB-17 | Thay đổi requirement | Là Tester, tôi muốn khi requirement đổi trên Jira thì test bị ảnh hưởng tự được gắn cờ Cần xem lại, để không chạy test lỗi thời | 5 | Must | 4 | YC8 |
+| PB-18 | Thay đổi requirement | Là Tester, tôi muốn xác nhận Đã xem lại kèm lý do (từng test hoặc hàng loạt), để gỡ cờ khi test vẫn đúng | 2 | Must | 4 | YC3 |
+| PB-19 | Thay đổi requirement | Là QA Lead, tôi muốn requirement biến mất trên Jira được gắn cờ Cần kiểm tra để tôi chọn Lưu trữ hoặc Giữ lại, để không mất test vì lỗi đồng bộ | 3 | Must | 4 | YC8 |
+| PB-20 | Thay đổi requirement | Là Tester, tôi muốn AI phân tích ảnh hưởng và đề xuất test cần sửa, còn thiếu, nên chạy lại kèm lý do, để không bỏ sót | 8 | Must | 4 | YC15 |
+| PB-21 | Thay đổi requirement | Là QA Lead, tôi muốn chấp nhận hoặc từ chối đề xuất AI, đề xuất lỗi thời không áp dụng được, để AI không tự đổi test | 3 | Must | 4 | YC16 |
+| PB-22 | Thay đổi requirement | Là QA Lead, tôi muốn AI đề xuất bộ regression và tôi xác nhận thành Test Run, để biết cần chạy lại test nào | 5 | Must | 5 | YC17 |
+| PB-23 | Thực thi | Là Developer, tôi muốn báo đã sửa lỗi kèm build để Tester kiểm thử lại đúng lần Fail, để khép kín vòng sửa lỗi | 5 | Must | 5 | YC18 |
+| PB-24 | Quản trị & bảo mật | Là QA Lead, tôi muốn thay đổi quy định không cần sửa code, để hệ thống thích ứng với đội | 2 | Must | 5 | YC10 |
+| PB-25 | Báo cáo | Là QA Lead, tôi muốn xuất test case ra Excel theo bộ lọc, để gửi cho khách hàng | 2 | Should | 5 | YC9 |
+| PB-26 | AI test case | Là QA Lead, tôi muốn xem nhật ký AI (prompt đã che, kết quả gốc), để truy vết khi AI sai | 2 | Should | 5 | SE-12 |
+| PB-27 | Triển khai | Là Admin, tôi muốn triển khai bằng Docker, để cài đặt nhanh và đồng nhất | 3 | Should | 5 | – |
+| PB-28 | Mở rộng | Là Tester, tôi muốn AI sinh và chạy script Playwright từ test đã duyệt, để không viết lại (code đã có, tắt mặc định) | 13 | Won't (MVP) | – | YC19 |
+| PB-29 | Mở rộng | Là QA Lead, tôi muốn theo dõi sprint, burndown, velocity lấy từ Jira (code đã có, tắt mặc định) | 8 | Won't (MVP) | – | YC20 |
+| PB-30 | Tích hợp Jira | Là QA Lead, tôi muốn sự kiện Jira vào hàng đợi bền vững, để không mất thay đổi khi máy chủ tắt | 5 | Won't (MVP) | – | YC8 |
+| PB-31 | Quản trị & bảo mật | Là Admin, tôi muốn phân quyền theo thành viên từng dự án, để giới hạn quyền ghi | 8 | Won't (MVP) | – | – |
+| PB-32 | Tích hợp Jira | Là Tester, tôi muốn đẩy kết quả kiểm thử và đọc trạng thái Bug từ Jira, để không nhập tay | 8 | Won't (MVP) | – | – |
+| PB-33 | AI nâng cao | Là Tester, tôi muốn AI dùng tài liệu nghiệp vụ (RAG), để test sát thực tế hơn | 13 | Won't (MVP) | – | – |
 
 **Hạng mục kỹ thuật** (không phải user story, làm đầu Sprint 1 và duy trì suốt dự án): dựng repo Git, cấu trúc thư mục, CI trên GitHub Actions, khung test (unit, API, E2E Playwright), dữ liệu mẫu.
 
 ## 0A.5. Kế hoạch sprint (5 tuần)
 
-Sprint dài **1 tuần**. Velocity dự kiến khoảng **13–22 story point/sprint** (nhóm 4 người, vừa học vừa làm các môn khác). Sprint 1 cam kết ít vì phải dành đầu tuần cho khảo sát, lập backlog và dựng dự án. Sau mỗi sprint, velocity thực tế được dùng để điều chỉnh các sprint sau.
+Sprint dài **1 tuần**. Velocity dự kiến khoảng **16–22 story point/sprint** (nhóm 4 người, vừa học vừa làm các môn khác). Sprint 1 cam kết ít vì phải dành đầu tuần cho khảo sát, lập backlog và dựng dự án. Sau mỗi sprint, velocity thực tế được dùng để điều chỉnh các sprint sau.
 
-```mermaid
-gantt
-    title Kế hoạch sprint đồ án SE104 (5 tuần)
-    todayMarker off
-    dateFormat YYYY-MM-DD
-    axisFormat %d/%m
-    section Phát triển
-    Sprint 1 – Khởi động, đăng nhập, phân quyền, user story :s1, 2026-10-26, 7d
-    Sprint 2 – AI sinh test case, phiên bản (rủi ro cao nhất) :s2, after s1, 7d
-    Sprint 3 – Duyệt, chạy test, tra cứu, báo cáo            :s3, after s2, 7d
-    Sprint 4 – Tự động hóa Playwright, quy định              :s4, after s3, 7d
-    Sprint 5 – Sprint, nhập/xuất, Docker, hoàn thiện          :s5, after s4, 7d
-    section Bảo vệ
-    Cuối tuần 5 – Sprint Review cuối cùng với giảng viên     :milestone, after s5, 1d
-```
+![Kế hoạch 5 sprint](sodo/KeHoachSprint.svg)
+
+*File gốc:* `docs/sodo/KeHoachSprint.drawio` (mở bằng draw.io để sửa).
 
 | Sprint | Tuần | Sprint Goal | Story (SP) | Tổng SP | Tài liệu cập nhật |
 |---|---|---|---|---|---|
-| 1 | 1 | "Hiểu bài toán; người dùng đăng nhập theo vai trò và lập được user story" | Khảo sát, Product Backlog, kiến trúc sơ bộ, repo + CI; PB-01 (3), PB-02 (3), PB-03 (2), PB-04 (3), PB-05 (2) | 13 | Ch.0A, Ch.1, Ch.2 (bản đầu); UC01–UC04, DFD YC1, ERD v1, MH01–MH04 |
-| 2 | 2 | "AI sinh được test case an toàn từ user story; test case được sửa và lưu phiên bản" | PB-06 (8), PB-07 (3), PB-08 (3), PB-10 (3), PB-11 (5) | 22 | UC06, UC07, DFD YC2, YC3, sequence sinh test case, thiết kế prompt, class Strategy |
-| 3 | 3 | "Test case được duyệt, chạy thủ công và QA Lead xem được báo cáo" | PB-09 (2), PB-12 (2), PB-13 (3), PB-14 (3), PB-15 (3), PB-16 (5) | 18 | UC08–UC10, UC13, UC15, sơ đồ trạng thái, DFD YC4–YC7 |
-| 4 | 4 | "Test case đã duyệt chạy tự động được bằng Playwright; quy định thay đổi được; Developer báo đã sửa lỗi" | PB-17 (3), PB-18 (5), PB-19 (8), PB-20 (3), PB-26 (3) | 22 | UC11, UC12, UC16, DFD YC9, YC10, sequence YC9, thiết kế sandbox, bảng tham số |
-| 5 | 5 | "Đội làm Scrum lập kế hoạch sprint ngay trong hệ thống; sẵn sàng bàn giao và bảo vệ" | PB-21 (5), PB-22 (3), PB-23 (3), PB-24 (2), PB-25 (3) | 16 | DFD YC8, YC11, YC12; Ch.6 tổng kết, Ch.7, slide, video demo; bảo vệ cuối tuần |
+| 1 | 1 | "Hiểu bài toán; người dùng đăng nhập theo vai trò và lấy được requirement có phiên bản từ Jira" | Khảo sát, Product Backlog, kiến trúc sơ bộ, repo + CI; PB-01 (3), PB-02 (3), PB-03 (3), PB-04 (5), PB-05 (2) | 16 | Ch.0A, Ch.1, Ch.2 (bản đầu); UC01–UC02, UC08–UC10, DFD YC1, YC11, YC12, ERD v1 |
+| 2 | 2 | "AI sinh được test case an toàn, gắn AC; test được soạn, lưu phiên bản và duyệt" | PB-06 (8), PB-07 (3), PB-08 (3), PB-09 (5), PB-10 (3) | 22 | UC15–UC17, UC23; DFD YC2–YC4; sequence sinh test, duyệt; thiết kế prompt, class Strategy |
+| 3 | 3 | "QA Lead lập Test Run cố định phiên bản, Tester ghi kết quả, xem được báo cáo" | PB-11 (3), PB-12 (5), PB-13 (3), PB-14 (3), PB-15 (5), PB-16 (2) | 21 | UC19, UC20, UC24, UC03, UC05; DFD YC5–YC7, YC13, YC14; trạng thái test case, Test Run |
+| 4 | 4 | "Khi requirement đổi trên Jira, đội QA biết test nào cần sửa (điểm mới)" | PB-17 (5), PB-18 (2), PB-19 (3), PB-20 (8), PB-21 (3) | 21 | UC11, UC18, UC21, UC22, UC25; DFD YC8, YC15, YC16; trạng thái requirement, đề xuất; sequence phân tích ảnh hưởng |
+| 5 | 5 | "Biết cần chạy lại test nào, khép kín vòng sửa lỗi; sẵn sàng bàn giao và bảo vệ" | PB-22 (5), PB-23 (5), PB-24 (2), PB-25 (2), PB-26 (2), PB-27 (3) | 19 | UC07, UC12, UC26; DFD YC9, YC10, YC17, YC18; Ch.6 tổng kết, Ch.7, slide, video demo; bảo vệ |
 
 ## 0A.6. Definition of Ready và Definition of Done
 
@@ -136,7 +121,7 @@ gantt
 - [ ] Tài liệu liên quan được cập nhật (đặc tả UC, DFD, ERD, API)
 - [ ] Demo được trong Sprint Review
 
-> Chính hệ thống AI TestCase Manager cũng áp dụng DoD cho dự án mà nó quản lý: một user story được tính **Hoàn thành** khi có ít nhất 1 test case đã duyệt và mọi test case đã duyệt đều có lần chạy gần nhất là PASS (YC12).
+> Khi bật phần mở rộng YC20, chính hệ thống cũng áp dụng DoD cho dự án mà nó quản lý: một requirement được tính **Hoàn thành** khi có ít nhất 1 test đã duyệt và mọi test đã duyệt đều có lần chạy gần nhất là PASS.
 
 ## 0A.7. Các sự kiện Scrum của nhóm
 
@@ -150,10 +135,9 @@ gantt
 
 **Bảng công việc (Jira/Trello):**
 
-```mermaid
-flowchart LR
-    A["Backlog"] --> B["To do<br/>(sprint này)"] --> C["In progress<br/>WIP ≤ 2"] --> D["Code review<br/>(Pull Request)"] --> E["Testing<br/>CI + E2E"] --> F["Done<br/>(đạt DoD)"]
-```
+![Bảng công việc của nhóm](sodo/BangCongViec.svg)
+
+*File gốc:* `docs/sodo/BangCongViec.drawio` (mở bằng draw.io để sửa).
 
 Giới hạn **WIP ≤ 2 mỗi người**: mỗi thành viên không làm quá 2 việc cùng lúc, hoàn thành dứt điểm trước khi bắt đầu việc mới.
 
@@ -164,9 +148,9 @@ Agile không bỏ các hoạt động của thác nước mà **làm chúng cho 
 | Hoạt động (chương) | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 | Sprint 5 |
 |---|---|---|---|---|---|
 | Khảo sát (Ch.1) | ●●● | ● (Review) | ● | ● | ● |
-| Yêu cầu (Ch.2) | ●● YC tổng quát, YC1, YC11 | ● YC2, YC3 | ● YC4, 5, 6, 7 | ● YC9, YC10, YC13 | ● YC8, YC12 |
-| Phân tích (Ch.3) | ● UC01–04 | ● UC06, 07 | ● UC08–10, 13, 15 | ● UC11, 12, 16 | ● UC05, 14, 19 |
-| Thiết kế (Ch.4) | ● kiến trúc, ERD v1 | ● AI Service, class | ● trạng thái | ● sandbox, bảng tham số | ● sprint |
+| Yêu cầu (Ch.2) | ●● YC tổng quát, YC1, YC11, YC12 | ● YC2, YC3, YC4 | ● YC5, 6, 7, 13, 14 | ● YC8, YC15, YC16 | ● YC9, YC10, YC17, YC18 |
+| Phân tích (Ch.3) | ● UC01, 02, 08–10 | ● UC15–17, 23 | ● UC03, 05, 06, 19, 20, 24 | ● UC11, 18, 21, 22, 25 | ● UC04, 07, 12–14, 26 |
+| Thiết kế (Ch.4) | ● kiến trúc, ERD v1 | ● AI Service, class | ● Test Run, trạng thái | ● phiên bản, so AC, phân tích ảnh hưởng | ● regression, kiểm thử lại |
 | Cài đặt (Ch.5) | ● khung dự án | ● | ● | ● | ● |
 | Kiểm chứng (Ch.6) | ● CI | ● | ● | ● | ●● tổng kết |
 | Triển khai (Ch.7) | ● bản demo | ● | ● | ● | ●● Docker |
@@ -175,11 +159,11 @@ Agile không bỏ các hoạt động của thác nước mà **làm chúng cho 
 
 ## 0A.9. Ước lượng, velocity và burndown
 
-- **Ước lượng:** so sánh story mới với story mốc (PB-03 = 2 điểm). Story "AI sinh test case" (PB-06) phức tạp và nhiều rủi ro nên 8 điểm.
-- **Velocity:** tổng story point đạt DoD trong một sprint. Ví dụ dữ liệu mẫu trong hệ thống: Sprint 1 cam kết 13, hoàn thành 5 → sprint sau nên cam kết ít hơn hoặc tách story nhỏ hơn.
+- **Ước lượng:** so sánh story mới với story mốc (PB-05 = 2 điểm). Story "AI sinh test case" (PB-06) và "AI phân tích ảnh hưởng" (PB-20) phức tạp, nhiều rủi ro nên 8 điểm.
+- **Velocity:** tổng story point đạt DoD trong một sprint. Ví dụ: Sprint 1 cam kết 16, hoàn thành 11 → sprint sau nên cam kết ít hơn hoặc tách story nhỏ hơn.
 - **Burndown chart:** số story point còn lại theo ngày so với đường lý tưởng. Đường thực tế nằm trên đường lý tưởng quá lâu là dấu hiệu sprint sẽ trễ.
 
-Các chỉ số này được hệ thống tự tính ở trang **Sprint (Agile)** (YC12).
+Nhóm theo dõi các chỉ số này trên bảng Jira của nhóm. (Trang Sprint trong chính hệ thống – YC20 – nằm ngoài MVP, tắt mặc định.)
 
 ## 0A.10. Mẫu biên bản (minh chứng nộp kèm)
 
@@ -222,8 +206,8 @@ Cải tiến chọn cho sprint sau: ............................................
 |---|---|
 | Lịch học của 4 thành viên khác nhau, khó họp đủ | Daily Scrum 15 phút online buổi tối; Planning, Review, Retro đặt lịch cố định (thứ Hai, thứ Bảy) |
 | Chia việc không đều, khó biết ai đang làm gì | Ước lượng bằng story point; mỗi story có người phụ trách trên bảng Jira/Trello công khai; xem lại trong Retrospective |
-| Xung đột code khi nhiều người sửa cùng lúc | Mỗi story một nhánh `feature/pb-xx-*`; Pull Request nhỏ, có người review; pull `main` thường xuyên; CI chạy test mỗi lần push |
-| Sprint chỉ 1 tuần, dễ trễ | Làm phần rủi ro (AI) từ Sprint 2; story Could trả về backlog thay vì kéo dài sprint |
+| Xung đột code khi nhiều người sửa cùng lúc | Mỗi mục backlog một nhánh `feature/pb-xx-*`; Pull Request nhỏ, có người review; pull `main` thường xuyên; CI chạy test mỗi lần push |
+| Sprint chỉ 1 tuần, dễ trễ | Làm phần rủi ro (AI) từ Sprint 2, phân tích ảnh hưởng ở Sprint 4; story Could trả về backlog thay vì kéo dài sprint |
 | Môn học yêu cầu tài liệu đầy đủ, Agile lại ưu tiên phần mềm | DoD bắt buộc cập nhật tài liệu; mỗi người viết phần tài liệu của story mình làm, không dồn cuối kỳ |
 | Ước lượng sai khi chưa có số liệu | Sprint 1 cam kết ít; dùng velocity thực tế để điều chỉnh |
 | Mốc nộp của môn học cố định | Mỗi sprint 1 tuần kết thúc bằng một bản Increment; bản Increment cuối tuần 5 là bản bảo vệ |

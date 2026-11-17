@@ -19,7 +19,8 @@ function parseCriteria(text) {
 }
 
 function generateTestCases({ story, maxTestCases }) {
-  const acs = parseCriteria(story.acceptance_criteria);
+  // Dùng đúng danh sách AC đã đánh số trong prompt để ac_refs khớp với AC của requirement
+  const acs = story.acs || parseCriteria(story.acceptance_criteria);
   const feature = story.title;
   const baseSteps = [`Đăng nhập hệ thống bằng tài khoản hợp lệ`, `Mở chức năng "${feature}"`];
   const positives = [];
@@ -34,6 +35,7 @@ function generateTestCases({ story, maxTestCases }) {
       expected_result: `Hệ thống xử lý thành công, đáp ứng tiêu chí: ${ac}`,
       priority: i === 0 ? 'High' : 'Medium',
       type: 'Positive',
+      ac_refs: [i + 1],
     });
 
     if (NEGATIVE_HINT.test(ac)) {
@@ -44,6 +46,7 @@ function generateTestCases({ story, maxTestCases }) {
         expected_result: 'Hệ thống chặn thao tác và hiển thị thông báo lỗi rõ ràng, dữ liệu không bị lưu',
         priority: /(bắt buộc|hết hạn|chỉ )/i.test(ac) ? 'High' : 'Medium',
         type: 'Negative',
+        ac_refs: [i + 1],
       });
     }
 
@@ -62,6 +65,7 @@ function generateTestCases({ story, maxTestCases }) {
         expected_result: `Giá trị đúng bằng ${num} ${unit} được chấp nhận; giá trị vượt ngưỡng bị từ chối kèm thông báo`,
         priority: 'Medium',
         type: 'Edge',
+        ac_refs: [i + 1],
       });
     }
   });
@@ -243,6 +247,68 @@ function generateScript({ testCase, baseUrl }) {
   return { code };
 }
 
+// ---- YC15: phân tích ảnh hưởng theo luật (so AC trước/sau của từng test) ----
+function proposedTest(base, ac) {
+  return {
+    title: `Kiểm tra ${lowerFirst(ac)}`.slice(0, 200),
+    precondition: base?.precondition || 'Người dùng có tài khoản hợp lệ và đủ quyền thao tác',
+    steps: base?.steps?.length ? [...base.steps.slice(0, -1), `Thực hiện theo tiêu chí: ${ac}`].slice(0, 15) : ['Đăng nhập hệ thống bằng tài khoản hợp lệ', `Thực hiện theo tiêu chí: ${ac}`],
+    expected_result: `Hệ thống đáp ứng tiêu chí: ${ac}`.slice(0, 500),
+    priority: base?.priority || 'Medium',
+    type: base?.type || 'Positive',
+  };
+}
+
+function analyzeImpact({ before, after, tests }) {
+  const proposals = [];
+  const removed = before.acs.filter((a) => !after.acs.includes(a));
+  const added = after.acs.filter((a) => !before.acs.includes(a));
+  // AC bị sửa tại chỗ: AC mới đứng đúng vị trí của AC cũ trong requirement. Không có thì coi là AC bị bỏ
+  const replacement = new Map(
+    removed
+      .map((r) => [r, after.acs[before.acs.indexOf(r)]])
+      .filter(([, a]) => a && added.includes(a))
+  );
+  const covered = new Set();
+  for (const t of tests) {
+    const hit = t.acs.filter((a) => t.since.removed.includes(a));
+    if (hit.length) {
+      const old = hit[0];
+      const next = replacement.get(old);
+      if (next) {
+        covered.add(next);
+        proposals.push({ type: 'UPDATE', test_code: t.code, source_part: 'AC', source_ac: next,
+          reason: `AC "${old}" đã đổi thành "${next}", kết quả mong đợi của test không còn đúng`, test_case: proposedTest(t, next) });
+      } else {
+        proposals.push({ type: 'CLARIFY', test_code: t.code, source_part: 'AC', source_ac: old,
+          reason: `AC "${old}" bị bỏ khỏi requirement; cần hỏi PO/BA test này còn cần giữ không` });
+      }
+    } else if (t.since.content) {
+      proposals.push({ type: 'RERUN', test_code: t.code, source_part: before.title !== after.title ? 'TITLE' : 'DESCRIPTION',
+        reason: 'Tiêu đề hoặc mô tả requirement đã đổi; test vẫn khớp AC nhưng nên chạy lại để xác nhận' });
+    }
+  }
+  // Còn thiếu: AC mới chưa có test nào liên kết và chưa được đề xuất sửa test nào để bao phủ
+  for (const a of added.filter((x) => !covered.has(x) && !tests.some((t) => t.acs.includes(x)))) {
+    proposals.push({ type: 'MISSING', test_code: null, source_part: 'AC', source_ac: a,
+      reason: `AC mới "${a}" chưa có test nào kiểm tra`, test_case: proposedTest(null, a) });
+  }
+  return { proposals };
+}
+
+// ---- YC17: xếp ưu tiên regression ----
+function rankRegression({ mandatory, candidates }) {
+  return {
+    items: mandatory.map((t) => ({
+      test_code: t.code,
+      priority: t.changed_acs?.length ? 'HIGH' : t.priority === 'High' ? 'MEDIUM' : 'LOW',
+      reason: t.changed_acs?.length ? 'Liên kết trực tiếp với AC vừa thay đổi' : 'Cùng requirement đã thay đổi, chạy lại để phát hiện lỗi hồi quy',
+    })),
+    suggestions: candidates.filter((t) => t.priority === 'High').slice(0, 2)
+      .map((t) => ({ test_code: t.code, reason: 'Test ưu tiên cao của chức năng liên quan, nên chạy kèm' })),
+  };
+}
+
 class MockProvider extends LLMProvider {
   constructor({ delayMs = 0 } = {}) {
     super({ name: 'mock', model: 'rule-based-v1' });
@@ -251,7 +317,8 @@ class MockProvider extends LLMProvider {
 
   async complete({ task, context }) {
     if (this.delayMs) await new Promise((r) => setTimeout(r, this.delayMs));
-    const result = task === 'GENERATE_SCRIPT' ? generateScript(context) : generateTestCases(context);
+    const handlers = { GENERATE_SCRIPT: generateScript, ANALYZE_IMPACT: analyzeImpact, RANK_REGRESSION: rankRegression };
+    const result = (handlers[task] || generateTestCases)(context);
     return JSON.stringify(result);
   }
 }

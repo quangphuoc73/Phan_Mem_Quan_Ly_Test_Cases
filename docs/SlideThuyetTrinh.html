@@ -65,10 +65,10 @@
   <!-- 1 -->
   <section class="slide title-slide">
     <div class="muted">SE104 – Nhập môn Công nghệ phần mềm · Trường ĐH Công nghệ Thông tin – ĐHQG-HCM</div>
-    <h1 style="margin-top:.6em">Hệ thống quản lý test case<br>có hỗ trợ trí tuệ nhân tạo</h1>
-    <p style="font-size:1.2em">AI TestCase Manager</p>
+    <h1 style="margin-top:.6em">Hệ thống quản lý kiểm thử<br>có hỗ trợ trí tuệ nhân tạo</h1>
+    <p style="font-size:1.2em">AI TestCase Manager · khi requirement đổi trên Jira, biết test nào cần sửa, test nào cần chạy lại</p>
     <p class="muted" style="margin-top:2em">Nhóm thực hiện: [Thành viên 1] · [Thành viên 2] · [Thành viên 3] · [Thành viên 4]<br>Giảng viên hướng dẫn: [Tên giảng viên]</p>
-    <div class="footer"><span>Đồ án môn học</span><span>Tháng 10/2026</span></div>
+    <div class="footer"><span>Đồ án môn học · theo đặc tả bản chốt 16/11/2026</span><span>Tháng 11/2026</span></div>
   </section>
 
   <!-- 2 -->
@@ -77,20 +77,18 @@
     <div class="grid g2" style="flex:1">
       <div>
         <ul>
-          <li>Viết test case thủ công trên Excel: <b>30–60 phút / user story</b></li>
-          <li>Dễ sót case lỗi (negative) và case biên (edge)</li>
-          <li>Duyệt qua chat/email, <b>không lưu vết</b> ai duyệt, góp ý gì</li>
-          <li>Nhiều phiên bản file, chạy nhầm test case cũ</li>
-          <li>Không biết user story nào chưa có test case</li>
+          <li>PO/BA sửa requirement, AC trên Jira giữa sprint: <b style="color:var(--red)">không ai biết test nào đã lỗi thời</b></li>
+          <li>Sau thay đổi <b>không biết cần chạy lại test nào</b>: chạy hết hoặc chọn theo cảm tính</li>
+          <li>Viết test case thủ công: <b>30–60 phút / requirement</b>, dễ sót case lỗi, case biên</li>
+          <li>Duyệt qua chat, <b>không lưu vết</b>; kết quả chạy không gắn bản build nào</li>
           <li>Tổng hợp báo cáo bằng tay mất 1–2 giờ</li>
-          <li>Viết lại test case thành script tự động: <b>làm 2 lần</b></li>
           <li>Dán dữ liệu khách hàng vào ChatGPT: <b style="color:var(--red)">nguy cơ lộ dữ liệu</b></li>
         </ul>
       </div>
       <div class="card" style="align-self:center">
-        <h3>Mục tiêu</h3>
-        <p>Một hệ thống tập trung quản lý <b>toàn bộ vòng đời test case</b>, trong đó AI tăng tốc khâu viết nháp và tự động hóa, còn <b>con người giữ quyền quyết định</b>.</p>
-        <span class="tag">Quy trình CNPM đầy đủ</span><span class="tag">AI có kiểm soát</span><span class="tag">Bảo mật dữ liệu</span><span class="tag">Kiểm thử tự động</span>
+        <h3>Điểm mới trọng tâm</h3>
+        <p>AI giúp QA xác định <b>test nào cần sửa</b> và <b>test nào cần chạy lại</b> sau khi requirement thay đổi trên Jira. Jira quản lý requirement gốc; ứng dụng quản lý nghiệp vụ kiểm thử.</p>
+        <span class="tag">Jira một chiều</span><span class="tag">Phiên bản requirement</span><span class="tag">AI có kiểm soát</span><span class="tag">Kiểm thử tự động</span>
       </div>
     </div>
     <div class="footer"><span>Chương 1 – Khảo sát hiện trạng</span><span class="pg"></span></div>
@@ -100,18 +98,24 @@
   <section class="slide">
     <h2>2. Giải pháp: quy trình khép kín, con người kiểm soát AI</h2>
     <div class="flow">
-      <div class="step">📝 User story<br><span class="muted" style="font-weight:400">BM1 · QĐ1</span></div><div class="arrow">→</div>
-      <div class="step ai">🤖 AI sinh test case<br><span style="font-weight:400">Nháp</span></div><div class="arrow">→</div>
-      <div class="step">✍️ Tester sửa<br><span class="muted" style="font-weight:400">lưu phiên bản</span></div><div class="arrow">→</div>
+      <div class="step">📝 Requirement<br><span class="muted" style="font-weight:400">từ Jira, có phiên bản</span></div><div class="arrow">→</div>
+      <div class="step ai">🤖 AI sinh test<br><span style="font-weight:400">gắn AC · Nháp</span></div><div class="arrow">→</div>
       <div class="step">✅ QA Lead duyệt<br><span class="muted" style="font-weight:400">trả lại + ghi chú</span></div><div class="arrow">→</div>
-      <div class="step ai">🎭 AI sinh script<br><span style="font-weight:400">Playwright</span></div><div class="arrow">→</div>
-      <div class="step">▶️ Chạy test<br><span class="muted" style="font-weight:400">thủ công / tự động</span></div><div class="arrow">→</div>
-      <div class="step">📊 Báo cáo<br><span class="muted" style="font-weight:400">tự động</span></div>
+      <div class="step">▶️ Test Run<br><span class="muted" style="font-weight:400">build · phiên bản cố định</span></div><div class="arrow">→</div>
+      <div class="step">🔧 Báo sửa lỗi<br><span class="muted" style="font-weight:400">kiểm thử lại</span></div><div class="arrow">→</div>
+      <div class="step">📊 Báo cáo</div>
     </div>
-    <div class="grid g3" style="margin-top:1em">
-      <div class="card"><h3>5 vai trò</h3>Admin · QA Lead · PO/BA · Tester · Developer, phân quyền RBAC</div>
-      <div class="card"><h3>AI chỉ là 2/13 yêu cầu</h3>Trọng tâm là quy trình quản lý, duyệt, phiên bản, báo cáo, quy định thay đổi được</div>
-      <div class="card"><h3>Chạy được offline</h3>Chế độ AI mock cho demo; đổi sang Gemini / Claude / OpenAI bằng cấu hình</div>
+    <div class="flow" style="margin-top:.2em">
+      <div class="step">✎ PO/BA đổi AC trên Jira</div><div class="arrow">→</div>
+      <div class="step">🚩 Gắn cờ đúng test bị ảnh hưởng</div><div class="arrow">→</div>
+      <div class="step ai">🔍 AI phân tích ảnh hưởng</div><div class="arrow">→</div>
+      <div class="step">🧑‍⚖️ QA Lead quyết định</div><div class="arrow">→</div>
+      <div class="step ai">🧭 Bộ regression → Test Run</div>
+    </div>
+    <div class="grid g3" style="margin-top:.8em">
+      <div class="card"><h3>5 vai trò</h3>Admin · QA Lead · PO/BA · Tester · Developer, RBAC 13 quyền</div>
+      <div class="card"><h3>AI không tự đổi test</h3>AI chỉ đề xuất kèm lý do; mọi thay đổi qua duyệt; đề xuất cũ thành Lỗi thời</div>
+      <div class="card"><h3>Chạy được offline</h3>AI mock và Jira giả lập cho demo; đổi Gemini / Claude / OpenAI bằng cấu hình</div>
     </div>
     <div class="footer"><span>Tổng quan giải pháp</span><span class="pg"></span></div>
   </section>
@@ -122,26 +126,24 @@
     <div class="grid g2" style="flex:1">
       <div>
         <div class="flow" style="flex-wrap:wrap">
-          <div class="step">📋 Product Backlog<br><span class="muted" style="font-weight:400">29 story, MoSCoW, SP</span></div><div class="arrow">→</div>
+          <div class="step">📋 Product Backlog<br><span class="muted" style="font-weight:400">33 story, MoSCoW, SP</span></div><div class="arrow">→</div>
           <div class="step">🗓️ Planning</div><div class="arrow">→</div>
           <div class="step ai">🏃 Sprint 1 tuần</div><div class="arrow">→</div>
           <div class="step">👀 Review + 🔁 Retro</div>
         </div>
         <ul style="margin-top:.6em">
-          <li><b>Mỗi sprint</b> đi qua đủ 7 hoạt động của môn: yêu cầu → phân tích → thiết kế → cài đặt → kiểm chứng → triển khai</li>
-          <li>Nhóm 4 người: <b>1 Product Owner, 1 Scrum Master, 4 Developer</b>; Daily Scrum 15 phút mỗi tối; giảng viên dự Sprint Review</li>
+          <li><b>Mỗi sprint</b> đi qua đủ 7 hoạt động của môn học</li>
+          <li>Đặc tả rà soát nhiều vòng, <b>chốt 16/11/2026</b> rồi thiết kế lại phần mềm theo bản chốt</li>
           <li><b>Definition of Done</b>: merge qua PR, có test tự động, CI xanh, tài liệu cập nhật, demo được</li>
-          <li>Minh chứng: biên bản Planning / Review / Retro, daily log, lịch sử commit</li>
         </ul>
       </div>
       <table>
-        <tr><th>Sprint</th><th>Tuần</th><th>Sprint Goal</th><th>SP</th></tr>
-        <tr><td>1</td><td>1</td><td>Khảo sát, backlog, kiến trúc, CI; đăng nhập, lập user story</td><td>13</td></tr>
-        <tr><td>2</td><td>2</td><td><b>AI sinh test case an toàn</b> (rủi ro cao nhất, làm sớm); sửa, phiên bản</td><td>22</td></tr>
-        <tr><td>3</td><td>3</td><td>Duyệt, chạy test, tra cứu, báo cáo</td><td>18</td></tr>
-        <tr><td>4</td><td>4</td><td>Tự động hóa bằng Playwright, quy định, báo đã sửa lỗi</td><td>22</td></tr>
-        <tr><td>5</td><td>5</td><td>Sprint trong hệ thống, nhập/xuất, Docker, hoàn thiện</td><td>16</td></tr>
-        <tr><td>–</td><td>cuối 5</td><td>Bảo vệ = Sprint Review cuối</td><td></td></tr>
+        <tr><th>Sprint</th><th>Sprint Goal</th><th>SP</th></tr>
+        <tr><td>1</td><td>Đăng nhập, phân quyền, đồng bộ requirement có phiên bản từ Jira</td><td>16</td></tr>
+        <tr><td>2</td><td><b>AI sinh test gắn AC</b> an toàn; soạn, duyệt</td><td>22</td></tr>
+        <tr><td>3</td><td>Test Suite, Test Run, ghi kết quả, báo cáo</td><td>21</td></tr>
+        <tr><td>4</td><td><b>Requirement đổi</b>: gắn cờ, AI phân tích ảnh hưởng, đề xuất</td><td>21</td></tr>
+        <tr><td>5</td><td>Regression, kiểm thử lại, quy định, Excel, Docker</td><td>19</td></tr>
       </table>
     </div>
     <div class="footer"><span>Chương 0A – Quy trình Agile</span><span class="pg"></span></div>
@@ -149,173 +151,144 @@
 
   <!-- 5 -->
   <section class="slide">
-    <h2>4. Yêu cầu nghiệp vụ và quy định</h2>
+    <h2>4. Yêu cầu nghiệp vụ: MVP 18 yêu cầu</h2>
     <div class="grid g2" style="flex:1">
       <table>
-        <tr><th>Yêu cầu</th><th>BM</th><th>QĐ</th></tr>
-        <tr><td>YC1 Lập user story</td><td>BM1</td><td>QĐ1</td></tr>
-        <tr><td><b>YC2 Sinh test case bằng AI</b></td><td>BM2</td><td>QĐ2</td></tr>
-        <tr><td>YC3 Soạn thảo, gửi duyệt</td><td>BM2</td><td>QĐ3</td></tr>
-        <tr><td>YC4 Duyệt test case</td><td>BM3</td><td>QĐ4</td></tr>
-        <tr><td>YC5 Ghi kết quả chạy test</td><td>BM4</td><td>QĐ5</td></tr>
-        <tr><td>YC6 Báo cáo kiểm thử</td><td>BM5</td><td></td></tr>
-        <tr><td>YC7 Tra cứu · YC8 Nhập/xuất</td><td>BM6–8</td><td>QĐ8</td></tr>
-        <tr><td><b>YC9 Sinh & chạy script Playwright</b></td><td>BM9</td><td>QĐ9</td></tr>
-        <tr><td>YC10 Quy định · YC11 Quản trị</td><td></td><td>QĐ10–11</td></tr>
-        <tr><td><b>YC12 Quản lý sprint (Agile)</b></td><td>BM10</td><td>QĐ12</td></tr>
-        <tr><td><b>YC13 Báo đã sửa lỗi, kiểm thử lại</b></td><td>BM11</td><td>QĐ13</td></tr>
+        <tr><th>Yêu cầu</th><th>QĐ</th></tr>
+        <tr><td>YC1 Xem requirement từ Jira, lịch sử · <b>YC8 Nhận thay đổi</b> · YC12 Đồng bộ dự án</td><td>QĐ1, 8, 12</td></tr>
+        <tr><td>YC2 AI sinh test · YC3 Soạn, gửi duyệt · YC4 Duyệt</td><td>QĐ2–4</td></tr>
+        <tr><td>YC13 Test Suite · <b>YC14 Test Run</b> · YC5 Ghi kết quả</td><td>QĐ13, 14, 5</td></tr>
+        <tr><td><b>YC15 AI phân tích ảnh hưởng · YC16 Rà soát đề xuất · YC17 Bộ regression</b></td><td>QĐ15–17</td></tr>
+        <tr><td>YC18 Báo đã sửa lỗi, kiểm thử lại</td><td>QĐ18</td></tr>
+        <tr><td>YC6 Báo cáo · YC7 Tra cứu · YC9 Xuất Excel</td><td>QĐ6, 7, 9</td></tr>
+        <tr><td>YC10 Quy định · YC11 Người dùng</td><td>QĐ10, 11</td></tr>
+        <tr><td class="muted">Ngoài MVP (code có, tắt): YC19 script Playwright, YC20 sprint</td><td class="muted">QĐ19, 20</td></tr>
       </table>
       <div>
-        <div class="card" style="margin-bottom:.8em"><b>QĐ2:</b> tối đa <b>20</b> test case/story; AI sai định dạng thử lại tối đa <b>2</b> lần; chờ ≤ <b>30</b> giây; ≤ <b>30</b> lần gọi AI/giờ</div>
-        <div class="card" style="margin-bottom:.8em"><b>QĐ4:</b> chỉ <b>QA Lead</b> được duyệt; trả lại <b>bắt buộc ghi chú</b></div>
-        <div class="card" style="margin-bottom:.8em"><b>QĐ5:</b> chỉ ghi kết quả test case đã duyệt; Fail/Blocked bắt buộc ghi chú</div>
-        <div class="card"><b>Tính tiến hóa:</b> mọi con số trên nằm trong bảng <code>parameters</code>, đổi trên giao diện, không sửa mã nguồn</div>
+        <div class="card" style="margin-bottom:.7em"><b>QĐ1:</b> nhận diện bằng <b>issue ID</b>; tiêu đề, mô tả, AC đổi → <b>phiên bản mới</b></div>
+        <div class="card" style="margin-bottom:.7em"><b>QĐ3:</b> AC đổi → chỉ test liên kết AC đó có cờ; tiêu đề/mô tả đổi → mọi test; <b>Đã xem lại</b> bắt buộc lý do</div>
+        <div class="card" style="margin-bottom:.7em"><b>QĐ8:</b> chỉ ghi bản Jira <b>mới hơn</b>; issue biến mất → <b>Cần kiểm tra</b>, không tự lưu trữ</div>
+        <div class="card"><b>QĐ14:</b> cố định phiên bản test trong đợt; build, môi trường <b>khóa khi đã có kết quả</b></div>
       </div>
     </div>
-    <div class="footer"><span>Chương 2 – Xác định yêu cầu</span><span class="pg"></span></div>
+    <div class="footer"><span>Chương 2 – Đặc tả bản chốt 16/11/2026</span><span class="pg"></span></div>
   </section>
 
   <!-- 6 -->
   <section class="slide">
-    <h2>5. Kiến trúc: AI Service là module riêng</h2>
-    <pre class="mermaid">
-flowchart LR
-    UI["Frontend<br/>HTML/JS"] -- "HTTPS + JWT" --> MW["Middleware<br/>CSP · JWT · RBAC<br/>rate limit · schema"]
-    MW --> SV["Service nghiệp vụ<br/>QĐ1–QĐ11"]
-    SV --> DB[("CSDL<br/>12 bảng")]
-    SV --> AIS
-    subgraph AIS["AI Service"]
-      direction TB
-      A1["Che PII"] --> A2["Chống prompt injection<br/>+ ghép prompt"] --> A3["LLMProvider<br/>(Strategy)"] --> A4["Kiểm tra schema<br/>+ thử lại + nhật ký"]
-    end
-    A3 --> LLM[["Gemini · Claude<br/>OpenAI · Mock"]]
-    SV -- "script đã kiểm tra" --> W[["Playwright Worker<br/>tiến trình cô lập"]]
-    W --> AUT[["Web cần test"]]
-    </pre>
-    <div class="footer"><span>Chương 4 – Thiết kế</span><span class="pg"></span></div>
+    <h2>5. Kiến trúc: AI Service riêng, Jira đồng bộ một chiều</h2>
+    <img src="sodo/KienTruc.svg" alt="Kiến trúc hệ thống" style="flex:1;min-height:0;width:100%;object-fit:contain">
+    <div class="footer"><span>Chương 4 – Thiết kế · 27 bảng, 75 API (OpenAPI 3.1)</span><span class="pg"></span></div>
   </section>
 
   <!-- 7 -->
   <section class="slide">
-    <h2>6. AI sinh test case trong vài giây</h2>
+    <h2>6. Requirement đổi trên Jira → biết ngay test nào bị ảnh hưởng</h2>
     <div class="two">
       <div>
         <ul>
-          <li>Mỗi acceptance criterion ≥ 1 case <b>Positive</b></li>
-          <li>Tự sinh case <b>Negative</b>, <b>Edge</b> (giá trị biên)</li>
-          <li>Kết quả ép đúng <b>JSON schema</b> (Zod), sai thì tự thử lại</li>
-          <li>Trạng thái <b>Nháp</b> – bắt buộc người xem lại</li>
-          <li>Tuân thủ QĐ2: đổi tối đa 20 → 5, AI chỉ sinh 5</li>
+          <li>Webhook, định kỳ 5 phút hoặc <b>Đồng bộ ngay</b></li>
+          <li>Mỗi lần đổi lưu <b>một phiên bản</b>; so sánh tô màu AC đổi</li>
+          <li>AC được so theo <b>nội dung dòng</b>: chỉ test liên kết AC bị sửa, bỏ mới có cờ <b>Cần xem lại</b></li>
+          <li>Test vẫn đúng → <b>Đã xem lại</b> kèm lý do; test cần sửa → sửa, duyệt lại</li>
+          <li>Không đưa test có cờ vào Test Run mới</li>
         </ul>
       </div>
-      <img class="shot" src="images/04_ai_sinh_test_case.png" alt="AI sinh test case">
+      <img class="shot" src="images/06_so_sanh_phien_ban.png" alt="So sánh phiên bản requirement">
     </div>
-    <div class="footer"><span>YC2 – Sinh test case bằng AI</span><span class="pg"></span></div>
+    <div class="footer"><span>YC1, YC8, YC3 – điểm mới</span><span class="pg"></span></div>
   </section>
 
   <!-- 8 -->
   <section class="slide">
-    <h2>7. Bảo mật khi làm việc với AI</h2>
+    <h2>7. AI phân tích ảnh hưởng, QA Lead quyết định</h2>
     <div class="two">
       <div>
         <ul>
-          <li><b>Che dữ liệu nhạy cảm</b> trước khi gửi: email, SĐT, CCCD, số thẻ → <code>[EMAIL]</code> <code>[PHONE]</code></li>
-          <li><b>Chống prompt injection</b>: tách prompt hệ thống / dữ liệu, bọc <code>&lt;user_story&gt;</code>, gắn cờ cảnh báo</li>
-          <li>API key chỉ ở backend (.env)</li>
-          <li>Hạn mức gọi AI / người / giờ</li>
-          <li><b>Nhật ký AI</b>: prompt đã che, model, kết quả gốc, số lần thử</li>
+          <li>So <b>phiên bản test đã liên kết</b> với phiên bản hiện tại (không bỏ sót lần sửa ở giữa)</li>
+          <li>4 loại đề xuất: <b>Cần sửa</b> · <b>Còn thiếu</b> · <b>Nên chạy lại</b> · <b>Cần làm rõ</b></li>
+          <li>Mỗi đề xuất có <b>lý do</b> và <b>AC nguồn</b>; nội dung trước/sau</li>
+          <li>Chấp nhận → bản nháp phải duyệt lại; requirement đổi sau phân tích → <b>Lỗi thời</b></li>
         </ul>
-        <p class="muted">Cùng với: bcrypt, JWT, RBAC, CSP chống XSS, prepared statement, audit log.</p>
       </div>
-      <img class="shot" src="images/05_nhat_ky_ai_che_pii.png" alt="Nhật ký AI che PII">
+      <img class="shot" src="images/09_de_xuat_ai.png" alt="Đề xuất AI">
     </div>
-    <div class="footer"><span>Yêu cầu bảo mật BM-01 → BM-14</span><span class="pg"></span></div>
+    <div class="footer"><span>YC15, YC16</span><span class="pg"></span></div>
   </section>
 
   <!-- 9 -->
   <section class="slide">
-    <h2>8. Con người kiểm soát: phiên bản và duyệt</h2>
-    <div class="grid g2" style="flex:1; align-items:center">
-      <img class="shot" src="images/06_lich_su_phien_ban.png" alt="Lịch sử phiên bản">
-      <img class="shot" src="images/07_hang_doi_duyet.png" alt="Hàng đợi duyệt">
+    <h2>8. Bộ regression: cần chạy lại test nào?</h2>
+    <div class="two">
+      <div>
+        <ul>
+          <li>Phần <b>bắt buộc</b>: test liên kết AC đã đổi (tiêu đề/mô tả đổi → mọi test)</li>
+          <li>AI chỉ <b>xếp ưu tiên</b> Cao/Trung bình/Thấp kèm lý do và gợi ý thêm</li>
+          <li>Test chưa đủ điều kiện chạy được liệt kê riêng, <b>chặn xác nhận</b></li>
+          <li>Bỏ test bắt buộc phải ghi lý do</li>
+          <li>Xác nhận → <b>Test Run loại Regression</b>; AI lỗi vẫn có danh sách liên kết</li>
+        </ul>
+      </div>
+      <img class="shot" src="images/10_bo_regression.png" alt="Bộ regression">
     </div>
-    <p class="muted" style="margin:.6em 0 0">So sánh <b>bản AI gốc (v1)</b> với bản Tester đã sửa · QA Lead duyệt hoặc trả lại kèm ghi chú · cặp "AI sinh – người sửa" là dữ liệu đánh giá chất lượng AI</p>
-    <div class="footer"><span>YC3, YC4</span><span class="pg"></span></div>
+    <div class="footer"><span>YC17</span><span class="pg"></span></div>
   </section>
 
   <!-- 10 -->
   <section class="slide">
-    <h2>9. Kiểm thử tự động với Playwright</h2>
-    <div class="two">
-      <div>
-        <ul>
-          <li>Test case đã duyệt → <b>AI sinh script Playwright</b></li>
-          <li>Tester xem lại, sửa, bấm <b>Chạy</b></li>
-          <li>Chạy trên web thật (saucedemo.com): <span class="ok">4/4 Pass</span> ~2,5 giây</li>
-          <li>Fail → lưu <b>log + ảnh chụp màn hình</b></li>
-          <li>Sandbox: kiểm tra tĩnh (chặn <code>fs</code>, <code>child_process</code>, <code>process.env</code>, <code>eval</code>), tiến trình riêng, timeout, giới hạn CPU/RAM</li>
-          <li>Bộ test mẫu viết tay theo <b>Page Object Model</b>, data-driven: <span class="ok">8/8 Pass</span></li>
-        </ul>
-      </div>
-      <img class="shot" src="images/08_playwright_chay_tu_dong.png" alt="Playwright chạy tự động">
+    <h2>9. AI sinh test case an toàn</h2>
+    <div class="grid g2" style="flex:1; align-items:center">
+      <img class="shot" src="images/04_ai_sinh_test_case.png" alt="AI sinh test case">
+      <img class="shot" src="images/05_nhat_ky_ai_che_pii.png" alt="Nhật ký AI che dữ liệu">
     </div>
-    <div class="footer"><span>YC9 – Sinh và chạy script tự động</span><span class="pg"></span></div>
+    <p class="muted" style="margin:.6em 0 0">Mỗi test chỉ rõ <b>AC liên quan</b> · bản nháp cũ được giữ · <b>che dữ liệu nhạy cảm</b> ([EMAIL], [PHONE]) · chống prompt injection · JSON schema + thử lại · hạn mức gọi AI/giờ · nhật ký AI</p>
+    <div class="footer"><span>YC2 – Sinh test case bằng AI · Bảo mật AI</span><span class="pg"></span></div>
   </section>
 
   <!-- 11 -->
   <section class="slide">
-    <h2>10. Báo cáo tự động</h2>
-    <div class="two">
-      <div>
-        <ul>
-          <li><b>Tỷ lệ pass</b> theo lần chạy gần nhất</li>
-          <li><b>Độ bao phủ yêu cầu</b>: story có test case đã duyệt</li>
-          <li><b>Tiến độ thực thi</b></li>
-          <li>Kết quả theo module, xu hướng theo ngày</li>
-          <li>Danh sách story <b>chưa được bao phủ</b></li>
-          <li>Hiệu quả AI: số case AI sinh, tỷ lệ phải sửa, cảnh báo injection</li>
-        </ul>
-      </div>
-      <img class="shot" src="images/10_bao_cao.png" alt="Báo cáo">
+    <h2>10. Test Run, báo sửa lỗi và kiểm thử lại</h2>
+    <div class="grid g2" style="flex:1; align-items:center">
+      <img class="shot" src="images/08_test_run.png" alt="Test Run">
+      <img class="shot" src="images/11_kiem_thu_lai.png" alt="Kiểm thử lại">
     </div>
-    <div class="footer"><span>YC6 – Báo cáo</span><span class="pg"></span></div>
-  </section>
-
-  <!-- 11b -->
-  <section class="slide">
-    <h2>11. Hệ thống hỗ trợ đội QA làm Scrum (YC12)</h2>
-    <div class="two">
-      <div>
-        <ul>
-          <li>Sprint có <b>Sprint Goal</b>, ngày bắt đầu/kết thúc (QĐ12: ≤ 28 ngày, không trùng)</li>
-          <li><b>Product backlog</b> → Sprint Planning đưa story vào sprint</li>
-          <li>Story point Fibonacci 1–13</li>
-          <li><b>Definition of Done tự động</b>: mọi test case đã duyệt đều Pass</li>
-          <li>Bảng 4 cột, <b>burndown</b> theo ngày, <b>velocity</b> từng sprint</li>
-          <li>Lọc báo cáo, duyệt, tra cứu theo sprint</li>
-        </ul>
-      </div>
-      <img class="shot" src="images/11_sprint.png" alt="Trang Sprint">
-    </div>
-    <div class="footer"><span>YC12 – Agile trong sản phẩm</span><span class="pg"></span></div>
+    <p class="muted" style="margin:.6em 0 0">Đợt có build, môi trường, phân công, <b>phiên bản test cố định</b> · Developer báo đã sửa kèm build · lần chạy lại <b>gắn với đúng lần Fail gốc</b> · Pass → Đã đóng, Fail → Mở lại</p>
+    <div class="footer"><span>YC13, YC14, YC5, YC18</span><span class="pg"></span></div>
   </section>
 
   <!-- 12 -->
   <section class="slide">
+    <h2>11. Báo cáo tự động</h2>
+    <div class="two">
+      <div>
+        <ul>
+          <li>Phạm vi <b>dự án</b> hoặc <b>Test Run</b></li>
+          <li>Tỷ lệ pass, tiến độ theo lần chạy gần nhất của <b>phiên bản hiện tại</b></li>
+          <li><b>Độ bao phủ requirement và AC</b>; requirement Thiếu AC liệt kê riêng</li>
+          <li>Test cần xem lại, chờ kiểm thử lại, đề xuất AI chờ xử lý</li>
+          <li>Thống kê AI: số test AI sinh, tỷ lệ phải sửa</li>
+        </ul>
+      </div>
+      <img class="shot" src="images/02_tong_quan.png" alt="Báo cáo">
+    </div>
+    <div class="footer"><span>YC6 – Báo cáo</span><span class="pg"></span></div>
+  </section>
+
+  <!-- 13 -->
+  <section class="slide">
     <h2>12. Kiểm chứng: kiểm thử 3 tầng + CI/CD</h2>
     <div class="grid g2" style="flex:1; align-items:center">
       <div class="pyramid">
-        <div style="width:40%;background:#6d28d9">E2E Playwright<br>9/9 pass</div>
-        <div style="width:70%;background:#2563eb">API / tích hợp (supertest)<br>34/34 pass</div>
-        <div style="width:100%;background:#15803d">Unit test (node:test)<br>21/21 pass</div>
+        <div style="width:40%;background:#6d28d9">E2E Playwright<br>11/11 pass</div>
+        <div style="width:70%;background:#2563eb">API / tích hợp (supertest)<br>85 + 11 mở rộng pass</div>
+        <div style="width:100%;background:#15803d">Unit test (node:test)<br>33/33 pass</div>
       </div>
       <div>
         <ul>
-          <li>Kiểm tra toàn bộ quy định QĐ1–QĐ10, phân quyền, bảo mật AI</li>
-          <li>Mô phỏng AI trả sai định dạng → thử lại → báo lỗi</li>
-          <li>E2E: lập story → AI sinh → gửi duyệt → trả lại → duyệt → chạy → đổi quy định → Sprint Planning</li>
-          <li>Test viết trong từng sprint (thuộc Definition of Done), không dồn cuối kỳ</li>
-          <li>25 test case hệ thống thủ công (XSS, SQLi, RBAC…)</li>
+          <li>Mỗi quy định QĐ1–QĐ18 và mỗi góp ý đã chốt có test riêng, mã góp ý ghi trong tên test</li>
+          <li>Đồng bộ chồng nhau, đổi mã issue, issue biến mất, Giữ lại / Lưu trữ</li>
+          <li>E2E: Jira → AI sinh → duyệt → Test Run → báo sửa → requirement đổi → phân tích → regression</li>
+          <li>31 test case hệ thống thủ công (XSS, SQLi, RBAC…)</li>
           <li><b>GitHub Actions</b>: Unit & API → E2E → build Docker image</li>
         </ul>
       </div>
@@ -323,38 +296,38 @@ flowchart LR
     <div class="footer"><span>Chương 6 – Kiểm chứng</span><span class="pg"></span></div>
   </section>
 
-  <!-- 13 -->
+  <!-- 14 -->
   <section class="slide">
     <h2>13. Kết luận và hướng phát triển</h2>
     <div class="grid g2" style="flex:1">
       <div class="card">
         <h3>Đạt được</h3>
         <ul>
-          <li>Làm theo Scrum: nhóm 4 người, 5 sprint × 1 tuần, mỗi sprint đủ 7 hoạt động</li>
-          <li>Phần mềm chạy được: 12 YC, 14 màn hình, hỗ trợ Scrum</li>
-          <li>AI tích hợp bài bản: Strategy, PII, injection, schema, retry, sandbox</li>
-          <li>Kiểm thử tự động 3 tầng, Docker, CI</li>
+          <li>Scrum 5 sprint × 1 tuần; đặc tả chốt rồi thiết kế lại theo bản chốt</li>
+          <li>18 YC, 18 màn hình, 75 API; mô hình vẽ bằng draw.io, ERD sinh từ CSDL thật</li>
+          <li>Điểm mới: gắn cờ đúng test khi requirement đổi, AI phân tích ảnh hưởng, regression</li>
+          <li>140 test tự động, Docker, CI</li>
         </ul>
       </div>
       <div class="card">
         <h3>Hướng phát triển</h3>
         <ul>
-          <li>Chọn LLM phù hợp cho user story tiếng Việt</li>
-          <li>RAG theo tài liệu nghiệp vụ (pgvector)</li>
-          <li>Model nhỏ chạy nội bộ, không gửi dữ liệu ra ngoài</li>
-          <li>AI agent Playwright tự sửa locator (self-healing)</li>
-          <li>Hàng đợi job, tích hợp Jira</li>
+          <li>Hàng đợi sự kiện Jira bền vững</li>
+          <li>Phân quyền theo thành viên dự án</li>
+          <li>Regression theo bản phát hành; đọc trạng thái Bug từ Jira</li>
+          <li>Bật lại script Playwright (self-healing) và theo dõi sprint</li>
+          <li>Đo độ chính xác phân tích ảnh hưởng; RAG theo tài liệu nghiệp vụ</li>
         </ul>
       </div>
     </div>
     <div class="footer"><span>Chương 9</span><span class="pg"></span></div>
   </section>
 
-  <!-- 14 -->
+  <!-- 15 -->
   <section class="slide title-slide" style="text-align:center;align-items:center">
     <h1>Cảm ơn thầy cô và các bạn!</h1>
     <p style="font-size:1.3em">Demo trực tiếp · Hỏi đáp</p>
-    <p class="muted">Mã nguồn, tài liệu và hướng dẫn chạy: thư mục <code>NhapMonCongNghePhanMem</code></p>
+    <p class="muted">Mã nguồn, tài liệu và hướng dẫn chạy: xem <code>README.md</code> ở thư mục gốc repo</p>
   </section>
 
 </div>

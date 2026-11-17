@@ -1,30 +1,34 @@
 ﻿Issue key,Issue Type,Epic,Summary,Story Points,Priority,Sprint,Requirement
 PB-01,Story,Quản trị & bảo mật,"Là người dùng, tôi muốn đăng nhập bằng tài khoản được cấp, để dùng đúng chức năng theo vai trò",3,Must,Sprint 1,UC01
 PB-02,Story,Quản trị & bảo mật,"Là Admin, tôi muốn tạo, khóa tài khoản và gán vai trò, để kiểm soát ai được làm gì",3,Must,Sprint 1,YC11
-PB-03,Story,Quản trị & bảo mật,"Là Admin, tôi muốn tạo dự án và module, để tổ chức user story theo sản phẩm",2,Must,Sprint 1,YC11
-PB-04,Story,User story,"Là PO/BA, tôi muốn lập user story kèm acceptance criteria, để có đầu vào cho test case",3,Must,Sprint 1,YC1
-PB-05,Story,Quản trị & bảo mật,"Là Admin, tôi muốn xem nhật ký hoạt động, để truy vết ai đã làm gì",2,Should,Sprint 1,BM-13
-PB-06,Story,AI test case,"Là Tester, tôi muốn AI sinh test case từ user story, để tiết kiệm thời gian viết nháp",8,Must,Sprint 2,YC2
-PB-07,Story,AI test case,"Là Admin, tôi muốn dữ liệu nhạy cảm được che trước khi gửi AI, để không lộ thông tin khách hàng",3,Must,Sprint 2,BM-09
-PB-08,Story,AI test case,"Là Admin, tôi muốn hệ thống chống prompt injection, để AI không bị điều khiển bởi dữ liệu xấu",3,Must,Sprint 2,BM-10
-PB-09,Story,AI test case,"Là QA Lead, tôi muốn xem nhật ký AI (prompt, kết quả gốc), để truy vết khi AI sinh sai",2,Should,Sprint 3,–
-PB-10,Story,AI test case,"Là Admin, tôi muốn đổi nhà cung cấp LLM bằng cấu hình, để chủ động chi phí và chất lượng",3,Should,Sprint 2,YC2
-PB-11,Story,Duyệt & phiên bản,"Là Tester, tôi muốn sửa test case và lưu phiên bản, để không mất bản AI gốc",5,Must,Sprint 2,YC3
-PB-12,Story,Duyệt & phiên bản,"Là Tester, tôi muốn gửi duyệt nhiều test case một lần, để QA Lead xem xét",2,Must,Sprint 3,YC3
-PB-13,Story,Duyệt & phiên bản,"Là QA Lead, tôi muốn duyệt hoặc trả lại kèm ghi chú, để kiểm soát chất lượng",3,Must,Sprint 3,YC4
-PB-14,Story,Thực thi & báo cáo,"Là Tester, tôi muốn tra cứu test case theo nhiều tiêu chí, để tìm nhanh",3,Should,Sprint 3,YC7
-PB-15,Story,Thực thi & báo cáo,"Là Tester, tôi muốn ghi kết quả Pass/Fail/Blocked, để theo dõi chất lượng",3,Must,Sprint 3,YC5
-PB-16,Story,Thực thi & báo cáo,"Là QA Lead, tôi muốn xem báo cáo tỷ lệ pass và độ bao phủ, để báo cáo tiến độ",5,Must,Sprint 3,YC6
-PB-17,Story,Thực thi & báo cáo,"Là QA Lead, tôi muốn thay đổi quy định không cần sửa code, để hệ thống thích ứng với đội",3,Must,Sprint 4,YC10
-PB-18,Story,Tự động hóa,"Là Tester, tôi muốn AI sinh script Playwright từ test case đã duyệt, để không phải viết lại",5,Should,Sprint 4,YC9
-PB-19,Story,Tự động hóa,"Là Tester, tôi muốn chạy script tự động an toàn và xem ảnh lỗi, để tiết kiệm thời gian chạy lại",8,Should,Sprint 4,YC9
-PB-20,Story,Duyệt & phiên bản,"Là QA Lead, tôi muốn so sánh bản AI gốc với bản đã sửa, để đánh giá chất lượng AI",3,Could,Sprint 4,YC3
-PB-21,Story,Agile,"Là PO/BA, tôi muốn chia user story theo sprint và ước lượng story point, để lập kế hoạch",5,Should,Sprint 5,YC12
-PB-22,Story,Agile,"Là QA Lead, tôi muốn xem burndown và velocity, để biết sprint có kịp không",3,Could,Sprint 5,YC12
-PB-23,Story,User story,"Là PO/BA, tôi muốn nhập user story từ file CSV, để không gõ lại từ Jira",3,Should,Sprint 5,YC8
-PB-24,Story,Thực thi & báo cáo,"Là QA Lead, tôi muốn xuất test case ra Excel, để gửi cho khách hàng",2,Should,Sprint 5,YC8
-PB-25,Story,Triển khai,"Là Admin, tôi muốn triển khai bằng Docker, để cài đặt nhanh và đồng nhất",3,Should,Sprint 5,–
-PB-26,Story,Thực thi & báo cáo,"Là Developer, tôi muốn báo đã sửa lỗi kèm bản build, để Tester biết test case nào cần kiểm thử lại",3,Should,Sprint 4,YC13
-PB-27,Story,Tích hợp,"Là Tester, tôi muốn đồng bộ 2 chiều với Jira, để không nhập tay",8,Won't (bản này),,–
-PB-28,Story,AI nâng cao,"Là Tester, tôi muốn AI dùng tài liệu nghiệp vụ (RAG), để test case sát thực tế hơn",13,Won't (bản này),,–
-PB-29,Story,AI nâng cao,"Là Tester, tôi muốn script tự sửa locator khi giao diện đổi (self-healing)",13,Won't (bản này),,–
+PB-03,Story,Tích hợp Jira,"Là Admin, tôi muốn kiểm tra kết nối Jira và thêm dự án kèm module, thành viên từ Jira, để không tạo dự án bằng tay",3,Must,Sprint 1,YC12
+PB-04,Story,Tích hợp Jira,"Là QA Lead, tôi muốn requirement kèm AC được đồng bộ từ Jira theo issue ID và lưu phiên bản, để có đầu vào cho test mà không chép tay",5,Must,Sprint 1,YC1
+PB-05,Story,Quản trị & bảo mật,"Là Admin, tôi muốn xem nhật ký hoạt động, để truy vết ai đã làm gì",2,Should,Sprint 1,SE-12
+PB-06,Story,AI test case,"Là Tester, tôi muốn AI sinh test case từ requirement, mỗi test chỉ rõ AC liên quan, để tiết kiệm thời gian viết nháp",8,Must,Sprint 2,YC2
+PB-07,Story,AI test case,"Là Admin, tôi muốn dữ liệu nhạy cảm được che trước khi gửi AI, để không lộ thông tin khách hàng",3,Must,Sprint 2,SE-09
+PB-08,Story,AI test case,"Là Admin, tôi muốn hệ thống chống prompt injection, để AI không bị điều khiển bởi dữ liệu xấu",3,Must,Sprint 2,SE-10
+PB-09,Story,Test case,"Là Tester, tôi muốn soạn test, gán AC và lưu phiên bản, để không mất bản AI gốc và biết test kiểm tra AC nào",5,Must,Sprint 2,YC3
+PB-10,Story,Test case,"Là QA Lead, tôi muốn duyệt hoặc trả lại test kèm ghi chú, để kiểm soát chất lượng",3,Must,Sprint 2,YC4
+PB-11,Story,Thực thi,"Là Tester, tôi muốn gom test thành Test Suite, để lập đợt kiểm thử nhanh",3,Must,Sprint 3,YC13
+PB-12,Story,Thực thi,"Là QA Lead, tôi muốn lập Test Run có build, môi trường, phân công và cố định phiên bản test, để kết quả gắn đúng nội dung và bản build",5,Must,Sprint 3,YC14
+PB-13,Story,Thực thi,"Là Tester, tôi muốn ghi kết quả Pass/Fail/Blocked trong đợt được giao, để theo dõi chất lượng",3,Must,Sprint 3,YC5
+PB-14,Story,Báo cáo,"Là Tester, tôi muốn tra cứu test theo nhiều tiêu chí, để tìm nhanh",3,Should,Sprint 3,YC7
+PB-15,Story,Báo cáo,"Là QA Lead, tôi muốn xem báo cáo theo dự án hoặc Test Run, gồm độ bao phủ requirement và AC, để báo cáo tiến độ",5,Must,Sprint 3,YC6
+PB-16,Story,AI test case,"Là Admin, tôi muốn đổi nhà cung cấp LLM bằng cấu hình, để chủ động chi phí và chất lượng",2,Should,Sprint 3,YC2
+PB-17,Story,Thay đổi requirement,"Là Tester, tôi muốn khi requirement đổi trên Jira thì test bị ảnh hưởng tự được gắn cờ Cần xem lại, để không chạy test lỗi thời",5,Must,Sprint 4,YC8
+PB-18,Story,Thay đổi requirement,"Là Tester, tôi muốn xác nhận Đã xem lại kèm lý do (từng test hoặc hàng loạt), để gỡ cờ khi test vẫn đúng",2,Must,Sprint 4,YC3
+PB-19,Story,Thay đổi requirement,"Là QA Lead, tôi muốn requirement biến mất trên Jira được gắn cờ Cần kiểm tra để tôi chọn Lưu trữ hoặc Giữ lại, để không mất test vì lỗi đồng bộ",3,Must,Sprint 4,YC8
+PB-20,Story,Thay đổi requirement,"Là Tester, tôi muốn AI phân tích ảnh hưởng và đề xuất test cần sửa, còn thiếu, nên chạy lại kèm lý do, để không bỏ sót",8,Must,Sprint 4,YC15
+PB-21,Story,Thay đổi requirement,"Là QA Lead, tôi muốn chấp nhận hoặc từ chối đề xuất AI, đề xuất lỗi thời không áp dụng được, để AI không tự đổi test",3,Must,Sprint 4,YC16
+PB-22,Story,Thay đổi requirement,"Là QA Lead, tôi muốn AI đề xuất bộ regression và tôi xác nhận thành Test Run, để biết cần chạy lại test nào",5,Must,Sprint 5,YC17
+PB-23,Story,Thực thi,"Là Developer, tôi muốn báo đã sửa lỗi kèm build để Tester kiểm thử lại đúng lần Fail, để khép kín vòng sửa lỗi",5,Must,Sprint 5,YC18
+PB-24,Story,Quản trị & bảo mật,"Là QA Lead, tôi muốn thay đổi quy định không cần sửa code, để hệ thống thích ứng với đội",2,Must,Sprint 5,YC10
+PB-25,Story,Báo cáo,"Là QA Lead, tôi muốn xuất test case ra Excel theo bộ lọc, để gửi cho khách hàng",2,Should,Sprint 5,YC9
+PB-26,Story,AI test case,"Là QA Lead, tôi muốn xem nhật ký AI (prompt đã che, kết quả gốc), để truy vết khi AI sai",2,Should,Sprint 5,SE-12
+PB-27,Story,Triển khai,"Là Admin, tôi muốn triển khai bằng Docker, để cài đặt nhanh và đồng nhất",3,Should,Sprint 5,–
+PB-28,Story,Mở rộng,"Là Tester, tôi muốn AI sinh và chạy script Playwright từ test đã duyệt, để không viết lại (code đã có, tắt mặc định)",13,Won't (MVP),,YC19
+PB-29,Story,Mở rộng,"Là QA Lead, tôi muốn theo dõi sprint, burndown, velocity lấy từ Jira (code đã có, tắt mặc định)",8,Won't (MVP),,YC20
+PB-30,Story,Tích hợp Jira,"Là QA Lead, tôi muốn sự kiện Jira vào hàng đợi bền vững, để không mất thay đổi khi máy chủ tắt",5,Won't (MVP),,YC8
+PB-31,Story,Quản trị & bảo mật,"Là Admin, tôi muốn phân quyền theo thành viên từng dự án, để giới hạn quyền ghi",8,Won't (MVP),,–
+PB-32,Story,Tích hợp Jira,"Là Tester, tôi muốn đẩy kết quả kiểm thử và đọc trạng thái Bug từ Jira, để không nhập tay",8,Won't (MVP),,–
+PB-33,Story,AI nâng cao,"Là Tester, tôi muốn AI dùng tài liệu nghiệp vụ (RAG), để test sát thực tế hơn",13,Won't (MVP),,–

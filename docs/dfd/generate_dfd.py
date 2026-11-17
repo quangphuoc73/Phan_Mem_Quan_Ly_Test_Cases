@@ -42,147 +42,263 @@ NONE = 'Không có'
 #   d5_inline: D5/D2 đã được nói trong các bước check (VD: gửi prompt cho LLM)
 # ---------------------------------------------------------------------------
 DFDS = [
-    dict(file='YC01_LapUserStory', title='DFD YC1 – Lập user story', process='Lập user story',
-         user='PO/BA, Tester', bm='BM1', qd='QĐ1',
-         d={'D1': 'Mã user story, dự án, module, tiêu đề, mô tả, các acceptance criteria, độ ưu tiên.',
-            'D3': 'Danh sách mã user story đã có; danh sách dự án, module; tham số MIN_AC_PER_STORY, PRIORITIES.',
-            'D4': 'D1 + người tạo, ngày tạo.',
-            'D6': 'Thông báo lưu thành công kèm user story vừa lập, hoặc thông báo lỗi vi phạm QĐ1.'},
-         check=['Kiểm tra mã user story đúng dạng US-XXX và không trùng với mã đã có?',
-                'Kiểm tra tiêu đề ≥ 5 ký tự, mô tả ≥ 10 ký tự?',
-                'Kiểm tra độ ưu tiên thuộc danh sách PRIORITIES?',
-                'Kiểm tra số acceptance criteria ≥ MIN_AC_PER_STORY?',
-                'Kiểm tra module thuộc dự án đã chọn?']),
+    dict(file='YC01_DongBoRequirement', title='DFD YC1 – Xem requirement từ Jira và lịch sử thay đổi', process='Đồng bộ, xem requirement',
+         user='Mọi vai trò (đồng bộ: Admin, QA Lead)', inp='Jira (REST API)', outp='Jira (REST API)', bm='BM1', qd='QĐ1', d5_inline=True,
+         d={'D1': 'Dự án cần đồng bộ (thao tác Đồng bộ ngay); hoặc requirement cần xem, phiên bản cần so sánh.',
+            'D2': 'Từ Jira: các issue thuộc loại JIRA_ISSUE_TYPES của dự án – issue ID, mã, Summary, Description (có mục "Acceptance criteria"), '
+                  'Priority, loại issue, component, trạng thái, thời điểm cập nhật (updated).',
+            'D3': 'Mã Jira của dự án; requirement đã có (theo issue ID) cùng thời điểm cập nhật Jira đã lưu và phiên bản hiện tại; module của dự án.',
+            'D4': 'Requirement mới (BM1, phiên bản 1) hoặc cập nhật; phiên bản mới khi tiêu đề, mô tả hoặc AC đổi; nhật ký đồng bộ; nhật ký hoạt động.',
+            'D5': 'Yêu cầu tìm issue theo loại của dự án gửi Jira REST API, kèm thông tin xác thực đọc từ .env.',
+            'D6': 'Danh sách requirement kèm trạng thái đồng bộ (Bình thường, Thiếu AC, Cần kiểm tra, Đã lưu trữ); chi tiết, lịch sử phiên bản '
+                  'và so sánh trước/sau; hoặc thông báo lỗi.'},
+         check=['Đồng bộ: kiểm tra người dùng có vai trò Admin hoặc QA Lead và dự án đã liên kết Jira?',
+                'Xuất D5 đến Jira, nhận D2 (lấy hết các trang); lỗi kết nối thì thử lại tối đa 2 lần.',
+                'Với từng issue: nhận diện requirement bằng issue ID; chỉ ghi khi thời điểm cập nhật trên Jira mới hơn bản đã lưu.',
+                'Tách Description: phần trước nhãn "Acceptance criteria" là mô tả, mỗi dòng sau là một AC; đổi Priority về High / Medium / Low.',
+                'Tiêu đề, mô tả hoặc AC đổi thì tạo phiên bản mới, không xóa phiên bản cũ; đổi ưu tiên, trạng thái Jira chỉ cập nhật giá trị hiện tại.',
+                'Requirement không có AC được đánh dấu Thiếu AC.']),
     dict(file='YC02_SinhTestCaseBangAI', title='DFD YC2 – Sinh test case bằng AI', process='Sinh test case bằng AI',
-         user='Tester', inp='Dịch vụ LLM', outp='Dịch vụ LLM', bm='BM2', qd='QĐ2', d5_inline=True,
-         d={'D1': 'Mã user story cần sinh test case.',
-            'D2': 'Chuỗi JSON danh sách test case do LLM trả về.',
-            'D3': 'Nội dung user story; tham số MAX_TC_PER_STORY, AI_MAX_RETRY, AI_TIMEOUT_SEC, AI_CALLS_PER_HOUR; '
-                  'số lần gọi AI của người dùng trong 1 giờ; số test case hiện có của user story.',
-            'D4': 'Các test case mới (nguồn AI, trạng thái Nháp, phiên bản 1); nhật ký AI (prompt đã che PII, model, '
-                  'kết quả gốc, số lần thử, thời gian, cờ injection).',
-            'D5': 'Prompt gửi LLM: vai trò QA, quy định QĐ2, nội dung user story ĐÃ CHE dữ liệu nhạy cảm (PII).',
-            'D6': 'Thông báo thành công kèm danh sách test case Nháp, cảnh báo nếu có prompt injection; '
-                  'hoặc thông báo lỗi (hết hạn mức, LLM lỗi, vượt số test case tối đa).'},
-         check=['Kiểm tra số lần gọi AI trong 1 giờ < AI_CALLS_PER_HOUR?',
-                'Tính số test case còn được sinh = MAX_TC_PER_STORY − số test case hiện có (không tính test case AI Nháp sẽ thay thế). Kiểm tra số này > 0?',
-                'Che dữ liệu nhạy cảm (email, số điện thoại, khóa API…) và đánh dấu nếu phát hiện prompt injection.',
-                'Ghép prompt và xuất D5 đến Dịch vụ LLM, chờ tối đa AI_TIMEOUT_SEC giây.',
-                'Nhận D2 từ Dịch vụ LLM. Nếu D2 sai JSON schema thì quay lại bước trước, tối đa AI_MAX_RETRY lần; quá số lần vẫn sai?',
-                'Xóa các test case AI còn Nháp của user story; cắt danh sách theo số test case còn được sinh.']),
-    dict(file='YC03_SoanThaoGuiDuyet', title='DFD YC3 – Soạn thảo và gửi duyệt test case', process='Soạn thảo, gửi duyệt',
-         user='Tester', bm='BM2', qd='QĐ2, QĐ3',
-         d={'D1': 'Nội dung test case (BM2) cần thêm/sửa kèm ghi chú thay đổi; hoặc danh sách mã test case cần gửi duyệt.',
-            'D3': 'Trạng thái, phiên bản hiện tại của test case; số test case của user story; tham số MAX_TC_PER_STORY.',
-            'D4': 'Nội dung mới, phiên bản + 1, bản chụp phiên bản; hoặc trạng thái Chờ duyệt của các test case gửi duyệt.',
-            'D6': 'Thông báo lưu / gửi duyệt thành công kèm test case sau khi lưu, hoặc thông báo lỗi vi phạm QĐ2, QĐ3.'},
-         check=['Thêm mới: kiểm tra số test case của user story < MAX_TC_PER_STORY và có 1–15 bước?',
-                'Sửa / gửi duyệt / xóa: kiểm tra trạng thái cho phép theo QĐ3 (Chờ duyệt thì không được sửa; chỉ Nháp, Bị trả lại mới được gửi duyệt)?',
-                'Sửa test case Đã duyệt thì đưa trạng thái về Nháp; tính phiên bản mới = phiên bản hiện tại + 1.']),
+         user='QA Lead, Tester', inp='Dịch vụ LLM', outp='Dịch vụ LLM', bm='BM2', qd='QĐ2', d5_inline=True,
+         d={'D1': 'Requirement cần sinh test case.',
+            'D2': 'Chuỗi JSON danh sách test case do LLM trả về, mỗi test có danh sách AC liên quan (ac_refs).',
+            'D3': 'Nội dung requirement (tiêu đề, mô tả, AC đánh số); trạng thái lưu trữ, Cần kiểm tra; số test hiện có; tham số MAX_TC_PER_STORY, '
+                  'MIN_AC_PER_STORY, AI_MAX_RETRY, AI_TIMEOUT_SEC, AI_CALLS_PER_HOUR; số lần gọi AI của người dùng trong 1 giờ.',
+            'D4': 'Test case mới (nguồn AI, Nháp, phiên bản 1, phiên bản requirement đã liên kết) cùng liên kết AC; nhật ký AI (prompt đã che dữ liệu, '
+                  'kết quả gốc, số lần thử, cờ injection).',
+            'D5': 'Prompt gửi LLM: vai trò QA, quy định QĐ2, requirement ĐÃ CHE dữ liệu nhạy cảm, AC được đánh số.',
+            'D6': 'Danh sách test case Nháp vừa sinh kèm AC liên quan, số test bị bỏ do vượt giới hạn, cảnh báo prompt injection; hoặc thông báo lỗi.'},
+         check=['Kiểm tra số lần gọi AI trong 1 giờ < AI_CALLS_PER_HOUR (dùng chung cho YC2, YC15, YC17)?',
+                'Kiểm tra requirement chưa lưu trữ, không Cần kiểm tra và có ít nhất MIN_AC_PER_STORY AC?',
+                'Tính số test còn được sinh = MAX_TC_PER_STORY − số test hiện có. Kiểm tra số này > 0?',
+                'Che dữ liệu nhạy cảm và đánh dấu nếu phát hiện prompt injection; ghép prompt, xuất D5 đến LLM, chờ tối đa AI_TIMEOUT_SEC giây.',
+                'Nhận D2. Nếu sai JSON schema (thiếu ac_refs, sai số bước…) thì gọi lại, tối đa AI_MAX_RETRY lần; quá số lần vẫn sai?',
+                'Cắt danh sách theo số test còn được sinh; giữ nguyên bản nháp cũ (không thay thế); đổi ac_refs thành nội dung AC để liên kết.']),
+    dict(file='YC03_SoanThaoGuiDuyet', title='DFD YC3 – Soạn thảo, gửi duyệt và xem lại test case', process='Soạn thảo, xem lại test',
+         user='QA Lead, Tester', bm='BM2', qd='QĐ3',
+         d={'D1': 'Nội dung test case (BM2) và các AC liên kết; hoặc test cần gửi duyệt; hoặc test cần Đã xem lại kèm lý do (và AC gán lại).',
+            'D3': 'Requirement và AC của phiên bản hiện tại; trạng thái, phiên bản, AC đã liên kết, cờ Cần xem lại của test; số test của requirement; '
+                  'lần chạy của test; tham số MAX_TC_PER_STORY.',
+            'D4': 'Test mới hoặc phiên bản mới (Nháp), liên kết AC, phiên bản requirement đã liên kết; trạng thái Chờ duyệt; '
+                  'nhật ký Đã xem lại (người, phiên bản requirement, lý do, thời điểm) và gỡ cờ; nhật ký hoạt động.',
+            'D6': 'Thông báo lưu, gửi duyệt, Đã xem lại thành công; hoặc thông báo lỗi vi phạm QĐ2, QĐ3.'},
+         check=['Thêm: kiểm tra số test < MAX_TC_PER_STORY, có 1–15 bước và AC thuộc phiên bản hiện tại?',
+                'Sửa: kiểm tra test không ở trạng thái Chờ duyệt? Sửa test Đã duyệt thì đưa về Nháp; phiên bản test + 1.',
+                'Gửi duyệt: kiểm tra test ở trạng thái Nháp hoặc Bị trả lại và đã liên kết ít nhất 1 AC?',
+                'Xóa: kiểm tra test Nháp hoặc Bị trả lại và chưa có lần chạy nào?',
+                'Đã xem lại: kiểm tra test đang có cờ Cần xem lại và có lý do? Gỡ cờ, nâng phiên bản requirement đã liên kết lên phiên bản hiện tại.']),
     dict(file='YC04_DuyetTestCase', title='DFD YC4 – Duyệt test case', process='Duyệt test case',
          user='QA Lead', bm='BM3', qd='QĐ4',
-         d={'D1': 'Mã test case, quyết định Duyệt / Trả lại, ghi chú (BM3).',
-            'D3': 'Trạng thái hiện tại của test case; vai trò của người duyệt.',
-            'D4': 'Trạng thái mới (Đã duyệt / Bị trả lại); phiếu duyệt (người duyệt, quyết định, ghi chú, ngày duyệt); nhật ký hoạt động.',
+         d={'D1': 'Test case, quyết định Duyệt / Trả lại, ghi chú (BM3).',
+            'D3': 'Trạng thái hiện tại của test; phiên bản hiện tại của requirement; vai trò người duyệt.',
+            'D4': 'Trạng thái mới; khi duyệt: gỡ cờ Cần xem lại và nâng phiên bản requirement đã liên kết; phiếu duyệt; nhật ký hoạt động.',
             'D6': 'Thông báo duyệt thành công kèm trạng thái mới, hoặc thông báo lỗi vi phạm QĐ4.'},
          check=['Kiểm tra người duyệt có vai trò QA Lead?',
-                'Kiểm tra test case đang ở trạng thái Chờ duyệt?',
+                'Kiểm tra test đang ở trạng thái Chờ duyệt (kể cả bản nháp tạo từ đề xuất AI)?',
                 'Nếu quyết định là Trả lại: kiểm tra có ghi chú?']),
     dict(file='YC05_GhiKetQuaChayTest', title='DFD YC5 – Ghi nhận kết quả chạy test', process='Ghi nhận kết quả',
-         user='Tester', bm='BM4', qd='QĐ5',
-         d={'D1': 'Mã test case, kết quả Pass / Fail / Blocked, ghi chú (mã bug).',
-            'D3': 'Trạng thái của test case.',
-            'D4': 'Kết quả chạy: kết quả, hình thức Thủ công, ghi chú, người chạy, thời điểm chạy.',
-            'D6': 'Thông báo ghi nhận thành công, hoặc thông báo lỗi vi phạm QĐ5.'},
-         check=['Kiểm tra test case ở trạng thái Đã duyệt?',
-                'Nếu kết quả là Fail hoặc Blocked: kiểm tra có ghi chú?']),
+         user='QA Lead, Tester', bm='BM4', qd='QĐ5, QĐ18', inp='', outp='',
+         d={'D1': 'Test trong Test Run, kết quả Pass / Fail / Blocked, ghi chú, mã defect, liên kết bằng chứng (BM4).',
+            'D3': 'Test Run (trạng thái, build, môi trường); test trong đợt (phiên bản cố định, người được giao); phiếu báo sửa đang chờ của test.',
+            'D4': 'Lần chạy: kết quả, phiên bản test đã cố định, ghi chú, mã defect, bằng chứng, người chạy, thời điểm, lần Fail gốc (nếu là kiểm thử lại); '
+                  'trạng thái kiểm thử lại của phiếu báo sửa.',
+            'D6': 'Thông báo ghi nhận thành công kèm cảnh báo (VD build khác build đã báo sửa), hoặc thông báo lỗi vi phạm QĐ5.'},
+         check=['Kiểm tra Test Run đang mở?',
+                'Kiểm tra người ghi là người được giao hoặc QA Lead?',
+                'Nếu kết quả là Fail hoặc Blocked: kiểm tra có ghi chú? Bằng chứng (nếu có) là đường dẫn?',
+                'Nếu test đang chờ kiểm thử lại: gắn lần chạy với lần Fail gốc; Pass → Đã đóng, Fail → Mở lại, Blocked → vẫn chờ; build khác thì cảnh báo.']),
     dict(file='YC06_LapBaoCao', title='DFD YC6 – Lập báo cáo kiểm thử', process='Lập báo cáo',
-         user='Người dùng', bm='BM5', qd='QĐ5',
-         d={'D1': 'Dự án cần xem báo cáo.',
-            'D3': 'User story, test case, các lần chạy test, nhật ký AI của dự án.',
-            'D6': 'Báo cáo BM5: tỷ lệ pass, độ bao phủ, tiến độ thực thi, kết quả theo module, xu hướng theo ngày, '
-                  'thống kê AI, danh sách user story chưa được bao phủ (dạng bảng và biểu đồ).'},
-         check=['Với mỗi test case: lấy kết quả của lần chạy GẦN NHẤT.',
-                'Tính tỷ lệ pass = số test case Pass / số test case đã chạy.',
-                'Tính độ bao phủ = số user story có ≥ 1 test case Đã duyệt / tổng số user story.',
-                'Tính tiến độ thực thi = số test case đã chạy / số test case Đã duyệt.',
-                'Nhóm kết quả theo module và theo ngày; thống kê số test case AI sinh, tỷ lệ phải sửa.']),
+         user='Mọi vai trò', bm='BM5', qd='QĐ6',
+         d={'D1': 'Dự án hoặc Test Run cần xem báo cáo.',
+            'D3': 'Requirement chưa lưu trữ và AC của phiên bản hiện tại; test Đã duyệt và liên kết AC; các lần chạy; đề xuất AI; nhật ký AI.',
+            'D6': 'Báo cáo BM5: tỷ lệ pass, tiến độ thực thi, bao phủ requirement và bao phủ AC, kết quả theo module, xu hướng theo ngày, '
+                  'requirement và AC chưa được bao phủ, requirement Thiếu AC, số test cần xem lại, chờ kiểm thử lại, đề xuất AI, thống kê AI.'},
+         check=['Chọn Test Run: lấy lần chạy gần nhất của từng test trong đợt. Chọn dự án: chỉ tính lần chạy của phiên bản hiện tại của test Đã duyệt.',
+                'Tỷ lệ pass = Pass / số test đã chạy (Blocked tính là đã chạy, không tính Pass); tiến độ = số test đã chạy / số test trong phạm vi.',
+                'Bao phủ requirement = số requirement có test Đã duyệt / số requirement có AC (không gồm Thiếu AC); bao phủ AC tương tự theo từng AC.',
+                'Tỷ lệ AI phải sửa = số test nguồn AI có các bước hoặc kết quả mong đợi khác bản AI gốc / số test nguồn AI.']),
     dict(file='YC07_TraCuuTestCase', title='DFD YC7 – Tra cứu test case', process='Tra cứu test case',
-         user='Người dùng', bm='BM6', qd='',
-         d={'D1': 'Điều kiện tra cứu: từ khóa (mã / tiêu đề), dự án, trạng thái, độ ưu tiên, loại, nguồn.',
-            'D3': 'Các test case thỏa điều kiện kèm user story, kết quả chạy gần nhất, có script hay không.',
-            'D6': 'Danh sách test case thỏa điều kiện (BM6), hoặc thông báo không tìm thấy.'},
-         check=['Ghép điều kiện D1 thành câu truy vấn có tham số (không nối chuỗi SQL) trước khi đọc D3.']),
-    dict(file='YC08_NhapXuatDuLieu', svg='YC08a_NhapUserStory', title='DFD YC8a – Nhập user story từ file',
-         process='Nhập user story từ file', user='PO/BA, Tester', inp='File CSV / JSON', bm='BM7', qd='QĐ1, QĐ8', d2_first=True,
-         d={'D1': 'Dự án nhận dữ liệu; lệnh chọn file.',
-            'D2': 'Các dòng user story trong file (BM7).',
-            'D3': 'Danh sách mã user story đã có; module của dự án; tham số MIN_AC_PER_STORY, PRIORITIES.',
-            'D4': 'Các user story hợp lệ.',
-            'D6': 'Thông báo số dòng nhập thành công và danh sách dòng lỗi kèm lý do.'},
-         check=['Kiểm tra số dòng trong D2 ≤ 200?',
-                'Với từng dòng: kiểm tra theo QĐ1 như YC1; dòng lỗi được ghi lại số dòng và lý do, không làm hỏng các dòng hợp lệ.']),
-    dict(file='YC08_NhapXuatDuLieu', svg='YC08b_XuatTestCase', title='DFD YC8b – Xuất test case ra Excel',
-         process='Xuất test case ra Excel', user='Người dùng', outp='File Excel (.xlsx)', bm='BM8', qd='',
-         d={'D1': 'Điều kiện lọc như YC7.',
-            'D3': 'Các test case thỏa điều kiện kèm kết quả chạy gần nhất.',
-            'D5': 'File Excel: mỗi test case một dòng theo các cột của BM2 và kết quả gần nhất (BM8).',
-            'D6': 'Thông báo xuất file thành công (trình duyệt tải file về).'},
-         check=['Ghi từng test case thành một dòng Excel; các bước, acceptance criteria xuống dòng trong ô.']),
-    dict(file='YC09_SinhVaChayScript', title='DFD YC9 – Sinh và chạy script kiểm thử tự động', process='Sinh và chạy script',
-         user='Tester', inp='Dịch vụ LLM, Playwright Worker', outp='Dịch vụ LLM, Playwright Worker',
-         bm='BM9', qd='QĐ9', d5_inline=True,
-         d={'D1': 'Mã test case; yêu cầu sinh script hoặc chạy script; mã script đã sửa (nếu Tester sửa tay).',
-            'D2': 'Từ LLM: mã script Playwright. Từ Playwright Worker: báo cáo chạy (JSON), log, ảnh chụp lỗi.',
-            'D3': 'Test case Đã duyệt, URL ứng dụng của dự án, script đang lưu; tham số RUN_TIMEOUT_SEC, AI_MAX_RETRY.',
-            'D4': 'Script (mã nguồn, người tạo, ngày); kết quả chạy hình thức Tự động (kết quả, thời gian, log, ảnh lỗi); nhật ký AI.',
-            'D5': 'Đến LLM: prompt đã che PII. Đến Playwright Worker: script đã qua kiểm tra tĩnh.',
-            'D6': 'Thông báo thành công kèm mã script, kết quả Pass / Fail, log, ảnh chụp lỗi; hoặc thông báo lỗi vi phạm QĐ9.'},
-         check=['Kiểm tra test case ở trạng thái Đã duyệt?',
-                'Sinh script: xuất D5 (prompt) đến Dịch vụ LLM, nhận D2 (mã script).',
-                'Kiểm tra tĩnh script: không dùng module nguy hiểm, không truy cập process.env, không eval / new Function?',
-                'Chạy script: xuất D5 (script) đến Playwright Worker, chờ tối đa RUN_TIMEOUT_SEC giây, nhận D2 (báo cáo, ảnh lỗi).',
-                'Xác định kết quả Pass / Fail từ báo cáo.']),
-    dict(file='YC10_ThayDoiQuyDinh', title='DFD YC10 – Thay đổi quy định', process='Thay đổi quy định',
-         user='Admin / QA Lead', bm='', qd='QĐ10',
+         user='Mọi vai trò', bm='BM6', qd='QĐ7',
+         d={'D1': 'Điều kiện tra cứu: từ khóa (mã / tiêu đề), dự án, module, trạng thái, độ ưu tiên, loại, nguồn, requirement, Test Suite, '
+                  'Test Run, cần xem lại, cần kiểm thử lại.',
+            'D3': 'Các test thỏa điều kiện kèm requirement, phiên bản, cờ, suite và lần chạy của phiên bản hiện tại.',
+            'D6': 'Danh sách test (BM6) sắp theo requirement mới nhất rồi theo mã test; "Kết quả gần nhất" là Chưa chạy nếu test vừa sửa.'},
+         check=['Ghép các điều kiện D1 theo AND thành câu truy vấn có tham số (không nối chuỗi SQL) trước khi đọc D3.',
+                'Kết quả gần nhất chỉ lấy lần chạy của phiên bản hiện tại của test (QĐ6, QĐ7).']),
+    dict(file='YC08_NhanThayDoiRequirement', title='DFD YC8 – Nhận thay đổi requirement từ Jira', process='Nhận thay đổi requirement',
+         user='Admin, QA Lead', inp='Jira (webhook, REST API)', outp='Jira (REST API)', bm='BM7', qd='QĐ8', d2_first=True, d5_inline=True,
+         d={'D1': 'Thao tác Đồng bộ ngay; hoặc quyết định Lưu trữ / Giữ lại cho requirement Cần kiểm tra.',
+            'D2': 'Từ Jira: sự kiện webhook kèm mã bí mật, hoặc lượt đồng bộ định kỳ; nội dung issue lấy lại qua REST API; kết quả hỏi lại từng issue ID.',
+            'D3': 'JIRA_WEBHOOK_SECRET, JIRA_SYNC_MINUTES, JIRA_ISSUE_TYPES; requirement đã lưu (issue ID, thời điểm cập nhật Jira, nội dung, phiên bản); '
+                  'test và AC liên kết của requirement.',
+            'D4': 'Phiên bản requirement mới; cờ Cần xem lại của test (lý do AC đổi / AC bị bỏ / tiêu đề, mô tả đổi); cờ Cần kiểm tra kèm lý do; '
+                  'quyết định Lưu trữ / Giữ lại; nhật ký đồng bộ (nguồn, thời điểm, kết quả, lỗi); nhật ký hoạt động.',
+            'D5': 'Yêu cầu đọc issue qua Jira REST API (không dùng dữ liệu trong webhook); hỏi lại theo issue ID với requirement biến mất.',
+            'D6': 'Kết quả đồng bộ (BM7): số requirement cập nhật, phiên bản mới, test bị gắn cờ, Cần kiểm tra; trạng thái và lỗi lần đồng bộ gần nhất; '
+                  'hoặc thông báo lỗi.'},
+         check=['Webhook: kiểm tra đúng mã bí mật JIRA_WEBHOOK_SECRET và dự án đã được thêm vào hệ thống?',
+                'Xuất D5, nhận D2 qua Jira API; lỗi thì thử lại tối đa 2 lần, vẫn lỗi thì ghi nhật ký đồng bộ thất bại và không thay đổi dữ liệu.',
+                'Với từng issue: chỉ ghi khi bản Jira mới hơn; nội dung đổi thì tạo phiên bản mới (như YC1).',
+                'AC đổi hoặc bị bỏ: gắn cờ Cần xem lại cho test liên kết với AC đó. Tiêu đề hoặc mô tả đổi: gắn cờ mọi test của requirement.',
+                'Requirement không còn trong kết quả (danh sách khác rỗng): hỏi Jira theo issue ID; 404 → "Jira báo không tìm thấy", '
+                'khác loại → "Không còn thuộc loại được đồng bộ"; gắn cờ Cần kiểm tra, không tự lưu trữ.',
+                'Requirement Cần kiểm tra hoặc đã lưu trữ xuất hiện lại trên Jira thì tự gỡ cờ, tự hiện lại.',
+                'Quyết định: kiểm tra người dùng là Admin hoặc QA Lead và requirement đang Cần kiểm tra? Lưu trữ → ẩn requirement, giữ test; '
+                'Giữ lại → chỉ ghi nhận, cờ vẫn giữ.']),
+    dict(file='YC09_XuatTestCase', title='DFD YC9 – Xuất dữ liệu test case', process='Xuất test case ra Excel',
+         user='Mọi vai trò', outp='File Excel (.xlsx)', bm='BM8', qd='QĐ9',
+         d={'D1': 'Điều kiện lọc đang chọn ở màn hình tra cứu (như YC7).',
+            'D3': 'Các test thỏa điều kiện kèm AC liên kết, suite, Test Run, phiên bản, cờ, kết quả gần nhất.',
+            'D4': 'Nhật ký hoạt động (lần xuất).',
+            'D5': 'File testcases.xlsx: mỗi test một dòng theo các cột của BM2 cùng kết quả gần nhất, requirement Jira, Test Suite, Test Run, phiên bản, '
+                  'cờ cần xem lại (BM8); dòng tiêu đề tô màu.',
+            'D6': 'Trình duyệt tải file về, hoặc thông báo lỗi.'},
+         check=['Ghi từng test thành một dòng Excel; các bước và AC xuống dòng trong ô.']),
+    dict(file='YC10_ThayDoiQuyDinh', title='DFD YC10 – Thay đổi quy định hệ thống', process='Thay đổi quy định',
+         user='Admin, QA Lead', bm='BM9', qd='QĐ10',
          d={'D1': 'Tham số cần thay đổi, giá trị mới.',
-            'D3': 'Giá trị hiện tại, kiểu dữ liệu, miền giá trị cho phép của tham số; vai trò người sửa.',
+            'D3': 'Giá trị hiện tại và miền giá trị cho phép của tham số; vai trò người sửa.',
             'D4': 'Giá trị mới, người sửa, thời điểm sửa; nhật ký hoạt động.',
             'D6': 'Thông báo thay đổi thành công (giá trị cũ → mới), hoặc thông báo giá trị ngoài miền cho phép.'},
          check=['Kiểm tra người sửa có vai trò Admin hoặc QA Lead?',
-                'Kiểm tra giá trị mới đúng kiểu và thuộc miền giá trị cho phép (QĐ10)?']),
-    dict(file='YC11_QuanLyNguoiDungDuAn', title='DFD YC11 – Quản lý người dùng, dự án', process='Quản lý người dùng, dự án',
-         user='Admin', bm='', qd='QĐ11',
-         d={'D1': 'Thông tin tài khoản (tên đăng nhập, họ tên, vai trò, mật khẩu, khóa/mở); hoặc thông tin dự án, module.',
-            'D3': 'Danh sách tài khoản, dự án, module hiện có.',
-            'D4': 'Tài khoản (mật khẩu ĐÃ BĂM bcrypt), dự án, module; nhật ký hoạt động.',
-            'D6': 'Thông báo lưu thành công (không bao giờ chứa mật khẩu băm), hoặc thông báo lỗi vi phạm QĐ11.'},
+                'Kiểm tra tham số thuộc BM9 (độ ưu tiên, nhãn "Acceptance criteria" và cấu hình Jira không sửa được trên giao diện)?',
+                'Kiểm tra giá trị mới là số nguyên thuộc miền giá trị cho phép (QĐ10)?']),
+    dict(file='YC11_QuanLyNguoiDung', title='DFD YC11 – Quản lý người dùng', process='Quản lý người dùng',
+         user='Admin', bm='BM10', qd='QĐ11',
+         d={'D1': 'Thông tin tài khoản (BM10): tên đăng nhập, họ tên, email, vai trò, mật khẩu; thao tác thêm, cập nhật, đổi vai trò, khóa / mở khóa.',
+            'D3': 'Danh sách tên đăng nhập đã có; tài khoản đang đăng nhập.',
+            'D4': 'Tài khoản (mật khẩu ĐÃ BĂM bcrypt); nhật ký hoạt động.',
+            'D6': 'Thông báo lưu thành công (không chứa mật khẩu băm), hoặc thông báo lỗi vi phạm QĐ11.'},
          check=['Kiểm tra người thực hiện có vai trò Admin?',
                 'Kiểm tra tên đăng nhập 3–30 ký tự a-z 0-9 _ . và không trùng; mật khẩu ≥ 8 ký tự?',
                 'Kiểm tra Admin không tự khóa hoặc tự hạ quyền chính mình?',
                 'Băm mật khẩu bằng bcrypt.']),
-    dict(file='YC12_QuanLySprint', title='DFD YC12 – Quản lý sprint (Agile/Scrum)', process='Quản lý sprint',
-         user='PO/BA, QA Lead', bm='BM10', qd='QĐ12',
-         d={'D1': 'Tên, mục tiêu, ngày bắt đầu, ngày kết thúc sprint (BM10); user story đưa vào sprint và story point.',
-            'D3': 'Các sprint hiện có của dự án; tham số SPRINT_MAX_DAYS; user story, test case Đã duyệt và kết quả chạy gần nhất.',
-            'D4': 'Sprint mới / đã sửa; sprint_id, story_points của user story.',
-            'D6': 'Thông báo lưu thành công kèm bảng sprint, burndown, velocity; hoặc thông báo lỗi vi phạm QĐ12.'},
-         check=['Kiểm tra số ngày của sprint ≤ SPRINT_MAX_DAYS và ngày kết thúc không trước ngày bắt đầu?',
-                'Kiểm tra sprint không trùng thời gian với sprint khác của dự án?',
-                'Kiểm tra user story cùng dự án và story point thuộc dãy 1, 2, 3, 5, 8, 13?',
-                'Xác định story đạt DoD: có ≥ 1 test case Đã duyệt và mọi test case Đã duyệt có lần chạy gần nhất là Pass.',
-                'Tính velocity = tổng story point của story đạt DoD; burndown: còn lại(ngày) = tổng story point − story point đã đạt DoD đến ngày đó.']),
-    dict(file='YC13_BaoDaSuaLoi', title='DFD YC13 – Báo đã sửa lỗi và kiểm thử lại', process='Báo đã sửa lỗi',
-         user='Developer', bm='BM11', qd='QĐ13',
-         d={'D1': 'Lần chạy Fail được chọn, bản build đã sửa, ghi chú cho Tester (BM11).',
-            'D3': 'Kết quả của lần chạy; lần chạy gần nhất của test case; thông tin đã báo sửa trước đó.',
-            'D4': 'Bản build, ghi chú, người báo, thời điểm báo sửa của lần chạy; nhật ký hoạt động.',
-            'D6': 'Thông báo đã báo sửa, test case chuyển sang Cần kiểm thử lại; hoặc thông báo lỗi vi phạm QĐ13.'},
-         check=['Kiểm tra người báo có vai trò Developer?',
-                'Kiểm tra bản build được nhập (1–50 ký tự)?',
-                'Kiểm tra lần chạy có kết quả Fail?',
-                'Kiểm tra đây là lần chạy gần nhất của test case?',
-                'Kiểm tra lần chạy chưa được báo sửa?']),
+    dict(file='YC12_DongBoDuAnJira', title='DFD YC12 – Đồng bộ dự án từ Jira', process='Đồng bộ dự án từ Jira',
+         user='Admin, QA Lead', inp='Jira (REST API)', outp='Jira (REST API)', bm='BM11', qd='QĐ12', d5_inline=True,
+         d={'D1': 'Thao tác Kiểm tra kết nối, hoặc mã dự án trên Jira cần thêm, hoặc thao tác Đồng bộ lại (BM11).',
+            'D2': 'Từ Jira: kết quả xác thực; tên, mô tả dự án; component (module); thành viên (tên, email).',
+            'D3': 'Mã dự án đã có; tài khoản đang hoạt động (email, họ tên) để gán thành viên.',
+            'D4': 'Dự án (mã, tên, mô tả, mã Jira, thời điểm đồng bộ), module, thành viên dự án; requirement của dự án (như YC1); nhật ký hoạt động.',
+            'D5': 'Yêu cầu gửi Jira REST API kèm thông tin xác thực đọc từ .env.',
+            'D6': 'Kết quả kiểm tra kết nối; hoặc dự án vừa thêm kèm số module, số thành viên, thành viên chưa có tài khoản; hoặc thông báo lỗi.'},
+         check=['Kiểm tra quyền: kiểm tra kết nối chỉ Admin; thêm dự án, đồng bộ lại: Admin hoặc QA Lead?',
+                'Kiểm tra kết nối: xuất D5, nhận D2; nếu chỉ kiểm tra kết nối thì chuyển tới bước Xuất D6.',
+                'Kiểm tra mã dự án 2–10 ký tự in hoa hoặc số, bắt đầu bằng chữ cái và chưa có trong hệ thống?',
+                'Xuất D5 (lấy dự án, component, thành viên) đến Jira, nhận D2. Kiểm tra dự án có trên Jira?',
+                'Gán thành viên theo email trùng; Jira ẩn email thì so họ tên, nhiều tài khoản trùng họ tên thì không gán. '
+                'Thành viên chỉ để hiển thị và phân công, không cấp quyền.',
+                'Đồng bộ requirement của dự án vừa thêm (YC1).']),
+    dict(file='YC13_QuanLyTestSuite', title='DFD YC13 – Quản lý Test Suite', process='Quản lý Test Suite',
+         user='QA Lead, Tester', bm='BM12', qd='QĐ13',
+         d={'D1': 'Thông tin suite (dự án, tên, mô tả); thao tác tạo, sửa, xóa; test cần thêm hoặc bớt.',
+            'D3': 'Tên các suite của dự án; dự án của các test cần thêm.',
+            'D4': 'Suite (tên, mô tả, người tạo, ngày tạo); danh sách test của suite; nhật ký hoạt động.',
+            'D6': 'Suite sau khi lưu kèm danh sách test; hoặc thông báo lỗi vi phạm QĐ13.'},
+         check=['Kiểm tra người dùng có vai trò QA Lead hoặc Tester?',
+                'Kiểm tra tên suite 3–100 ký tự và không trùng tên suite khác trong dự án?',
+                'Thêm test: kiểm tra test cùng dự án với suite? (một test thuộc được nhiều suite)',
+                'Xóa suite: chỉ xóa suite và danh sách thuộc suite, không xóa test.']),
+    dict(file='YC14_LapTestRun', title='DFD YC14 – Lập Test Run và phân công', process='Lập Test Run, phân công',
+         user='QA Lead', bm='BM13', qd='QĐ14',
+         d={'D1': 'Thông tin đợt (BM13): dự án, tên, loại, build, môi trường, hạn; suite hoặc test được chọn; người được giao; '
+                  'hoặc thao tác sửa đợt, thêm/bỏ test, phân công lại, đóng đợt (kèm xác nhận).',
+            'D3': 'Trạng thái, phiên bản, cờ của test; trạng thái lưu trữ, Cần kiểm tra của requirement; vai trò người được giao; '
+                  'các lần chạy đã có trong đợt.',
+            'D4': 'Test Run; các test trong đợt với phiên bản cố định và người được giao; build, môi trường mới; trạng thái Đã đóng; nhật ký hoạt động.',
+            'D6': 'Đợt vừa lập kèm danh sách test bị bỏ qua và lý do; tiến độ, cảnh báo (test có phiên bản mới, requirement đổi); '
+                  'hoặc thông báo lỗi vi phạm QĐ14.'},
+         check=['Kiểm tra người dùng có vai trò QA Lead và đã nhập build, môi trường?',
+                'Kiểm tra người được giao là QA Lead hoặc Tester?',
+                'Với từng test: kiểm tra điều kiện chạy – Đã duyệt, không có cờ Cần xem lại, requirement không lưu trữ hoặc Cần kiểm tra. '
+                'Test không đủ điều kiện bị bỏ qua kèm lý do. Kiểm tra còn ít nhất 1 test đủ điều kiện?',
+                'Cố định phiên bản hiện tại của từng test khi đưa vào đợt.',
+                'Sửa build hoặc môi trường: kiểm tra đợt chưa có kết quả nào?',
+                'Bỏ test khỏi đợt: kiểm tra test chưa có kết quả trong đợt?',
+                'Đóng đợt: còn test chưa chạy thì kiểm tra người dùng đã xác nhận?']),
+    dict(file='YC15_PhanTichAnhHuong', title='DFD YC15 – AI phân tích ảnh hưởng', process='AI phân tích ảnh hưởng',
+         user='QA Lead, Tester', inp='Dịch vụ LLM', outp='Dịch vụ LLM', bm='BM14', qd='QĐ15', d5_inline=True,
+         d={'D1': 'Requirement đã đổi cần phân tích.',
+            'D2': 'Chuỗi JSON danh sách đề xuất: loại, test liên quan, phần thay đổi nguồn (AC / tiêu đề / mô tả), lý do, nội dung test đề xuất.',
+            'D3': 'Các phiên bản requirement; test của requirement kèm AC liên kết và phiên bản requirement đã liên kết; tham số AI; '
+                  'số lần gọi AI của người dùng trong 1 giờ.',
+            'D4': 'Lần phân tích (mốc so, phiên bản hiện tại); các đề xuất (trạng thái Chờ xử lý, phiên bản requirement và test lúc phân tích); nhật ký AI.',
+            'D5': 'Prompt gửi LLM: hai phiên bản requirement và các test, ĐÃ CHE dữ liệu nhạy cảm; quy tắc chỉ xét thay đổi sau phiên bản test đã liên kết.',
+            'D6': 'Danh sách đề xuất (BM14); hoặc thông báo lỗi (requirement chỉ có 1 phiên bản, mọi test đã được xem lại, hết hạn mức AI, AI lỗi).'},
+         check=['Kiểm tra số lần gọi AI trong 1 giờ < AI_CALLS_PER_HOUR?',
+                'Kiểm tra requirement chưa lưu trữ và có ít nhất 2 phiên bản?',
+                'Xác định mốc so = phiên bản cũ nhất mà các test đã liên kết (chưa có test thì phiên bản liền trước). '
+                'Kiểm tra mốc so cũ hơn phiên bản hiện tại?',
+                'Với từng test, tính các thay đổi xảy ra sau phiên bản mà test đó đã liên kết.',
+                'Che dữ liệu, xuất D5 đến LLM, nhận D2; sai schema thì gọi lại tối đa AI_MAX_RETRY lần; quá số lần vẫn sai?',
+                'Bỏ đề xuất trỏ tới test không thuộc requirement; mỗi đề xuất phải có loại, lý do và phần thay đổi nguồn. Phân tích không tự đổi test.']),
+    dict(file='YC16_RaSoatDeXuat', title='DFD YC16 – Rà soát và áp dụng đề xuất AI', process='Rà soát đề xuất AI',
+         user='QA Lead (Tester xem)', bm='BM15', qd='QĐ16',
+         d={'D1': 'Đề xuất được chọn, quyết định Chấp nhận / Từ chối, ghi chú (BM15).',
+            'D3': 'Đề xuất (loại, test liên quan, nội dung đề xuất, phiên bản requirement và test lúc phân tích); phiên bản hiện tại của requirement và test; '
+                  'số test của requirement; bộ regression đang lập của cùng thay đổi.',
+            'D4': 'Trạng thái đề xuất (Đã chấp nhận / Đã từ chối / Lỗi thời), người quyết định, ngày, ghi chú; bản nháp test mới hoặc phiên bản Nháp mới '
+                  'ghi mã đề xuất; test thêm vào bộ regression; nhật ký hoạt động.',
+            'D6': 'Đề xuất sau khi quyết định kèm test nháp vừa tạo (phải qua duyệt YC4); hoặc thông báo lỗi (Lỗi thời, thiếu ghi chú, vượt giới hạn test).'},
+         check=['Kiểm tra người quyết định có vai trò QA Lead và đề xuất đang Chờ xử lý?',
+                'Từ chối: kiểm tra có ghi chú?',
+                'Chấp nhận: kiểm tra phiên bản requirement và test chưa đổi so với lúc phân tích? Đã đổi thì chuyển đề xuất sang Lỗi thời.',
+                'Cần sửa: sửa test theo đề xuất, test về Nháp như khi sửa thủ công. Còn thiếu: kiểm tra số test < MAX_TC_PER_STORY? Tạo test nháp nguồn AI.',
+                'Nên chạy lại: thêm test vào bộ regression của cùng thay đổi (chưa có bộ thì tạo bộ). Cần làm rõ: chỉ ghi nhận để trao đổi với PO/BA.']),
+    dict(file='YC17_DeXuatRegression', title='DFD YC17 – AI đề xuất bộ regression', process='AI đề xuất regression',
+         user='QA Lead (Tester xem)', inp='Dịch vụ LLM', outp='Dịch vụ LLM', bm='BM16', qd='QĐ17', d5_inline=True,
+         d={'D1': 'Requirement đã đổi; test cần thêm, bỏ (kèm lý do); thao tác xác nhận kèm tên đợt, build, môi trường, người được giao.',
+            'D2': 'Chuỗi JSON: mức ưu tiên và lý do cho từng test, các test gợi ý thêm.',
+            'D3': 'Hai phiên bản requirement của thay đổi; test liên kết với AC đã đổi (hoặc mọi test nếu tiêu đề, mô tả đổi); '
+                  'test đã duyệt khác của dự án; điều kiện chạy của từng test.',
+            'D4': 'Bộ regression (Nháp / Đã xác nhận) và từng test: ưu tiên, lý do, nguồn, bắt buộc, đã bỏ, lý do bỏ; Test Run loại Regression khi xác nhận; '
+                  'nhật ký AI.',
+            'D5': 'Prompt gửi LLM: requirement hiện tại, các test bắt buộc và test ứng viên, ĐÃ CHE dữ liệu nhạy cảm.',
+            'D6': 'Bộ regression (BM16) kèm danh sách test chưa đủ điều kiện chạy; Test Run vừa tạo; hoặc thông báo lỗi vi phạm QĐ17.'},
+         check=['Lập bộ: kiểm tra số lần gọi AI trong 1 giờ < AI_CALLS_PER_HOUR và requirement có thay đổi chưa có bộ regression được xác nhận?',
+                'Lấy phần bắt buộc: test liên kết với AC đã đổi; tiêu đề hoặc mô tả đổi thì mọi test của requirement.',
+                'Xuất D5 đến LLM, nhận D2 (xếp ưu tiên, gợi ý thêm). Không gọi được AI thì vẫn đưa ra danh sách test liên kết.',
+                'Bỏ test thuộc phần bắt buộc: kiểm tra có lý do?',
+                'Xác nhận: kiểm tra người dùng là QA Lead và không còn test chưa đủ điều kiện chạy trong bộ (QĐ14)?',
+                'Tạo Test Run loại Regression theo YC14 với các test còn trong bộ.']),
+    dict(file='YC18_BaoSuaLoiKiemThuLai', title='DFD YC18 – Báo đã sửa lỗi và kiểm thử lại', process='Báo đã sửa lỗi',
+         user='Developer (QA Lead lập đợt kiểm thử lại)', bm='BM17', qd='QĐ18',
+         d={'D1': 'Lần chạy Fail được chọn, bản build đã sửa, ghi chú cho Tester (BM17); hoặc các phiếu chờ kiểm thử lại cần lập đợt, môi trường.',
+            'D3': 'Kết quả của lần chạy; lần chạy gần nhất của test trong cùng Test Run; phiếu báo sửa đã có; Test Run chứa lần Fail (trạng thái, build).',
+            'D4': 'Phiếu báo sửa (build, ghi chú, người báo, thời điểm, trạng thái Chờ kiểm thử lại); đợt Kiểm thử lại (theo YC14); nhật ký hoạt động.',
+            'D6': 'Thông báo đã báo sửa và cách kiểm thử lại (chạy ngay trong đợt cũ nếu đợt còn mở và trùng build, ngược lại lập đợt Kiểm thử lại); '
+                  'hoặc thông báo lỗi vi phạm QĐ18.'},
+         check=['Kiểm tra người báo có vai trò Developer và đã nhập build (1–50 ký tự)?',
+                'Kiểm tra lần chạy có kết quả Fail và là lần chạy gần nhất của test trong cùng Test Run?',
+                'Kiểm tra lần chạy chưa được báo sửa?',
+                'Lập đợt Kiểm thử lại: kiểm tra người dùng là QA Lead; build của đợt là build đã sửa. Kết quả chạy lại cập nhật phiếu ở YC5.']),
+]
+
+# Phần mở rộng ngoài MVP (phụ lục đặc tả): giữ DFD để tham khảo
+DFDS_EXT = [
+    dict(file='YC19_SinhVaChayScript', title='DFD YC19 – Sinh và chạy script kiểm thử tự động (mở rộng)', process='Sinh và chạy script',
+         user='QA Lead, Tester', inp='Dịch vụ LLM, Playwright Worker', outp='Dịch vụ LLM, Playwright Worker',
+         bm='BM18', qd='QĐ19', d5_inline=True,
+         d={'D1': 'Test case; yêu cầu sinh script hoặc chạy script; test trong Test Run để ghi kết quả; mã script đã sửa.',
+            'D2': 'Từ LLM: mã script Playwright. Từ Playwright Worker: báo cáo chạy (JSON), log, ảnh chụp lỗi.',
+            'D3': 'Test Đã duyệt, URL ứng dụng của dự án, script đang lưu; tham số RUN_TIMEOUT_SEC, AI_MAX_RETRY.',
+            'D4': 'Script; lần chạy hình thức Tự động trong Test Run (kết quả, thời gian, log, ảnh lỗi); nhật ký AI.',
+            'D5': 'Đến LLM: prompt đã che dữ liệu. Đến Playwright Worker: script đã qua kiểm tra tĩnh.',
+            'D6': 'Mã script, kết quả Pass / Fail, log, ảnh chụp lỗi; hoặc thông báo lỗi vi phạm QĐ19.'},
+         check=['Kiểm tra bật cờ SCRIPT_ENABLED và test ở trạng thái Đã duyệt?',
+                'Sinh script: xuất D5 (prompt) đến Dịch vụ LLM, nhận D2 (mã script).',
+                'Kiểm tra tĩnh script: không dùng module nguy hiểm, không truy cập process.env, không eval?',
+                'Chạy script: kiểm tra đã chọn test trong một Test Run đang mở? Xuất D5 đến Playwright Worker, chờ tối đa RUN_TIMEOUT_SEC giây.',
+                'Xác định kết quả Pass / Fail và ghi như YC5.']),
+    dict(file='YC20_TheoDoiSprint', title='DFD YC20 – Theo dõi sprint (mở rộng)', process='Theo dõi sprint',
+         user='Mọi vai trò', inp='Jira (Agile API)', bm='BM19', qd='QĐ20',
+         d={'D1': 'Dự án và sprint cần xem.',
+            'D2': 'Từ Jira (khi đồng bộ): các sprint của board dự án – tên, mục tiêu, ngày bắt đầu, ngày kết thúc, trạng thái.',
+            'D3': 'Sprint đã đồng bộ; tham số SPRINT_MAX_DAYS; requirement của sprint, test Đã duyệt và kết quả chạy gần nhất.',
+            'D4': 'Sprint mới hoặc cập nhật (BM19).',
+            'D6': 'Bảng sprint theo trạng thái DoD, story point cam kết / hoàn thành (velocity), burndown; cảnh báo sprint chưa có ngày hoặc quá dài.'},
+         check=['Kiểm tra bật cờ SPRINT_ENABLED?',
+                'Khi đồng bộ: bỏ qua sprint chưa có ngày (ghi cảnh báo); sprint dài hơn SPRINT_MAX_DAYS thì ghi cảnh báo.',
+                'Requirement đạt DoD: có ≥ 1 test Đã duyệt và mọi test Đã duyệt có lần chạy gần nhất là Pass; velocity = tổng story point đạt DoD.']),
 ]
 
 
@@ -290,7 +406,7 @@ class Canvas:
         self.svg.append(f'<polygon points="{" ".join(f"{a:.1f},{b:.1f}" for a, b in pts)}" fill="{fill}" stroke="{stroke}" stroke-width="2"/>')
         self.svg.append(f'<text x="{lx + 30}" y="{ly + 20}" font-size="26" font-weight="bold" text-anchor="middle" dominant-baseline="middle">{label}</text>')
 
-    def edge(self, src, dst, label, p1, p2, s1, s2, dashed=False, label_shift=0):
+    def edge(self, src, dst, label, p1, p2, s1, s2, dashed=False, label_shift=0, label_t=0.5):
         # Mũi tên nối hai công việc (sơ đồ phối hợp). p1, p2: điểm đầu/cuối; s1, s2: (x, y, w, h) của hình nguồn/đích
         self.n += 1
         ex, ey = (p1[0] - s1[0]) / s1[2], (p1[1] - s1[1]) / s1[3]
@@ -307,7 +423,7 @@ class Canvas:
         da = ' stroke-dasharray="8 6"' if dashed else ''
         self.svg.append(f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{hx:.1f}" y2="{hy:.1f}" stroke="#000" stroke-width="2"{da}/>'
                         f'<polygon points="{" ".join(f"{a:.1f},{b:.1f}" for a, b in head)}" fill="#000"/>')
-        mx, my = (x1 + x2) / 2 - label_shift * math.sin(ang), (y1 + y2) / 2 + label_shift * math.cos(ang)
+        mx, my = x1 + (x2 - x1) * label_t - label_shift * math.sin(ang), y1 + (y2 - y1) * label_t + label_shift * math.cos(ang)
         lines = wrap(label, 18)
         bw, bh = max(len(s) for s in lines) * 8 + 10, len(lines) * 19 + 4
         self.svg.append(f'<rect x="{mx - bw / 2:.1f}" y="{my - bh / 2:.1f}" width="{bw}" height="{bh}" fill="#fff"/>')
@@ -366,38 +482,45 @@ def build_dfd(spec):
 # Công việc trước tạo ra thông tin (lưu ở bộ nhớ phụ) để công việc sau sử dụng.
 # ---------------------------------------------------------------------------
 EW, EH = 250, 100
-PHOI_HOP_NODES = {  # khóa: (tâm x, tâm y, tên)
-    'YC1': (175, 300, 'YC1 – Lập user story'),
-    'YC8a': (175, 600, 'YC8a – Nhập user story từ file'),
-    'YC12': (520, 150, 'YC12 – Quản lý sprint'),
-    'YC2': (520, 450, 'YC2 – Sinh test case bằng AI'),
-    'YC3': (900, 450, 'YC3 – Soạn thảo, gửi duyệt'),
-    'YC4': (1280, 450, 'YC4 – Duyệt test case'),
-    'YC5': (1660, 270, 'YC5 – Ghi nhận kết quả'),
-    'YC13': (1280, 150, 'YC13 – Báo đã sửa lỗi'),
-    'YC9': (1660, 630, 'YC9 – Sinh và chạy script'),
-    'YC7': (2070, 150, 'YC7 – Tra cứu test case'),
-    'YC6': (2070, 450, 'YC6 – Lập báo cáo'),
-    'YC8b': (2070, 680, 'YC8b – Xuất test case ra Excel'),
-    'YC11': (760, 860, 'YC11 – Quản lý người dùng, dự án'),
-    'YC10': (1480, 860, 'YC10 – Thay đổi quy định'),
+PHOI_HOP_NODES = {  # khóa: (tâm x, tâm y, tên) – lưới 3 cột x = 175 / 575 / 975, luồng đi từ trên xuống
+    'YC1': (175, 170, 'YC1 – Đồng bộ requirement'),
+    'YC8': (575, 170, 'YC8 – Nhận thay đổi requirement'),
+    'YC15': (975, 170, 'YC15 – Phân tích ảnh hưởng'),
+    'YC2': (175, 350, 'YC2 – Sinh test case bằng AI'),
+    'YC3': (575, 350, 'YC3 – Soạn thảo, xem lại test'),
+    'YC16': (975, 350, 'YC16 – Rà soát đề xuất AI'),
+    'YC13': (175, 530, 'YC13 – Quản lý Test Suite'),
+    'YC4': (575, 530, 'YC4 – Duyệt test case'),
+    'YC17': (975, 530, 'YC17 – Bộ regression'),
+    'YC14': (175, 710, 'YC14 – Lập Test Run'),
+    'YC5': (575, 710, 'YC5 – Ghi nhận kết quả'),
+    'YC18': (975, 710, 'YC18 – Báo sửa lỗi'),
+    'YC6': (175, 890, 'YC6 – Lập báo cáo'),
+    'YC7': (575, 890, 'YC7 – Tra cứu test case'),
+    'YC9': (975, 890, 'YC9 – Xuất test case'),
+    'YC12': (175, 1110, 'YC12 – Đồng bộ dự án từ Jira'),
+    'YC11': (575, 1110, 'YC11 – Quản lý người dùng'),
+    'YC10': (975, 1110, 'YC10 – Thay đổi quy định'),
 }
 PHOI_HOP_EDGES = [  # (nguồn, đích, thông tin chuyển giao, dịch song song để hai chiều không chồng nhau)
-    ('YC1', 'YC2', 'user story', 0),
-    ('YC8a', 'YC2', 'user story', 0),
-    ('YC1', 'YC12', 'user story, story point', 0),
+    ('YC1', 'YC2', 'requirement, AC', 0),
+    ('YC8', 'YC3', 'test bị gắn cờ Cần xem lại', 0),
+    ('YC8', 'YC15', 'phiên bản requirement mới', 0),
+    ('YC15', 'YC16', 'đề xuất AI', 0),
+    ('YC16', 'YC3', 'test nháp từ đề xuất', 0),
+    ('YC16', 'YC17', 'test Nên chạy lại', 0),
     ('YC2', 'YC3', 'test case Nháp', 0),
-    ('YC3', 'YC4', 'test case Chờ duyệt', -20),
-    ('YC4', 'YC3', 'test case Bị trả lại + ghi chú', -20),
-    ('YC4', 'YC5', 'test case Đã duyệt', 0),
-    ('YC4', 'YC9', 'test case Đã duyệt', 0),
-    ('YC5', 'YC13', 'lần chạy Fail', -20),
-    ('YC13', 'YC5', 'bản build đã sửa (cần kiểm thử lại)', -20),
-    ('YC5', 'YC12', 'kết quả chạy gần nhất (xét DoD)', 0),
+    ('YC3', 'YC4', 'test Chờ duyệt', -45),
+    ('YC4', 'YC3', 'test Bị trả lại + ghi chú', -45),
+    ('YC4', 'YC14', 'test Đã duyệt', 0),
+    ('YC13', 'YC14', 'Test Suite', 0),
+    ('YC17', 'YC14', 'bộ regression đã xác nhận', 0),
+    ('YC14', 'YC5', 'test trong đợt, người được giao', 0),
+    ('YC5', 'YC18', 'lần chạy Fail', -45),
+    ('YC18', 'YC5', 'phiếu chờ kiểm thử lại', -45),
+    ('YC5', 'YC6', 'kết quả chạy', 0),
     ('YC5', 'YC7', 'kết quả gần nhất', 0),
-    ('YC5', 'YC6', 'kết quả chạy thủ công', 0),
-    ('YC9', 'YC6', 'kết quả chạy tự động', 0),
-    ('YC9', 'YC8b', 'kết quả gần nhất', 0),
+    ('YC7', 'YC9', 'danh sách đang lọc', 0),
 ]
 
 
@@ -418,26 +541,27 @@ def ellipse_point(cx, cy, tx, ty, shift):
 
 
 def build_phoi_hop():
-    c = Canvas(2240, 960)
+    c = Canvas(1150, 1190)
     c.title('Sơ đồ phối hợp giữa các công việc')
-    c.frame('Mọi công việc đọc tài khoản, dự án (YC11) và tham số quy định (YC10) từ bộ nhớ phụ', 30, 70, 2180, 690)
+    c.frame('Mọi công việc đọc tài khoản (YC11), dự án, module (YC12), tham số quy định (YC10) từ bộ nhớ phụ', 30, 70, 1090, 935)
     ids, rect = {}, {}
     for k, (x, y, name) in PHOI_HOP_NODES.items():
         ids[k] = c.process(name, x - EW / 2, y - EH / 2, EW, EH, size=19)
         rect[k] = (x - EW / 2, y - EH / 2, EW, EH)
-    for s, t, label, shift in PHOI_HOP_EDGES:
+    for s, t, label, shift, *lt in PHOI_HOP_EDGES:
         (sx, sy, _), (tx, ty, _) = PHOI_HOP_NODES[s], PHOI_HOP_NODES[t]
         p1 = ellipse_point(sx, sy, tx, ty, shift)
         p2 = ellipse_point(tx, ty, sx, sy, -shift)
         # mũi tên nằm ngang, ngắn: đặt nhãn phía trên đường để không che đầu mũi tên
         flat = shift == 0 and abs(ty - sy) < 0.3 * abs(tx - sx)
-        c.edge(ids[s], ids[t], label, p1, p2, rect[s], rect[t], label_shift=-20 if flat else shift * 1.6)
-    # YC10, YC11 cung cấp dữ liệu nền cho mọi công việc (mũi tên nét đứt lên khung)
+        above = -(len(wrap(label, 18)) * 19 + 4) / 2 - 6
+        c.edge(ids[s], ids[t], label, p1, p2, rect[s], rect[t], label_shift=above if flat else shift, label_t=lt[0] if lt else 0.3 if shift else 0.5)
+    # YC10, YC11, YC12 cung cấp dữ liệu nền cho mọi công việc (mũi tên nét đứt lên khung)
     fid = f'c{3}'  # id của khung (được tạo ngay sau tiêu đề)
-    frame = (30, 70, 2180, 690)
-    for k, label in (('YC11', 'tài khoản, vai trò, dự án, module'), ('YC10', 'tham số quy định QĐ1–QĐ12')):
+    frame = (30, 70, 1090, 935)
+    for k, label in (('YC12', 'dự án, module, thành viên'), ('YC11', 'tài khoản, vai trò'), ('YC10', 'tham số quy định')):
         x, y, _ = PHOI_HOP_NODES[k]
-        c.edge(ids[k], fid, label, (x, y - EH / 2), (x, 760), rect[k], frame, dashed=True)
+        c.edge(ids[k], fid, label, (x, y - EH / 2), (x, 1005), rect[k], frame, dashed=True)
     return c
 
 
@@ -488,15 +612,25 @@ def markdown():
                      + ''.join(f'| {k} | {d.get(k, NONE)} |\n' for k in ('D1', 'D2', 'D3', 'D4', 'D5', 'D6'))
                      + '\n**Thuật toán:**\n\n' + ''.join(f'- {s}\n' for s in algorithm(spec)) + '\n')
     n = len(DFDS) + 2
+    parts.append(f'### 3.4.{n}. DFD phần mở rộng ngoài MVP\n\n'
+                 'YC19 (sinh và chạy script Playwright) và YC20 (theo dõi sprint) không thuộc 18 yêu cầu MVP. Code vẫn giữ, ẩn bằng cờ '
+                 '`SCRIPT_ENABLED`, `SPRINT_ENABLED` (mặc định tắt); DFD dưới đây để tham khảo khi bật lại (hướng phát triển).\n\n')
+    for spec in DFDS_EXT:
+        d = spec['d']
+        parts.append(f'#### {spec["title"]}\n\n![{spec["title"]}](dfd/{spec["file"]}.svg)\n\n'
+                     f'*Biểu mẫu:* {spec["bm"]} · *Quy định:* {spec["qd"]} · *File:* `docs/dfd/{spec["file"]}.drawio`\n\n'
+                     '| Luồng | Mô tả |\n|---|---|\n' + ''.join(f'| {k} | {d.get(k, NONE)} |\n' for k in ('D1', 'D2', 'D3', 'D4', 'D5', 'D6'))
+                     + '\n**Thuật toán:**\n\n' + ''.join(f'- {s}\n' for s in algorithm(spec)) + '\n')
+    n += 1
     parts.append(f'### 3.4.{n}. Sơ đồ phối hợp giữa các công việc\n\n'
                  '![Sơ đồ phối hợp giữa các công việc](dfd/PhoiHop_CacCongViec.svg)\n\n'
                  '*File:* `docs/dfd/PhoiHop_CacCongViec.drawio`. Mỗi mũi tên là **thông tin** do công việc trước tạo ra '
                  '(ghi xuống bộ nhớ phụ ở D4) và công việc sau sử dụng (đọc lên ở D3).\n\n'
                  '| Công việc trước | Thông tin chuyển giao | Công việc sau |\n|---|---|---|\n'
-                 + ''.join(f'| {PHOI_HOP_NODES[s][2]} | {lb} | {PHOI_HOP_NODES[t][2]} |\n' for s, t, lb, _ in PHOI_HOP_EDGES)
-                 + '| YC9 – Sinh và chạy script | kết quả chạy tự động gần nhất (xét DoD) | YC12 – Quản lý sprint |\n'
-                 '| YC11 – Quản lý người dùng, dự án | tài khoản, vai trò, dự án, module | Mọi công việc |\n'
-                 '| YC10 – Thay đổi quy định | tham số quy định QĐ1–QĐ12 | Mọi công việc |\n\n')
+                 + ''.join(f'| {PHOI_HOP_NODES[s][2]} | {lb} | {PHOI_HOP_NODES[t][2]} |\n' for s, t, lb, *_ in PHOI_HOP_EDGES)
+                 + '| YC12 – Đồng bộ dự án từ Jira | dự án, module, thành viên | Mọi công việc |\n'
+                 '| YC11 – Quản lý người dùng | tài khoản, vai trò | Mọi công việc |\n'
+                 '| YC10 – Thay đổi quy định | tham số quy định | Mọi công việc |\n\n')
     return ''.join(parts)
 
 
@@ -508,7 +642,10 @@ def mxfile(pages):
 
 def main():
     files = {}
-    for spec in DFDS:
+    for old in ('YC01_DongBoUserStory', 'YC08_NhanThayDoiUserStory', 'YC15_BaoDaSuaLoi'):  # tên file trước đặc tả chốt 16/11
+        for ext in ('.drawio', '.svg'):
+            (OUT / f'{old}{ext}').unlink(missing_ok=True)
+    for spec in DFDS + DFDS_EXT:
         c = build_dfd(spec)
         (OUT / f'{spec.get("svg", spec["file"])}.svg').write_text(c.svg_doc(), encoding='utf-8')
         files.setdefault(spec['file'], []).append((spec['title'], c.mxgraph(1500)))
@@ -516,7 +653,7 @@ def main():
         (OUT / f'{name}.drawio').write_text(mxfile(pages), encoding='utf-8')
     ph = build_phoi_hop()
     (OUT / 'PhoiHop_CacCongViec.svg').write_text(ph.svg_doc(), encoding='utf-8')
-    (OUT / 'PhoiHop_CacCongViec.drawio').write_text(mxfile([('Sơ đồ phối hợp', ph.mxgraph(960))]), encoding='utf-8')
+    (OUT / 'PhoiHop_CacCongViec.drawio').write_text(mxfile([('Sơ đồ phối hợp', ph.mxgraph(1190))]), encoding='utf-8')
 
     text = CHAPTER.read_text(encoding='utf-8')
     block = f'<!-- DFD:BEGIN (sinh tự động bởi docs/dfd/generate_dfd.py, đừng sửa tay) -->\n{markdown()}<!-- DFD:END -->\n'
@@ -525,7 +662,7 @@ def main():
     else:  # lần đầu: thay mục 3.4 cũ
         text = re.sub(r'## 3\.4\. .*?(?=## 3\.5\. )', lambda _: block + '\n', text, flags=re.S)
     CHAPTER.write_text(text, encoding='utf-8')
-    print(f'Đã tạo {len(files) + 1} file .drawio, {len(DFDS) + 1} hình SVG và cập nhật mục 3.4 trong {CHAPTER.name}')
+    print(f'Đã tạo {len(files) + 1} file .drawio, {len(DFDS) + len(DFDS_EXT) + 1} hình SVG và cập nhật mục 3.4 trong {CHAPTER.name}')
 
 
 if __name__ == '__main__':

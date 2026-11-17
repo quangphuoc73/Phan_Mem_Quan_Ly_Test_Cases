@@ -2,11 +2,9 @@
 
 > **Mục tiêu** của khảo sát hiện trạng là tìm hiểu về **thế giới thực liên quan đến phần mềm**: tổ chức đang làm việc như thế nào, gặp vấn đề gì, cần gì. Theo môn học, cần khảo sát 3 hiện trạng: **tổ chức, nghiệp vụ, tin học**. Kết quả của chương này là đầu vào để lập danh sách yêu cầu ([Chương 2](02_DacTaYeuCau.md)) và sơ đồ luồng dữ liệu ([Chương 3](03_PhanTich.md)).
 
-```mermaid
-flowchart LR
-    A["Khảo sát<br/>hiện trạng"] --> B["Lập danh sách các<br/>yêu cầu phần mềm"] --> C["Lập sơ đồ<br/>luồng dữ liệu"]
-    C -. "bổ sung, điều chỉnh" .-> B -. "bổ sung, điều chỉnh" .-> A
-```
+![Các bước xác định yêu cầu](sodo/GiaiDoanYeuCau.svg)
+
+*File gốc:* `docs/sodo/GiaiDoanYeuCau.drawio` (mở bằng draw.io để sửa).
 
 ## 1.1. Đối tượng khảo sát
 
@@ -122,7 +120,7 @@ Nhược điểm: không có trạng thái duyệt, không có lịch sử thay 
 | Thành phần | Hiện trạng | Ảnh hưởng đến phần mềm |
 |---|---|---|
 | **Hệ thống phần cứng** | Mỗi người có 1 laptop (macOS hoặc Windows, RAM 8–16 GB); có 1 máy chủ nội bộ chạy Jira | Phần mềm chạy trên trình duyệt, không cần máy mạnh; chạy script Playwright cần máy có ít nhất 8 GB RAM |
-| **Hệ thống phần mềm** | Jira (yêu cầu, bug), Microsoft Excel / Google Sheets (test case), Chrome, VS Code, Node.js; một số Tester và Automation Tester dùng ChatGPT bản miễn phí, GitHub Copilot | Cần nhập được user story từ file xuất của Jira (CSV), xuất test case ra Excel; chạy trên Chrome |
+| **Hệ thống phần mềm** | Jira (yêu cầu, bug), Microsoft Excel / Google Sheets (test case), Chrome, VS Code, Node.js; một số Tester và Automation Tester dùng ChatGPT bản miễn phí, GitHub Copilot | Đọc requirement trực tiếp từ Jira qua API (không nhập file), xuất test case ra Excel; chạy trên Chrome |
 | **Hệ thống mạng** | Mạng LAN văn phòng, Internet ổn định; truy cập Jira qua VPN khi làm ở nhà | Gọi dịch vụ LLM cần Internet; cần chế độ AI giả lập để vẫn làm được khi mất mạng |
 | **Con người** | Đội QA thành thạo viết test case và Jira; 1 người biết viết script tự động; chưa ai được hướng dẫn dùng AI an toàn | Giao diện tiếng Việt, dễ học; hệ thống phải tự che dữ liệu nhạy cảm thay vì trông chờ người dùng tự nhớ |
 
@@ -139,31 +137,35 @@ Nhược điểm: không có trạng thái duyệt, không có lịch sử thay 
 | V7 | Viết lại test case thành script tự động | Làm 2 lần cùng một việc |
 | V8 | Tester và Automation Tester dùng AI tự phát (ChatGPT, Copilot), dán cả dữ liệu khách hàng, URL nội bộ, tài khoản test | **Nguy cơ lộ dữ liệu nhạy cảm**; kết quả không được kiểm soát |
 | V9 | Quy định của đội (số test case tối đa, ai được duyệt) chỉ trao đổi miệng | Mỗi người hiểu một kiểu, không kiểm soát được |
+| V10 | PO/BA sửa user story, AC trên Jira giữa sprint; Tester không được báo, không biết test case nào đã lỗi thời | **Test cũ vẫn được chạy và báo Pass sai**; lỗi lọt ra production |
+| V11 | Sau mỗi thay đổi không biết cần chạy lại những test nào | Regression chạy hết (tốn thời gian) hoặc chọn theo cảm tính (sót) |
+| V12 | Kết quả chạy không ghi rõ bản build, môi trường; chạy lại sau khi sửa lỗi không gắn với lần Fail cũ | Không truy được lỗi đã thật sự được sửa ở bản nào |
 
 ## 1.7. Nhu cầu của người dùng
 
 | Vai trò | Nhu cầu |
 |---|---|
-| Tester | Có bản nháp test case nhanh để chỉnh sửa; biết test case nào bị trả lại và vì sao; ghi kết quả nhanh; có script tự động sẵn |
-| QA Lead | Có hàng đợi duyệt rõ ràng; trả lại kèm góp ý; xem báo cáo tỷ lệ pass, độ bao phủ ngay lập tức; tự điều chỉnh quy định của đội; lập kế hoạch sprint |
-| Developer | Xem test case và kết quả để tái hiện lỗi |
+| Tester | Có bản nháp test case nhanh để chỉnh sửa; **biết ngay test nào bị ảnh hưởng khi requirement đổi**; biết test nào bị trả lại và vì sao; ghi kết quả nhanh theo đợt được giao |
+| QA Lead | Có hàng đợi duyệt rõ ràng; trả lại kèm góp ý; lập đợt kiểm thử theo build và phân công; biết cần chạy lại test nào sau thay đổi; xem báo cáo tỷ lệ pass, độ bao phủ ngay lập tức; tự điều chỉnh quy định của đội |
+| Developer | Xem test case và kết quả để tái hiện lỗi; báo đã sửa để Tester kiểm thử lại |
+| PO / BA | Biết requirement nào thiếu AC; theo dõi thay đổi của mình đã được đội QA xử lý chưa |
 | Admin | Quản lý tài khoản, phân quyền, dự án; kiểm soát việc dùng AI (chi phí, bảo mật) |
 
 ## 1.8. Kết luận khảo sát
 
-Cần một hệ thống tập trung, quản lý toàn bộ vòng đời test case, trong đó AI giúp tăng tốc khâu viết nháp và chuyển thành script tự động, còn **con người giữ quyền quyết định** (chỉnh sửa, duyệt). Hệ thống phải lưu vết đầy đủ, báo cáo tự động và bảo vệ dữ liệu khi làm việc với AI bên ngoài.
+Cần một hệ thống tập trung, quản lý toàn bộ vòng đời kiểm thử và **theo dõi thay đổi requirement từ Jira**, trong đó AI giúp tăng tốc khâu viết nháp và chỉ ra test cần sửa, cần chạy lại khi requirement đổi, còn **con người giữ quyền quyết định** (chỉnh sửa, duyệt, chấp nhận đề xuất). Hệ thống phải lưu vết đầy đủ, báo cáo tự động và bảo vệ dữ liệu khi làm việc với AI bên ngoài.
 
 Các nghiệp vụ khảo sát được chuyển thành yêu cầu phần mềm ở [Chương 2](02_DacTaYeuCau.md):
 
 | Nghiệp vụ | Yêu cầu phần mềm |
 |---|---|
-| NV1 Lập user story | YC1 Lập user story, YC8 Nhập user story từ file |
+| NV1 Lập user story | Vẫn làm trên Jira; hệ thống YC1 Xem requirement từ Jira và lịch sử thay đổi, YC8 Nhận thay đổi requirement, YC15 AI phân tích ảnh hưởng, YC16 Rà soát đề xuất AI |
 | NV2 Viết test case | YC2 Sinh test case bằng AI, YC3 Soạn thảo test case |
-| NV3 Cập nhật test case | YC3 Soạn thảo (lưu phiên bản) |
+| NV3 Cập nhật test case | YC3 Soạn thảo (lưu phiên bản, Đã xem lại), YC13 Quản lý Test Suite |
 | NV4 Duyệt test case | YC4 Duyệt test case |
-| NV5 Chạy test, ghi kết quả | YC5 Ghi nhận kết quả chạy test |
-| NV6 Báo lỗi | Tạo ticket bug vẫn dùng Jira (ngoài phạm vi); hệ thống lưu mã bug trong ghi chú kết quả, YC13 Báo đã sửa lỗi và kiểm thử lại |
-| NV7 Viết, chạy script tự động | YC9 Sinh và chạy script tự động |
-| NV8 Lập báo cáo | YC6 Lập báo cáo, YC7 Tra cứu, YC8 Xuất Excel |
-| NV9 Lập kế hoạch sprint | YC12 Quản lý sprint |
-| NV10 Quản lý thành viên, quy định | YC10 Thay đổi quy định, YC11 Quản lý người dùng, dự án |
+| NV5 Chạy test, ghi kết quả | YC14 Lập Test Run và phân công, YC5 Ghi nhận kết quả, YC17 AI đề xuất bộ regression |
+| NV6 Báo lỗi | Tạo ticket bug vẫn dùng Jira (ngoài phạm vi); hệ thống lưu mã bug trong ghi chú kết quả, YC18 Báo đã sửa lỗi và kiểm thử lại |
+| NV7 Viết, chạy script tự động | YC19 Sinh và chạy script tự động (ngoài MVP) |
+| NV8 Lập báo cáo | YC6 Lập báo cáo, YC7 Tra cứu, YC9 Xuất Excel |
+| NV9 Lập kế hoạch sprint | Vẫn làm trên Jira; YC20 Theo dõi sprint nằm ngoài MVP |
+| NV10 Quản lý thành viên, quy định | YC10 Thay đổi quy định, YC11 Quản lý người dùng, YC12 Đồng bộ dự án từ Jira |

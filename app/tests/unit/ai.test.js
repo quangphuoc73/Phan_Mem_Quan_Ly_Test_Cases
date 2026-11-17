@@ -1,4 +1,4 @@
-// UT-13 → UT-23: MockProvider, prompt, schema kết quả AI
+// UT-13 → UT-23: MockProvider sinh test và script, prompt, schema kết quả AI (QĐ2)
 process.env.NODE_ENV = 'test';
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -9,11 +9,12 @@ const { buildTestCasePrompt } = require('../../src/services/ai/promptBuilder');
 const { stripFences } = require('../../src/services/ai/providers/LLMProvider');
 
 const story = {
-  code: 'US-X-1',
+  code: 'PETINS-9',
   title: 'Gửi yêu cầu bồi thường',
   description: 'Là chủ thú cưng...',
   acceptance_criteria: '- Tải lên hóa đơn tối đa 10 MB\n- Bắt buộc chọn thú cưng\n- Gửi thành công thì hiển thị mã',
 };
+story.acs = parseCriteria(story.acceptance_criteria);
 
 async function gen(maxTestCases) {
   const raw = await new MockProvider().complete({ task: 'GENERATE_TESTCASE', context: { story, maxTestCases } });
@@ -24,9 +25,10 @@ test('UT-13 tách acceptance criteria theo dòng, bỏ ký hiệu đầu dòng',
   assert.deepEqual(parseCriteria('- a\n* b\n1. c\n\n  '), ['a', 'b', 'c']);
 });
 
-test('UT-14 MockProvider trả kết quả đúng schema', async () => {
+test('UT-14 MockProvider trả kết quả đúng schema; mỗi test chỉ rõ AC liên quan (ac_refs)', async () => {
   const tcs = await gen(20);
   assert.ok(tcs.length >= 3);
+  assert.ok(tcs.every((t) => t.ac_refs.length >= 1 && t.ac_refs.every((n) => n >= 1 && n <= story.acs.length)));
 });
 
 test('UT-15 mỗi acceptance criterion có ít nhất 1 case Positive', async () => {
@@ -45,10 +47,12 @@ test('UT-17 tuân thủ QĐ2: không vượt số test case tối đa', async ()
   assert.equal((await gen(2)).length, 2);
 });
 
-test('UT-18 prompt chứa quy định số lượng và bọc dữ liệu trong <user_story>', () => {
+test('UT-18 prompt chứa quy định số lượng, yêu cầu ac_refs, đánh số AC và bọc dữ liệu trong <user_story>', () => {
   const p = buildTestCasePrompt({ story, maxTestCases: 5 });
   assert.match(p.system, /TỐI ĐA 5 test case/);
+  assert.match(p.system, /ac_refs/);
   assert.match(p.user, /^<user_story>[\s\S]*<\/user_story>$/);
+  assert.match(p.user, /\n2\. Bắt buộc chọn thú cưng\n/);
 });
 
 test('UT-19 schema từ chối priority không hợp lệ và steps rỗng', () => {

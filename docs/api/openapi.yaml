@@ -1,0 +1,1306 @@
+openapi: 3.1.0
+info:
+  title: AI TestCase Manager API
+  version: 2.0.0
+  summary: API hệ thống quản lý kiểm thử có AI – đồ án SE104
+  description: |
+    Đặc tả API theo đặc tả yêu cầu nghiệp vụ bản chốt 16/11/2026 (18 yêu cầu MVP).
+    Mọi API (trừ đăng nhập và webhook Jira) yêu cầu JWT trong header `Authorization: Bearer <token>`.
+    Quyền theo 5 vai trò toàn cục (mục 5 của đặc tả). Lỗi trả về dạng `{ "error": "thông báo tiếng Việt" }`.
+    Mã YC, QĐ, BM theo đặc tả chốt.
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: http://localhost:3000/api
+    description: Máy chạy demo
+security:
+  - bearerAuth: []
+tags:
+  - name: Xác thực
+  - name: YC1, YC8 – Requirement
+  - name: YC2, YC15 – AI
+  - name: YC3, YC4, YC7, YC9 – Test case
+  - name: YC13 – Test Suite
+  - name: YC5, YC14 – Test Run
+  - name: YC16 – Đề xuất AI
+  - name: YC17 – Regression
+  - name: YC18 – Kiểm thử lại
+  - name: YC6 – Báo cáo
+  - name: YC10, YC11, YC12 – Quản trị
+  - name: Ngoài MVP (bật bằng cờ)
+    description: YC19 script Playwright (SCRIPT_ENABLED), YC20 sprint (SPRINT_ENABLED). Tắt cờ thì các API này trả 404.
+
+paths:
+  /auth/login:
+    post:
+      tags: [Xác thực]
+      summary: Đăng nhập, nhận JWT
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username: { type: string }
+                password: { type: string, format: password }
+      responses:
+        '200':
+          description: Đăng nhập thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token: { type: string }
+                  user: { $ref: '#/components/schemas/User' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /stories:
+    get:
+      tags: [YC1, YC8 – Requirement]
+      summary: Danh sách requirement (BM1); mặc định ẩn requirement đã lưu trữ
+      operationId: listStories
+      parameters:
+        - { $ref: '#/components/parameters/ProjectId' }
+        - name: state
+          in: query
+          description: Trạng thái đồng bộ (BM1)
+          schema: { type: string, enum: [NORMAL, MISSING_AC, NEEDS_CHECK, ARCHIVED, ALL] }
+        - { name: q, in: query, description: Từ khóa theo mã hoặc tiêu đề, schema: { type: string } }
+      responses:
+        '200':
+          description: Danh sách requirement
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Requirement' } }
+  /stories/{id}:
+    get:
+      tags: [YC1, YC8 – Requirement]
+      summary: Chi tiết requirement
+      operationId: getStory
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Requirement, content: { application/json: { schema: { $ref: '#/components/schemas/Requirement' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /stories/{id}/versions:
+    get:
+      tags: [YC1, YC8 – Requirement]
+      summary: Lịch sử phiên bản requirement (QĐ1), mới nhất trước
+      operationId: listStoryVersions
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: Các phiên bản
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/RequirementVersion' } }
+  /stories/{id}/check-decision:
+    post:
+      tags: [YC1, YC8 – Requirement]
+      summary: Xử lý requirement Cần kiểm tra – Lưu trữ hoặc Giữ lại (QĐ8, [1.4], [D2])
+      description: Quyền `jira:import` (Admin, QA Lead). Giữ lại vẫn giữ cờ Cần kiểm tra tới khi đồng bộ lấy lại được issue.
+      operationId: decideStoryCheck
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [decision]
+              properties:
+                decision: { type: string, enum: [ARCHIVE, KEEP] }
+      responses:
+        '200': { description: Requirement sau khi xử lý, content: { application/json: { schema: { $ref: '#/components/schemas/Requirement' } } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /stories/{id}/generate:
+    post:
+      tags: [YC2, YC15 – AI]
+      summary: AI sinh test case (YC2, QĐ2)
+      description: |
+        Quyền `ai:use`. Chỉ sinh khi requirement đủ MIN_AC_PER_STORY AC, chưa lưu trữ, không Cần kiểm tra.
+        Kết quả là bản nháp mới (không thay thế bản nháp cũ), trong giới hạn MAX_TC_PER_STORY còn lại; mỗi test liên kết AC.
+        Giới hạn AI_CALLS_PER_HOUR dùng chung cho YC2, YC15, YC17.
+      operationId: generateTestCases
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: Test case vừa sinh
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  testCases: { type: array, items: { $ref: '#/components/schemas/TestCase' } }
+                  truncated: { type: integer, description: Số test bị bỏ vì vượt giới hạn }
+                  aiLogId: { type: integer }
+                  piiFound: { type: object, additionalProperties: { type: integer } }
+                  injectionWarning: { type: boolean }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooMany' }
+        '502': { $ref: '#/components/responses/AiError' }
+  /stories/{id}/analyze:
+    post:
+      tags: [YC2, YC15 – AI]
+      summary: AI phân tích ảnh hưởng khi requirement đổi (YC15, QĐ15)
+      description: |
+        Quyền `ai:use`. Requirement cần ≥ 2 phiên bản. So phiên bản cũ nhất mà các test đã liên kết với phiên bản hiện tại;
+        với từng test chỉ xét thay đổi sau phiên bản test đó liên kết. Phân tích không tự đổi test.
+      operationId: analyzeImpact
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: Lần phân tích và các đề xuất
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  analysis: { $ref: '#/components/schemas/ImpactAnalysis' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooMany' }
+        '502': { $ref: '#/components/responses/AiError' }
+
+  /testcases:
+    get:
+      tags: [YC3, YC4, YC7, YC9 – Test case]
+      summary: Tra cứu test case (YC7, BM6, QĐ7) – các điều kiện kết hợp AND
+      operationId: listTestCases
+      parameters:
+        - { $ref: '#/components/parameters/ProjectId' }
+        - { name: story_id, in: query, schema: { type: integer } }
+        - { name: module_id, in: query, schema: { type: integer } }
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/TestCaseStatus' } }
+        - { name: priority, in: query, schema: { type: string, enum: [High, Medium, Low] } }
+        - { name: type, in: query, schema: { type: string, enum: [Positive, Negative, Edge] } }
+        - { name: source, in: query, schema: { type: string, enum: [AI, MANUAL] } }
+        - { name: suite_id, in: query, schema: { type: integer } }
+        - { name: run_id, in: query, schema: { type: integer } }
+        - { name: needs_review, in: query, schema: { type: boolean } }
+        - { name: needs_retest, in: query, schema: { type: boolean } }
+        - { name: q, in: query, description: Tìm gần đúng theo mã và tiêu đề, schema: { type: string } }
+      responses:
+        '200':
+          description: Danh sách test case
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/TestCase' } }
+    post:
+      tags: [YC3, YC4, YC7, YC9 – Test case]
+      summary: Soạn test case thủ công (YC3, QĐ3)
+      description: Quyền `testcase:write`. AC phải thuộc phiên bản hiện tại của requirement.
+      operationId: createTestCase
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - { $ref: '#/components/schemas/TestCaseContent' }
+                - type: object
+                  required: [story_id]
+                  properties:
+                    story_id: { type: integer }
+                    acs: { type: array, items: { type: string } }
+      responses:
+        '201': { description: Test case Nháp, content: { application/json: { schema: { $ref: '#/components/schemas/TestCase' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /testcases/{id}:
+    get:
+      tags: [YC3, YC4, YC7, YC9 – Test case]
+      summary: Chi tiết test case
+      operationId: getTestCase
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Test case, content: { application/json: { schema: { $ref: '#/components/schemas/TestCase' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [YC3, YC4, YC7, YC9 – Test case]
+      summary: Sửa test case – tạo phiên bản mới; test Đã duyệt quay về Nháp (QĐ3, [R4])
+      operationId: updateTestCase
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - { $ref: '#/components/schemas/TestCaseContent' }
+                - type: object
+                  properties:
+                    acs: { type: array, items: { type: string } }
+                    change_note: { type: string }
+      responses:
+        '200': { description: Test case sau khi sửa, content: { application/json: { schema: { $ref: '#/components/schemas/TestCase' } } } }
+        '409': { $ref: '#/components/responses/Conflict' }
+    delete:
+      tags: [YC3, YC4, YC7, YC9 – Test case]
+      summary: Xóa test Nháp/Bị trả lại chưa có lần chạy (QĐ3, [A2])
+      operationId: deleteTestCase
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '204': { description: Đã xóa }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /testcases/{id}/history:
+    get:
+      tags: [YC3, YC4, YC7, YC9 – Test case]
+      summary: Lịch sử phiên bản, phiếu duyệt, nhật ký Đã xem lại, các lần chạy
+      operationId: getTestCaseHistory
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Lịch sử, content: { application/json: { schema: { type: object } } } }
+  /testcases/submit:
+    post:
+      tags: [YC3, YC4, YC7, YC9 – Test case]
+      summary: Gửi duyệt – chỉ Nháp/Bị trả lại và đã liên kết ít nhất 1 AC (QĐ3)
+      operationId: submitTestCases
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, required: [ids], properties: { ids: { type: array, items: { type: integer } } } }
+      responses:
+        '200': { description: Mã các test đã gửi, content: { application/json: { schema: { type: object, properties: { submitted: { type: array, items: { type: string } } } } } } }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /testcases/recheck:
+    post:
+      tags: [YC3, YC4, YC7, YC9 – Test case]
+      summary: Đã xem lại – test vẫn đúng (QĐ3, [2.2], [D1], [R5])
+      description: Bắt buộc lý do; chọn được nhiều test với một lý do chung; một test thì được gán lại AC. Gỡ cờ và nâng phiên bản requirement đã liên kết.
+      operationId: recheckTestCases
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ids, reason]
+              properties:
+                ids: { type: array, items: { type: integer }, minItems: 1 }
+                reason: { type: string, minLength: 3 }
+                acs: { type: array, items: { type: string } }
+      responses:
+        '200': { description: Mã các test đã xem lại, content: { application/json: { schema: { type: object, properties: { rechecked: { type: array, items: { type: string } } } } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /testcases/{id}/review:
+    post:
+      tags: [YC3, YC4, YC7, YC9 – Test case]
+      summary: Duyệt hoặc trả lại (YC4, BM3, QĐ4) – chỉ QA Lead, chỉ test Chờ duyệt, trả lại bắt buộc ghi chú
+      operationId: reviewTestCase
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [decision]
+              properties:
+                decision: { type: string, enum: [APPROVED, RETURNED] }
+                note: { type: string }
+      responses:
+        '200': { description: Test case sau khi duyệt, content: { application/json: { schema: { $ref: '#/components/schemas/TestCase' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /export/testcases.xlsx:
+    get:
+      tags: [YC3, YC4, YC7, YC9 – Test case]
+      summary: Xuất Excel đúng danh sách đang lọc (YC9, BM8, QĐ9)
+      operationId: exportTestCases
+      responses:
+        '200':
+          description: File testcases.xlsx
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+
+  /suites:
+    get:
+      tags: [YC13 – Test Suite]
+      summary: Danh sách Test Suite
+      operationId: listSuites
+      parameters: [{ $ref: '#/components/parameters/ProjectId' }]
+      responses:
+        '200': { description: Danh sách, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Suite' } } } } }
+    post:
+      tags: [YC13 – Test Suite]
+      summary: Tạo Test Suite (QĐ13) – tên 3–100 ký tự, không trùng trong dự án
+      operationId: createSuite
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [project_id, name]
+              properties:
+                project_id: { type: integer }
+                name: { type: string, minLength: 3, maxLength: 100 }
+                description: { type: string }
+      responses:
+        '201': { description: Suite mới, content: { application/json: { schema: { $ref: '#/components/schemas/Suite' } } } }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /suites/{id}:
+    get:
+      tags: [YC13 – Test Suite]
+      summary: Chi tiết suite kèm danh sách test
+      operationId: getSuite
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Suite, content: { application/json: { schema: { $ref: '#/components/schemas/Suite' } } } }
+    put:
+      tags: [YC13 – Test Suite]
+      summary: Đổi tên, mô tả suite
+      operationId: updateSuite
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        content:
+          application/json:
+            schema: { type: object, properties: { name: { type: string }, description: { type: string } } }
+      responses:
+        '200': { description: Suite, content: { application/json: { schema: { $ref: '#/components/schemas/Suite' } } } }
+    delete:
+      tags: [YC13 – Test Suite]
+      summary: Xóa suite (không xóa test)
+      operationId: deleteSuite
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '204': { description: Đã xóa }
+  /suites/{id}/items:
+    put:
+      tags: [YC13 – Test Suite]
+      summary: Thêm, bớt test – test phải cùng dự án
+      operationId: updateSuiteItems
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                add: { type: array, items: { type: integer } }
+                remove: { type: array, items: { type: integer } }
+      responses:
+        '200': { description: Suite sau khi cập nhật, content: { application/json: { schema: { $ref: '#/components/schemas/Suite' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /runs:
+    get:
+      tags: [YC5, YC14 – Test Run]
+      summary: Danh sách Test Run kèm tiến độ
+      operationId: listRuns
+      parameters:
+        - { $ref: '#/components/parameters/ProjectId' }
+        - { name: status, in: query, schema: { type: string, enum: [OPEN, CLOSED] } }
+      responses:
+        '200': { description: Danh sách, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/TestRun' } } } } }
+    post:
+      tags: [YC5, YC14 – Test Run]
+      summary: Lập Test Run và phân công (YC14, BM13, QĐ14) – quyền testrun:manage
+      description: Chỉ test đủ điều kiện chạy được đưa vào đợt; test bị chặn trả về trong `skipped` kèm lý do. Phiên bản test được cố định.
+      operationId: createRun
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RunInput' }
+      responses:
+        '201':
+          description: Đợt mới
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  run: { $ref: '#/components/schemas/TestRun' }
+                  skipped: { type: array, items: { $ref: '#/components/schemas/Skipped' } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /runs/{id}:
+    get:
+      tags: [YC5, YC14 – Test Run]
+      summary: Chi tiết đợt – từng test, kết quả gần nhất trong đợt, cảnh báo [A6]
+      operationId: getRun
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Test Run, content: { application/json: { schema: { $ref: '#/components/schemas/TestRun' } } } }
+    put:
+      tags: [YC5, YC14 – Test Run]
+      summary: Sửa tên, hạn; build và môi trường chỉ sửa khi đợt chưa có kết quả ([D3])
+      operationId: updateRun
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                build: { type: string }
+                environment: { type: string }
+                due_date: { type: string, format: date }
+      responses:
+        '200': { description: Test Run, content: { application/json: { schema: { $ref: '#/components/schemas/TestRun' } } } }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /runs/{id}/items:
+    post:
+      tags: [YC5, YC14 – Test Run]
+      summary: Thêm test hoặc suite vào đợt đang mở
+      operationId: addRunItems
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                suite_id: { type: integer }
+                test_case_ids: { type: array, items: { type: integer } }
+                assignee_id: { type: integer }
+      responses:
+        '200': { description: Kết quả thêm, content: { application/json: { schema: { type: object } } } }
+  /runs/{id}/items/{itemId}:
+    put:
+      tags: [YC5, YC14 – Test Run]
+      summary: Phân công lại (người được giao là QA Lead hoặc Tester)
+      operationId: assignRunItem
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/ItemId' }]
+      requestBody:
+        content:
+          application/json:
+            schema: { type: object, properties: { assignee_id: { type: integer } } }
+      responses:
+        '200': { description: Test Run, content: { application/json: { schema: { $ref: '#/components/schemas/TestRun' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+    delete:
+      tags: [YC5, YC14 – Test Run]
+      summary: Bỏ test khỏi đợt khi test chưa có kết quả trong đợt (QĐ3, [A2])
+      operationId: removeRunItem
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/ItemId' }]
+      responses:
+        '200': { description: Test Run, content: { application/json: { schema: { $ref: '#/components/schemas/TestRun' } } } }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /runs/{id}/items/{itemId}/executions:
+    post:
+      tags: [YC5, YC14 – Test Run]
+      summary: Ghi kết quả chạy test (YC5, BM4, QĐ5) – quyền run:write, người được giao hoặc QA Lead
+      description: Fail/Blocked bắt buộc ghi chú; bằng chứng là đường dẫn. Nếu test đang chờ kiểm thử lại thì lần chạy gắn với lần Fail gốc (QĐ18).
+      operationId: recordExecution
+      parameters: [{ $ref: '#/components/parameters/Id' }, { $ref: '#/components/parameters/ItemId' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [result]
+              properties:
+                result: { type: string, enum: [PASS, FAIL, BLOCKED] }
+                note: { type: string }
+                defect_code: { type: string, maxLength: 50 }
+                evidence_url: { type: string, format: uri }
+      responses:
+        '201':
+          description: Lần chạy đã ghi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  execution: { $ref: '#/components/schemas/Execution' }
+                  warnings: { type: array, items: { type: string } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /runs/{id}/close:
+    post:
+      tags: [YC5, YC14 – Test Run]
+      summary: Đóng đợt – còn test chưa chạy thì phải gửi confirm=true ([B4])
+      operationId: closeRun
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        content:
+          application/json:
+            schema: { type: object, properties: { confirm: { type: boolean } } }
+      responses:
+        '200': { description: Đợt đã đóng, content: { application/json: { schema: { type: object, properties: { run: { $ref: '#/components/schemas/TestRun' }, notRun: { type: integer } } } } } }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /proposals:
+    get:
+      tags: [YC16 – Đề xuất AI]
+      summary: Danh sách đề xuất AI (BM14, BM15) – Tester và QA Lead xem
+      operationId: listProposals
+      parameters:
+        - { name: story_id, in: query, schema: { type: integer } }
+        - { name: status, in: query, schema: { type: string, enum: [PENDING, ACCEPTED, REJECTED, OUTDATED] } }
+      responses:
+        '200': { description: Danh sách, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Proposal' } } } } }
+  /proposals/{id}/decision:
+    post:
+      tags: [YC16 – Đề xuất AI]
+      summary: Chấp nhận hoặc từ chối đề xuất (QĐ16) – quyền proposal:review (QA Lead)
+      description: |
+        Từ chối bắt buộc ghi chú. Phiên bản requirement hoặc test đã đổi so với lúc phân tích → Lỗi thời (409).
+        Cần sửa → test về Nháp; Còn thiếu → test nháp mới; Nên chạy lại → thêm vào bộ regression; Cần làm rõ → chỉ ghi nhận.
+      operationId: decideProposal
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [decision]
+              properties:
+                decision: { type: string, enum: [ACCEPT, REJECT] }
+                note: { type: string }
+      responses:
+        '200': { description: Đề xuất sau khi quyết định, content: { application/json: { schema: { $ref: '#/components/schemas/Proposal' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /regressions:
+    get:
+      tags: [YC17 – Regression]
+      summary: Danh sách bộ regression
+      operationId: listRegressions
+      parameters:
+        - { name: story_id, in: query, schema: { type: integer } }
+        - { $ref: '#/components/parameters/ProjectId' }
+      responses:
+        '200': { description: Danh sách, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/RegressionSet' } } } } }
+    post:
+      tags: [YC17 – Regression]
+      summary: AI đề xuất bộ regression cho thay đổi của requirement (YC17, BM16, QĐ17)
+      operationId: createRegression
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, required: [story_id], properties: { story_id: { type: integer } } }
+      responses:
+        '201': { description: Bộ regression, content: { application/json: { schema: { $ref: '#/components/schemas/RegressionSet' } } } }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /regressions/{id}:
+    get:
+      tags: [YC17 – Regression]
+      summary: Chi tiết bộ regression, kèm test chưa đủ điều kiện chạy (blocked)
+      operationId: getRegression
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Bộ regression, content: { application/json: { schema: { $ref: '#/components/schemas/RegressionSet' } } } }
+  /regressions/{id}/items:
+    put:
+      tags: [YC17 – Regression]
+      summary: Thêm, bớt test; bỏ test bắt buộc phải ghi lý do ([2.2])
+      operationId: updateRegressionItems
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                add: { type: array, items: { type: integer } }
+                remove:
+                  type: array
+                  items: { type: object, required: [test_case_id], properties: { test_case_id: { type: integer }, reason: { type: string } } }
+                restore: { type: array, items: { type: integer } }
+      responses:
+        '200': { description: Bộ regression, content: { application/json: { schema: { $ref: '#/components/schemas/RegressionSet' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /regressions/{id}/confirm:
+    post:
+      tags: [YC17 – Regression]
+      summary: Xác nhận bộ regression, tạo Test Run loại Regression
+      operationId: confirmRegression
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [build, environment]
+              properties:
+                name: { type: string }
+                build: { type: string }
+                environment: { type: string }
+                assignee_id: { type: integer }
+      responses:
+        '200': { description: Bộ đã xác nhận và đợt mới, content: { application/json: { schema: { type: object } } } }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /retests:
+    get:
+      tags: [YC18 – Kiểm thử lại]
+      summary: Lần Fail chưa báo sửa, phiếu chờ kiểm thử lại và đã xử lý
+      operationId: retestOverview
+      parameters: [{ $ref: '#/components/parameters/ProjectId' }]
+      responses:
+        '200': { description: Tổng quan, content: { application/json: { schema: { type: object } } } }
+  /executions/{id}/fix:
+    post:
+      tags: [YC18 – Kiểm thử lại]
+      summary: Developer báo đã sửa lỗi (YC18, BM17, QĐ18) – quyền bug:fix
+      description: Chỉ cho lần Fail gần nhất của test trong cùng Test Run; mỗi lần chạy báo một lần; build 1–50 ký tự.
+      operationId: reportFix
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [build]
+              properties:
+                build: { type: string, minLength: 1, maxLength: 50 }
+                note: { type: string }
+      responses:
+        '201': { description: Phiếu báo sửa, content: { application/json: { schema: { $ref: '#/components/schemas/FixReport' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /retests/run:
+    post:
+      tags: [YC18 – Kiểm thử lại]
+      summary: QA Lead lập đợt Kiểm thử lại từ danh sách chờ, với build đã sửa ([R1])
+      operationId: createRetestRun
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [project_id, environment]
+              properties:
+                project_id: { type: integer }
+                environment: { type: string }
+                build: { type: string }
+                fix_ids: { type: array, items: { type: integer } }
+                assignee_id: { type: integer }
+      responses:
+        '201': { description: Đợt Kiểm thử lại, content: { application/json: { schema: { type: object } } } }
+
+  /reports/summary:
+    get:
+      tags: [YC6 – Báo cáo]
+      summary: Báo cáo kiểm thử theo dự án hoặc Test Run (YC6, BM5, QĐ6)
+      operationId: reportSummary
+      parameters:
+        - { $ref: '#/components/parameters/ProjectId' }
+        - { name: run_id, in: query, schema: { type: integer } }
+      responses:
+        '200': { description: Số liệu báo cáo, content: { application/json: { schema: { $ref: '#/components/schemas/Report' } } } }
+
+  /parameters:
+    get:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Tham số quy định (BM9)
+      operationId: listParameters
+      responses:
+        '200': { description: Danh sách tham số kèm miền giá trị, content: { application/json: { schema: { type: array, items: { type: object } } } } }
+  /parameters/{key}:
+    put:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Đổi tham số trong miền giá trị (QĐ10) – Admin, QA Lead
+      operationId: updateParameter
+      parameters: [{ name: key, in: path, required: true, schema: { type: string } }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, required: [value], properties: { value: { type: integer } } }
+      responses:
+        '200': { description: Giá trị cũ và mới, content: { application/json: { schema: { type: object } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /jira/import:
+    post:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Thêm dự án từ Jira và đồng bộ requirement (YC12, QĐ12)
+      operationId: importJiraProject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, required: [key], properties: { key: { type: string, pattern: '^[A-Za-z][A-Za-z0-9]{1,9}$' } } }
+      responses:
+        '201': { description: Kết quả đồng bộ, content: { application/json: { schema: { $ref: '#/components/schemas/SyncResult' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /projects/{id}/jira-sync:
+    post:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Đồng bộ ngay (YC8, QĐ8) – chỉ ghi bản Jira mới hơn, gắn cờ test, cờ Cần kiểm tra
+      operationId: syncJiraProject
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Kết quả đồng bộ, content: { application/json: { schema: { $ref: '#/components/schemas/SyncResult' } } } }
+        '502': { description: Jira lỗi sau 2 lần thử lại, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+  /jira/webhook:
+    post:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Webhook Jira (QĐ8) – xác thực bằng mã bí mật, không dùng JWT
+      operationId: jiraWebhook
+      security: []
+      parameters: [{ name: secret, in: query, required: true, schema: { type: string } }]
+      requestBody:
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        '200': { description: Đã nhận, content: { application/json: { schema: { type: object } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /users:
+    get:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Danh sách tài khoản (YC11) – chỉ Admin
+      operationId: listUsers
+      responses:
+        '200': { description: Danh sách, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/User' } } } } }
+    post:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Tạo tài khoản (QĐ11)
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, full_name, role, password]
+              properties:
+                username: { type: string, pattern: '^[a-z0-9_.]{3,30}$' }
+                full_name: { type: string }
+                email: { type: string, format: email }
+                role: { $ref: '#/components/schemas/Role' }
+                password: { type: string, minLength: 8, format: password }
+      responses:
+        '201': { description: Đã tạo, content: { application/json: { schema: { type: object, properties: { id: { type: integer } } } } } }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /auth/me:
+    get:
+      tags: [Xác thực]
+      summary: Thông tin tài khoản đang đăng nhập và danh sách quyền
+      operationId: me
+      responses:
+        '200': { description: Tài khoản và quyền, content: { application/json: { schema: { type: object, properties: { user: { $ref: '#/components/schemas/User' }, permissions: { type: array, items: { type: string } } } } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /auth/change-password:
+    post:
+      tags: [Xác thực]
+      summary: Đổi mật khẩu (mật khẩu mới tối thiểu 8 ký tự)
+      operationId: changePassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [old_password, new_password]
+              properties:
+                old_password: { type: string, format: password }
+                new_password: { type: string, format: password, minLength: 8 }
+      responses:
+        '200': { description: Đã đổi, content: { application/json: { schema: { type: object } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /stories/{id}/versions/{v}:
+    get:
+      tags: [YC1, YC8 – Requirement]
+      summary: Một phiên bản cụ thể của requirement
+      operationId: getStoryVersion
+      parameters: [{ $ref: '#/components/parameters/Id' }, { name: v, in: path, required: true, schema: { type: integer } }]
+      responses:
+        '200': { description: Phiên bản, content: { application/json: { schema: { $ref: '#/components/schemas/RequirementVersion' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /ai/info:
+    get:
+      tags: [YC2, YC15 – AI]
+      summary: Nhà cung cấp AI đang dùng và các cờ phần mở rộng
+      operationId: aiInfo
+      responses:
+        '200': { description: Thông tin, content: { application/json: { schema: { type: object, properties: { provider: { type: string }, model: { type: string }, features: { type: object } } } } } }
+  /runs/eligibility:
+    post:
+      tags: [YC5, YC14 – Test Run]
+      summary: Kiểm tra điều kiện chạy của danh sách test (QĐ14 [2.1]) trước khi lập đợt hoặc xác nhận regression
+      operationId: checkEligibility
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, required: [ids], properties: { ids: { type: array, items: { type: integer } } } }
+      responses:
+        '200': { description: Lý do không đủ điều kiện (null nếu đủ), content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Skipped' } } } } }
+  /runs/{id}/executions:
+    get:
+      tags: [YC5, YC14 – Test Run]
+      summary: Mọi lần ghi kết quả trong đợt
+      operationId: listRunExecutions
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Danh sách, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Execution' } } } } }
+  /proposals/{id}:
+    get:
+      tags: [YC16 – Đề xuất AI]
+      summary: Chi tiết đề xuất (nội dung trước và sau – BM15)
+      operationId: getProposal
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Đề xuất, content: { application/json: { schema: { $ref: '#/components/schemas/Proposal' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /analyses/{id}:
+    get:
+      tags: [YC2, YC15 – AI]
+      summary: Một lần phân tích ảnh hưởng kèm các đề xuất (BM14)
+      operationId: getAnalysis
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Lần phân tích, content: { application/json: { schema: { $ref: '#/components/schemas/ImpactAnalysis' } } } }
+  /users/{id}:
+    patch:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Sửa, đổi vai trò, khóa/mở khóa tài khoản (QĐ11) – Admin không tự khóa hoặc tự hạ quyền
+      operationId: updateUser
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                full_name: { type: string }
+                email: { type: string, format: email }
+                role: { $ref: '#/components/schemas/Role' }
+                active: { type: boolean }
+                password: { type: string, minLength: 8, format: password }
+      responses:
+        '200': { description: Đã cập nhật, content: { application/json: { schema: { type: object } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /projects:
+    get:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Dự án kèm module, số requirement, số Cần kiểm tra, lần đồng bộ gần nhất
+      operationId: listProjects
+      responses:
+        '200': { description: Danh sách dự án, content: { application/json: { schema: { type: array, items: { type: object } } } } }
+  /projects/{id}/members:
+    get:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Thành viên dự án lấy từ Jira (chỉ để hiển thị và phân công)
+      operationId: listProjectMembers
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Thành viên, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/User' } } } } }
+  /projects/{id}/sync-logs:
+    get:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Nhật ký 20 lần đồng bộ gần nhất (BM7 [1.3])
+      operationId: listSyncLogs
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Nhật ký, content: { application/json: { schema: { type: array, items: { type: object } } } } }
+  /jira/info:
+    get:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Chế độ Jira (thật/giả lập), webhook, loại issue được đồng bộ
+      operationId: jiraInfo
+      responses:
+        '200': { description: Thông tin, content: { application/json: { schema: { type: object } } } }
+  /jira/test:
+    post:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Kiểm tra kết nối Jira (QĐ12) – chỉ Admin
+      operationId: testJira
+      responses:
+        '200': { description: Kết nối được, content: { application/json: { schema: { type: object } } } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '502': { description: Jira lỗi, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+  /jira/mock/issues/{key}:
+    put:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Chỉ chế độ Jira giả lập – mô phỏng PO/BA sửa issue để demo YC8, YC15
+      operationId: editMockIssue
+      parameters: [{ name: key, in: path, required: true, schema: { type: string } }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                summary: { type: string }
+                description: { type: string }
+                criteria: { type: array, items: { type: string } }
+                priority: { type: string }
+                issuetype: { type: string }
+                key: { type: string }
+                deleted: { type: boolean }
+      responses:
+        '200': { description: Đã sửa, content: { application/json: { schema: { type: object } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /audit-logs:
+    get:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Nhật ký hoạt động (300 dòng gần nhất) – Admin, QA Lead
+      operationId: listAuditLogs
+      responses:
+        '200': { description: Nhật ký, content: { application/json: { schema: { type: array, items: { type: object } } } } }
+  /ai-logs:
+    get:
+      tags: [YC10, YC11, YC12 – Quản trị]
+      summary: Nhật ký gọi AI (prompt đã che dữ liệu) – Admin, QA Lead, Tester
+      operationId: listAiLogs
+      responses:
+        '200': { description: Nhật ký, content: { application/json: { schema: { type: array, items: { type: object } } } } }
+  /projects/{id}:
+    put:
+      tags: [Ngoài MVP (bật bằng cờ)]
+      summary: YC19 – khai báo URL ứng dụng cần test của dự án (project:manage)
+      operationId: updateProjectBaseUrl
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        content:
+          application/json:
+            schema: { type: object, properties: { base_url: { type: string, format: uri } } }
+      responses:
+        '200': { description: Đã lưu, content: { application/json: { schema: { type: object } } } }
+  /testcases/{id}/script:
+    get:
+      tags: [Ngoài MVP (bật bằng cờ)]
+      summary: YC19 – script Playwright của test case
+      operationId: getScript
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Script hoặc null, content: { application/json: { schema: { type: [object, 'null'] } } } }
+    put:
+      tags: [Ngoài MVP (bật bằng cờ)]
+      summary: YC19 – sửa script
+      operationId: saveScript
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        content:
+          application/json:
+            schema: { type: object, properties: { code: { type: string } } }
+      responses:
+        '200': { description: Script, content: { application/json: { schema: { type: object } } } }
+  /testcases/{id}/script/generate:
+    post:
+      tags: [Ngoài MVP (bật bằng cờ)]
+      summary: YC19 – AI sinh script cho test Đã duyệt
+      operationId: generateScript
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Script, content: { application/json: { schema: { type: object } } } }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /testcases/{id}/script/run:
+    post:
+      tags: [Ngoài MVP (bật bằng cờ)]
+      summary: YC19 – chạy script, ghi kết quả vào một test trong Test Run (QĐ5)
+      operationId: runScript
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        content:
+          application/json:
+            schema: { type: object, required: [run_id, item_id], properties: { run_id: { type: integer }, item_id: { type: integer } } }
+      responses:
+        '200': { description: Kết quả chạy, content: { application/json: { schema: { type: object } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /testcases/{id}/script/download:
+    get:
+      tags: [Ngoài MVP (bật bằng cờ)]
+      summary: YC19 – tải file .spec.js
+      operationId: downloadScript
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: File script, content: { text/javascript: { schema: { type: string } } } }
+  /projects/{id}/sprints:
+    get:
+      tags: [Ngoài MVP (bật bằng cờ)]
+      summary: YC20 – sprint của dự án kèm velocity, Definition of Done
+      operationId: listSprints
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Danh sách sprint, content: { application/json: { schema: { type: array, items: { type: object } } } } }
+  /sprints/{id}/burndown:
+    get:
+      tags: [Ngoài MVP (bật bằng cờ)]
+      summary: YC20 – burndown của sprint
+      operationId: sprintBurndown
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Burndown, content: { application/json: { schema: { type: object } } } }
+
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }
+  parameters:
+    Id: { name: id, in: path, required: true, schema: { type: integer } }
+    ItemId: { name: itemId, in: path, required: true, schema: { type: integer } }
+    ProjectId: { name: project_id, in: query, schema: { type: integer } }
+  responses:
+    BadRequest: { description: Dữ liệu không hợp lệ, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Unauthorized: { description: Chưa đăng nhập hoặc sai thông tin, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Forbidden: { description: Vai trò không có quyền, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    NotFound: { description: Không tìm thấy, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Conflict: { description: Vi phạm quy định nghiệp vụ (QĐ), content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    TooMany: { description: Vượt giới hạn gọi AI mỗi giờ (QĐ2), content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    AiError: { description: AI không trả kết quả hợp lệ sau khi thử lại, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error: { type: string }
+        details: { type: object }
+    Role: { type: string, enum: [ADMIN, QA_LEAD, PO_BA, TESTER, DEVELOPER] }
+    User:
+      type: object
+      properties:
+        id: { type: integer }
+        username: { type: string }
+        full_name: { type: string }
+        email: { type: [string, 'null'] }
+        role: { $ref: '#/components/schemas/Role' }
+        active: { type: integer }
+    Requirement:
+      type: object
+      description: BM1 – requirement đồng bộ từ Jira
+      properties:
+        id: { type: integer }
+        jira_issue_id: { type: [string, 'null'], description: '[1.1] định danh không đổi' }
+        code: { type: string, description: Mã hiển thị, VD SHOP-5 }
+        project_id: { type: integer }
+        issue_type: { type: string }
+        title: { type: string }
+        description: { type: string }
+        acs: { type: array, items: { type: string } }
+        priority: { type: string, enum: [High, Medium, Low] }
+        jira_status: { type: [string, 'null'] }
+        jira_updated_at: { type: [string, 'null'], format: date-time }
+        current_version: { type: integer }
+        sync_state: { type: string, enum: [NORMAL, MISSING_AC, NEEDS_CHECK, ARCHIVED] }
+        check_reason: { type: [string, 'null'], enum: [NOT_FOUND, TYPE_EXCLUDED, null] }
+        check_kept_by: { type: [integer, 'null'] }
+        tc_needs_review: { type: integer }
+        proposals_pending: { type: integer }
+    RequirementVersion:
+      type: object
+      properties:
+        version: { type: integer }
+        title: { type: string }
+        description: { type: string }
+        acs: { type: array, items: { type: string } }
+        source: { type: string, enum: [IMPORT, WEBHOOK, SCHEDULE, MANUAL, SEED] }
+        changes:
+          type: [object, 'null']
+          properties:
+            title: { type: boolean }
+            description: { type: boolean }
+            ac_added: { type: array, items: { type: string } }
+            ac_removed: { type: array, items: { type: string } }
+        created_at: { type: string }
+    TestCaseStatus: { type: string, enum: [DRAFT, PENDING_REVIEW, APPROVED, RETURNED] }
+    TestCaseContent:
+      type: object
+      description: Nội dung BM2
+      required: [title, steps, expected_result, priority, type]
+      properties:
+        title: { type: string, minLength: 5, maxLength: 200 }
+        precondition: { type: string, maxLength: 500 }
+        steps: { type: array, items: { type: string }, minItems: 1, maxItems: 15 }
+        expected_result: { type: string }
+        priority: { type: string, enum: [High, Medium, Low] }
+        type: { type: string, enum: [Positive, Negative, Edge] }
+    TestCase:
+      allOf:
+        - { $ref: '#/components/schemas/TestCaseContent' }
+        - type: object
+          properties:
+            id: { type: integer }
+            code: { type: string, description: '<mã requirement>-TCnn' }
+            story_id: { type: integer }
+            status: { $ref: '#/components/schemas/TestCaseStatus' }
+            source: { type: string, enum: [AI, MANUAL] }
+            version: { type: integer }
+            req_version: { type: integer, description: Phiên bản requirement đã liên kết }
+            acs: { type: array, items: { type: string } }
+            needs_review: { type: boolean }
+            review_reason: { type: [string, 'null'], enum: [AC_CHANGED, AC_REMOVED, CONTENT_CHANGED, null] }
+            needs_retest: { type: boolean }
+            proposal_id: { type: [integer, 'null'] }
+            last_result: { type: [string, 'null'], enum: [PASS, FAIL, BLOCKED, null] }
+    Suite:
+      type: object
+      properties:
+        id: { type: integer }
+        project_id: { type: integer }
+        name: { type: string }
+        description: { type: string }
+        tc_count: { type: integer }
+        items: { type: array, items: { type: object } }
+    RunInput:
+      type: object
+      required: [project_id, name, build, environment]
+      properties:
+        project_id: { type: integer }
+        name: { type: string }
+        run_type: { type: string, enum: [NORMAL, RETEST, REGRESSION], default: NORMAL }
+        build: { type: string, maxLength: 50 }
+        environment: { type: string, maxLength: 100 }
+        due_date: { type: string, format: date }
+        suite_id: { type: integer }
+        test_case_ids: { type: array, items: { type: integer } }
+        assignee_id: { type: integer }
+    Skipped:
+      type: object
+      properties:
+        id: { type: integer }
+        code: { type: string }
+        reason: { type: string }
+    TestRun:
+      type: object
+      description: BM13 – đợt kiểm thử
+      properties:
+        id: { type: integer }
+        project_id: { type: integer }
+        name: { type: string }
+        run_type: { type: string, enum: [NORMAL, RETEST, REGRESSION] }
+        build: { type: string }
+        environment: { type: string }
+        status: { type: string, enum: [OPEN, CLOSED] }
+        locked: { type: boolean, description: Đã có kết quả nên build, môi trường cố định }
+        progress:
+          type: object
+          properties:
+            total: { type: integer }
+            executed: { type: integer }
+            percent: { type: number }
+        items: { type: array, items: { type: object } }
+    Execution:
+      type: object
+      description: BM4 – một lần ghi kết quả
+      properties:
+        id: { type: integer }
+        run_id: { type: integer }
+        test_case_id: { type: integer }
+        tc_version: { type: integer }
+        result: { type: string, enum: [PASS, FAIL, BLOCKED] }
+        note: { type: [string, 'null'] }
+        defect_code: { type: [string, 'null'] }
+        evidence_url: { type: [string, 'null'] }
+        retest_of: { type: [integer, 'null'], description: '[3.1] lần Fail gốc' }
+        executed_by: { type: integer }
+        executed_at: { type: string }
+    FixReport:
+      type: object
+      description: BM17 – phiếu báo đã sửa lỗi
+      properties:
+        id: { type: integer }
+        execution_id: { type: integer }
+        build: { type: string }
+        status: { type: string, enum: [WAITING, CLOSED, REOPENED] }
+        retest_in_same_run: { type: boolean }
+    ImpactAnalysis:
+      type: object
+      description: BM14 – một lần phân tích ảnh hưởng
+      properties:
+        id: { type: integer }
+        story_id: { type: integer }
+        from_version: { type: integer }
+        to_version: { type: integer }
+        proposals: { type: array, items: { $ref: '#/components/schemas/Proposal' } }
+    Proposal:
+      type: object
+      description: BM14, BM15 – đề xuất AI
+      properties:
+        id: { type: integer }
+        type: { type: string, enum: [UPDATE, MISSING, RERUN, CLARIFY] }
+        test_case_id: { type: [integer, 'null'] }
+        source_part: { type: string, enum: [AC, TITLE, DESCRIPTION] }
+        source_ac: { type: [string, 'null'] }
+        reason: { type: string }
+        content: { type: [object, 'null'], description: Nội dung test đề xuất (Cần sửa, Còn thiếu) }
+        before: { type: [object, 'null'], description: Nội dung test hiện tại }
+        status: { type: string, enum: [PENDING, ACCEPTED, REJECTED, OUTDATED] }
+        note: { type: [string, 'null'] }
+        result_test_case_id: { type: [integer, 'null'] }
+    RegressionSet:
+      type: object
+      description: BM16 – bộ regression
+      properties:
+        id: { type: integer }
+        story_id: { type: integer }
+        from_version: { type: integer }
+        to_version: { type: integer }
+        status: { type: string, enum: [DRAFT, CONFIRMED] }
+        aiAvailable: { type: boolean }
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              test_case_id: { type: integer }
+              priority: { type: string, enum: [HIGH, MEDIUM, LOW] }
+              reason: { type: string }
+              origin: { type: string, enum: [LINKED, AI, PROPOSAL, MANUAL] }
+              mandatory: { type: boolean }
+              removed: { type: boolean }
+              blocked_reason: { type: [string, 'null'] }
+        blocked: { type: array, items: { type: object } }
+        run_id: { type: [integer, 'null'] }
+    SyncResult:
+      type: object
+      properties:
+        id: { type: integer }
+        code: { type: string }
+        modules: { type: integer }
+        members: { type: integer }
+        unmapped: { type: array, items: { type: string } }
+        stories:
+          type: object
+          properties:
+            created: { type: integer }
+            updated: { type: integer }
+            versioned: { type: integer }
+            flaggedTests: { type: integer }
+            skippedOlder: { type: integer }
+            needsCheck: { type: integer }
+            restored: { type: integer }
+            missingCriteria: { type: integer }
+        warnings: { type: array, items: { type: string } }
+    Report:
+      type: object
+      description: BM5 – báo cáo kiểm thử
+      properties:
+        scope: { type: object }
+        stories: { type: integer }
+        inScope: { type: integer }
+        executed: { type: integer }
+        notRun: { type: integer }
+        runs: { type: object, properties: { PASS: { type: integer }, FAIL: { type: integer }, BLOCKED: { type: integer } } }
+        passRate: { type: number }
+        executionProgress: { type: number }
+        coverage: { type: number, description: Bao phủ story (mẫu số không gồm story Thiếu AC) }
+        acCoverage: { type: number }
+        uncovered: { type: array, items: { type: object } }
+        uncoveredAcs: { type: array, items: { type: object } }
+        missingAc: { type: array, items: { type: object } }
+        needsReview: { type: integer }
+        needsRetest: { type: integer }
+        proposals: { type: object }
+        byModule: { type: array, items: { type: object } }
+        trend: { type: array, items: { type: object } }
+        ai: { type: object }

@@ -5,7 +5,8 @@ export const state = {
   permissions: [],
   projects: [],
   projectId: Number(safeGet('projectId')) || 0,
-  sprintId: Number(safeGet('sprintId')) || 0,
+  sprintId: Number(safeGet('sprintId')) || 0, // YC20 (ngoài MVP)
+  runId: 0, // phạm vi báo cáo theo Test Run (YC6)
   aiInfo: null,
 };
 
@@ -58,7 +59,29 @@ export const LABEL = {
   SUCCESS: 'Thành công', FAILED: 'Thất bại',
   ADMIN: 'Admin', QA_LEAD: 'QA Lead', PO_BA: 'PO / BA', TESTER: 'Tester', DEVELOPER: 'Developer',
   High: 'High', Medium: 'Medium', Low: 'Low', Positive: 'Positive', Negative: 'Negative', Edge: 'Edge',
+  // BM1: trạng thái đồng bộ requirement
+  NORMAL: 'Bình thường', MISSING_AC: 'Thiếu AC', NEEDS_CHECK: 'Cần kiểm tra', ARCHIVED: 'Đã lưu trữ',
+  NOT_FOUND: 'Jira báo không tìm thấy', TYPE_EXCLUDED: 'Không còn thuộc loại được đồng bộ',
+  // QĐ3: lý do gắn cờ Cần xem lại
+  AC_CHANGED: 'AC đã đổi', AC_REMOVED: 'AC bị bỏ', CONTENT_CHANGED: 'Tiêu đề/mô tả đổi',
+  // BM13: Test Run
+  OPEN: 'Đang mở', CLOSED: 'Đã đóng', NORMAL_RUN: 'Thường', RETEST: 'Kiểm thử lại', REGRESSION: 'Regression',
+  // BM14, BM15: đề xuất AI
+  UPDATE: 'Cần sửa', MISSING: 'Còn thiếu', RERUN: 'Nên chạy lại', CLARIFY: 'Cần làm rõ',
+  PENDING: 'Chờ xử lý', ACCEPTED: 'Đã chấp nhận', REJECTED: 'Đã từ chối', OUTDATED: 'Lỗi thời',
+  TITLE: 'Tiêu đề', DESCRIPTION: 'Mô tả',
+  // BM16: bộ regression
+  CONFIRMED: 'Đã xác nhận', HIGH: 'Cao', MEDIUM: 'Trung bình', LOW: 'Thấp', LINKED: 'Liên kết', PROPOSAL: 'Từ đề xuất',
+  // BM17: kiểm thử lại
+  WAITING: 'Chờ kiểm thử lại', REOPENED: 'Mở lại',
+  IMPORT: 'Thêm dự án', WEBHOOK: 'Webhook', SCHEDULE: 'Định kỳ', SEED: 'Dữ liệu mẫu',
 };
+
+// Phần ngoài MVP bật bằng cờ trong .env (SCRIPT_ENABLED, SPRINT_ENABLED)
+export const feature = (name) => Boolean(state.aiInfo?.features?.[name]);
+
+// Nhãn loại Test Run (NORMAL trùng mã với trạng thái requirement nên tách riêng)
+export const runTypeLabel = (t) => LABEL[t === 'NORMAL' ? 'NORMAL_RUN' : t] || t;
 
 export const pill = (v, cls = v) => (v ? `<span class="pill ${esc(cls)}">${esc(LABEL[v] || v)}</span>` : '<span class="muted">—</span>');
 

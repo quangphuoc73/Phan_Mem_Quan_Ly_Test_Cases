@@ -1,10 +1,16 @@
-# AI TestCase Manager – Hệ thống quản lý test case có hỗ trợ AI
+# AI TestCase Manager – Hệ thống quản lý kiểm thử có hỗ trợ AI
 
 Đồ án môn **SE104 – Nhập môn Công nghệ phần mềm**, Trường Đại học Công nghệ Thông tin – ĐHQG TP.HCM.
 
-User story → **AI sinh test case** → Tester chỉnh sửa → QA Lead duyệt → **AI sinh script Playwright** và chạy tự động → Báo cáo.
+Căn cứ: **đặc tả yêu cầu nghiệp vụ MVP – bản chốt ngày 16/11/2026** (`docs/DacTa_YeuCauNghiepVu_1011.docx`, 18 yêu cầu); thiết kế chi tiết ở `docs/ThietKe_MVP_1611.md`.
 
-Đồ án được thực hiện theo **Agile/Scrum** (nhóm 4 người, 5 sprint × 1 tuần) và hệ thống hỗ trợ đội QA làm Scrum: sprint, story point, Product backlog, burndown, velocity, Definition of Done tự động.
+Requirement trên **Jira** (đồng bộ một chiều, có phiên bản) → **AI sinh test case** gắn AC → QA Lead duyệt → **Test Suite, Test Run** (build, môi trường, phiên bản test cố định) → ghi kết quả → Developer báo đã sửa, kiểm thử lại → báo cáo.
+
+**Điểm mới:** khi requirement đổi trên Jira, hệ thống tự gắn cờ đúng test bị ảnh hưởng; **AI phân tích ảnh hưởng** đề xuất test cần sửa, còn thiếu, nên chạy lại kèm lý do; QA Lead quyết định và xác nhận **bộ regression** thành Test Run. AI không tự đổi test.
+
+Cấu hình Jira Cloud (gói Free) trong `app/.env`: `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN`; để trống thì dùng Jira giả lập (dự án mẫu `HRM`, `LIB`). Xem mục 7.4 của báo cáo.
+
+Đồ án được thực hiện theo **Agile/Scrum** (nhóm 4 người, 5 sprint × 1 tuần). Ngoài MVP, code đã có nhưng tắt mặc định: YC19 script Playwright (`SCRIPT_ENABLED`), YC20 theo dõi sprint (`SPRINT_ENABLED`).
 
 ![Tổng quan](docs/images/02_tong_quan.png)
 
@@ -12,15 +18,13 @@ User story → **AI sinh test case** → Tester chỉnh sửa → QA Lead duyệ
 
 **macOS:** bấm đúp `ChayDemo.command` (lần đầu sẽ tự cài thư viện). Trình duyệt tự mở `http://localhost:3000`.
 
-**Hoặc bằng lệnh** (cần Node.js ≥ 20 và Google Chrome):
+**Hoặc bằng lệnh** (cần Node.js ≥ 20):
 
 ```bash
 cd app && npm install && cp .env.example .env && npm run reset && npm start
 ```
 
-```bash
-cd automation && npm install
-```
+Chỉ khi bật YC19 mới cần `cd automation && npm install` (và Google Chrome). Khởi động trên CSDL theo lược đồ cũ thì hệ thống tự sao lưu thành `app.db.bak-<thời điểm>` rồi tạo CSDL mới.
 
 **Hoặc Docker:**
 
@@ -36,7 +40,7 @@ docker compose up --build
 | Tester | `tester` | `Tester@123` |
 | Developer | `dev` | `Dev@123456` |
 
-Mặc định AI chạy chế độ **mock** (offline, không cần API key). Dùng AI thật: sửa `app/.env` → `AI_PROVIDER=gemini` và `GEMINI_API_KEY=...` (hoặc `claude`, `openai`).
+Mặc định AI chạy chế độ **mock** và Jira giả lập (offline, không cần API key). Để demo đầy đủ: đăng nhập `admin` → *Dự án & module* → *Thêm dự án từ Jira* mã `HRM`. Dùng AI thật: sửa `app/.env` → `AI_PROVIDER=gemini` và `GEMINI_API_KEY=...` (hoặc `claude`, `openai`).
 
 ## Nội dung thư mục
 
@@ -44,17 +48,21 @@ Mặc định AI chạy chế độ **mock** (offline, không cần API key). D�
 |---|---|
 | `docs/BaoCaoDoAn.pdf` | **Báo cáo đồ án** đầy đủ (bản Word để chỉnh sửa: `docs/BaoCaoDoAn.docx`; bản HTML: `docs/BaoCaoDoAn.html`) |
 | `docs/SlideThuyetTrinh.html` | **Slide bảo vệ** (mở bằng trình duyệt, phím ← → để chuyển, có bản `.pdf`) |
+| `docs/DacTa_YeuCauNghiepVu_1011.docx`, `.pdf` | **Đặc tả yêu cầu nghiệp vụ bản chốt 16/11/2026** – căn cứ triển khai |
+| `docs/ThietKe_MVP_1611.md` | Thiết kế chi tiết theo bản chốt: bảng dữ liệu, trạng thái, xử lý, API, màn hình |
+| `docs/api/openapi.yaml` | Đặc tả API chuẩn OpenAPI 3.1 (63 đường dẫn, 75 thao tác) |
 | `docs/00a_QuyTrinhAgile.md` | **Quy trình Agile/Scrum**: vai trò, Product Backlog, kế hoạch 5 sprint, phân công nhóm, DoR/DoD, các sự kiện Scrum, mẫu biên bản |
 | `docs/agile/ProductBacklog.csv` | Product Backlog để nhập vào Jira/Trello (phân cách bằng dấu phẩy) |
 | `docs/agile/ProductBacklog.xlsx` | Cùng Product Backlog, dạng Excel để đọc và in (tổng story point theo sprint); sinh từ file CSV bằng `cd docs/tools && npm run backlog` |
 | `docs/00…09_*.md` | Từng chương: kế hoạch, khảo sát, yêu cầu, phân tích, thiết kế, cài đặt, kiểm thử, triển khai, **kịch bản demo**, hướng phát triển |
 | `docs/hientrang/` | Sơ đồ tổ chức và quy trình hiện tại (draw.io), sinh bằng `python3 docs/hientrang/generate_hientrang.py` |
 | `docs/usecase/` | Sơ đồ use case tổng quát (draw.io), sinh bằng `python3 docs/usecase/generate_usecase.py` |
-| `docs/dfd/` | 13 sơ đồ DFD + sơ đồ phối hợp (draw.io), sinh bằng `python3 docs/dfd/generate_dfd.py` |
-| `docs/erd/` | Sơ đồ ERD (draw.io) sinh từ `app/src/db/schema.sql` bằng `python3 docs/erd/generate_erd.py` |
-| `docs/images/` | Ảnh chụp màn hình hệ thống |
+| `docs/dfd/` | 20 sơ đồ DFD (18 YC MVP + YC19, YC20) + sơ đồ phối hợp (draw.io), sinh bằng `python3 docs/dfd/generate_dfd.py` |
+| `docs/sodo/` | 26 sơ đồ mô hình (draw.io): quy trình, Scrum, kế hoạch sprint, hoạt động (quy trình mới, xử lý thay đổi requirement), trạng thái (test case, requirement, Test Run, đề xuất AI, kiểm thử lại), kiến trúc, triển khai, lớp, tuần tự, luồng màn hình, bảo mật, tháp kiểm thử, CI – sinh bằng `python3 docs/sodo/generate_sodo.py` |
+| `docs/erd/` | Sơ đồ ERD 27 bảng (draw.io) sinh từ `app/src/db/schema.sql` bằng `python3 docs/erd/generate_erd.py`; mở `app.db` bằng DB Browser for SQLite để xem dữ liệu |
+| `docs/images/` | Ảnh chụp màn hình hệ thống, chụp lại bằng `cd automation && APP_URL=http://localhost:3000 node tools/screenshots.js` |
 | `app/` | Mã nguồn hệ thống (Node.js, Express, SQLite) + unit/API test + E2E Playwright |
-| `automation/` | Playwright worker chạy script do AI sinh + bộ test mẫu Page Object Model cho Sauce Demo |
+| `automation/` | Playwright worker cho YC19 (mở rộng) + bộ test mẫu Page Object Model cho Sauce Demo + công cụ chụp ảnh màn hình |
 | `.github/workflows/ci.yml` | CI/CD GitHub Actions |
 | `Dockerfile`, `docker-compose.yml` | Triển khai bằng Docker |
 | `ChayDemo.command`, `ChayKiemThu.command` | Bấm đúp để chạy demo / chạy toàn bộ kiểm thử |
@@ -62,8 +70,8 @@ Mặc định AI chạy chế độ **mock** (offline, không cần API key). D�
 ## Kiểm thử
 
 ```bash
-cd app && npm test             # 64 unit + API test
-cd app && npm run test:e2e     # 9 kịch bản E2E bằng Playwright
+cd app && npm test             # 129 test: 33 unit, 85 API, 11 phần mở rộng
+cd app && npm run test:e2e     # 11 kịch bản E2E bằng Playwright
 cd automation && npm run test:samples   # 8 test Playwright mẫu trên saucedemo.com
 ```
 
@@ -79,4 +87,4 @@ cd docs/tools && npm install && npm run build && npm run docx
 
 ## Công nghệ
 
-Node.js · Express 5 · SQLite (better-sqlite3) · Zod · JWT · bcrypt · helmet · Chart.js · ExcelJS · **Playwright** · Gemini / Claude / OpenAI API · Docker · GitHub Actions · Mermaid
+Node.js · Express 5 · SQLite (better-sqlite3) · Zod · JWT · bcrypt · helmet · Chart.js · ExcelJS · **Playwright** · Gemini / Claude / OpenAI API · Jira Cloud REST API · Docker · GitHub Actions · draw.io · OpenAPI 3.1

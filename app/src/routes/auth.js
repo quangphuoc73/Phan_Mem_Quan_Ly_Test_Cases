@@ -9,10 +9,11 @@ const { AppError } = require('../utils/errors');
 
 const router = express.Router();
 
-// Chống dò mật khẩu: tối đa 10 lần đăng nhập / 15 phút / IP
+// Chống dò mật khẩu: tối đa 10 lần đăng nhập SAI / 15 phút / IP (lần đăng nhập đúng không bị đếm)
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: process.env.NODE_ENV === 'test' ? 1000 : 10,
+  skipSuccessfulRequests: true,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Đăng nhập sai quá nhiều lần, vui lòng thử lại sau 15 phút' },

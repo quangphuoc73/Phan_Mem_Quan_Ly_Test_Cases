@@ -1,27 +1,35 @@
 // Khởi động ứng dụng, khung giao diện và điều hướng (hash router).
-import { state, api, esc, can, logout, safeSet, toastError, bind, LABEL, busy, linkLabels } from './core.js';
+import { state, api, esc, can, logout, safeSet, toastError, bind, LABEL, busy, linkLabels, feature } from './core.js';
 import { renderDashboard } from './pages/dashboard.js';
 import { renderSprints } from './pages/sprints.js';
 import { renderStories, renderStoryDetail } from './pages/stories.js';
 import { renderTestCases } from './pages/testcases.js';
 import { renderReview } from './pages/review.js';
-import { renderRuns, renderParams, renderAiLogs, renderUsers, renderProjects, renderAudit } from './pages/admin.js';
+import { renderSuites } from './pages/suites.js';
+import { renderRuns, renderRunDetail } from './pages/runs.js';
+import { renderProposals } from './pages/proposals.js';
+import { renderRegression } from './pages/regression.js';
+import { renderRetests } from './pages/retests.js';
+import { renderParams, renderAiLogs, renderUsers, renderProjects, renderAudit } from './pages/admin.js';
 
 const app = document.getElementById('app');
 
 const NAV = [
   { group: 'Nghiệp vụ' },
   { hash: '#/dashboard', label: 'Tổng quan & báo cáo', icon: '📊' },
-  { hash: '#/sprints', label: 'Sprint (Agile)', icon: '🏃' },
-  { hash: '#/stories', label: 'User story', icon: '📝' },
-  { hash: '#/testcases', label: 'Tra cứu test case', icon: '🧪' },
+  { hash: '#/stories', label: 'Requirement (Jira)', icon: '📝' },
+  { hash: '#/testcases', label: 'Test case', icon: '🧪' },
   { hash: '#/review', label: 'Duyệt test case', icon: '✅', perm: 'testcase:review', badge: true },
-  { hash: '#/runs', label: 'Kết quả chạy test', icon: '▶️' },
+  { hash: '#/suites', label: 'Test Suite', icon: '🗂️' },
+  { hash: '#/runs', label: 'Test Run', icon: '▶️' },
+  { hash: '#/proposals', label: 'Đề xuất AI', icon: '✨', perm: 'ai:use' },
+  { hash: '#/retests', label: 'Sửa lỗi & kiểm thử lại', icon: '🔁' },
+  { hash: '#/sprints', label: 'Sprint (mở rộng)', icon: '🏃', flag: 'sprint' },
   { group: 'AI & quy định' },
   { hash: '#/ai-logs', label: 'Nhật ký AI', icon: '🤖', perm: 'ailog:view' },
   { hash: '#/params', label: 'Thay đổi quy định', icon: '⚙️' },
   { group: 'Quản trị', perm: 'audit:view' },
-  { hash: '#/projects', label: 'Dự án & module', icon: '📁', perm: 'project:manage' },
+  { hash: '#/projects', label: 'Dự án & module', icon: '📁', perm: 'jira:import' },
   { hash: '#/users', label: 'Người dùng', icon: '👤', perm: 'user:manage' },
   { hash: '#/audit', label: 'Nhật ký hoạt động', icon: '🛡️', perm: 'audit:view' },
 ];
@@ -33,7 +41,12 @@ const ROUTES = [
   [/^#\/stories\/(\d+)$/, renderStoryDetail],
   [/^#\/testcases$/, renderTestCases],
   [/^#\/review$/, renderReview],
+  [/^#\/suites$/, renderSuites],
   [/^#\/runs$/, renderRuns],
+  [/^#\/runs\/(\d+)$/, renderRunDetail],
+  [/^#\/proposals$/, renderProposals],
+  [/^#\/regressions\/(\d+)$/, renderRegression],
+  [/^#\/retests$/, renderRetests],
   [/^#\/params$/, renderParams],
   [/^#\/ai-logs$/, renderAiLogs],
   [/^#\/users$/, renderUsers],
@@ -44,7 +57,7 @@ const ROUTES = [
 export async function refreshProjects() {
   state.projects = await api('/projects');
   if (state.projectId && !state.projects.some((p) => p.id === state.projectId)) state.projectId = 0;
-  if (!currentProject()?.sprints.some((s) => s.id === state.sprintId)) state.sprintId = 0;
+  if (!currentProject()?.sprints?.some((s) => s.id === state.sprintId)) state.sprintId = 0;
 }
 
 export const currentProject = () => state.projects.find((p) => p.id === state.projectId);
@@ -59,7 +72,7 @@ export function renderSprintSwitch() {
   const el = document.getElementById('sprint-switch');
   if (!el) return;
   const p = currentProject();
-  el.hidden = !p;
+  el.hidden = !p || !feature('sprint'); // YC20 ngoài MVP: chỉ hiện khi bật SPRINT_ENABLED
   el.innerHTML = `<option value="0">Mọi sprint</option>` + (p?.sprints || [])
     .map((s) => `<option value="${s.id}" ${s.id === state.sprintId ? 'selected' : ''}>${esc(s.name)}${s === activeSprint(p) ? ' (đang chạy)' : ''}</option>`).join('');
 }
@@ -77,10 +90,10 @@ function renderLogin() {
   <div class="login-wrap">
     <section class="login-hero">
       <div class="brand"><div class="brand-logo">✓</div> AI TestCase Manager</div>
-      <h1>Quản lý test case<br>có hỗ trợ trí tuệ nhân tạo</h1>
-      <p>Từ user story và acceptance criteria, AI sinh test case trong vài giây. Con người xem lại, chỉnh sửa và duyệt.
-      Test case đã duyệt được chuyển thành script Playwright và chạy tự động.</p>
-      <div class="flow"><span>📝 User story</span><span>🤖 AI sinh test case</span><span>✍️ Tester chỉnh sửa</span><span>✅ QA Lead duyệt</span><span>▶️ Chạy test</span><span>📊 Báo cáo</span></div>
+      <h1>Quản lý kiểm thử<br>có hỗ trợ trí tuệ nhân tạo</h1>
+      <p>Requirement đồng bộ một chiều từ Jira. AI sinh test case từ acceptance criteria; khi requirement đổi, AI chỉ ra test nào cần sửa,
+      test nào cần chạy lại. Mọi thay đổi do con người duyệt.</p>
+      <div class="flow"><span>📝 Requirement từ Jira</span><span>🤖 AI sinh test case</span><span>✅ QA Lead duyệt</span><span>▶️ Test Run</span><span>🔁 Requirement đổi → AI phân tích ảnh hưởng</span><span>📊 Báo cáo</span></div>
       <p class="small" style="margin-top:32px">Đồ án môn SE104 – Nhập môn Công nghệ phần mềm · Trường ĐH Công nghệ Thông tin – ĐHQG-HCM</p>
     </section>
     <section class="login-form">
@@ -123,7 +136,7 @@ function renderLogin() {
 
 function renderLayout() {
   const u = state.user;
-  const navHtml = NAV.filter((n) => !n.perm || can(n.perm))
+  const navHtml = NAV.filter((n) => (!n.perm || can(n.perm)) && (!n.flag || feature(n.flag)))
     .map((n) => n.group
       ? `<div class="nav-group">${esc(n.group)}</div>`
       : `<a href="${n.hash}" data-nav="${n.hash}"><span>${n.icon}</span>${esc(n.label)}${n.badge ? '<span class="badge" id="review-badge" hidden></span>' : ''}</a>`)
@@ -138,7 +151,6 @@ function renderLayout() {
       <div class="small" style="padding:0 10px">
         <div>Provider: <b style="color:#fff">${esc(ai.provider)}</b></div>
         <div>Model: ${esc(ai.model)}</div>
-        <div>Playwright worker: ${ai.runnerAvailable ? '🟢 sẵn sàng' : '⚪ chưa cài'}</div>
       </div>
     </aside>
     <div class="main">
@@ -164,6 +176,7 @@ function renderLayout() {
   document.getElementById('project-switch').addEventListener('change', (e) => {
     state.projectId = Number(e.target.value);
     state.sprintId = 0;
+    state.runId = 0;
     safeSet('projectId', state.projectId || null);
     safeSet('sprintId', null);
     renderSprintSwitch();
@@ -200,7 +213,7 @@ async function route() {
   document.querySelectorAll('[data-nav]').forEach((a) => a.classList.toggle('active', hash.startsWith(a.dataset.nav)));
   const page = document.getElementById('page');
   const match = ROUTES.find(([re]) => re.test(hash));
-  if (!match) return (location.hash = '#/dashboard');
+  if (!match || (hash === '#/sprints' && !feature('sprint'))) return (location.hash = '#/dashboard');
   page.innerHTML = '<div class="empty"><span class="spinner dark"></span></div>';
   try {
     await match[1](page, ...hash.match(match[0]).slice(1));

@@ -9,6 +9,6 @@ class AppError extends Error {
 const badRequest = (msg, details) => new AppError(400, msg, details);
 const forbidden = (msg = 'Bạn không có quyền thực hiện thao tác này') => new AppError(403, msg);
 const notFound = (msg = 'Không tìm thấy dữ liệu') => new AppError(404, msg);
-const conflict = (msg) => new AppError(409, msg);
+const conflict = (msg, details) => new AppError(409, msg, details);
 
 module.exports = { AppError, badRequest, forbidden, notFound, conflict };

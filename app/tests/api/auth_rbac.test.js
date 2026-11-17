@@ -1,7 +1,7 @@
-// IT-01 → IT-10, IT-43 → IT-45: Đăng nhập, xác thực, phân quyền (RBAC)
+// IT-01 → IT-14: Đăng nhập, xác thực, phân quyền theo 5 vai trò toàn cục (mục 5 đặc tả, QĐ11)
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { app, request, as, newStory } = require('../helpers');
+const { app, request, as } = require('../helpers');
 
 test('IT-01 đăng nhập đúng trả về JWT, không trả về mật khẩu băm', async () => {
   const res = await request(app).post('/api/auth/login').send({ username: 'tester', password: 'Tester@123' });
@@ -33,11 +33,11 @@ test('IT-05 QĐ4: Tester không được duyệt test case', async () => {
   assert.equal(res.status, 403);
 });
 
-test('IT-06 Developer chỉ được xem, không được lập user story', async () => {
+test('IT-06 Developer chỉ được xem: không sinh AI, không đồng bộ Jira', async () => {
   const dev = await as('dev');
   assert.equal((await dev.get('/api/stories')).status, 200);
-  assert.equal((await dev.post('/api/stories').send(newStory())).status, 403);
   assert.equal((await dev.post('/api/stories/1/generate')).status, 403);
+  assert.equal((await dev.post('/api/projects/1/jira-sync')).status, 403);
 });
 
 test('IT-07 Tester không được thay đổi quy định', async () => {
@@ -71,31 +71,49 @@ test('IT-10 header bảo mật (helmet) và CSP được bật', async () => {
   assert.equal(res.headers['x-content-type-options'], 'nosniff');
 });
 
-test('IT-43 PO/BA lập user story và lập kế hoạch sprint (NV1, NV9)', async () => {
+test('IT-11 PO/BA chỉ xem requirement: không đồng bộ Jira, không xử lý requirement Cần kiểm tra', async () => {
   const po = await as('poba');
-  assert.equal((await po.post('/api/stories').send(newStory())).status, 201);
-  const day = (o) => new Date(Date.now() + o * 86400000).toLocaleDateString('sv-SE');
-  const sprint = await po.post('/api/projects/1/sprints').send({ name: 'Sprint PO', start_date: day(200), end_date: day(210) });
-  assert.equal(sprint.status, 201);
+  assert.equal((await po.get('/api/stories?project_id=1')).status, 200);
+  assert.equal((await po.post('/api/projects/1/jira-sync')).status, 403);
+  assert.equal((await po.post('/api/jira/import').send({ key: 'HRM' })).status, 403);
+  assert.equal((await po.post('/api/stories/1/check-decision').send({ decision: 'KEEP' })).status, 403);
 });
 
-test('IT-44 PO/BA không viết, duyệt, chạy test case và không gọi AI', async () => {
+test('IT-12 PO/BA không viết, duyệt, chạy test case, không gọi AI, không lập Test Run', async () => {
   const po = await as('poba');
   assert.equal((await po.post('/api/testcases').send({})).status, 403);
   assert.equal((await po.post('/api/stories/1/generate')).status, 403);
+  assert.equal((await po.post('/api/stories/1/analyze')).status, 403);
   assert.equal((await po.post('/api/testcases/1/review').send({ decision: 'APPROVED' })).status, 403);
-  assert.equal((await po.post('/api/testcases/1/runs').send({ result: 'PASS' })).status, 403);
-  assert.equal((await po.post('/api/testcases/1/script/generate')).status, 403);
+  assert.equal((await po.post('/api/runs').send({})).status, 403);
+  assert.equal((await po.post('/api/runs/3/items/1/executions').send({ result: 'PASS' })).status, 403);
+  assert.equal((await po.post('/api/proposals/1/decision').send({ decision: 'ACCEPT' })).status, 403);
   assert.equal((await po.put('/api/parameters/MAX_TC_PER_STORY').send({ value: 5 })).status, 403);
   assert.equal((await po.get('/api/users')).status, 403);
   assert.equal((await po.get('/api/ai-logs')).status, 403);
 });
 
-test('IT-45 PO/BA xem được test case, báo cáo; Admin tạo được tài khoản PO/BA', async () => {
+test('IT-13 PO/BA xem được test case, Test Run, báo cáo; Admin tạo được tài khoản PO/BA', async () => {
   const po = await as('poba');
   assert.equal((await po.get('/api/testcases')).status, 200);
+  assert.equal((await po.get('/api/runs')).status, 200);
   assert.equal((await po.get('/api/reports/summary')).status, 200);
   const admin = await as('admin');
   const created = await admin.post('/api/users').send({ username: 'ba.moi', full_name: 'BA mới', role: 'PO_BA', password: 'Matkhau123' });
   assert.equal(created.status, 201);
+});
+
+test('IT-14 Quyền mới (mục 5): chỉ QA Lead lập Test Run (testrun:manage), quyết định đề xuất AI và xác nhận regression (proposal:review); chỉ Developer báo đã sửa', async () => {
+  const tester = await as('tester');
+  const dev = await as('dev');
+  assert.equal((await tester.post('/api/runs').send({})).status, 403);
+  assert.equal((await tester.post('/api/runs/3/close')).status, 403);
+  assert.equal((await tester.post('/api/proposals/1/decision').send({ decision: 'ACCEPT' })).status, 403);
+  assert.equal((await tester.post('/api/regressions/1/confirm').send({})).status, 403);
+  assert.equal((await tester.post('/api/executions/1/fix').send({ build: '1' })).status, 403);
+  assert.equal((await dev.post('/api/runs/3/items/1/executions').send({ result: 'PASS' })).status, 403);
+  // QA Lead qua được kiểm tra quyền (lỗi còn lại là lỗi dữ liệu, không phải 403)
+  const qa = await as('qalead');
+  assert.notEqual((await qa.post('/api/runs').send({})).status, 403);
+  assert.notEqual((await qa.post('/api/proposals/999/decision').send({ decision: 'ACCEPT' })).status, 403);
 });

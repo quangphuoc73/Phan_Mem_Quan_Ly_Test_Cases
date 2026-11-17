@@ -172,3 +172,29 @@ pre.block { background: #0f172a; color: #e2e8f0; padding: 12px 14px; border-radi
   .content, .topbar { padding-left: 16px; padding-right: 16px; }
   .kv { grid-template-columns: 1fr; }
 }
+
+/* Đặc tả chốt 16/11: trạng thái requirement, cờ, Test Run, đề xuất AI, regression, kiểm thử lại */
+.pill.NORMAL, .pill.CONFIRMED, .pill.ACCEPTED, .pill.CLOSED_FIX { background: var(--success-soft); color: var(--success); }
+.pill.MISSING_AC, .pill.WAITING, .pill.PENDING, .pill.MEDIUM { background: var(--warning-soft); color: var(--warning); }
+.pill.NEEDS_CHECK, .pill.REOPENED, .pill.REJECTED, .pill.HIGH { background: var(--danger-soft); color: var(--danger); }
+.pill.ARCHIVED, .pill.OUTDATED, .pill.CLOSED, .pill.LOW { background: #eef0f5; color: #475069; }
+.pill.OPEN, .pill.RUN, .pill.LINKED { background: var(--primary-soft); color: var(--primary); }
+.pill.flag { background: #fff1d6; color: #92400e; }
+.pill.UPDATE { background: var(--danger-soft); color: var(--danger); }
+.pill.MISSING { background: var(--violet-soft); color: var(--violet); }
+.pill.RERUN { background: var(--primary-soft); color: var(--primary); }
+.pill.CLARIFY { background: var(--warning-soft); color: var(--warning); }
+.pill.REGRESSION, .pill.PROPOSAL { background: var(--violet-soft); color: var(--violet); }
+.pill.RETEST { background: #fff1d6; color: #92400e; }
+.ac-list { list-style: none; padding: 0; margin: 0; }
+.ac-list li { padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 6px; background: #fbfcfe; }
+.ac-list li.added { background: var(--success-soft); border-color: #b7e4c7; }
+.ac-list li.removed { background: var(--danger-soft); border-color: #f3c2c5; text-decoration: line-through; }
+.ac-pick label { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; margin: 4px 0; }
+.ac-pick input { width: auto; margin-top: 3px; }
+.warn-list { margin: 4px 0 0; padding-left: 18px; color: var(--warning); font-size: 12px; }
+.progress { height: 8px; background: #eef0f5; border-radius: 99px; overflow: hidden; min-width: 90px; }
+.progress > span { display: block; height: 100%; background: var(--primary); }
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.compare > div { border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+.compare h4 { margin: 0 0 6px; font-size: 13px; color: var(--muted); }

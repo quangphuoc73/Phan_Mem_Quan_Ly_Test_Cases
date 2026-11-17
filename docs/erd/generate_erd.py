@@ -1,82 +1,85 @@
 #!/usr/bin/env python3
-"""Sinh sơ đồ ERD (ký hiệu chân chim – crow's foot) dạng draw.io + SVG, ĐỌC TRỰC TIẾP từ app/src/db/schema.sql.
+"""Sinh sơ đồ ERD (ký hiệu chân chim – crow's foot) bằng draw.io, ĐỌC TRỰC TIẾP từ app/src/db/schema.sql.
 
-Cột, kiểu dữ liệu, khóa chính (PK), khóa ngoại (FK), duy nhất (UK), NOT NULL và bản số của mỗi quan hệ
-đều lấy từ lược đồ thật (nạp schema.sql vào SQLite trong bộ nhớ rồi đọc PRAGMA), nên sơ đồ luôn khớp CSDL.
-Script dừng với lỗi nếu có khóa ngoại trong lược đồ mà sơ đồ chưa vẽ và chưa liệt kê trong OMITTED.
+- Cột, kiểu dữ liệu, PK, FK, UK, NOT NULL, bản số của từng quan hệ đều lấy từ lược đồ thật (nạp schema.sql vào SQLite
+  trong bộ nhớ rồi đọc PRAGMA), nên sơ đồ luôn khớp CSDL.
+- Mỗi bảng dùng hình "table" chuẩn của draw.io; đường nối đi từ dòng khóa ngoại tới dòng khóa chính, draw.io tự định tuyến.
+- Hình SVG được XUẤT BẰNG draw.io CLI (draw.io Desktop) từ chính file .drawio, nên hình trong báo cáo giống hệt khi mở bằng draw.io.
+- Đồng thời sinh mục "Lược đồ quan hệ" và "Từ điển dữ liệu" của chương 4 (docs/04_ThietKe.md, giữa hai dấu
+  <!-- SCHEMA:BEGIN --> và <!-- SCHEMA:END -->); ý nghĩa từng cột lấy từ chú thích "--" trong schema.sql.
 
 Bản số:
   - Phía bảng cha: FK NOT NULL → "đúng 1" (||); FK cho phép NULL → "0 hoặc 1" (|o)
-  - Phía bảng con: FK có UNIQUE → "0 hoặc 1" (o|); ngược lại → "0 hoặc nhiều" (o{)
+  - Phía bảng con: FK có UNIQUE → "0 hoặc 1"; ngược lại → "0 hoặc nhiều" (o{)
 
-Chạy:  python3 docs/erd/generate_erd.py   → ghi ERD_CSDL.drawio và ERD_CSDL.svg cạnh file này.
-Mở / sửa: app.diagrams.net hoặc draw.io Desktop.
+Chạy:  python3 docs/erd/generate_erd.py   (cần draw.io Desktop: /Applications/draw.io.app hoặc lệnh drawio)
 """
-import math
+import re
+import shutil
 import sqlite3
+import subprocess
 from pathlib import Path
 from xml.sax.saxutils import escape
 
 OUT = Path(__file__).parent
-SCHEMA = OUT.parent.parent / 'app' / 'src' / 'db' / 'schema.sql'
+DOCS = OUT.parent
+SCHEMA = DOCS.parent / 'app' / 'src' / 'db' / 'schema.sql'
+CHAPTER = DOCS / '04_ThietKe.md'
 FONT = 'Times New Roman'
-W, HEAD, ROW = 260, 30, 22
 
-# Vị trí bảng (x, y). Bố cục 4 cột, các quan hệ đi qua "kênh" giữa các cột để hạn chế cắt nhau.
-C1, C2, C3, C4 = 40, 380, 720, 1120
-DX = 60  # dịch toàn bộ sang phải để nhãn ở kênh bên trái không bị cắt
-POS = {
-    'projects': (C1, 60), 'modules': (C1, 300), 'sprints': (C1, 470), 'audit_logs': (C1, 720), 'parameters': (C1, 980),
-    'user_stories': (C2, 60),
-    'test_cases': (C3, 60), 'ai_logs': (C3, 520),
-    'test_case_versions': (C4, 60), 'reviews': (C4, 290), 'automation_scripts': (C4, 500), 'test_runs': (C4, 760),
-    'users': (550, 1050),
-}
-
-# Quan hệ: (bảng con, cột FK, tên quan hệ, đường đi). Đường đi là danh sách điểm từ bảng CHA tới bảng CON;
-# 'pk' = hàng khóa chính của bảng cha, 'fk' = hàng khóa ngoại của bảng con, số = tọa độ cố định.
-# Phần tử thứ 5 (tùy chọn) 'end': đặt nhãn ở đoạn cuối, gần bảng con (khi nhiều quan hệ chung một trục).
-REL = [
-    ('modules', 'project_id', 'gồm', [('L', 'pk'), (0, 'pk'), (0, 'fk'), ('L', 'fk')]),
-    ('sprints', 'project_id', 'chia thành', [('L', 'pk'), (0, 'pk'), (0, 'fk'), ('L', 'fk')]),
-    ('user_stories', 'project_id', 'chứa', [('R', 'pk'), (320, 'pk'), (320, 'fk'), ('L', 'fk')]),
-    ('user_stories', 'module_id', 'phân loại', [('R', 'pk'), (345, 'pk'), (345, 'fk'), ('L', 'fk')]),
-    ('user_stories', 'sprint_id', 'gồm', [('R', 'pk'), (360, 'pk'), (360, 'fk'), ('L', 'fk')]),
-    ('test_cases', 'story_id', 'có', [('R', 'pk'), (665, 'pk'), (665, 'fk'), ('L', 'fk')]),
-    ('ai_logs', 'story_id', 'đầu vào', [('R', 'pk'), (665, 'pk'), (665, 'fk'), ('L', 'fk')]),
-    ('test_cases', 'ai_log_id', 'sinh ra', [('L', 'pk'), (695, 'pk'), (695, 'fk'), ('L', 'fk')]),
-    ('test_case_versions', 'test_case_id', 'phiên bản', [('R', 'pk'), (1000, 'pk'), (1000, 'fk'), ('L', 'fk')], 'end'),
-    ('reviews', 'test_case_id', 'được duyệt', [('R', 'pk'), (1000, 'pk'), (1000, 'fk'), ('L', 'fk')], 'end'),
-    ('automation_scripts', 'test_case_id', 'có script', [('R', 'pk'), (1000, 'pk'), (1000, 'fk'), ('L', 'fk')], 'end'),
-    ('test_runs', 'test_case_id', 'kết quả', [('R', 'pk'), (1000, 'pk'), (1000, 'fk'), ('L', 'fk')], 'end'),
-    ('automation_scripts', 'ai_log_id', 'sinh ra', [('R', 'fk'), ('L', 'fk')]),
-    ('user_stories', 'created_by', 'tạo', [('T', 600), ('B', 600)]),
-    ('ai_logs', 'user_id', 'gọi AI', [('T', 760), ('B', 760)]),
-    ('reviews', 'reviewer_id', 'duyệt', [('R', 1100), (1400, 1100), (1400, 'fk'), ('R', 'fk')]),
-    ('test_runs', 'executed_by', 'chạy', [('R', 1130), (1420, 1130), (1420, 'fk'), ('R', 'fk')]),
-    ('audit_logs', 'user_id', 'thao tác', [('L', 1100), (340, 1100), (340, 'fk'), ('R', 'fk')]),
-    ('parameters', 'updated_by', 'cập nhật', [('L', 1130), (320, 1130), (320, 'fk'), ('R', 'fk')]),
+# Nhóm bảng theo nghiệp vụ, mỗi nhóm một cột (từ trái sang phải) và màu riêng
+GROUPS = [
+    ('Requirement, dự án, người dùng', '#dae8fc', '#6c8ebf',
+     ['projects', 'modules', 'project_members', 'users', 'sync_logs', 'parameters', 'audit_logs', 'sprints']),
+    ('Requirement và AI', '#e1d5e7', '#9673a6',
+     ['user_stories', 'requirement_versions', 'impact_analyses', 'ai_proposals', 'ai_logs']),
+    ('Test case', '#d5e8d4', '#82b366',
+     ['test_cases', 'test_case_acs', 'test_case_versions', 'recheck_logs', 'reviews', 'test_suites', 'test_suite_items', 'automation_scripts']),
+    ('Test Run, regression, kiểm thử lại', '#fff2cc', '#d6b656',
+     ['test_runs', 'test_run_items', 'test_executions', 'fix_reports', 'regression_sets', 'regression_items']),
 ]
-# Các FK tới users chỉ để ghi nhận người tạo/sửa: không vẽ cho sơ đồ dễ đọc, có ghi chú dưới sơ đồ.
-OMITTED = {('projects', 'created_by'), ('test_cases', 'created_by'), ('test_case_versions', 'changed_by'),
-           ('automation_scripts', 'created_by'), ('test_runs', 'fixed_by')}
+EXT = {'sprints', 'automation_scripts'}  # ngoài MVP (YC20, YC19)
+
+# Khóa ngoại chỉ ghi nhận "ai làm" – bản rút gọn không vẽ cho dễ đọc (có ghi chú dưới hình); bản đầy đủ vẽ hết
+WHO = {'created_by', 'changed_by', 'updated_by', 'user_id', 'reviewer_id', 'executed_by', 'decided_by', 'confirmed_by',
+       'closed_by', 'reported_by', 'check_kept_by', 'assignee_id'}
+
+# Bản rút gọn: chỉ hiện khóa và vài thuộc tính tiêu biểu
+EXTRA = {
+    'users': ['username', 'role'], 'projects': ['code', 'jira_key'], 'modules': ['name'], 'project_members': [],
+    'sync_logs': ['source', 'status'], 'parameters': ['value'], 'audit_logs': ['action'], 'sprints': ['name'],
+    'user_stories': ['code', 'title', 'current_version', 'archived', 'check_reason'],
+    'requirement_versions': ['version', 'changes'], 'impact_analyses': ['from_version', 'to_version'],
+    'ai_proposals': ['type', 'source_part', 'status'], 'ai_logs': ['task', 'status'],
+    'test_cases': ['code', 'status', 'version', 'req_version', 'needs_review'], 'test_case_acs': [],
+    'test_case_versions': ['version'], 'recheck_logs': ['reason'], 'reviews': ['decision'], 'test_suites': ['name'],
+    'test_suite_items': [], 'automation_scripts': [], 'test_runs': ['run_type', 'build', 'status'],
+    'test_run_items': ['tc_version'], 'test_executions': ['result', 'tc_version'], 'fix_reports': ['build', 'status'],
+    'regression_sets': ['status'], 'regression_items': ['priority', 'mandatory', 'removed'],
+}
 
 
 def attr(s):
-    return escape(s, {'"': '&quot;'})
+    return escape(str(s), {'"': '&quot;', '\n': '&#10;'})
 
 
+# ---------------------------------------------------------------------------
+# Đọc lược đồ thật và chú thích
+# ---------------------------------------------------------------------------
 def read_schema():
+    sql = SCHEMA.read_text(encoding='utf-8')
     db = sqlite3.connect(':memory:')
-    db.executescript(SCHEMA.read_text(encoding='utf-8'))
+    db.executescript(sql)
     tables = {}
-    for (name,) in db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"):
-        cols = [dict(name=r[1], type=r[2] or 'TEXT', notnull=bool(r[3]) or bool(r[5]), pk=bool(r[5]))
+    for (name,) in db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY rowid"):
+        cols = [dict(name=r[1], type=r[2] or 'TEXT', notnull=bool(r[3]) or bool(r[5]), pk=bool(r[5]), default=r[4])
                 for r in db.execute(f'PRAGMA table_info({name})')]
-        fks = {r[3]: r[2] for r in db.execute(f'PRAGMA foreign_key_list({name})')}  # cột → bảng cha
+        fks = {}
+        for r in db.execute(f'PRAGMA foreign_key_list({name})'):
+            fks[r[3]] = dict(table=r[2], on_delete=r[6])
         uniq = set()
         for idx in db.execute(f'PRAGMA index_list({name})'):
-            if idx[2]:  # unique
+            if idx[2]:
                 icols = [r[2] for r in db.execute(f'PRAGMA index_info({idx[1]})')]
                 if len(icols) == 1:
                     uniq.add(icols[0])
@@ -84,155 +87,244 @@ def read_schema():
             c['fk'] = fks.get(c['name'])
             c['uk'] = c['name'] in uniq and not c['pk']
         tables[name] = cols
-    return tables
+    return tables, comments(sql)
 
 
-def row_y(table, col, tables):
-    i = next(k for k, c in enumerate(tables[table]) if c['name'] == col)
-    return POS[table][1] + HEAD + i * ROW + ROW / 2
-
-
-def height(table, tables):
-    return HEAD + len(tables[table]) * ROW
-
-
-def resolve(points, parent, child, fk, tables):
-    """Đổi đặc tả đường đi thành tọa độ thật."""
-    pk = next(c['name'] for c in tables[parent] if c['pk'])
-    out = []
-    for i, (a, b) in enumerate(points):
-        tbl = parent if i == 0 else child
-        x0, y0 = POS[tbl]
-        y = row_y(parent, pk, tables) if b == 'pk' else row_y(child, fk, tables) if b == 'fk' else b
-        if a == 'L':
-            out.append((x0, y))
-        elif a == 'R':
-            out.append((x0 + W, y))
-        elif a == 'T':
-            out.append((b, y0))
-        elif a == 'B':
-            out.append((b, y0 + height(tbl, tables)))
-        else:
-            out.append((a, y))
+def comments(sql):
+    """Chú thích của bảng (dòng -- ngay trước CREATE TABLE) và của từng cột (-- cuối dòng)."""
+    out = {}
+    lines = sql.splitlines()
+    for i, line in enumerate(lines):
+        m = re.match(r'CREATE TABLE IF NOT EXISTS (\w+)', line)
+        if not m:
+            continue
+        name = m.group(1)
+        j, head = i - 1, []
+        while j >= 0 and lines[j].startswith('--'):
+            head.insert(0, lines[j].lstrip('- ').strip())
+            j -= 1
+        cols = {}
+        k = i + 1
+        while k < len(lines) and not lines[k].startswith(');'):
+            cm = re.match(r'\s+(\w+)\s+[A-Z].*?--\s*(.+)$', lines[k])
+            if cm and cm.group(1) not in ('PRIMARY', 'UNIQUE', 'CHECK'):
+                cols[cm.group(1)] = cm.group(2).strip()
+            k += 1
+        checks = {}
+        body = '\n'.join(lines[i:k])
+        for cm in re.finditer(r'(\w+)\s+IN\s*\(([^)]*)\)', body):
+            checks[cm.group(1)] = cm.group(2).replace("'", '')
+        out[name] = dict(head=' '.join(head), cols=cols, checks=checks)
     return out
 
 
 # ---------------------------------------------------------------------------
-class Out:
-    def __init__(self, w, h):
-        self.w, self.h, self.cells, self.svg, self.n = w, h, [], [], 1
-
-    def nid(self):
-        self.n += 1
-        return f'e{self.n}'
-
-
-def marker_svg(p, d, kind):
-    """Vẽ ký hiệu chân chim tại điểm p (trên cạnh bảng); d = vectơ đơn vị hướng từ bảng ra ngoài đường."""
-    (x, y), (dx, dy) = p, d
-    nx, ny = -dy, dx
-    at = lambda t, s=0: (x + dx * t + nx * s, y + dy * t + ny * s)
-    line = lambda a, b: f'<line x1="{a[0]:.1f}" y1="{a[1]:.1f}" x2="{b[0]:.1f}" y2="{b[1]:.1f}" stroke="#000" stroke-width="1.4"/>'
-    bar = lambda t: line(at(t, -7), at(t, 7))
-    circle = lambda t: f'<circle cx="{at(t)[0]:.1f}" cy="{at(t)[1]:.1f}" r="4.5" fill="#fff" stroke="#000" stroke-width="1.4"/>'
-    parts = []
-    if kind == 'one':           # ||  đúng 1
-        parts += [bar(7), bar(13)]
-    elif kind == 'zero_one':    # |o  0 hoặc 1
-        parts += [bar(7), circle(18)]
-    elif kind == 'zero_many':   # o{  0 hoặc nhiều
-        parts += [line(at(0, -8), at(12)), line(at(0, 8), at(12)), line(at(0), at(12)), circle(18)]
-    return ''.join(parts)
+# Dựng file draw.io
+# ---------------------------------------------------------------------------
+def key_label(c):
+    k = []
+    if c['pk']:
+        k.append('PK')
+    if c['fk']:
+        k.append('FK')
+    if c['uk']:
+        k.append('UK')
+    return ', '.join(k)
 
 
-DRAWIO_MARK = {'one': 'ERmandOne', 'zero_one': 'ERzeroToOne', 'zero_many': 'ERzeroToMany'}
+def shown_cols(table, cols, full):
+    if full:
+        return cols, 0
+    keep = [c for c in cols if c['pk'] or c['fk'] or c['uk'] or c['name'] in EXTRA.get(table, [])]
+    return keep, len(cols) - len(keep)
 
 
-def build():
-    tables = read_schema()
-    missing = [(t, c['name']) for t, cols in tables.items() for c in cols if c['fk']
-               and (t, c['name']) not in {(r[0], r[1]) for r in REL} and (t, c['name']) not in OMITTED]
-    assert not missing, f'Khóa ngoại chưa có trên sơ đồ: {missing}'
-    assert set(POS) == set(tables), f'Bảng chưa có vị trí: {set(tables) ^ set(POS)}'
+def build(tables, full):
+    W = 300 if full else 250
+    ROW, HEAD, GAP, COLGAP = (22, 30, 34, 150) if full else (24, 30, 36, 170)
+    fs = 12 if full else 14
+    cells = []
+    row_id = {}   # (bảng, cột) → id dòng
+    pk_row = {}   # bảng → id dòng khóa chính đầu tiên
+    nid = [1]
 
-    o = Out(1440 + DX, 1330)
-    o.svg.append(f'<text x="40" y="34" font-size="22" font-weight="bold">Sơ đồ ERD – CSDL AI TestCase Manager</text>')
-    o.cells.append(f'<mxCell id="title" value="&lt;b&gt;Sơ đồ ERD – CSDL AI TestCase Manager&lt;/b&gt;" style="text;html=1;align=left;fontFamily={FONT};fontSize=22;" vertex="1" parent="1"><mxGeometry x="40" y="10" width="700" height="34" as="geometry"/></mxCell>')
-    ids = {}
+    def new_id(prefix):
+        nid[0] += 1
+        return f'{prefix}{nid[0]}'
+
+    x = 40
+    for gname, fill, stroke, names in GROUPS:
+        y = 70
+        cells.append(f'<mxCell id="{new_id("g")}" value="{attr(gname)}" style="text;html=1;fontSize={fs + 4};fontStyle=1;'
+                     f'fontFamily={FONT};align=left;verticalAlign=middle;" vertex="1" parent="1">'
+                     f'<mxGeometry x="{x}" y="20" width="{W + 60}" height="30" as="geometry"/></mxCell>')
+        for t in names:
+            cols, hidden = shown_cols(t, tables[t], full)
+            rows = len(cols) + (1 if hidden else 0)
+            h = HEAD + rows * ROW
+            tid = new_id('t')
+            title = t + (' (mở rộng)' if t in EXT else '')
+            dash = 'dashed=1;' if t in EXT else ''
+            cells.append(f'<mxCell id="{tid}" value="{attr(title)}" style="shape=table;startSize={HEAD};container=1;collapsible=0;'
+                         f'childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;'
+                         f'fillColor={fill};strokeColor={stroke};fontFamily={FONT};fontSize={fs + 1};{dash}" vertex="1" parent="1">'
+                         f'<mxGeometry x="{x}" y="{y}" width="{W}" height="{h}" as="geometry"/></mxCell>')
+            ry = HEAD
+            for c in cols:
+                rid = new_id('r')
+                row_id[(t, c['name'])] = rid
+                if c['pk'] and t not in pk_row:
+                    pk_row[t] = rid
+                bold = 'fontStyle=1;' if c['pk'] else 'fontStyle=2;' if c['fk'] else ''
+                under = 'fontStyle=5;' if c['pk'] else ''
+                name = c['name'] + (f": {c['type']}{'' if not c['notnull'] or c['pk'] else ' NN'}" if full else '')
+                cells.append(f'<mxCell id="{rid}" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;'
+                             f'fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;'
+                             f'right=0;bottom={1 if c["pk"] else 0};" vertex="1" parent="{tid}">'
+                             f'<mxGeometry y="{ry}" width="{W}" height="{ROW}" as="geometry"/></mxCell>')
+                cells.append(f'<mxCell id="{new_id("k")}" value="{attr(key_label(c))}" style="shape=partialRectangle;connectable=0;'
+                             f'fillColor=none;top=0;left=0;bottom=0;right=0;{bold}overflow=hidden;html=1;fontFamily={FONT};fontSize={fs - 1};"'
+                             f' vertex="1" parent="{rid}"><mxGeometry width="52" height="{ROW}" as="geometry">'
+                             f'<mxRectangle width="52" height="{ROW}" as="alternateBounds"/></mxGeometry></mxCell>')
+                cells.append(f'<mxCell id="{new_id("n")}" value="{attr(name)}" style="shape=partialRectangle;connectable=0;fillColor=none;'
+                             f'top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;{under or bold}overflow=hidden;html=1;'
+                             f'fontFamily={FONT};fontSize={fs};" vertex="1" parent="{rid}"><mxGeometry x="52" width="{W - 52}" '
+                             f'height="{ROW}" as="geometry"><mxRectangle width="{W - 52}" height="{ROW}" as="alternateBounds"/>'
+                             f'</mxGeometry></mxCell>')
+                ry += ROW
+            if hidden:
+                rid = new_id('r')
+                cells.append(f'<mxCell id="{rid}" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;'
+                             f'fillColor=none;collapsible=0;dropTarget=0;top=0;left=0;right=0;bottom=0;" vertex="1" parent="{tid}">'
+                             f'<mxGeometry y="{ry}" width="{W}" height="{ROW}" as="geometry"/></mxCell>')
+                cells.append(f'<mxCell id="{new_id("n")}" value="… {hidden} thuộc tính khác" style="shape=partialRectangle;'
+                             f'connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=58;fontStyle=2;'
+                             f'fontColor=#666666;html=1;fontFamily={FONT};fontSize={fs - 1};" vertex="1" parent="{rid}">'
+                             f'<mxGeometry width="{W}" height="{ROW}" as="geometry"><mxRectangle width="{W}" height="{ROW}" '
+                             f'as="alternateBounds"/></mxGeometry></mxCell>')
+            y += h + GAP
+        x += W + COLGAP
+
+    # Quan hệ: từ dòng FK (bảng con) tới dòng PK (bảng cha)
+    rels = 0
+    omitted = []
     for t, cols in tables.items():
-        x, y = POS[t]
-        h = height(t, tables)
-        tid = ids[t] = o.nid()
-        o.cells.append(f'<mxCell id="{tid}" value="{t}" style="swimlane;fontStyle=1;horizontal=1;startSize={HEAD};collapsible=0;html=1;fillColor=#F2F2F2;strokeColor=#000000;fontFamily={FONT};fontSize=15;" vertex="1" parent="1"><mxGeometry x="{x}" y="{y}" width="{W}" height="{h}" as="geometry"/></mxCell>')
-        o.svg.append(f'<rect x="{x}" y="{y}" width="{W}" height="{h}" fill="#fff" stroke="#000" stroke-width="1.2"/>'
-                     f'<rect x="{x}" y="{y}" width="{W}" height="{HEAD}" fill="#F2F2F2" stroke="#000" stroke-width="1.2"/>'
-                     f'<text x="{x + W / 2}" y="{y + 20}" font-size="15" font-weight="bold" text-anchor="middle">{t}</text>')
-        for i, c in enumerate(cols):
-            key = ' '.join(k for k, v in (('PK', c['pk']), ('FK', c['fk']), ('UK', c['uk'])) if v)
-            typ = c['type'] + ('' if c['notnull'] or c['pk'] else ' NULL')
-            ry = y + HEAD + i * ROW
-            name = f'<u>{c["name"]}</u>' if c['pk'] else c['name']
-            left = f'<b>{key}</b>&nbsp;' if key else ''
-            o.cells.append(f'<mxCell id="{o.nid()}" value="{attr(left)}" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontFamily={FONT};fontSize=12;" vertex="1" parent="{tid}"><mxGeometry x="0" y="{HEAD + i * ROW}" width="46" height="{ROW}" as="geometry"/></mxCell>')
-            o.cells.append(f'<mxCell id="{o.nid()}" value="{attr(name)}" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;fontFamily={FONT};fontSize=12;" vertex="1" parent="{tid}"><mxGeometry x="46" y="{HEAD + i * ROW}" width="130" height="{ROW}" as="geometry"/></mxCell>')
-            o.cells.append(f'<mxCell id="{o.nid()}" value="{attr(typ)}" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;spacingRight=8;fontFamily={FONT};fontSize=11;fontColor=#444444;" vertex="1" parent="{tid}"><mxGeometry x="150" y="{HEAD + i * ROW}" width="{W - 150}" height="{ROW}" as="geometry"/></mxCell>')
-            if i:
-                o.cells.append(f'<mxCell id="{o.nid()}" value="" style="line;strokeColor=#DDDDDD;strokeWidth=1;html=1;" vertex="1" parent="{tid}"><mxGeometry x="0" y="{HEAD + i * ROW - 1}" width="{W}" height="2" as="geometry"/></mxCell>')
-            if i:
-                o.svg.append(f'<line x1="{x}" y1="{ry}" x2="{x + W}" y2="{ry}" stroke="#DDD" stroke-width="0.8"/>')
-            o.svg.append(f'<text x="{x + 8}" y="{ry + 15}" font-size="12" font-weight="bold">{key}</text>'
-                         f'<text x="{x + 52}" y="{ry + 15}" font-size="12"{" text-decoration=\"underline\"" if c["pk"] else ""}>{c["name"]}</text>'
-                         f'<text x="{x + W - 8}" y="{ry + 15}" font-size="11" fill="#444" text-anchor="end">{typ}</text>')
+        for c in cols:
+            if not c['fk']:
+                continue
+            parent = c['fk']['table']
+            if not full and c['name'] in WHO:
+                omitted.append(f'{t}.{c["name"]}')
+                continue
+            if (t, c['name']) not in row_id or parent not in pk_row:
+                raise SystemExit(f'Thiếu dòng để vẽ quan hệ {t}.{c["name"]} → {parent}')
+            parent_end = 'ERmandOne' if c['notnull'] else 'ERzeroToOne'
+            child_end = 'ERzeroToOne' if (c['uk'] or (c['pk'] and len([x for x in cols if x['pk']]) == 1)) else 'ERzeroToMany'
+            cells.append(f'<mxCell id="{new_id("e")}" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;endArrow={child_end};'
+                         f'startArrow={parent_end};endFill=0;startFill=0;rounded=0;strokeColor=#555555;" edge="1" parent="1" '
+                         f'source="{pk_row[parent]}" target="{row_id[(t, c["name"])]}"><mxGeometry relative="1" as="geometry"/></mxCell>')
+            rels += 1
+    note = ('Bản rút gọn: chỉ hiện khóa (PK, FK, UK) và vài thuộc tính tiêu biểu; không vẽ các khóa ngoại ghi nhận người thao tác '
+            f'(tham chiếu users): {", ".join(sorted(omitted))}. Bảng viền nét đứt thuộc phần mở rộng ngoài MVP.') if not full else \
+        'Bản đầy đủ: mọi cột kèm kiểu dữ liệu (NN = NOT NULL) và mọi khóa ngoại. Bảng viền nét đứt thuộc phần mở rộng ngoài MVP.'
+    total_w = x
+    cells.append(f'<mxCell id="{new_id("note")}" value="{attr(note)}" style="text;html=1;whiteSpace=wrap;fontSize={fs};fontStyle=2;'
+                 f'fontFamily={FONT};align=left;verticalAlign=top;" vertex="1" parent="1">'
+                 f'<mxGeometry x="40" y="{max_y(cells) + 30}" width="{total_w - 80}" height="80" as="geometry"/></mxCell>')
+    xml = ('<?xml version="1.0" encoding="UTF-8"?>\n<mxfile host="generate_erd.py" agent="SE104 AI TestCase Manager">'
+           f'<diagram id="erd" name="ERD"><mxGraphModel grid="1" gridSize="10" page="0"><root><mxCell id="0"/>'
+           f'<mxCell id="1" parent="0"/>{"".join(cells)}</root></mxGraphModel></diagram></mxfile>\n')
+    return xml, rels, omitted
 
-    for child, fk, label, spec, *opt in REL:
-        col = next(c for c in tables[child] if c['name'] == fk)
-        parent = col['fk']
-        pts = resolve(spec, parent, child, fk, tables)
-        start = 'one' if col['notnull'] else 'zero_one'
-        end = 'zero_one' if col['uk'] else 'zero_many'
-        # draw.io: nối vào bảng thật, điểm vào/ra theo tỷ lệ trên cạnh bảng
-        def rel(pt, t):
-            x, y = POS[t]
-            return (pt[0] - x) / W, (pt[1] - y) / height(t, tables)
-        ex, ey = rel(pts[0], parent)
-        nx, ny = rel(pts[-1], child)
-        way = ''.join(f'<mxPoint x="{a}" y="{b}"/>' for a, b in pts[1:-1])
-        o.cells.append(
-            f'<mxCell id="{o.nid()}" value="{attr(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jumpStyle=arc;'
-            f'startArrow={DRAWIO_MARK[start]};endArrow={DRAWIO_MARK[end]};startFill=0;endFill=0;startSize=10;endSize=10;'
-            f'exitX={ex:.4f};exitY={ey:.4f};exitDx=0;exitDy=0;entryX={nx:.4f};entryY={ny:.4f};entryDx=0;entryDy=0;'
-            f'fontFamily={FONT};fontSize=12;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="{ids[parent]}" target="{ids[child]}">'
-            f'<mxGeometry relative="1" as="geometry"><Array as="points">{way}</Array></mxGeometry></mxCell>')
-        o.svg.append('<polyline points="' + ' '.join(f'{a:.1f},{b:.1f}' for a, b in pts) + '" fill="none" stroke="#000" stroke-width="1.2"/>')
-        unit = lambda a, b: ((b[0] - a[0]) / (math.hypot(b[0] - a[0], b[1] - a[1]) or 1), (b[1] - a[1]) / (math.hypot(b[0] - a[0], b[1] - a[1]) or 1))
-        o.svg.append(marker_svg(pts[0], unit(pts[0], pts[1]), start))
-        o.svg.append(marker_svg(pts[-1], unit(pts[-1], pts[-2]), end))
-        # nhãn ở giữa đoạn dài nhất
-        seg = (pts[-2], pts[-1]) if opt == ['end'] else max(zip(pts, pts[1:]), key=lambda s: math.hypot(s[1][0] - s[0][0], s[1][1] - s[0][1]))
-        mx, my = (seg[0][0] + seg[1][0]) / 2, (seg[0][1] + seg[1][1]) / 2
-        tw = len(label) * 6.5 + 8
-        o.svg.append(f'<rect x="{mx - tw / 2:.1f}" y="{my - 9:.1f}" width="{tw:.1f}" height="17" fill="#fff"/>'
-                     f'<text x="{mx:.1f}" y="{my + 4:.1f}" font-size="12" font-style="italic" text-anchor="middle">{escape(label)}</text>')
 
-    note = ('Ký hiệu: PK khóa chính · FK khóa ngoại · UK duy nhất · NULL cho phép rỗng. Bản số: || đúng một · |o không hoặc một · '
-            'o{ không hoặc nhiều. Các cột created_by, changed_by, fixed_by cũng là FK tới users (không vẽ cho dễ đọc).')
-    o.svg.append(f'<text x="40" y="1300" font-size="12" fill="#333">{escape(note)}</text>')
-    o.cells.append(f'<mxCell id="note" value="{attr(note)}" style="text;html=1;align=left;whiteSpace=wrap;fontFamily={FONT};fontSize=12;" vertex="1" parent="1"><mxGeometry x="40" y="1285" width="1320" height="30" as="geometry"/></mxCell>')
-    return o, tables
+def max_y(cells):
+    ys = [int(m.group(1)) + int(m.group(2)) for c in cells
+          for m in [re.search(r'parent="1"><mxGeometry x="\d+" y="(\d+)" width="\d+" height="(\d+)"', c)] if m]
+    return max(ys) if ys else 0
+
+
+def drawio_cli():
+    for p in ('/Applications/draw.io.app/Contents/MacOS/draw.io', shutil.which('drawio'), shutil.which('draw.io')):
+        if p and Path(p).exists():
+            return p
+    raise SystemExit('Không tìm thấy draw.io Desktop. Cài: brew install --cask drawio')
+
+
+def export_svg(drawio_file):
+    svg = drawio_file.with_suffix('.svg')
+    subprocess.run([drawio_cli(), '-x', '-f', 'svg', '-o', str(svg), str(drawio_file)], check=True, capture_output=True)
+    return svg
+
+
+# ---------------------------------------------------------------------------
+# Lược đồ quan hệ và từ điển dữ liệu cho chương 4
+# ---------------------------------------------------------------------------
+def schema_markdown(tables, notes, rels):
+    order = [t for _, _, _, names in GROUPS for t in names]
+    lines = [f'### Lược đồ quan hệ ({len(tables)} bảng, {rels} khóa ngoại)\n',
+             'Sinh tự động từ `app/src/db/schema.sql`. Khóa chính in đậm, khóa ngoại in nghiêng; cột vừa là khóa chính vừa là khóa ngoại '
+             'in đậm nghiêng. Bảng đánh dấu (mở rộng) thuộc phần ngoài MVP.\n']
+    for t in order:
+        def fmt(c):
+            n = c['name']
+            if c['pk'] and c['fk']:
+                return f'***{n}***'
+            if c['pk']:
+                return f'**{n}**'
+            if c['fk']:
+                return f'*{n}*'
+            return n
+        lines.append(f'- `{t}`{" (mở rộng)" if t in EXT else ""} ({", ".join(fmt(c) for c in tables[t])})')
+    lines.append('\n### Từ điển dữ liệu\n')
+    lines.append('Sinh tự động từ `schema.sql` (ý nghĩa lấy từ chú thích của từng cột). Kiểu: INTEGER, TEXT (ngày giờ lưu dạng TEXT ISO, '
+                 'danh sách lưu JSON); khi chuyển PostgreSQL đổi TEXT JSON thành JSONB.\n')
+    for t in order:
+        n = notes.get(t, {})
+        lines.append(f'**{t}**{" (mở rộng)" if t in EXT else ""}' + (f' – {n.get("head")}' if n.get('head') else '') + '\n')
+        lines.append('| Thuộc tính | Kiểu | Ràng buộc | Ý nghĩa |\n|---|---|---|---|')
+        for c in tables[t]:
+            cons = []
+            if c['pk']:
+                cons.append('PK')
+            if c['fk']:
+                od = c['fk']['on_delete']
+                cons.append(f"FK → {c['fk']['table']}" + (f' ({od})' if od and od != 'NO ACTION' else ''))
+            if c['uk']:
+                cons.append('UNIQUE')
+            if c['notnull'] and not c['pk']:
+                cons.append('NOT NULL')
+            if c['default'] is not None:
+                cons.append(f"mặc định {c['default']}")
+            chk = n.get('checks', {}).get(c['name'])
+            if chk:
+                cons.append(f'∈ {{{chk}}}')
+            meaning = n.get('cols', {}).get(c['name'], '')
+            lines.append(f"| {c['name']} | {c['type']} | {'; '.join(cons)} | {meaning} |")
+        lines.append('')
+    return '\n'.join(lines) + '\n'
 
 
 def main():
-    o, tables = build()
-    model = ('<mxGraphModel dx="1400" dy="1330" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" '
-             f'page="1" pageScale="1" pageWidth="{o.w}" pageHeight="{o.h}" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/>'
-             + ''.join(o.cells) + '</root></mxGraphModel>')
-    (OUT / 'ERD_CSDL.drawio').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<mxfile host="generate_erd.py" agent="SE104 AI TestCase Manager" '
-                                         f'version="24.0.0"><diagram id="erd" name="ERD">{model}</diagram></mxfile>\n', encoding='utf-8')
-    (OUT / 'ERD_CSDL.svg').write_text(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {o.w} {o.h}" width="{o.w}" height="{o.h}" '
-                                      f'font-family="{FONT}, Times, serif"><rect width="100%" height="100%" fill="#fff"/><g transform="translate({DX},0)">'
-                                      + ''.join(o.svg) + '</g></svg>\n', encoding='utf-8')
-    nfk = sum(1 for cols in tables.values() for c in cols if c['fk'])
-    print(f'Đã tạo ERD_CSDL.drawio / .svg: {len(tables)} bảng, {len(REL)} quan hệ được vẽ, {nfk} khóa ngoại trong lược đồ')
+    tables, notes = read_schema()
+    missing = set(tables) - {t for _, _, _, names in GROUPS for t in names}
+    if missing:
+        raise SystemExit(f'Bảng chưa xếp vào nhóm nào: {", ".join(sorted(missing))}')
+    for name, full in (('ERD_CSDL', False), ('ERD_CSDL_DayDu', True)):
+        xml, rels, omitted = build(tables, full)
+        f = OUT / f'{name}.drawio'
+        f.write_text(xml, encoding='utf-8')
+        export_svg(f)
+        print(f'{name}: {len(tables)} bảng, {rels} quan hệ được vẽ' + (f', {len(omitted)} khóa ngoại người thao tác không vẽ' if omitted else ''))
+    total_fk = sum(1 for cols in tables.values() for c in cols if c['fk'])
+    text = CHAPTER.read_text(encoding='utf-8')
+    block = ('<!-- SCHEMA:BEGIN (sinh tự động bởi docs/erd/generate_erd.py, đừng sửa tay) -->\n'
+             f'{schema_markdown(tables, notes, total_fk)}<!-- SCHEMA:END -->\n')
+    if '<!-- SCHEMA:BEGIN' in text:
+        text = re.sub(r'<!-- SCHEMA:BEGIN.*?<!-- SCHEMA:END -->\n', lambda _: block, text, flags=re.S)
+    else:
+        text = re.sub(r'### Lược đồ quan hệ.*?(?=Lược đồ đầy đủ: )', lambda _: block + '\n', text, flags=re.S)
+    CHAPTER.write_text(text, encoding='utf-8')
+    print(f'Đã cập nhật lược đồ quan hệ và từ điển dữ liệu ({len(tables)} bảng, {total_fk} khóa ngoại) trong {CHAPTER.name}')
 
 
 if __name__ == '__main__':

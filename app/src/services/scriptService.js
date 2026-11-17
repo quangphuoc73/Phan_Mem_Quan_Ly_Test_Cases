@@ -1,4 +1,4 @@
-// YC9: Sinh script Playwright bằng AI và chạy tự động.
+// YC19: Sinh script Playwright bằng AI và chạy tự động.
 // Bảo mật khi chạy mã do AI sinh:
 //   1. Kiểm tra tĩnh: chặn các API nguy hiểm (child_process, fs, process.env, eval...).
 //   2. Chạy trong tiến trình riêng, biến môi trường tối thiểu (không có API key, JWT secret).
@@ -97,7 +97,9 @@ function parseReport(out) {
   }
 }
 
-async function run(tcId, userId) {
+// YC19 (ngoài MVP): kết quả chạy tự động được ghi vào một test trong Test Run đang mở (QĐ5), giống ghi thủ công
+async function run(tcId, user, { run_id: runId, item_id: itemId } = {}) {
+  if (!runId || !itemId) throw badRequest('Chọn Test Run và test trong đợt để ghi kết quả chạy tự động (QĐ5)');
   const tc = testCases.get(tcId);
   if (tc.status !== 'APPROVED') throw conflict('Chỉ chạy test case đã được duyệt (QĐ5)');
   const script = getByTestCase(tcId);
@@ -142,7 +144,7 @@ async function run(tcId, userId) {
       screenshot = `/screenshots/${name}`;
     }
   }
-  return runs.record(tcId, { result, note: `Chạy tự động bằng Playwright` }, userId, {
+  return runs.record(runId, itemId, { result, note: `Chạy tự động bằng Playwright` }, user, {
     run_type: 'AUTO',
     log,
     screenshot,

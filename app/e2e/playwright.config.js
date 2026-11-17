@@ -33,6 +33,7 @@ module.exports = defineConfig({
     cwd: root,
     url: `http://localhost:${PORT}/api/health`,
     reuseExistingServer: false,
-    env: { PORT: String(PORT), DB_FILE: path.join(root, 'data', 'e2e.db'), AI_PROVIDER: 'mock', MOCK_DELAY_MS: '300', RUNNER_ENABLED: 'false' },
+    env: { PORT: String(PORT), DB_FILE: path.join(root, 'data', 'e2e.db'), AI_PROVIDER: 'mock', MOCK_DELAY_MS: '300', RUNNER_ENABLED: 'false',
+      JIRA_BASE_URL: '', JIRA_WEBHOOK_SECRET: '' }, // luôn dùng Jira giả lập, không gọi Jira thật trong .env,
   },
 });
