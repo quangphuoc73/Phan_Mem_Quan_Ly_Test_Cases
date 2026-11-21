@@ -6,6 +6,21 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "app", "start"],
       "port": 3000
+    },
+    {
+      "name": "do-an-preview",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "PORT=3920",
+        "DB_FILE=/private/tmp/claude-501/-Users-phuocnguyen-Desktop-TTNT-H-c-K--2--HK1-2026-2027--Nh-p-M-n-C-ng-Ngh--Ph-n-M-m/f66a013c-2d31-4037-895a-b367bff3b4e9/scratchpad/preview/app.db",
+        "AI_PROVIDER=mock",
+        "MOCK_DELAY_MS=300",
+        "JIRA_BASE_URL=",
+        "JIRA_WEBHOOK_SECRET=",
+        "node",
+        "app/src/server.js"
+      ],
+      "port": 3920
     }
   ]
 }
